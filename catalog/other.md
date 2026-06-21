@@ -1,4 +1,4 @@
-# 消费电子 | Consumer Electronics
+# 其他消费电子 | Other Consumer Electronics
 
 77 projects | Stars as of 2026-06-21
 

@@ -34,7 +34,7 @@
 
 [查看详情 →](catalog/maker.md)
 
-## 消费电子 | Consumer Electronics（77）
+## 其他消费电子 | Other Consumer Electronics（77）
 
 [查看详情 →](catalog/other.md)
 
