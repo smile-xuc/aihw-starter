@@ -14,26 +14,38 @@
 
 ## 📖 项目简介 | Introduction
 
-**中文**：aihw-starter 是一个开源教程项目，帮助你从零开始构建 AI 硬件。我们精选了 5 个最具代表性的 AI 硬件赛道，每个赛道提供完整的入门教程——从 BOM 采购、硬件组装、软件环境搭建到大模型接入，手把手带你跑通第一个项目。
+**中文**：aihw-starter 是一个开源教程项目，帮助你从零开始构建 AI 硬件。我们精选了 10 个入门教程，分为机器人、AI 应用、工具与平台三大主题——从 BOM 采购、硬件组装、软件环境搭建到大模型接入，手把手带你跑通第一个项目。
 
-**English**: aihw-starter is an open-source tutorial project that helps you build AI hardware from scratch. We've curated 5 representative AI hardware tracks, each with a complete getting-started guide — from BOM sourcing, hardware assembly, software setup to LLM integration.
+**English**: aihw-starter is an open-source tutorial project that helps you build AI hardware from scratch. We've curated 10 hands-on tracks across 3 themes — each with a complete getting-started guide covering BOM sourcing, hardware assembly, software setup, and LLM integration.
 
 ---
 
-## 🏁 5 大赛道 | 5 Tracks
+## 🏁 入门教程 | Tutorials
 
-| # | 赛道 Track | 项目 Project | 成本 Cost | 难度 | 教程 Tutorial |
-|---|-----------|-------------|----------|------|--------------|
-| 1 | 🎙️ 语音助手 Voice Assistant | [xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) | ~¥72 / $10 | ⭐⭐ | [开始 →](getting-started/01-esp32-voice-assistant.md) |
-| 2 | 🦾 桌面机械臂 Robot Arm | [SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) | ~¥615 / $85 | ⭐⭐ | [开始 →](getting-started/02-desktop-robot-arm.md) |
-| 3 | 🐕 四足机器人 Quadruped | [OpenCat](https://github.com/PetoiCamp/OpenCat-Quadruped-Robot) | ~¥578 / $80 | ⭐⭐⭐ | [开始 →](getting-started/03-quadruped-robot.md) |
-| 4 | 🕶️ AI 智能眼镜 Smart Glasses | [OpenGlass](https://github.com/BasedHardware/OpenGlass) | ~¥101 / $14 | ⭐⭐⭐ | [开始 →](getting-started/04-ai-smart-glasses.md) |
-| 5 | 🚗 视觉移动机器人 Vision Rover | [JetBot](https://github.com/NVIDIA-AI-IOT/jetbot) | ~¥1,445 / $200 | ⭐⭐ | [开始 →](getting-started/05-vision-rover.md) |
-| 6 | 🖥️ 本地 LLM 部署 Local LLM | [Ollama](https://ollama.ai) | ¥0 (现有硬件) | ⭐⭐ | [开始 →](getting-started/06-ollama-local-llm.md) |
-| 7 | 🏠 智能家居 AI Smart Home | [Home Assistant](https://www.home-assistant.io/) + ESP32 | ~¥465 / $65 | ⭐⭐ | [开始 →](getting-started/07-home-assistant-ai.md) |
-| 8 | 🦆 双足机器人 Bipedal Robot | [Open_Duck_Mini](https://github.com/apirrone/Open_Duck_Mini) | ~¥1,805 / $250 | ⭐⭐⭐⭐ | [开始 →](getting-started/08-open-duck-mini.md) |
-| 9 | 🖨️ AI 3D 打印 3D Printing | [Klipper](https://github.com/Klipper3d/klipper) + Obico | ~¥300 / $42 | ⭐⭐ | [开始 →](getting-started/09-3d-printer-ai.md) |
-| 10 | 🚁 自主无人机 Autonomous Drone | [ArduPilot](https://github.com/ArduPilot/ardupilot) | ~¥1,045 / $145 | ⭐⭐⭐⭐ | [开始 →](getting-started/10-drone-autonomous.md) |
+### 🤖 机器人 | Robotics
+
+| # | 项目 Project | 成本 Cost | 难度 | 教程 |
+|---|-------------|----------|------|------|
+| 1 | 🦾 桌面机械臂 Robot Arm — [SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) | ~¥615 / $85 | ⭐⭐ | [→](getting-started/02-desktop-robot-arm.md) |
+| 2 | 🐕 四足机器人 Quadruped — [OpenCat](https://github.com/PetoiCamp/OpenCat-Quadruped-Robot) | ~¥578 / $80 | ⭐⭐⭐ | [→](getting-started/03-quadruped-robot.md) |
+| 3 | 🦆 双足机器人 Bipedal — [Open_Duck_Mini](https://github.com/apirrone/Open_Duck_Mini) | ~¥1,805 / $250 | ⭐⭐⭐⭐ | [→](getting-started/08-open-duck-mini.md) |
+| 4 | 🚗 视觉机器人 Vision Rover — [JetBot](https://github.com/NVIDIA-AI-IOT/jetbot) | ~¥1,445 / $200 | ⭐⭐ | [→](getting-started/05-vision-rover.md) |
+| 5 | 🚁 自主无人机 Drone — [ArduPilot](https://github.com/ArduPilot/ardupilot) | ~¥1,045 / $145 | ⭐⭐⭐⭐ | [→](getting-started/10-drone-autonomous.md) |
+
+### 🧠 AI 应用 | AI Applications
+
+| # | 项目 Project | 成本 Cost | 难度 | 教程 |
+|---|-------------|----------|------|------|
+| 6 | 🎙️ 语音助手 Voice Assistant — [xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) | ~¥72 / $10 | ⭐⭐ | [→](getting-started/01-esp32-voice-assistant.md) |
+| 7 | 🕶️ AI 智能眼镜 Smart Glasses — [OpenGlass](https://github.com/BasedHardware/OpenGlass) | ~¥101 / $14 | ⭐⭐⭐ | [→](getting-started/04-ai-smart-glasses.md) |
+| 8 | 🖥️ 本地 LLM 部署 Local LLM — [Ollama](https://ollama.ai) | ¥0 | ⭐⭐ | [→](getting-started/06-ollama-local-llm.md) |
+
+### 🛠️ 工具与平台 | Tools & Platforms
+
+| # | 项目 Project | 成本 Cost | 难度 | 教程 |
+|---|-------------|----------|------|------|
+| 9 | 🏠 智能家居 AI Smart Home — [Home Assistant](https://www.home-assistant.io/) + ESP32 | ~¥465 / $65 | ⭐⭐ | [→](getting-started/07-home-assistant-ai.md) |
+| 10 | 🖨️ AI 3D 打印 3D Printing — [Klipper](https://github.com/Klipper3d/klipper) + Obico | ~¥300 / $42 | ⭐⭐ | [→](getting-started/09-3d-printer-ai.md) |
 
 ---
 
