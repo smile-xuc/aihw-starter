@@ -4,13 +4,12 @@
 
 ---
 
-## 📊 三层方案对比 | Three-Layer Comparison
+## 📊 两层方案对比 | Two-Layer Comparison
 
 | 方案 Approach | 延迟 Latency | 成本 Cost | 隐私 Privacy | 适合 Suitable For |
 |-------------|------------|----------|------------|------------------|
-| ☁️ 云端 API | 200-2000ms | 按 token 付费 | 数据上传 | 快速原型、复杂对话 |
-| 🖥️ 本地部署 | 50-500ms | 电费+硬件 | 100% 本地 | 隐私敏感、离线场景 |
-| 🔌 端侧推理 | 10-200ms | 一次性硬件 | 100% 设备端 | ESP32/MCU 极低延迟 |
+| ☁️ 云端 API | 300-2000ms | 按 token 付费 | 数据上传 | 快速原型、复杂对话 |
+| 🖥️ 本地部署 | 100-? ms（取决于硬件推理性能） | 电费+硬件 | 100% 本地 | 隐私敏感、离线场景 |
 
 ---
 
@@ -26,33 +25,112 @@
 | **GPT-4o mini** | `api.openai.com` | $0.15-0.6/百万 token | ⭐⭐⭐⭐ | OpenAI、全球可用 |
 | **Claude 3.5 Haiku** | `api.anthropic.com` | $0.25-1.25/百万 token | ⭐⭐⭐ | Anthropic、长文本 |
 
-### 快速接入代码 | Quick Integration
+### 裸协议接入：Fun-ASR + Qwen3.7-Plus + CosyVoice-v3-flash（千问云 | QianwenAI）
 
-#### Python（通用 | Universal）
+> 做语音助手最自由的方式：**自己拿三个 OpenAI 兼容的 API 拼一条「听→想→说」管线**。千问云（[platform.qianwenai.com](https://platform.qianwenai.com/docs/developer-guides/getting-started/introduction)）兼容 OpenAI SDK，文本 / 视觉 / 语音（ASR+TTS）模型都能在一个 Key、一个 `base_url` 下调用，适合不想被整套件绑死、想自己控制每一段（换模型、加 function calling、做字幕、插中间件）的开发者。
+>
+> 推荐组合：**Fun-ASR**（语音识别）+ **qwen3.7-plus**（对话大脑）+ **cosyvoice-v3-flash**（语音合成）。三段都是流式接口，首字延迟可控。
+
+**三段式语音管线 | Three-Stage Voice Pipeline**
+
+```
+麦克风 Mic ──▶ ① Fun-ASR（语音转文字）──▶ ② Qwen3.7-Plus（理解+生成）──▶ ③ CosyVoice-v3-flash（文字转语音）──▶ 扬声器 Speaker
+```
+
+| 环节 Stage | 模型 Model | 说明 |
+|-----------|-----------|------|
+| ① 语音识别 ASR | `Fun-ASR` | 中英混说、流式可选、低延迟 |
+| ② 大模型对话 LLM | `qwen3.7-plus` | 千问云旗舰，视觉+语言+智能体能力，支持 function calling / 结构化输出 |
+| ③ 语音合成 TTS | `cosyvoice-v3-flash` | 流式合成、首包延迟低、音色可克隆 |
+
+**步骤 1：获取 API Key**
+
+注册千问云 → [platform.qianwenai.com](https://platform.qianwenai.com) → 创建 API Key（`sk-xxx`）。三个组件共用同一个 Key 和同一个 `base_url`，无需分别申请。
+
+**步骤 2：Python 网关（跑在 PC / 树莓派 / Jetson 上）**
+
+ESP32 算力和 TLS 栈有限，推荐用一个 Python 网关把三段串起来，硬件只负责录音和放音。千问云完全兼容 OpenAI SDK：
 
 ```python
-import requests
+# voice_gateway.py — 千问云裸协议三段式语音网关
+# 依赖：pip install openai pyaudio
+# 文档：https://platform.qianwenai.com/docs/developer-guides/getting-started/introduction
+import json, pyaudio
+from openai import OpenAI
 
-# DeepSeek API 示例 | DeepSeek API Example
-def chat_with_llm(message: str) -> str:
-    response = requests.post(
-        "https://api.deepseek.com/v1/chat/completions",
-        headers={
-            "Authorization": f"Bearer {YOUR_API_KEY}",
-            "Content-Type": "application/json"
-        },
-        json={
-            "model": "deepseek-chat",
-            "messages": [{"role": "user", "content": message}],
-            "max_tokens": 512,
-        }
+API_KEY = "sk-your-qianwenai-key"
+BASE_URL = "https://api.qianwenai.com/v1"   # 千问云 OpenAI 兼容入口（三段共用）
+
+client = OpenAI(api_key=API_KEY, base_url=BASE_URL)
+
+# ② LLM —— Qwen3.7-Plus 对话（OpenAI 兼容协议）
+def ask_llm(user_text: str, history: list) -> str:
+    history.append({"role": "user", "content": user_text})
+    resp = client.chat.completions.create(
+        model="qwen3.7-plus",                 # 也可换 qwen-plus / qwen-turbo 等同系列
+        messages=history,
+        stream=False,
     )
-    return response.json()["choices"][0]["message"]["content"]
+    reply = resp.choices[0].message.content
+    history.append({"role": "assistant", "content": reply})
+    return reply
 
-# 使用 | Usage
-reply = chat_with_llm("你好，请介绍一下你自己")
-print(reply)
+# ① ASR —— Fun-ASR 语音识别（用 audio.transcriptions 接口，OpenAI 兼容）
+def recognize_audio(pcm_wav_bytes: bytes) -> str:
+    resp = client.audio.transcriptions.create(
+        model="Fun-ASR",
+        file=("input.wav", pcm_wav_bytes, "audio/wav"),
+    )
+    return resp.text
+
+# ③ TTS —— CosyVoice-v3-flash 语音合成（流式，边生成边播）
+def speak_stream(text: str, on_pcm):
+    with client.audio.speech.with_streaming_response.create(
+        model="cosyvoice-v3-flash",
+        voice="longxiaochun",                 # 内置音色，也可上传样本克隆
+        input=text,
+        response_format="pcm",                # 直接拿 PCM 喂给扬声器
+    ) as stream:
+        for chunk in stream.iter_bytes():
+            on_pcm(chunk)
+
+# 主循环 | Main loop
+history = [{"role": "system", "content": "你是一个简洁的语音助手，回答控制在两句以内。"}]
+def on_user_audio(wav_bytes):
+    text = recognize_audio(wav_bytes)          # ① 听
+    print("用户:", text)
+    reply = ask_llm(text, history)             # ② 想
+    print("助手:", reply)
+    speak_stream(reply, on_pcm=lambda pcm: play_audio(pcm))  # ③ 说
 ```
+
+**步骤 3：ESP32 只做「录音 + 放音」**
+
+ESP32 通过 Wi-Fi 把 16kHz 单声道 PCM 推给上面的 Python 网关（WebSocket / UDP / HTTP 均可），网关回传合成好的 PCM。硬件逻辑极简：
+
+```cpp
+// ESP32 端：只负责 I2S 录音 + 播放，PCM 透传给局域网网关
+// 完整示例参考 getting-started/01-esp32-voice-assistant.md
+WiFiClient client;
+const char* gateway = "192.168.1.10:8080";    // 你的 Python 网关地址
+
+void loop() {
+    auto pcm = i2s_read_16k_mono();           // I2S MEMS 麦克风
+    websocket_send(pcm);                       // 推给网关做 ASR+LLM+TTS
+    // 网关回传的 PCM 自动进 I2S 扬声器播放
+}
+```
+
+**成本估算 | Cost Estimate**（千问云零售价）
+
+| 环节 | 计费 | 一次对话（约 10s 语音） |
+|------|------|----------------------|
+| Fun-ASR | 按音频时长 | ≈ ¥0.001 |
+| qwen3.7-plus | 按 token（输入 ¥1.6-4.8 / 输出 ¥6.4-19.2 每百万） | ≈ ¥0.002 |
+| cosyvoice-v3-flash | 按字符 | ≈ ¥0.002 |
+| **合计** | | **≈ ¥0.005 / 次对话** |
+
+> 💡 **进阶**：要「全双工 + 可打断 + 更低首字延迟」，把三段从串行调用升级为并发管线（边收尾句边开始 LLM 流式输出边启动 TTS）；或直接用下面的「通义多模态交互开发套件」——它在云端把三段打成一条 WebSocket，原生全双工。
 
 #### 通义多模态交互开发套件（阿里云百炼 | Aliyun）
 
@@ -308,7 +386,7 @@ http.POST(body);
 
 ---
 
-## 🔌 方案三：端侧推理 | On-Device Inference
+## 🔌 方案三：端侧小模型 | On-Device Small Models
 
 ### 适用场景 | Use Cases
 
@@ -340,14 +418,14 @@ http.POST(body);
 ```
 你的项目需要 LLM？
 ├── 是 → 需要联网吗？
-│   ├── 是（有 Wi-Fi）→
+│   ├── 是（有 Wi-Fi）→ 云端 API
 │   │   ├── 预算敏感 → DeepSeek API（¥1/百万 token）
-│   │   ├── 需要隐私 → 本地 Ollama + Qwen 2.5
+│   │   ├── 语音助手 → 千问云 Fun-ASR + qwen3.7-plus + cosyvoice-v3-flash（裸协议）
+│   │   ├── 要全双工/可打断 → 阿里云 通义多模态交互开发套件（一条 WebSocket）
 │   │   └── 要求最高 → GPT-4o / Claude API
-│   └── 否（离线/低延迟）→
-│       ├── ESP32 → ESP-SR（唤醒词/命令词）
-│       ├── Jetson → TensorRT + 本地模型
-│       └── Pi → Ollama + 小模型（1.5B-7B）
+│   └── 否（离线/隐私敏感）→ 本地部署
+│       ├── Pi / Jetson → Ollama + Qwen 2.5（1.5B-7B）
+│       └── ESP32 / MCU → 端侧小模型（唤醒词、命令词、TinyML）
 └── 否（仅传感器/运动控制）→ 不需要 LLM
 ```
 
@@ -362,4 +440,4 @@ http.POST(body);
 
 ---
 
-*最后更新：2026-06-21*
+*最后更新：2026-06-22*
