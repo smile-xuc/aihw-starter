@@ -1,0 +1,366 @@
+# 关联 AI 软件 | Related AI Software
+
+360 projects | Stars as of 2026-06-21
+
+| # | Project | Stars | Lang | Cost(Y) | Diff | Link |
+|---|---------|-------|------|---------|------|------|
+| 1 | AutoGPT | 185,047 | Python | - | *** | [->](https://github.com/Significant-Gravitas/AutoGPT) |
+| 2 | ollama | 174,617 | Go | - | ** | [->](https://github.com/ollama/ollama) |
+| 3 | llama.cpp | 117,471 | C++ | - | ** | [->](https://github.com/ggerganov/llama.cpp) |
+| 4 | whisper | 103,206 | Python | - | ** | [->](https://github.com/openai/whisper) |
+| 5 | core | 87,872 | Python | - | *** | [->](https://github.com/home-assistant/core) |
+| 6 | vllm | 83,432 | Python | - | ** | [->](https://github.com/vllm-project/vllm) |
+| 7 | openpilot | 61,475 | Python | 7,000 | **** | [->](https://github.com/commaai/openpilot) |
+| 8 | whisper.cpp | 50,903 | C++ | - | ** | [->](https://github.com/ggerganov/whisper.cpp) |
+| 9 | EasySpider | 44,125 | JavaScript | - | * | [->](https://github.com/NaiboWang/EasySpider) |
+| 10 | gradio | 42,968 | Python | - | *** | [->](https://github.com/gradio-app/gradio) |
+| 11 | ChatGLM-6B | 41,038 | Python | - | ** | [->](https://github.com/THUDM/ChatGLM-6B) |
+| 12 | FastChat | 39,483 | Python | - | ** | [->](https://github.com/lm-sys/FastChat) |
+| 13 | mediapipe | 35,745 | C++ | - | ** | [->](https://github.com/google/mediapipe) |
+| 14 | frigate | 33,862 | TypeScript | 2,000 | ** | [->](https://github.com/blakeblackshear/frigate) |
+| 15 | sharp | 32,362 | JavaScript | - | * | [->](https://github.com/lovell/sharp) |
+| 16 | PythonRobotics | 29,827 | Python | - | ** | [->](https://github.com/AtsushiSakai/PythonRobotics) |
+| 17 | Genesis | 28,575 | Python | - | *** | [->](https://github.com/Genesis-Embodied-AI/Genesis) |
+| 18 | setup-ipsec-vpn | 28,058 | Shell | - | * | [->](https://github.com/hwdsl2/setup-ipsec-vpn) |
+| 19 | Qwen2.5 | 27,317 | Python | - | ** | [->](https://github.com/QwenLM/Qwen2.5) |
+| 20 | DeepSpeech | 26,756 | C++ | - | ** | [->](https://github.com/mozilla/DeepSpeech) |
+| 21 | Graphite | 26,333 | Rust | - | *** | [->](https://github.com/GraphiteEditor/Graphite) |
+| 22 | ncnn | 23,392 | C++ | - | ** | [->](https://github.com/Tencent/ncnn) |
+| 23 | wechaty | 22,854 | TypeScript | - | ** | [->](https://github.com/wechaty/wechaty) |
+| 24 | micropython | 21,819 | C | - | * | [->](https://github.com/micropython/micropython) |
+| 25 | ha_xiaomi_home | 21,793 | Python | - | *** | [->](https://github.com/XiaoMi/ha_xiaomi_home) |
+| 26 | CosyVoice | 21,755 | Python | - | *** | [->](https://github.com/FunAudioLLM/CosyVoice) |
+| 27 | onnxruntime | 20,874 | C++ | - | ** | [->](https://github.com/microsoft/onnxruntime) |
+| 28 | ml-agents | 19,495 | C# | - | *** | [->](https://github.com/Unity-Technologies/ml-agents) |
+| 29 | AirSim-Autonomous-Vehicle-Simulator | 18,256 | N/A | 5,000 | *** | [->](https://github.com/microsoft/AirSim) |
+| 30 | AirSim | 18,256 | C++ | - | ** | [->](https://github.com/microsoft/AirSim) |
+| 31 | tinygo | 17,521 | Go | - | ** | [->](https://github.com/tinygo-org/tinygo) |
+| 32 | Marlin | 17,442 | C++ | - | ** | [->](https://github.com/MarlinFirmware/Marlin) |
+| 33 | arduino-esp32 | 16,965 | C++ | - | *** | [->](https://github.com/espressif/arduino-esp32) |
+| 34 | ImageMagick | 16,759 | C | - | * | [->](https://github.com/ImageMagick/ImageMagick) |
+| 35 | awesome-raspberry-pi | 16,517 | Shell | - | *** | [->](https://github.com/thibmaek/awesome-raspberry-pi) |
+| 36 | flipperzero-firmware | 16,196 | C | 1,400 | **** | [->](https://github.com/flipperdevices/flipperzero-firmware) |
+| 37 | zephyr | 15,661 | C | - | *** | [->](https://github.com/zephyrproject-rtos/zephyr) |
+| 38 | MNN | 15,522 | C++ | - | ** | [->](https://github.com/alibaba/MNN) |
+| 39 | ardupilot | 15,326 | C++ | 1,500 | *** | [->](https://github.com/ArduPilot/ardupilot) |
+| 40 | vosk-api | 14,868 | Jupyter Notebook | - | ** | [->](https://github.com/alphacep/vosk-api) |
+| 41 | brain.js | 14,862 | TypeScript | - | *** | [->](https://github.com/BrainJS/brain.js) |
+| 42 | ggml | 14,849 | C++ | - | ** | [->](https://github.com/ggerganov/ggml) |
+| 43 | OrcaSlicer | 14,720 | C++ | - | * | [->](https://github.com/OrcaSlicer/OrcaSlicer) |
+| 44 | rust-raspberrypi-OS-tutorials | 14,684 | Rust | - | *** | [->](https://github.com/rust-embedded/rust-raspberrypi-OS-tutorials) |
+| 45 | Arduino | 14,600 | Java | 100 | * | [->](https://github.com/arduino/Arduino) |
+| 46 | bullet3 | 14,559 | C++ | - | ** | [->](https://github.com/bulletphysics/bullet3) |
+| 47 | mujoco | 13,926 | C++ | - | *** | [->](https://github.com/google-deepmind/mujoco) |
+| 48 | raspberry-pi-os | 13,858 | C | - | *** | [->](https://github.com/s-matyukevich/raspberry-pi-os) |
+| 49 | Reverse-Engineering | 13,741 | Assembly | - | *** | [->](https://github.com/mytechnotalent/Reverse-Engineering) |
+| 50 | tvm | 13,480 | Python | - | ** | [->](https://github.com/apache/tvm) |
+| 51 | johnny-five | 13,401 | JavaScript | - | * | [->](https://github.com/rwaldron/johnny-five) |
+| 52 | john | 13,286 | C | - | *** | [->](https://github.com/openwall/john) |
+| 53 | TensorRT | 13,090 | C++ | - | ** | [->](https://github.com/NVIDIA/TensorRT) |
+| 54 | sherpa-onnx | 13,081 | C++ | - | *** | [->](https://github.com/k2-fsa/sherpa-onnx) |
+| 55 | smartcrop.js | 12,952 | JavaScript | - | *** | [->](https://github.com/jwagner/smartcrop.js) |
+| 56 | mongoose | 12,884 | C | - | ** | [->](https://github.com/cesanta/mongoose) |
+| 57 | supertonic | 12,489 | Swift | 200 | ** | [->](https://github.com/supertone-inc/supertonic) |
+| 58 | rt-thread | 12,060 | C | - | ** | [->](https://github.com/RT-Thread/rt-thread) |
+| 59 | umbrel | 11,467 | TypeScript | - | *** | [->](https://github.com/getumbrel/umbrel) |
+| 60 | betaflight | 11,110 | C | 300 | ** | [->](https://github.com/betaflight/betaflight) |
+| 61 | voice-pro | 11,017 | Python | - | *** | [->](https://github.com/abus-aikorea/voice-pro) |
+| 62 | fprime | 10,989 | C++ | - | *** | [->](https://github.com/nasa/fprime) |
+| 63 | rerun | 10,968 | Rust | - | *** | [->](https://github.com/rerun-io/rerun) |
+| 64 | qt | 10,803 | Go | - | *** | [->](https://github.com/therecipe/qt) |
+| 65 | WasmEdge | 10,656 | C++ | - | ** | [->](https://github.com/WasmEdge/WasmEdge) |
+| 66 | openvino | 10,395 | C++ | - | ** | [->](https://github.com/openvinotoolkit/openvino) |
+| 67 | RetroPie-Setup | 10,380 | Shell | - | *** | [->](https://github.com/RetroPie/RetroPie-Setup) |
+| 68 | pikvm | 10,116 | N/A | 700 | ** | [->](https://github.com/pikvm/pikvm) |
+| 69 | glide-transformations | 9,888 | Java | - | *** | [->](https://github.com/wasabeef/glide-transformations) |
+| 70 | inference | 9,367 | Python | - | ** | [->](https://github.com/xorbitsai/inference) |
+| 71 | OctoPrint | 9,014 | Python | 500 | * | [->](https://github.com/OctoPrint/OctoPrint) |
+| 72 | awesome-home-assistant | 8,154 | Python | - | *** | [->](https://github.com/frenck/awesome-home-assistant) |
+| 73 | cartographer | 7,883 | C++ | - | *** | [->](https://github.com/cartographer-project/cartographer) |
+| 74 | awesome-electronics | 7,821 | N/A | - | *** | [->](https://github.com/kitspace/awesome-electronics) |
+| 75 | firmware | 7,790 | C++ | - | *** | [->](https://github.com/meshtastic/firmware) |
+| 76 | IsaacLab | 7,491 | Python | - | *** | [->](https://github.com/isaac-sim/IsaacLab) |
+| 77 | mlx-audio | 7,400 | Python | - | *** | [->](https://github.com/Blaizzy/mlx-audio) |
+| 78 | Paddle-Lite | 7,257 | C++ | - | ** | [->](https://github.com/PaddlePaddle/Paddle-Lite) |
+| 79 | evcc | 6,841 | Go | - | *** | [->](https://github.com/evcc-io/evcc) |
+| 80 | text-to-cad | 6,704 | JavaScript | - | *** | [->](https://github.com/earthtojake/text-to-cad) |
+| 81 | espeak-ng | 6,585 | C | - | * | [->](https://github.com/espeak-ng/espeak-ng) |
+| 82 | frontend | 5,522 | TypeScript | - | *** | [->](https://github.com/home-assistant/frontend) |
+| 83 | Home-AssistantConfig | 5,214 | Python | - | *** | [->](https://github.com/CCOSTAN/Home-AssistantConfig) |
+| 84 | newton | 5,099 | Python | - | *** | [->](https://github.com/newton-physics/newton) |
+| 85 | OpenGlass | 4,065 | C | 180 | *** | [->](https://github.com/BasedHardware/OpenGlass) |
+| 86 | donkeycar | 3,457 | Python | - | *** | [->](https://github.com/autorope/donkeycar) |
+| 87 | ADeus | 3,412 | TypeScript | 500 | *** | [->](https://github.com/adamcohenhillel/ADeus) |
+| 88 | JetBot | 3,312 | Jupyter Notebook | 2,000 | ** | [->](https://github.com/NVIDIA-AI-IOT/JetBot) |
+| 89 | PAROL6 | 2,967 | Python | 3,500 | *** | [->](https://github.com/Source-Robotics/PAROL6-Desktop-robot-arm) |
+| 90 | tflite-micro | 2,962 | C++ | - | ** | [->](https://github.com/tensorflow/tflite-micro) |
+| 91 | self-driving-car | 2,920 | C++ | - | *** | [->](https://github.com/ndrplz/self-driving-car) |
+| 92 | simulator | 2,449 | C# | - | *** | [->](https://github.com/lgsvl/simulator) |
+| 93 | AutonomousDrivingCookbook | 2,433 | Jupyter Notebook | - | *** | [->](https://github.com/microsoft/AutonomousDrivingCookbook) |
+| 94 | CHAMP | 2,253 | C++ | 3,000 | *** | [->](https://github.com/chvmp/CHAMP) |
+| 95 | zclaw | 2,165 | C | 150 | **** | [->](https://github.com/tnm/zclaw) |
+| 96 | Humanoid-Gym | 1,957 | Python | - | **** | [->](https://github.com/roboterax/Humanoid-Gym) |
+| 97 | roboto_origin | 1,928 | N/A | - | **** | [->](https://github.com/Roboparty/roboto_origin) |
+| 98 | MentraOS | 1,911 | C | - | *** | [->](https://github.com/Mentra-Community/MentraOS) |
+| 99 | ElatoAI | 1,785 | TypeScript/Arduino | 300 | *** | [->](https://github.com/akdeb/ElatoAI) |
+| 100 | A-Hackers-AI-Voice-Assistant | 1,670 | N/A | 300 | ** | [->](https://github.com/justLV/onju-voice) |
+| 101 | robocasa | 1,476 | Python | - | *** | [->](https://github.com/robocasa/robocasa) |
+| 102 | multi_agent_path_planning | 1,456 | Python | - | *** | [->](https://github.com/atb033/multi_agent_path_planning) |
+| 103 | Open Robot Actuator Hardware | 1,416 | C++/CAD | 30,000 | ***** | [->](https://github.com/open-dynamic-robot-initiative/open_robot_actuator_hardware) |
+| 104 | vehicle-detection | 1,147 | Jupyter Notebook | - | *** | [->](https://github.com/tatsuyah/vehicle-detection) |
+| 105 | QuadrupedRobot | 1,124 | Python/C++ | 2,000 | *** | [->](https://github.com/mangdangroboticsclub/QuadrupedRobot) |
+| 106 | rex-gym | 1,094 | Python | 1,500 | *** | [->](https://github.com/nicrusso7/rex-gym) |
+| 107 | TinyMaix | 1,052 | C | - | ** | [->](https://github.com/sipeed/TinyMaix) |
+| 108 | Redtail | 1,045 | C++/Python | 8,000 | **** | [->](https://github.com/NVIDIA-AI-IOT/Redtail) |
+| 109 | deepdrive | 924 | Python | - | *** | [->](https://github.com/deepdrive/deepdrive) |
+| 110 | linorobot2 | 922 | Python | 3,000 | *** | [->](https://github.com/linorobot/linorobot2) |
+| 111 | awesome-CARLA | 917 | N/A | - | *** | [->](https://github.com/Amin-Tgz/awesome-CARLA) |
+| 112 | uuv_simulator | 880 | Python | - | *** | [->](https://github.com/uuvsimulator/uuv_simulator) |
+| 113 | hexapod-robot-simulator | 869 | Python | - | *** | [->](https://github.com/mithi/hexapod-robot-simulator) |
+| 114 | esp-ai | 837 | C | - | *** | [->](https://github.com/wangzongming/esp-ai) |
+| 115 | HOPEJr | 803 | Python/URDF | 22,000 | **** | [->](https://github.com/TheRobotStudio/HOPEJr) |
+| 116 | self-parking-car-evolution | 759 | TypeScript | - | *** | [->](https://github.com/trekhleb/self-parking-car-evolution) |
+| 117 | lidar-slam-detection | 753 | N/A | 300 | ** | [->](https://github.com/w111liang222/lidar-slam-detection) |
+| 118 | awesome-self-driving-car | 747 | N/A | - | *** | [->](https://github.com/daohu527/awesome-self-driving-car) |
+| 119 | site | 726 | MDX | - | *** | [->](https://github.com/Xe/site) |
+| 120 | tmrl | 716 | Python | - | *** | [->](https://github.com/trackmania-rl/tmrl) |
+| 121 | ToddlerBot | 698 | Python | 3,000 | **** | [->](https://github.com/hshi74/toddlerbot) |
+| 122 | Swarm-SLAM | 654 | Shell | - | *** | [->](https://github.com/MISTLab/Swarm-SLAM) |
+| 123 | CarlaAir | 638 | C++/Python | - | *** | [->](https://github.com/CarlaAir/Carla) |
+| 124 | rrt_exploration | 609 | Python | - | *** | [->](https://github.com/hasauino/rrt_exploration) |
+| 125 | Holodeck | 594 | Python | - | ** | [->](https://github.com/BYU-PCCL/Holodeck) |
+| 126 | EchoKit | 585 | Rust | 300 | *** | [->](https://github.com/second-state/EchoKit) |
+| 127 | VectorizedMultiAgentSimulator | 578 | Python | - | *** | [->](https://github.com/proroklab/VectorizedMultiAgentSimulator) |
+| 128 | EchoKit Server | 565 | Rust | 300 | *** | [->](https://github.com/second-state/LlamaEdge) |
+| 129 | Spirit-v1.5 | 560 | Python | - | *** | [->](https://github.com/Spirit-AI-Team/spirit-v1.5) |
+| 130 | Swarm-Formation | 547 | C++ | - | *** | [->](https://github.com/ZJU-FAST-Lab/Swarm-Formation) |
+| 131 | live-custom-ubuntu-from-scratch | 543 | Shell | - | *** | [->](https://github.com/mvallim/live-custom-ubuntu-from-scratch) |
+| 132 | primusread | 535 | TypeScript | - | *** | [->](https://github.com/crisanlucid/primusread) |
+| 133 | RAI | 500 | Python | - | *** | [->](https://github.com/RobotecAI/RAI) |
+| 134 | RobotecAI | 497 | Python | - | *** | [->](https://github.com/RobotecAI/RAI) |
+| 135 | robot-companion | 474 | N/A | 300 | ** | [->](https://github.com/makerforgetech/modular-biped) |
+| 136 | open-quadruped | 473 | N/A | - | *** | [->](https://github.com/adham-elarabawy/open-quadruped) |
+| 137 | ModelAssistant | 438 | N/A | 300 | ** | [->](https://github.com/Seeed-Studio/ModelAssistant) |
+| 138 | Swarm-LIO2 | 437 | C++ | - | *** | [->](https://github.com/hku-mars/Swarm-LIO2) |
+| 139 | BlueOS | 419 | Vue | - | *** | [->](https://github.com/bluerobotics/BlueOS) |
+| 140 | upkie | 373 | Python | 21,000 | **** | [->](https://github.com/upkie/upkie) |
+| 141 | LIV-Eye | 371 | C++ | 5,000 | *** | [->](https://github.com/hku-mars/LIV_handhold_2) |
+| 142 | ICS Forensics Tools | 371 | Python | - | *** | [->](https://github.com/microsoft/ics-forensics-tools) |
+| 143 | Car-Simulator | 363 | JavaScript | - | *** | [->](https://github.com/Jasonnor/Car-Simulator) |
+| 144 | PythonVehicleSimulator | 358 | Python | - | *** | [->](https://github.com/cybergalactic/PythonVehicleSimulator) |
+| 145 | aerostack2 | 358 | C++ | - | *** | [->](https://github.com/aerostack2/aerostack2) |
+| 146 | dotfiles config | 341 | Shell | - | * | [->](https://github.com/zszszszsz/.config) |
+| 147 | FluxVLA | 337 | Python | - | **** | [->](https://github.com/FluxVLA/FluxVLA) |
+| 148 | autonomous-rc-car | 314 | Python | - | *** | [->](https://github.com/multunus/autonomous-rc-car) |
+| 149 | GR00T-VisualSim2Real | 311 | N/A | - | ** | [->](https://github.com/NVlabs/GR00T-VisualSim2Real) |
+| 150 | UNav-Sim | 302 | C++/Python | - | *** | [->](https://github.com/open-airlab/UNav-Sim) |
+| 151 | mavsdk_drone_show | 298 | Python | - | *** | [->](https://github.com/alireza787b/mavsdk_drone_show) |
+| 152 | text-vide | 281 | TypeScript | - | *** | [->](https://github.com/Gumball12/text-vide) |
+| 153 | stonefish | 261 | C++ | - | *** | [->](https://github.com/patrykcieslak/stonefish) |
+| 154 | 4-legged-robot-model | 260 | C++ | 1,500 | *** | [->](https://github.com/miguelasd688/4-legged-robot-model) |
+| 155 | miguelasd688 | 260 | N/A | - | ** | [->](https://github.com/miguelasd688/4-legged-robot-model) |
+| 156 | mevius | 249 | N/A | - | *** | [->](https://github.com/haraduka/mevius) |
+| 157 | DOOR-SLAM | 249 | Dockerfile | - | *** | [->](https://github.com/MISTLab/DOOR-SLAM) |
+| 158 | Nextis-AIRA-3D | 242 | N/A | - | *** | [->](https://github.com/robertorobotics/Nextis-AIRA-3D) |
+| 159 | BiDexHand | 234 | Python | 8,000 | ***** | [->](https://github.com/wengmister/BiDexHand) |
+| 160 | DEVIANT | 225 | C++ | - | *** | [->](https://github.com/abhi1kumar/DEVIANT) |
+| 161 | BotBrain | 223 | N/A | - | *** | [->](https://github.com/botbotrobotics/BotBrain) |
+| 162 | IKBT | 216 | Python | - | **** | [->](https://github.com/uw-biorobotics/IKBT) |
+| 163 | lidarbot | 214 | Python | - | *** | [->](https://github.com/TheNoobInventor/lidarbot) |
+| 164 | GenDexGrasp | 199 | Python | - | **** | [->](https://github.com/tengyu-liu/GenDexGrasp) |
+| 165 | autonomous-self-balancing-vehicle | 193 | N/A | - | ** | [->](https://github.com/LuckyYoon/autonomous-self-balancing-vehicle) |
+| 166 | ADOSMissionControl | 190 | N/A | 5,000 | *** | [->](https://github.com/altnautica/ADOSMissionControl) |
+| 167 | FinsROV | 188 | N/A | 5,000 | **** | [->](https://github.com/FPJ-GAOGE/FinsROV-An-Underwater-Camera-Based-Multi-Robot-Platform) |
+| 168 | FinsROV | 188 | Python/C++ | 8,000 | **** | [->](https://github.com/FPJ-GAOGE/FinsROV-An-Underwater-Camera-Based-Multi-Robot-Platform) |
+| 169 | lightning-grasp | 187 | Python | - | *** | [->](https://github.com/zhaohengyin/lightning-grasp) |
+| 170 | Tonic | 184 | Python | - | *** | [->](https://github.com/mmajewsk/Tonic) |
+| 171 | OpenPLC | 182 | C/Python | 500 | *** | [->](https://github.com/thiagoralves/OpenPLC) |
+| 172 | FREE-TPU-V3plus-for-FPGA | 175 | N/A | - | **** | [->](https://github.com/embedeep/FREE-TPU-V3plus-for-FPGA) |
+| 173 | SSG-48 Adaptive Electric Gripper | 166 | Python/CAD | 500 | *** | [->](https://github.com/Source-Robotics/SSG-48-adaptive-electric-gripper) |
+| 174 | ardupilotblue | 159 | N/A | - | *** | [->](https://github.com/mirkix/ardupilotblue) |
+| 175 | SAEI-Swarm-and-Evolutionary-Intelligence | 152 | TeX | - | *** | [->](https://github.com/Evolutionary-Intelligence/SAEI-Swarm-and-Evolutionary-Intelligence) |
+| 176 | esp32-robot-dog-code | 149 | N/A | 2,000 | *** | [->](https://github.com/SovGVD/esp32-robot-dog-code) |
+| 177 | RoboMaster-Simulator | 149 | C++ | - | *** | [->](https://github.com/yizhengzhang1/RoboMaster-Simulator) |
+| 178 | swarms-pytorch | 147 | Python | - | *** | [->](https://github.com/kyegomez/swarms-pytorch) |
+| 179 | GrowBot | 144 | Python | - | *** | [->](https://github.com/britcruise9/GrowBot) |
+| 180 | UniDex | 142 | N/A | - | *** | [->](https://github.com/unidex-ai/UniDex) |
+| 181 | awesome-humanoid-manipulation | 141 | N/A | - | *** | [->](https://github.com/Tsunami-kun/awesome-humanoid-manipulation) |
+| 182 | wheelbot | 138 | N/A | - | *** | [->](https://github.com/AndReGeist/wheelbot) |
+| 183 | dune | 133 | C++ | - | *** | [->](https://github.com/LSTS/dune) |
+| 184 | Langostino | 131 | N/A | - | *** | [->](https://github.com/swarm-subnet/Langostino) |
+| 185 | SwarmSim | 126 | HTML | - | *** | [->](https://github.com/yxiao1996/SwarmSim) |
+| 186 | markusgrotz | 123 | N/A | - | *** | [->](https://github.com/markusgrotz/markusgrotz) |
+| 187 | OceanGym | 123 | Python | - | *** | [->](https://github.com/OceanGPT/OceanGym) |
+| 188 | TensorSwarm | 122 | Python | - | *** | [->](https://github.com/TensorSwarm/TensorSwarm) |
+| 189 | mevius2 | 121 | N/A | - | *** | [->](https://github.com/haraduka/mevius2) |
+| 190 | gym-line-follower | 120 | N/A | - | *** | [->](https://github.com/nplan/gym-line-follower) |
+| 191 | ClawPuter | 106 | C++ | 500 | ** | [->](https://github.com/bryant24hao/ClawPuter) |
+| 192 | bionic-reading-epub-converter | 101 | Python | - | *** | [->](https://github.com/dobrosketchkun/bionic-reading-epub-converter) |
+| 193 | robotics-level-4 | 100 | N/A | - | *** | [->](https://github.com/jiteshsaini/robotics-level-4) |
+| 194 | packer-ubuntu-1804 | 100 | N/A | - | *** | [->](https://github.com/geerlingguy/packer-ubuntu-1804) |
+| 195 | auvlib | 99 | C++ | - | *** | [->](https://github.com/nilsbore/auvlib) |
+| 196 | roboticsControl | 98 | N/A | - | *** | [->](https://github.com/beckerpascal/roboticsControl) |
+| 197 | OpenEyes | 97 | N/A | - | *** | [->](https://github.com/mandarwagh9/OpenEyes) |
+| 198 | suru-plus-ubuntu | 97 | Shell | - | *** | [->](https://github.com/Bonandry/suru-plus-ubuntu) |
+| 199 | MEVITA | 96 | Python | 3,000 | **** | [->](https://github.com/haraduka/mevita) |
+| 200 | OpenMANIPULATOR | 94 | C++ | 5,000 | *** | [->](https://github.com/ROBOTIS-GIT/turtlebot3_manipulation) |
+| 201 | AgentDeck | 92 | N/A | - | ** | [->](https://github.com/puritysb/AgentDeck) |
+| 202 | hexy | 92 | Python | - | *** | [->](https://github.com/mithi/hexy) |
+| 203 | TNY-360 | 91 | C++ | 1,500 | **** | [->](https://github.com/TNY-Robotics/TNY-360) |
+| 204 | Arduino Bot | 90 | C++ | 500 | ** | [->](https://github.com/AntoBrandi/Arduino-Bot) |
+| 205 | PX4_Swarm_Controller | 90 | C++ | - | *** | [->](https://github.com/artastier/PX4_Swarm_Controller) |
+| 206 | arXiv | 90 | N/A | - | *** | [->](https://github.com/CoffeeKumazaki/arXiv) |
+| 207 | TuSimple-lane-classes | 90 | Python | - | *** | [->](https://github.com/fabvio/TuSimple-lane-classes) |
+| 208 | Cascade-LD | 90 | Jupyter Notebook | - | *** | [->](https://github.com/fabvio/Cascade-LD) |
+| 209 | HW-BlueRov2-Sonar-based-SLAM | 89 | Python | - | *** | [->](https://github.com/Tim-HW/HW-BlueRov2-Sonar-based-SLAM) |
+| 210 | Drone-Swarm-RL-airsim-sb3 | 88 | Python | - | *** | [->](https://github.com/Lauqz/Drone-Swarm-RL-airsim-sb3) |
+| 211 | neurons | 85 | N/A | - | *** | [->](https://github.com/Aryia-Behroziuan/neurons) |
+| 212 | Awesome Quadruped with Manipulator | 82 | C++ | 3,000 | **** | [->](https://github.com/KolaKivy/Awesome-Quadruped-with-Manipulator) |
+| 213 | adaptive_swarm | 81 | Jupyter Notebook | - | *** | [->](https://github.com/rlnav/adaptive_swarm) |
+| 214 | orca3 | 80 | C++ | - | *** | [->](https://github.com/clydemcqueen/orca3) |
+| 215 | ReinforcementLearning-QLearning-based-self-tuned-PID-controller-for-AUV-MatLab | 79 | MATLAB | - | *** | [->](https://github.com/AlinaBaber/ReinforcementLearning-QLearning-based-self-tuned-PID-controller-for-AUV-MatLab) |
+| 216 | lrauv | 79 | C++ | - | *** | [->](https://github.com/osrf/lrauv) |
+| 217 | sra-board-hardware-design | 79 | HTML | - | *** | [->](https://github.com/SRA-VJTI/sra-board-hardware-design) |
+| 218 | docker-ubuntu1804-ansible | 78 | Dockerfile | - | *** | [->](https://github.com/geerlingguy/docker-ubuntu1804-ansible) |
+| 219 | ros1_exoskeleton_maxon_simulation | 77 | C++ | - | *** | [->](https://github.com/hhz0328/ros1_exoskeleton_maxon_simulation) |
+| 220 | DukeHumanoidv1 | 69 | N/A | - | *** | [->](https://github.com/generalroboticslab/DukeHumanoidv1) |
+| 221 | TankSync | 67 | C++ | 1,500 | *** | [->](https://github.com/Techposts/TankSync) |
+| 222 | cbf_quadrotor | 66 | Python | - | *** | [->](https://github.com/hocherie/cbf_quadrotor) |
+| 223 | E-Ink Weather Calendar | 62 | YAML/C++ | 400 | ** | [->](https://github.com/thehijacker/ESPHome-E-Ink-Weather-Calendar-Wall-Monitor) |
+| 224 | Efficient FPGA CNN Accelerator | 60 | Verilog | 3,000 | ***** | [->](https://github.com/Mattjesc/Efficient-FPGA-CNN-Accelerator) |
+| 225 | TipTap | 60 | C++ | 800 | *** | [->](https://github.com/DarrenLevine/TipTap) |
+| 226 | kayra | 58 | N/A | - | **** | [->](https://github.com/assadollahi/kayra) |
+| 227 | underwater-datasets | 58 | JavaScript | - | *** | [->](https://github.com/ntnu-arl/underwater-datasets) |
+| 228 | mil | 58 | Python | - | *** | [->](https://github.com/uf-mil/mil) |
+| 229 | AirSim RL | 57 | Python | - | *** | [->](https://github.com/hoangtranngoc/AirSim-RL) |
+| 230 | hexapod-kinematics-library | 57 | JavaScript | - | *** | [->](https://github.com/mithi/hexapod-kinematics-library) |
+| 231 | Multi_Agent_Path_Finding | 56 | Python | - | *** | [->](https://github.com/Shaswat2001/Multi_Agent_Path_Finding) |
+| 232 | Acromonk | 55 | Python | 2,000 | **** | [->](https://github.com/dfki-ric-underactuated-lab/acromonk) |
+| 233 | MBARI-vehicles-sim-ros2 | 54 | Python | - | *** | [->](https://github.com/AlePuglisi/MBARI-vehicles-sim-ros2) |
+| 234 | DexHand Mechanical | 53 | Markdown/CAD | 3,000 | **** | [->](https://github.com/iotdesignshop/dexhand-mechanical-build) |
+| 235 | gym-marl-reconnaissance | 51 | Python | - | *** | [->](https://github.com/JacopoPan/gym-marl-reconnaissance) |
+| 236 | AMSwarm | 50 | C | - | *** | [->](https://github.com/learnsyslab/AMSwarm) |
+| 237 | monkeys-with-typewriters | 48 | N/A | 300 | ** | [->](https://github.com/QwertyMcQwertz/monkeys-with-typewriters) |
+| 238 | Unity3D_Robotics_Overview | 48 | N/A | - | ** | [->](https://github.com/rparak/Unity3D_Robotics_Overview) |
+| 239 | ros-claw | 47 | N/A | - | ** | [->](https://github.com/PlaiPin/rosclaw) |
+| 240 | Strix Interceptor | 47 | C | 800 | *** | [->](https://github.com/Lexicon121/Strix-Interceptor) |
+| 241 | bluerobotics.github.io | 47 | JavaScript | - | *** | [->](https://github.com/bluerobotics/bluerobotics.github.io) |
+| 242 | AUVForwardDynamics | 47 | Matlab | - | *** | [->](https://github.com/kshitijgoel007/AUVForwardDynamics) |
+| 243 | dataset-ssvep-exoskeleton | 47 | N/A | - | *** | [->](https://github.com/sylvchev/dataset-ssvep-exoskeleton) |
+| 244 | RCAutopilot | 46 | Python | - | *** | [->](https://github.com/UvinduW/RCAutopilot) |
+| 245 | HW | 45 | N/A | - | **** | [->](https://github.com/LCAI-TIHU/HW) |
+| 246 | warehouse-robot | 45 | Python | - | *** | [->](https://github.com/abel-gr/warehouse-robot) |
+| 247 | Multi-Robot_Exploration | 45 | Python | - | *** | [->](https://github.com/perseus784/Multi-Robot_Exploration) |
+| 248 | Awesome-Autonomous-Driving-Security-Resources | 45 | N/A | - | *** | [->](https://github.com/Allenpandas/Awesome-Autonomous-Driving-Security-Resources) |
+| 249 | Mega PLC | 44 | C++ | 500 | *** | [->](https://github.com/TheDIYGuy999/Mega_PLC) |
+| 250 | RAPID-Hand | 44 | Python | 5,000 | ***** | [->](https://github.com/SYSU-RoboticsLab/RAPID-Hand) |
+| 251 | stoqs | 44 | Jupyter Notebook | 1,000 | *** | [->](https://github.com/stoqs/stoqs) |
+| 252 | multi_robot_sim | 43 | CMake | - | *** | [->](https://github.com/tanukitoshika/multi_robot_sim) |
+| 253 | OpenClaw Robotics | 41 | Python | - | *** | [->](https://github.com/LooperRobotics/OpenClaw-Robotics) |
+| 254 | DIY ROS Robot | 41 | Python/C++ | 2,000 | *** | [->](https://github.com/dblanding/diy-ROS-robot) |
+| 255 | auv_lqr | 41 | MATLAB | - | *** | [->](https://github.com/adityaravichander/auv_lqr) |
+| 256 | riptide_setup | 41 | Python | - | *** | [->](https://github.com/osu-uwrt/riptide_setup) |
+| 257 | multi-robot-system-fault-tolerant-formation-control | 41 | MATLAB | - | *** | [->](https://github.com/giusenso/multi-robot-system-fault-tolerant-formation-control) |
+| 258 | TelloSwarm | 39 | Python | - | *** | [->](https://github.com/SASLabStevens/TelloSwarm) |
+| 259 | voronoi_hsi | 39 | Python | - | *** | [->](https://github.com/lucascoelhof/voronoi_hsi) |
+| 260 | dexvt-lite | 38 | C++ | - | *** | [->](https://github.com/onlyuser/dexvt-lite) |
+| 261 | vortex-auv-simulator | 36 | C++ | - | *** | [->](https://github.com/vortexntnu/vortex-auv-simulator) |
+| 262 | ubuntu-desktop | 36 | Shell | - | *** | [->](https://github.com/Fullaxx/ubuntu-desktop) |
+| 263 | lauv_gazebo | 35 | Shell | - | *** | [->](https://github.com/uuvsimulator/lauv_gazebo) |
+| 264 | FIRA-Autonomous-Cars-Simulator | 35 | C++ | - | *** | [->](https://github.com/Fira-Autonomous-Cars/FIRA-Autonomous-Cars-Simulator) |
+| 265 | E-Ink 4C Dashboard | 34 | C++ | 500 | ** | [->](https://github.com/xangin/eink-4c-dashboard) |
+| 266 | Paper-PathFollowingSurvey | 34 | Python | - | *** | [->](https://github.com/dsor-isr/Paper-PathFollowingSurvey) |
+| 267 | YuLan-SwarmIntell | 34 | Python | - | *** | [->](https://github.com/RUC-GSAI/YuLan-SwarmIntell) |
+| 268 | MOTUS | 32 | N/A | 2,000 | *** | [->](https://github.com/ELISAVADevelopmentLab/MOTUS) |
+| 269 | axopy | 32 | Python | 400 | *** | [->](https://github.com/axopy/axopy) |
+| 270 | XiaoClaw | 31 | C++ | 200 | *** | [->](https://github.com/beancookie/xiaoclaw) |
+| 271 | VectorBlox-SDK | 28 | N/A | - | **** | [->](https://github.com/Microchip-Vectorblox/VectorBlox-SDK) |
+| 272 | neurosymbolic-tinyml | 26 | N/A | 300 | ** | [->](https://github.com/nesl/neurosymbolic-tinyml) |
+| 273 | supreme-octo-roboticeyx | 26 | N/A | - | ** | [->](https://github.com/Saturnremabtc64/supreme-octo-roboticeyx) |
+| 274 | esp32-WeatherPortal-EPD | 26 | N/A | 300 | ** | [->](https://github.com/maurokenny/esp32-WeatherPortal-EPD) |
+| 275 | SW | 23 | N/A | - | **** | [->](https://github.com/LCAI-TIHU/SW) |
+| 276 | SmartWatch_Toolchain | 23 | N/A | 300 | ** | [->](https://github.com/underverk/SmartWatch_Toolchain) |
+| 277 | Raspberry-Pi-GSM-GPS-WIFI | 22 | N/A | - | ** | [->](https://github.com/Bidur-Khanal/Raspberry-Pi-GSM-GPS-WIFI) |
+| 278 | AccANN | 22 | N/A | - | **** | [->](https://github.com/Charmve/AccANN) |
+| 279 | Borinot | 22 | Python | 5,000 | **** | [->](https://github.com/hidro-iri/Borinot) |
+| 280 | AI-LEGO-HEAD | 21 | N/A | - | ** | [->](https://github.com/CreativeMindstorms/AI-LEGO-HEAD) |
+| 281 | easyplc-school | 21 | N/A | - | ** | [->](https://github.com/orelmi/easyplc-school) |
+| 282 | raspberry-ai-voice-assistant | 19 | N/A | 300 | ** | [->](https://github.com/oshell/raspberry-ai-voice-assistant) |
+| 283 | jetson-gs_usb-kernel-builder | 19 | N/A | 300 | ** | [->](https://github.com/lucianovk/jetson-gs_usb-kernel-builder) |
+| 284 | BimanGrasp-Generation | 19 | N/A | - | ** | [->](https://github.com/Tsunami-kun/BimanGrasp-Generation) |
+| 285 | Hexapod | 15 | N/A | 300 | ** | [->](https://github.com/erdnaxe/kraby) |
+| 286 | kraby | 15 | N/A | - | ** | [->](https://github.com/erdnaxe/kraby) |
+| 287 | synapedge | 12 | N/A | 300 | ** | [->](https://github.com/asad-shafi/synapedge) |
+| 288 | Muto-RS | 11 | N/A | - | ** | [->](https://github.com/YahboomTechnology/Muto-RS) |
+| 289 | Esp32-Speech2Speech-Project | 11 | N/A | 300 | ** | [->](https://github.com/tokylabs/Esp32-Speech2Speech-Project) |
+| 290 | Arduino-Human-Brain-Interface | 11 | N/A | 300 | ** | [->](https://github.com/MKme/Arduino-Human-Brain-Interface) |
+| 291 | E-ink Display Zephyr | 11 | N/A | 200 | ** | [->](https://github.com/jcontrerasf/E-ink-display-Zephyr) |
+| 292 | esp32-ai-pocket-assistant | 10 | N/A | 300 | ** | [->](https://github.com/Rau7han/esp32-ai-pocket-assistant) |
+| 293 | ESP32-S3-AI-Smart-Speaker | 9 | N/A | 300 | ** | [->](https://github.com/MarcoFre/ESP32-S3-AI-Smart-Speaker) |
+| 294 | RUKA-v2 | 9 | N/A | - | ** | [->](https://github.com/ruka-hand-v2/RUKA-v2) |
+| 295 | lora-door-monitor-home-assistant | 8 | N/A | 300 | ** | [->](https://github.com/goutah/lora-door-monitor-home-assistant) |
+| 296 | Industrial-Automation-Field-Guide | 8 | N/A | - | ** | [->](https://github.com/DrEagleTalon/Industrial-Automation-Field-Guide) |
+| 297 | UG56-Lab-PSU | 8 | N/A | 300 | ** | [->](https://github.com/universalgeek56/UG56-Lab-PSU) |
+| 298 | HFUT-Open-Source-Surgical-Robot-Research-Kit | 7 | N/A | - | ** | [->](https://github.com/HFUT-MedRobot-Embodied-AI-Lab/HFUT-Open-Source-Surgical-Robot-Research-Kit) |
+| 299 | XRoboToolkit | 6 | N/A | - | ** | [->](https://github.com/Pico-Developer/XRoboToolkit) |
+| 300 | getting-started-with-jetson-orin-nano | 6 | N/A | - | ** | [->](https://github.com/Choaib-ELMADI/getting-started-with-jetson-orin-nano) |
+| 301 | EinkDashboard_reTerminale1001 | 5 | N/A | 300 | ** | [->](https://github.com/myembeddedstuff/EinkDashboard_reTerminale1001) |
+| 302 | HexapodRobot | 5 | N/A | 2,000 | ** | [->](https://github.com/fontoura/HexapodRobot) |
+| 303 | Awesome-Vision-Language-Robotics-with-Code-and-Datasets | 4 | N/A | - | ** | [->](https://github.com/DaojiePENG/Awesome-Vision-Language-Robotics-with-Code-and-Datasets) |
+| 304 | mewron | 4 | N/A | 1,500 | ** | [->](https://github.com/mewron/mewron) |
+| 305 | XeniaClock | 4 | N/A | 300 | ** | [->](https://github.com/embeddedboys/XeniaClock) |
+| 306 | xiaozhi-esphome | 3 | C++ | 300 | ** | [->](https://github.com/rilucca/xiaozhi-spotpear-diabetes) |
+| 307 | Mjrovai | 3 | N/A | - | *** | [->](https://github.com/Mjrovai/ei-expert-projects) |
+| 308 | airsim_self_driving_car | 3 | N/A | 5,000 | *** | [->](https://github.com/Pascal-Iv/airsim_self_driving_car) |
+| 309 | RiscV-AI-agent | 3 | N/A | - | ** | [->](https://github.com/oniondas/RiscV-AI-agent) |
+| 310 | FPGA-based-RISC-V-Processor-for-wearable-AI-Applications | 3 | N/A | 300 | ** | [->](https://github.com/afrozsahar04/FPGA-based-RISC-V-Processor-for-wearable-AI-Applications) |
+| 311 | passive-node | 3 | N/A | 300 | ** | [->](https://github.com/mudpi/passive-node) |
+| 312 | Mano-Zeus | 2 | N/A | - | ** | [->](https://github.com/RoboTech-URJC/Mano-Zeus) |
+| 313 | open-source-robotic-arms | 2 | N/A | 1,500 | ** | [->](https://github.com/zaid-mahboob/open-source-robotic-arms) |
+| 314 | ai-habitat | 2 | N/A | - | ** | [->](https://github.com/api-evangelist/ai-habitat) |
+| 315 | sightlineai | 2 | N/A | 300 | ** | [->](https://github.com/rudra496/sightlineai) |
+| 316 | Machine-Vision-on-Microcontrollers | 2 | N/A | 300 | ** | [->](https://github.com/valnity98/Machine-Vision-on-Microcontrollers) |
+| 317 | HVACGraphicsClassifier | 2 | N/A | 300 | ** | [->](https://github.com/bbartling/HVACGraphicsClassifier) |
+| 318 | SynapticOS | 2 | N/A | 300 | ** | [->](https://github.com/Dimitrios-Kafetzis/SynapticOS) |
+| 319 | Edubot_with_ROS-seminar | 2 | N/A | - | ** | [->](https://github.com/halqupati/Edubot_with_ROS-seminar) |
+| 320 | AI-Optimized-RISC-V-Processor- | 2 | N/A | - | ** | [->](https://github.com/charitha-jain/AI-Optimized-RISC-V-Processor-) |
+| 321 | RISC-V--5-Stage-Pipelined-Processor | 2 | N/A | - | **** | [->](https://github.com/Gouthamjs15/RISC-V--5-Stage-Pipelined-Processor) |
+| 322 | dongsheng123132 | 1 | N/A | 2,000 | **** | [->](https://github.com/TheLostLeo/ros-project) |
+| 323 | .github | 1 | N/A | - | ** | [->](https://github.com/Open-Space-Federation/.github) |
+| 324 | moveo-firmware | 1 | N/A | 2,000 | *** | [->](https://github.com/eballetbo/moveo-firmware) |
+| 325 | AURA-Smart-AI-Glasses | 1 | N/A | 300 | ** | [->](https://github.com/sahil-gaikwad94/AURA-Smart-AI-Glasses) |
+| 326 | vso-core | 1 | N/A | 5,000 | *** | [->](https://github.com/vectraswarm/vso-core) |
+| 327 | AI-powered-Medical-e-commerce-and-medical-diagnosis-website | 1 | N/A | 300 | ** | [->](https://github.com/Vaishnavi-Mohankumar/AI-powered-Medical-e-commerce-and-medical-diagnosis-website) |
+| 328 | agent-glasses-memory-core | 1 | N/A | 300 | ** | [->](https://github.com/veritiana/agent-glasses-memory-core) |
+| 329 | PiCat | 1 | N/A | 2,000 | *** | [->](https://github.com/amrmasoud01/PiCat) |
+| 330 | agentic-swarms | 1 | N/A | 5,000 | *** | [->](https://github.com/fabeha-raheel/agentic-swarms) |
+| 331 | edgeAI-performance | 1 | N/A | 300 | ** | [->](https://github.com/Piorkos/edgeAI-performance) |
+| 332 | Embedded-AI-System-CNN-Acceleration-on-GPU-and-Microcontroller-Platforms | 1 | N/A | 300 | ** | [->](https://github.com/maliktolbert05-wq/Embedded-AI-System-CNN-Acceleration-on-GPU-and-Microcontroller-Platforms) |
+| 333 | Klipper3d | - | N/A | 300 | ** | [->](https://github.com/Klipper3d/klipper) |
+| 334 | tasmota | - | N/A | 300 | ** | [->](https://github.com/arendst/Tasmota) |
+| 335 | esphome | - | N/A | 300 | ** | [->](https://github.com/esphome/esphome) |
+| 336 | awesome-open-source-robots | - | N/A | 2,000 | *** | [->](https://github.com/ryan-utopia/awesome-open-source-robots) |
+| 337 | open-wearables | - | N/A | 300 | ** | [->](https://github.com/jonathanprocter/open-wearables) |
+| 338 | Sunflower-Sentinel-AI | - | N/A | 5,000 | *** | [->](https://github.com/neil-andrew-olson/Sunflower-Sentinel-AI) |
+| 339 | robot-agent | - | N/A | - | ** | [->](https://github.com/onandup/robot-agent) |
+| 340 | Humanoid_Robotics_Book | - | N/A | 2,000 | **** | [->](https://github.com/Ammarasaif/Humanoid_Robotics_Book) |
+| 341 | smart-reader-auge | - | N/A | - | ** | [->](https://github.com/ai-inside/smart-reader-auge) |
+| 342 | edge-ai-tinyml-microcontroller | - | N/A | 300 | ** | [->](https://github.com/rheslar1/edge-ai-tinyml-microcontroller) |
+| 343 | edge-ai-tinyml | - | N/A | 300 | ** | [->](https://github.com/SiliconWit/edge-ai-tinyml) |
+| 344 | tinyml-rs | - | N/A | 300 | ** | [->](https://github.com/CanReader/tinyml-rs) |
+| 345 | AirOS_legacy | - | N/A | 300 | ** | [->](https://github.com/AirdroperUA/AirOS_legacy) |
+| 346 | robotunnel-agent | - | N/A | - | ** | [->](https://github.com/get-robotunnel/robotunnel-agent) |
+| 347 | ESP32-SmartScale-WebApp | - | N/A | 300 | ** | [->](https://github.com/BasicallyPolaris/ESP32-SmartScale-WebApp) |
+| 348 | reelbot-mower | - | N/A | 300 | ** | [->](https://github.com/diplomcowboy-bay/reelbot-mower) |
+| 349 | NavPath | - | N/A | 300 | ** | [->](https://github.com/10xdev4u-alt/NavPath) |
+| 350 | quiqso | - | N/A | - | ** | [->](https://github.com/sandorex/quiqso) |
+| 351 | berkeley humanoid lite | - | N/A | 5,000 | **** | [->](https://github.com/hybridrobotics/berkeley-humanoid-lite) |
+| 352 | AGILOped | - | N/A | 8,000 | **** | [->](https://github.com/gficht/AGILOped_model) |
+| 353 | LearningHumanoidWalking | - | N/A | - | **** | [->](https://github.com/rohanpsingh/LearningHumanoidWalking) |
+| 354 | ESP Assistant | - | N/A | 250 | ** | [->](https://github.com/AshaiRey/ESP-Assistant) |
+| 355 | AR4 | - | N/A | 2,500 | **** | [->](https://github.com/Annin-Robotics/ar4_ros_driver) |
+| 356 | DeepSeek-Coder | - | N/A | - | ** | [->](https://github.com/deepseek-ai/DeepSeek-Coder) |
+| 357 | GOKO M6 | - | - | 13,300 | ***** | [->](https://www.kickstarter.com/projects/goko/goko-m6-robotic-mower-for-large-lawns-and-tough-terrain) |
+| 358 | Rokibot G7 AWD: Ultimate Robotic Mower for Large Lawns | - | - | 12,600 | ***** | [->](https://www.kickstarter.com/projects/313444523/rokibot-ultimate-awd-robotic-mower-for-challenging-lawns) |
+| 359 | Rokibot G7 AWD | - | - | 12,600 | ***** | [->](https://www.kickstarter.com/projects/313444523/rokibot-ultimate-awd-robotic-mower-for-challenging-lawns) |
+| 360 | Yarbo M | - | - | 28,000 | ***** | [->](https://www.kickstarter.com/projects/yarbo/yarbo-m-the-universal-modular-yard-robot-1-core-4-jobs) |
