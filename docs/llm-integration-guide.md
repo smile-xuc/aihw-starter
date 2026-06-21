@@ -54,133 +54,162 @@ reply = chat_with_llm("你好，请介绍一下你自己")
 print(reply)
 ```
 
-#### 裸协议接入：Fun-ASR + Qwen3 + CosyVoice（阿里云 | Aliyun）
+#### 通义多模态交互开发套件（阿里云百炼 | Aliyun）
 
-> 如果你不想用 xiaozhi 这类封装好的框架，而是想自己用 **ASR + LLM + TTS** 三段式管线搭一个语音助手，阿里云百炼（DashScope）是最完整的「裸协议」方案：组件齐全、OpenAI 兼容、有免费额度、国内延迟低。适合 AI 眼镜、桌面机器人、学习机、智能音箱等需要「说话→理解→回答」的硬件。
+> ⚠️ 注意：**这不是「分别调三个 API」**。阿里云把它打包成了一个完整产品——**通义多模态交互开发套件**，你只需要**一条 WebSocket**，就能跑通「听 → 想 → 说」的全双工实时对话，ASR/LLM/TTS 在云端串成一条管线，设备端不再分别调用、不再自己拼中间结果。适合 AI 眼镜、学习机、桌面机器人、智能音箱等需要自然对话的硬件。
 >
-> 官方文档：
-> - [通义多模态交互开发套件总览](https://help.aliyun.com/zh/model-studio/multimodal-products-overview)
-> - [千问云开放平台（OpenAI 兼容）](https://platform.qianwenai.com/docs/developer-guides/getting-started/introduction)
+> 这就是 xiaozhi 背后那类「语音助手后端」的官方版本，而且**模型和算力都在阿里云**，你的硬件只要会录音、放音、连 Wi-Fi 就行。
+>
+> 官方文档树（**这是一整棵文档，不要只看首页**）：
+> - 🏠 [产品总览](https://help.aliyun.com/zh/model-studio/multimodal-products-overview) — 适合什么硬件、能做什么
+> - 📚 [文档目录](https://help.aliyun.com/zh/model-studio/multimodal-products/) — 含产品计费 / 使用指南 / SDK 安装 / API 参考 / 最佳实践 / FAQ
+> - ⚡ [实时多模态交互协议（WebSocket）](https://help.aliyun.com/zh/model-studio/multimodal-interaction-protocol) — **核心接入方式**，延迟最低、资源占用最少
+> - 📡 [客户端事件](https://help.aliyun.com/zh/model-studio/client-events) — `session.update` / `input_audio_buffer.append` 等事件定义
+> - 🤖 [Realtime 模型（qwen-omni-turbo-realtime）](https://help.aliyun.com/zh/model-studio/realtime)
+> - 📱 [Android SDK](https://help.aliyun.com/zh/model-studio/multimodal-sdk-android) / [Linux C++ SDK](https://help.aliyun.com/zh/model-studio/multimodal-sdk-linux) / [服务端 Python SDK](https://help.aliyun.com/zh/model-studio/multimodal-sdk-python)
+> - 💰 [产品计费](https://help.aliyun.com/zh/model-studio/product-billing)
 
-**三段式语音管线 | Three-Stage Voice Pipeline**
+**一条 WebSocket，跑通「听→想→说」**
 
 ```
-麦克风 Mic ──▶ ① Fun-ASR（语音转文字）──▶ ② Qwen3（理解 + 生成）──▶ ③ CosyVoice（文字转语音）──▶ 扬声器 Speaker
-                    paraformer-v2             qwen-plus                  cosyvoice-v3-flash
+        ┌──────────────────────── 阿里云百炼（一条 WebSocket 全双工）────────────────────────┐
+        │                                                                              │
+ESP32 ──┼──▶ 上行 PCM 音频流（16kHz/单声道/16bit）──▶ Fun-ASR 语音识别（paraformer 系列）     │
+设备    │                                              │                                       │
+        │                                              ▼                                       │
+        │                                         Qwen 大模型（qwen-plus / qwen3）理解+生成  │
+        │                                              │                                       │
+        │                                              ▼                                       │
+   ◀──┼── 下行 PCM 音频流（流式 TTS）◀── CosyVoice 语音合成（cosyvoice-v3-flash）            │
+        └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-| 环节 Stage | 推荐模型 Model | 说明 |
-|-----------|---------------|------|
-| ① 语音识别 ASR | `paraformer-v2`（Fun-ASR 系列） | 中英混说、流式可选、低延迟 |
-| ② 大模型对话 LLM | `qwen-plus`（Qwen3 系列） | OpenAI 兼容、支持 function calling |
-| ③ 语音合成 TTS | `cosyvoice-v3-flash` | 流式合成、首包延迟低、音色可克隆 |
+> 关键点：**识别、思考、合成在云端同一条连接里并发完成**，边听边想边说，全双工、可打断——不是「录完一段→转文字→请求LLM→合成」的串行三步。
 
-**步骤 1：获取 API Key**
+**核心模型与组件 | Models & Components**
 
-注册阿里云百炼 → [bailian.console.aliyun.com](https://bailian.console.aliyun.com) → 创建 API Key（`sk-xxx`）。三个组件共用同一个 Key，无需分别申请。
+| 角色 | 模型 / 组件 | 说明 |
+|------|------------|------|
+| 实时对话主模型 | `qwen-omni-turbo-realtime` | 一条 WebSocket 完成听/看/想/说，OpenAI Realtime 风格事件流 |
+| ASR（语音识别） | Fun-ASR（paraformer 系列） | 中英混说、流式、VAD 可配 |
+| LLM（对话大脑） | `qwen-plus`（Qwen3 系列） | 理解 + 生成，支持 function calling / MCP / Agent |
+| TTS（语音合成） | `cosyvoice-v3-flash` | 流式合成、首包低延迟、音色可克隆 |
+| 视觉（可选） | Qwen-VL / 万相 | 「看懂」能力，眼镜/机器人可传图像帧 |
 
-**步骤 2：Python 网关（跑在 PC/树莓派/Jetson 上）**
+**接入协议 | Protocol**
 
-ESP32 算力和 TLS 栈有限，推荐用一个 Python 网关把三段串起来，硬件只负责录音和放音：
+套件首选 **WebSocket** 接入（低延迟、全双工、资源占用少），也可用官方 SDK 封装。事件流是 OpenAI Realtime API 风格：
+
+| 方向 | 事件 Event | 作用 |
+|------|-----------|------|
+| 客户端→服务端 | `session.update` | 建连后先发，配置音频格式 / 音色 / 模式 / 指令 |
+| 客户端→服务端 | `input_audio_buffer.append` | 持续上传 PCM 音频帧（**16kHz / 单声道 / 16bit / little-endian**） |
+| 客户端→服务端 | `input_audio_buffer.commit` | 提交一句话结束，触发模型响应 |
+| 服务端→客户端 | `session.updated` | 确认配置生效 |
+| 服务端→客户端 | `response.audio.delta` | 流式返回合成语音 PCM（边生成边播） |
+| 服务端→客户端 | `response.text.delta` | 流式返回文字（可选，用于显示字幕） |
+
+**步骤 1：在百炼控制台创建应用 + 拿 API Key**
+
+1. 注册阿里云 → 进入 [百炼控制台 bailian.console.aliyun.com](https://bailian.console.aliyun.com)
+2. 创建 API Key（`sk-xxx`），**整套件共用一个 Key**
+3. 在「多模态交互开发套件」里新建一个应用，选好 ASR / LLM / TTS 组件和音色，拿到 **App ID**
+4. 默认限流 10 QPS（每分钟 600 通新会话），调试足够
+
+**步骤 2：Python 直连（PC / 树莓派 / Jetson 网关）**
+
+用官方 `dashscope` SDK 最省事；也可以直接裸 WebSocket。下面是裸 WebSocket 的最小骨架（适合嵌入到自己的网关里）：
 
 ```python
-# voice_gateway.py — 裸协议三段式语音网关
-# 依赖：pip install openai pyaudio dashscope sounddevice numpy
-import io, json, base64, pyaudio
-from openai import OpenAI
-import dashscope
-from dashscope.audio.asr import Recognition, RecognitionCallback, RecognitionResult
-from dashscope.audio.tts_v2 import SpeechSynthesizer, ResultCallback, AudioFormat
+# ali_realtime_gateway.py — 通义多模态交互套件 · WebSocket 裸协议最小骨架
+# 依赖：pip install websockets pyaudio
+# 文档：https://help.aliyun.com/zh/model-studio/multimodal-interaction-protocol
+import asyncio, json, websockets, pyaudio
 
 API_KEY = "sk-your-aliyun-key"
+# endpoint 以百炼控制台/文档为准，下面是典型形态：
+WSS_URL = "wss://dashscope.aliyuncs.com/api-ws/v1/inference/"  # 携带 model / app_id 等参数
 
-# ② LLM —— 走 OpenAI 兼容协议（千问云 / DashScope 均可）
-llm = OpenAI(
-    api_key=API_KEY,
-    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",  # OpenAI 兼容入口
-)
+async def run():
+    headers = {"Authorization": f"bearer {API_KEY}"}
+    async with websockets.connect(WSS_URL, additional_headers=headers) as ws:
+        # ① 建连后先配会话：音频格式、音色、系统指令 | Configure session after connect
+        await ws.send(json.dumps({
+            "action": "start",                 # 或 session.update（视协议版本）
+            "model": "qwen-omni-turbo-realtime",
+            "input": {
+                "audio_format": "pcm",          # 上行：16k/单声道/16bit PCM
+                "sample_rate": 16000,
+            },
+            "parameters": {
+                "voice": "longxiaochun",        # CosyVoice 音色
+                "output_audio_format": "pcm",   # 下行：流式 PCM
+                "instructions": "你是一个简洁的语音助手，回答控制在两句以内。",
+            }
+        }))
 
-def ask_llm(user_text: str, history: list) -> str:
-    history.append({"role": "user", "content": user_text})
-    resp = llm.chat.completions.create(
-        model="qwen-plus",          # Qwen3 系列，也可换 qwen-turbo / qwen-max
-        messages=history,
-        stream=False,
-    )
-    reply = resp.choices[0].message.content
-    history.append({"role": "assistant", "content": reply})
-    return reply
+        # ② 上行：持续把麦克风 PCM 推上去 | Upstream: stream mic PCM
+        async def mic_stream():
+            pa = pyaudio.PyAudio()
+            stream = pa.open(format=pyaudio.paInt16, channels=1, rate=16000,
+                             input=True, frames_per_buffer=3200)
+            while True:
+                await ws.send(stream.read(3200))   # 二进制 PCM 帧
+                await asyncio.sleep(0.1)           # ~100ms 一帧
 
-# ① ASR —— Fun-ASR 流式识别
-def recognize_mic(on_text):
-    class Cb(RecognitionCallback):
-        def on_complete(self): pass
-        def on_error(self, r): print("ASR error", r)
-        def on_event(self, r: RecognitionResult):
-            if r.is_sentence_end:          # 一句话说完
-                on_text(r.get_sentence())  # 回调把文字喂给 LLM
-    rec = Recognition(
-        model="paraformer-v2",
-        format="pcm", sample_rate=16000,
-        callback=Cb(),
-    )
-    rec.start()
-    # 这里把麦克风 PCM 流持续喂给 rec.send_audio_frame(buf)
-    # ...（用 pyaudio/sounddevice 抓 16k 单声道）
+        # ③ 下行：收 response.audio.delta，喂给扬声器 | Downstream: play TTS PCM
+        async def speaker_loop():
+            pa = pyaudio.PyAudio()
+            out = pa.open(format=pyaudio.paInt16, channels=1, rate=24000, output=True)
+            async for msg in ws:
+                if isinstance(msg, bytes):         # 二进制 = 合成好的 PCM
+                    out.write(msg)
+                else:                              # 文本事件（字幕/状态）
+                    evt = json.loads(msg)
+                    print("event:", evt.get("event") or evt.get("type"))
 
-# ③ TTS —— CosyVoice 流式合成
-def speak(text: str, on_pcm):
-    class Cb(ResultCallback):
-        def on_open(self): pass
-        def on_complete(self): pass
-        def on_error(self, e): print("TTS error", e)
-        def on_data(self, data: bytes): on_pcm(data)  # PCM 喧给扬声器
-    synth = SpeechSynthesizer(
-        model="cosyvoice-v3-flash",
-        voice="longxiaochun",            # 内置音色，也可上传样本克隆
-        format=AudioFormat.PCM_22050HZ_MONO_16BIT,
-        callback=Cb(),
-    )
-    synth.streaming_call(text)
-    synth.streaming_complete()
+        await asyncio.gather(mic_stream(), speaker_loop())
 
-# 主循环 | Main loop
-history = [{"role": "system", "content": "你是一个简洁的语音助手，回答控制在两句以内。"}]
-def on_user_text(t):
-    print("用户:", t)
-    reply = ask_llm(t, history)
-    print("助手:", reply)
-    speak(reply, on_pcm=lambda pcm: play_audio(pcm))  # 喇叭放音
-recognize_mic(on_user_text)
+asyncio.run(run())
 ```
+
+> 如果不想自己处理事件流，直接用官方 SDK：
+> - Python：[multimodal-sdk-python](https://help.aliyun.com/zh/model-studio/multimodal-sdk-python)
+> - Android：[multimodal-sdk-android](https://help.aliyun.com/zh/model-studio/multimodal-sdk-android)（`MultiModalDialog SDK`，音视频端到端实时交互）
+> - Linux C++：[multimodal-sdk-linux](https://help.aliyun.com/zh/model-studio/multimodal-sdk-linux)
 
 **步骤 3：ESP32 只做「录音 + 放音」**
 
-ESP32 通过 Wi-Fi 把 16kHz PCM 流推给上面的 Python 网关（WebSocket/UDP/HTTP 均可），网关回传合成好的 PCM。这样硬件逻辑极简：
+ESP32-S3 算力和 TLS 栈有限，**不建议直接连阿里云 WebSocket**。推荐架构：ESP32 走局域网把 PCM 推给上面那个 Python 网关，网关负责鉴权和事件流，回传 PCM 给 ESP32 播放。硬件逻辑极简：
 
 ```cpp
-// ESP32 端伪代码（录音 → 推流 → 播放回传 PCM）
+// ESP32 端：只负责 I2S 录音 + 播放，PCM 透传给局域网网关
 // 完整示例参考 getting-started/01-esp32-voice-assistant.md
-WiFiClient client;
-const char* gateway = "192.168.1.10:8080";  // Python 网关地址
+const char* gateway = "ws://192.168.1.10:8080";   // 你的 Python 网关
 
 void loop() {
-    auto pcm = i2s_read_16k_mono();          // I2S MEMS 麦克风
-    websocket_send(pcm);                      // 推给网关做 ASR+LLM+TTS
-    // 网关回传的 PCM 自动进 I2S 扬声器播放
+    // 上行：I2S MEMS 麦克风读 16k/单声道 PCM，通过 WebSocket 推给网关
+    size_t n = i2s_read_16k_mono(pcm_buf, 3200);
+    ws_client.sendBinary(pcm_buf, n);
+    // 下行：网关回传的 PCM 自动写进 I2S 扬声器
 }
 ```
 
-**成本估算 | Cost Estimate**（阿里云百炼零售价）
+**为什么用套件而不是自己拼三段 API？**
 
-| 环节 | 单价 | 一次对话（约 10s 语音） |
-|------|------|----------------------|
-| Fun-ASR paraformer-v2 | ¥0.4 / 小时音频 | ≈ ¥0.001 |
-| Qwen-plus | ¥0.8 / 百万 input token | ≈ ¥0.001 |
-| CosyVoice-v3-flash | ¥0.2 / 万字符 | ≈ ¥0.002 |
-| **合计** | | **≈ ¥0.004 / 次对话** |
+| 对比项 | 自己拼 ASR+LLM+TTS | 通义多模态交互套件 |
+|--------|--------------------|--------------------|
+| 网络往返 | 3 次（识别→对话→合成） | **1 条 WebSocket 全双工** |
+| 全双工 / 可打断 | ❌ 难（要自己做状态机） | ✅ 原生支持 |
+| 首字延迟 | 高（串行） | 低（管线并发） |
+| 多模态（看+听） | 要自己再接视觉 | 一个模型同时听+看 |
+| 鉴权 / 计费 | 3 套 | 1 套 |
 
-> 也可以用 [千问云 platform.qianwenai.com](https://platform.qianwenai.com) 的 OpenAI 兼容接口替换 LLM 段，调用方式完全一致，只需改 `base_url` 和 `model`。
+**计费 | Pricing**
+
+套件按 **Token（文本 + 音频 + 图像统一折算）** 计费，支持后付费（按量）和预付费（设备订阅，按台/年）。语音对话类负载一般用「设备订阅」更划算。详见 [产品计费](https://help.aliyun.com/zh/model-studio/product-billing)，精确单价以 [百炼控制台](https://bailian.console.aliyun.com) 显示为准。
+
+> 💡 **另一个选择**：如果只要纯文本 LLM（不要语音），直接用 [千问云 platform.qianwenai.com](https://platform.qianwenai.com) 的 OpenAI 兼容接口即可——`base_url` 换成千问云、`model` 用 `qwen-plus`，调用方式与上面 DeepSeek 示例完全一致。
 
 #### ESP32 + xiaozhi（C++ | Arduino）
 
