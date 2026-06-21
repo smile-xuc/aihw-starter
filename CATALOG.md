@@ -6,39 +6,39 @@
 
 ---
 
-## AI 交互 | AI Interaction（213）
+## AI 交互 | AI Interaction（237）
 
 [查看详情 →](catalog/ai-interact.md)
 
-## AI 视觉 | AI Vision（64）
+## AI 视觉 | AI Vision（93）
 
 [查看详情 →](catalog/ai-vision.md)
 
-## 可穿戴 | Wearable（54）
+## 可穿戴 | Wearable（66）
 
 [查看详情 →](catalog/wearable.md)
 
-## 儿童硬件 | Kids Hardware（2）
+## 儿童硬件 | Kids Hardware（4）
 
 [查看详情 →](catalog/kids.md)
 
-## 智能家居 | Smart Home（10）
+## 智能家居 | Smart Home（11）
 
 [查看详情 →](catalog/smart-home.md)
 
-## 机器人 | Robotics（81）
+## 机器人 | Robotics（124）
 
 [查看详情 →](catalog/robot.md)
 
-## 创客硬件 | Maker Hardware（47）
+## 创客硬件 | Maker Hardware（59）
 
 [查看详情 →](catalog/maker.md)
 
-## 其他消费电子 | Other Consumer Electronics（77）
+## 其他消费电子 | Other Consumer Electronics（65）
 
 [查看详情 →](catalog/other.md)
 
-## 关联 AI 软件 | Related AI Software（360）
+## 关联 AI 软件 | Related AI Software（249）
 
 [查看详情 →](catalog/ai-software.md)
 
