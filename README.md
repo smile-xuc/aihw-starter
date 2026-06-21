@@ -78,17 +78,6 @@
 
 ---
 
-## 🔗 关联项目 | Related Projects
-
-- [xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) — ESP32 AI 语音助手（小智 AI）
-- [SO-ARM100](https://github.com/TheRobotStudio/SO-ARM100) — 低成本开源机械臂
-- [LeRobot](https://github.com/huggingface/lerobot) — HuggingFace 机器人学习平台
-- [Open_Duck_Mini](https://github.com/apirrone/Open_Duck_Mini) — BDX 风格双足机器人
-- [Ollama](https://ollama.ai) — 本地大模型部署
-- [Home Assistant](https://www.home-assistant.io/) — 开源智能家居平台
-
----
-
 ## 🤝 贡献 | Contributing
 
 欢迎提交 Issue 和 PR！无论是修正错误、补充教程、还是新增赛道，都非常欢迎。
