@@ -39,11 +39,6 @@
 | 6 | 🎙️ 语音助手 Voice Assistant — [xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) | ~¥72 / $10 | ⭐⭐ | [→](getting-started/01-esp32-voice-assistant.md) |
 | 7 | 🕶️ AI 智能眼镜 Smart Glasses — [OpenGlass](https://github.com/BasedHardware/OpenGlass) | ~¥101 / $14 | ⭐⭐⭐ | [→](getting-started/04-ai-smart-glasses.md) |
 | 8 | 🖥️ 本地 LLM 部署 Local LLM — [Ollama](https://ollama.ai) | ¥0 | ⭐⭐ | [→](getting-started/06-ollama-local-llm.md) |
-
-### 🛠️ 工具与平台 | Tools & Platforms
-
-| # | 项目 Project | 成本 Cost | 难度 | 教程 |
-|---|-------------|----------|------|------|
 | 9 | 🏠 智能家居 AI Smart Home — [Home Assistant](https://www.home-assistant.io/) + ESP32 | ~¥465 / $65 | ⭐⭐ | [→](getting-started/07-home-assistant-ai.md) |
 | 10 | 🖨️ AI 3D 打印 3D Printing — [Klipper](https://github.com/Klipper3d/klipper) + Obico | ~¥300 / $42 | ⭐⭐ | [→](getting-started/09-3d-printer-ai.md) |
 
