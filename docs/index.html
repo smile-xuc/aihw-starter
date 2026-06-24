@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>aihw-starter · AI 硬件商业化最佳实践案例库</title>
+<meta name="description" content="AI 硬件行业热门品类的商业化最佳实践案例库 — 客观中立，从生意可行性、架构、算账三个角度沉淀。">
+<style>
+  :root {
+    --bg: #0b0d12;
+    --bg-2: #131722;
+    --fg: #e8ecf3;
+    --fg-2: #98a2b3;
+    --accent: #4f8cff;
+    --accent-2: #7aa9ff;
+    --border: #2a3142;
+    --tag-ok: #1f7a3a;
+    --tag-wait: #7a5a1f;
+    --tag-future: #56607a;
+    --max-w: 1080px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, "PingFang SC", "Helvetica Neue", "Segoe UI", "Microsoft YaHei", sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent-2); text-decoration: none; }
+  a:hover { color: var(--accent); text-decoration: underline; }
+  .wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+  /* Hero */
+  .hero {
+    padding: 72px 0 56px;
+    border-bottom: 1px solid var(--border);
+    background: radial-gradient(1200px 600px at 50% -100px, rgba(79,140,255,0.18), transparent 60%);
+  }
+  .hero h1 {
+    margin: 0 0 12px;
+    font-size: 40px;
+    letter-spacing: -0.5px;
+  }
+  .hero .tagline {
+    color: var(--fg-2);
+    font-size: 18px;
+    margin: 0 0 24px;
+    max-width: 720px;
+  }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font-size: 14px;
+  }
+  .btn-primary { background: var(--accent); border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-2); text-decoration: none; }
+  .btn:hover { text-decoration: none; }
+
+  /* Sections */
+  section { padding: 56px 0; border-bottom: 1px solid var(--border); }
+  section h2 { font-size: 26px; margin: 0 0 8px; letter-spacing: -0.3px; }
+  section .sub { color: var(--fg-2); margin: 0 0 28px; }
+
+  /* Stance card */
+  .stance {
+    padding: 20px 24px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    color: var(--fg-2);
+    font-size: 15px;
+  }
+  .stance strong { color: var(--fg); }
+
+  /* Categories grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 22px;
+    transition: border-color 0.15s;
+  }
+  .card:hover { border-color: var(--accent); }
+  .card h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card h3 a { color: var(--fg); }
+  .card h3 a:hover { color: var(--accent); text-decoration: none; }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1.5;
+    flex-shrink: 0;
+  }
+  .tag-ok { background: var(--tag-ok); }
+  .tag-wait { background: var(--tag-wait); }
+  .tag-future { background: var(--tag-future); }
+  .card p { color: var(--fg-2); font-size: 14px; margin: 0 0 12px; }
+  .card .links { font-size: 13px; }
+  .card .links a { margin-right: 12px; }
+
+  /* Sub-section grid (2 cols) */
+  .grid-2 { grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); }
+
+  /* How-to */
+  .howto {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .howto .step {
+    padding: 18px 20px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .howto .step .label {
+    font-size: 12px;
+    color: var(--accent-2);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+  }
+  .howto .step h4 { margin: 0 0 8px; font-size: 16px; }
+  .howto .step p { color: var(--fg-2); font-size: 13px; margin: 0; }
+  .howto .step a { font-size: 13px; }
+
+  /* Footer */
+  footer {
+    padding: 36px 0 56px;
+    color: var(--fg-2);
+    font-size: 13px;
+    text-align: center;
+  }
+  footer a { color: var(--fg-2); }
+  footer .links { margin-top: 12px; }
+  footer .links a { margin: 0 8px; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 48px 0 36px; }
+    .hero h1 { font-size: 30px; }
+    .hero .tagline { font-size: 16px; }
+    section { padding: 40px 0; }
+    section h2 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>aihw-starter</h1>
+    <p class="tagline">AI 硬件行业热门品类的<strong>商业化最佳实践案例库</strong> — 不是 API 镜像，不是开源导航，而是从「这门生意能不能做、怎么搭、怎么算账」出发的工程化案例集。</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="../solutions/01-toys-companion/">浏览品类</a>
+      <a class="btn" href="https://github.com/smile-xuc/aihw-starter">GitHub 仓库</a>
+      <a class="btn" href="../awesome/open-source/">开源生态</a>
+      <a class="btn" href="../faq.md">通用 FAQ</a>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>站位声明</h2>
+    <p class="sub">为什么是「客观中立 · 案例库」？</p>
+    <div class="stance">
+      <p>本仓库 <strong>客观中立</strong>，不隶属于任何单一模型厂商或方案商。</p>
+      <p><strong>首发版本</strong>：以 <strong>千问大模型</strong> 作为示例方案进行端到端演示。</p>
+      <p><strong>后续会补充</strong>：豆包 / Kimi / 智谱 / DeepSeek / OpenAI 等主流方案；优秀方案商的端到端能力背书；端侧 / 混合方案。<a href="../CONTRIBUTING.md">欢迎贡献</a>。</p>
+      <p>目标：让 AI 硬件方案商、品牌商、ODM、开发者 <strong>少走弯路、看清边界、算清账目</strong>。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>已收录品类</h2>
+    <p class="sub">6 个热门品类。完整版 = README + 商业 + 方案 + 算账 + 案例 + FAQ + demo；占位版结构齐备，内容持续补充。</p>
+    <div class="grid">
+
+      <div class="card">
+        <h3><a href="../solutions/01-toys-companion/">01 · AI 玩具 / 陪伴 / 儿童伴学</a> <span class="tag tag-ok">完整版</span></h3>
+        <p>自定义对话角色 + 声音克隆，IP 与儿童陪伴双线推进；订阅制目前 <strong>未跑通</strong>，多数处于第一年免费送阶段。</p>
+        <div class="links">
+          <a href="../solutions/01-toys-companion/01-business.md">商业</a>
+          <a href="../solutions/01-toys-companion/03-cost.md">算账</a>
+          <a href="../solutions/01-toys-companion/05-faq.md">FAQ</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><a href="../solutions/02-desktop-pet/">02 · 桌宠 / 毛绒</a> <span class="tag tag-wait">占位版</span></h3>
+        <p>动作 / 情绪标签 + 情感 TTS，三路同步驱动表情、动作、语音；当前以「AI 卖点 + 硬件溢价」模式为主。</p>
+        <div class="links">
+          <a href="../solutions/02-desktop-pet/01-business.md">商业</a>
+          <a href="../solutions/02-desktop-pet/03-cost.md">算账</a>
+          <a href="../solutions/02-desktop-pet/05-faq.md">FAQ</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><a href="../solutions/03-recorder/">03 · 录音卡 / 会议盒子</a> <span class="tag tag-wait">占位版</span></h3>
+        <p>ASR + 纪要 Agent，2–5 分钟出结构化纪要；订阅化在专业用户群中已有公开样板。</p>
+        <div class="links">
+          <a href="../solutions/03-recorder/01-business.md">商业</a>
+          <a href="../solutions/03-recorder/03-cost.md">算账</a>
+          <a href="../solutions/03-recorder/05-faq.md">FAQ</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><a href="../solutions/04-ai-earphone/">04 · AI 耳机</a> <span class="tag tag-wait">占位版</span></h3>
+        <p>实时翻译 / 对话 / 听记多用途；白牌 AI 化已成卖点，<strong>真实激活率约 50%</strong>，订阅化极度受限。</p>
+        <div class="links">
+          <a href="../solutions/04-ai-earphone/01-business.md">商业</a>
+          <a href="../solutions/04-ai-earphone/03-cost.md">算账</a>
+          <a href="../solutions/04-ai-earphone/05-faq.md">FAQ</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><a href="../solutions/05-ipc/">05 · IPC / AI 视觉</a> <span class="tag tag-ok">完整版</span></h3>
+        <p>视频以文搜图 + 摘要订阅；唯一 <strong>已知跑通</strong> 的 AI 硬件订阅样板间，转化路径清晰。</p>
+        <div class="links">
+          <a href="../solutions/05-ipc/01-business.md">商业</a>
+          <a href="../solutions/05-ipc/03-cost.md">算账</a>
+          <a href="../solutions/05-ipc/05-faq.md">FAQ</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><a href="../solutions/06-ai-glasses/">06 · AI 眼镜</a> <span class="tag tag-wait">占位版</span></h3>
+        <p>多模态交互套件，端到端打包；Ray-Ban Meta 后整个赛道被加速点燃，国内品牌密集入场。</p>
+        <div class="links">
+          <a href="../solutions/06-ai-glasses/01-business.md">商业</a>
+          <a href="../solutions/06-ai-glasses/03-cost.md">算账</a>
+          <a href="../solutions/06-ai-glasses/05-faq.md">FAQ</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>怎么用这个仓库</h2>
+    <p class="sub">不同角色的最快入口</p>
+    <div class="howto">
+      <div class="step">
+        <div class="label">方案商</div>
+        <h4>判断 → 搭建 → 算账</h4>
+        <p>先读品类 <code>01-business.md</code> 判断要不要做，再读 <code>02-solution.md</code> 看架构，最后读 <code>03-cost.md</code> 算账。</p>
+      </div>
+      <div class="step">
+        <div class="label">品牌商</div>
+        <h4>看全景 → 选方向</h4>
+        <p>先看本页全品类总览，锁定方向后进入对应 solution 的 <code>01-business.md</code>。</p>
+      </div>
+      <div class="step">
+        <div class="label">开发者</div>
+        <h4>跑 demo → 改造</h4>
+        <p>进入 <code>solutions/0X-xxx/demo/</code> 跑通示例 → 改造成自家产品。</p>
+      </div>
+      <div class="step">
+        <div class="label">研究者</div>
+        <h4>看生态全集</h4>
+        <p>开源项目去 <a href="../awesome/open-source/">awesome/open-source/</a>，在售产品去 <a href="../awesome/commercial-products/">awesome/commercial-products/</a>。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>生态资源索引</h2>
+    <p class="sub">solutions/04-cases.md（精选样板） + awesome/（全集索引）的层级关系</p>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3><a href="../awesome/open-source/">awesome / open-source</a></h3>
+        <p>开源项目索引（含 GitHub 项目库），覆盖 ESP-IDF / Arduino / RPi / RTOS 多种栈，按 6 大品类分类。</p>
+        <div class="links">
+          <a href="../awesome/open-source/by-category/01-toys-companion.md">玩具陪伴</a>
+          <a href="../awesome/open-source/by-category/05-ipc.md">IPC</a>
+          <a href="../awesome/open-source/by-category/06-ai-glasses.md">AI 眼镜</a>
+        </div>
+      </div>
+      <div class="card">
+        <h3><a href="../awesome/commercial-products/">awesome / commercial-products</a></h3>
+        <p>在售商业化产品案例索引，含官网 / 形态 / 定价 / 目标市场 / AI 能力 / 公开数据 / 商业模式等结构化字段。</p>
+        <div class="links">
+          <a href="../awesome/commercial-products/by-category/01-toys-companion.md">玩具陪伴</a>
+          <a href="../awesome/commercial-products/by-category/05-ipc.md">IPC</a>
+          <a href="../awesome/commercial-products/by-category/06-ai-glasses.md">AI 眼镜</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>路线图与未来方向</h2>
+    <p class="sub">尚未晋升至 solutions/ 的早期方向</p>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3><a href="../future/lobster.md">具身智能 / 桌面服务机器人</a> <span class="tag tag-future">future</span></h3>
+        <p>「AI 龙虾」类多自由度机械臂、四足、人形等本体形态。VLA 端云协同、数据成本、商业化路径仍在早期。</p>
+      </div>
+      <div class="card">
+        <h3><a href="../future/watch.md">智能手表 / 健康可穿戴</a> <span class="tag tag-future">future</span></h3>
+        <p>市场量级亿级以上，但 AI 深度与订阅商业化仍处早期。Whoop / Oura 提供海外健康订阅样板。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>本仓库内容采用 <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> 协议；代码采用 MIT 协议。</div>
+    <div class="links">
+      <a href="https://github.com/smile-xuc/aihw-starter">GitHub</a> ·
+      <a href="../CONTRIBUTING.md">贡献指南</a> ·
+      <a href="../faq.md">通用 FAQ</a> ·
+      <a href="../future/">路线图</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

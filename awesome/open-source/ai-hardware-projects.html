@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hardware Projects - GitHub Open Source Collection</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d1117; color: #c9d1d9; line-height: 1.6; }
+.header { background: linear-gradient(135deg, #161b22 0%, #0d1117 100%); border-bottom: 1px solid #30363d; padding: 40px 20px; text-align: center; }
+.header h1 { font-size: 2.4em; color: #f0f6fc; margin-bottom: 8px; }
+.header p { color: #8b949e; font-size: 1.1em; max-width: 700px; margin: 0 auto; }
+.stats-bar { display: flex; justify-content: center; gap: 32px; margin-top: 20px; flex-wrap: wrap; }
+.stat { text-align: center; }
+.stat-num { font-size: 1.8em; font-weight: bold; color: #58a6ff; }
+.stat-label { font-size: 0.85em; color: #8b949e; }
+.container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+/* Search & Filter */
+.controls { position: sticky; top: 0; z-index: 100; background: #0d1117; padding: 16px 0; border-bottom: 1px solid #30363d; margin-bottom: 24px; }
+.search-box { width: 100%; padding: 12px 16px; background: #161b22; border: 1px solid #30363d; border-radius: 8px; color: #c9d1d9; font-size: 1em; outline: none; transition: border-color 0.2s; }
+.search-box:focus { border-color: #58a6ff; }
+.filter-tags { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.tag { padding: 6px 14px; border-radius: 20px; font-size: 0.85em; cursor: pointer; border: 1px solid #30363d; background: #161b22; color: #8b949e; transition: all 0.2s; user-select: none; }
+.tag:hover { border-color: #58a6ff; color: #58a6ff; }
+.tag.active { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+
+/* Category */
+.category { margin-bottom: 40px; }
+.category-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; cursor: pointer; padding: 12px 16px; background: #161b22; border-radius: 8px; border: 1px solid #30363d; }
+.category-header:hover { border-color: #58a6ff; }
+.category-icon { font-size: 1.5em; }
+.category-title { font-size: 1.3em; color: #f0f6fc; font-weight: 600; }
+.category-count { background: #30363d; color: #8b949e; padding: 2px 10px; border-radius: 12px; font-size: 0.8em; margin-left: auto; }
+.category-toggle { color: #8b949e; font-size: 1.2em; transition: transform 0.2s; }
+.category-toggle.collapsed { transform: rotate(-90deg); }
+
+/* Project Cards */
+.projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
+.project-card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; transition: all 0.2s; position: relative; }
+.project-card:hover { border-color: #58a6ff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(88,166,255,0.1); }
+.project-name { font-size: 1.1em; font-weight: 600; color: #58a6ff; text-decoration: none; display: block; margin-bottom: 8px; }
+.project-name:hover { text-decoration: underline; }
+.project-desc { color: #8b949e; font-size: 0.9em; margin-bottom: 12px; line-height: 1.5; }
+.project-meta { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+.meta-item { display: flex; align-items: center; gap: 4px; font-size: 0.8em; color: #8b949e; }
+.meta-item .star { color: #e3b341; }
+.platform-badge { background: #1c2128; border: 1px solid #30363d; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; color: #7ee787; }
+.feature-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.feature-tag { background: #1c2128; border: 1px solid #30363d; padding: 2px 8px; border-radius: 4px; font-size: 0.72em; color: #d2a8ff; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .projects-grid { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.8em; }
+  .stats-bar { gap: 16px; }
+}
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>AI Hardware Projects</h1>
+  <p>GitHub 开源 AI 硬件项目全景收录 — 覆盖语音、视觉、可穿戴、机器人、开发板、IoT、无人机等 15 个品类，150+ 项目</p>
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num" id="total-count">0</div><div class="stat-label">项目总数</div></div>
+    <div class="stat"><div class="stat-num" id="category-count">0</div><div class="stat-label">品类</div></div>
+    <div class="stat"><div class="stat-num" id="top-stars">0</div><div class="stat-label">最高 Stars</div></div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="controls">
+    <input type="text" class="search-box" placeholder="搜索项目名称、描述、平台、特性..." id="searchInput">
+    <div class="filter-tags" id="filterTags"></div>
+  </div>
+  <div id="content"></div>
+</div>
+
+<script>
+const PROJECTS = [
+  // ==================== 语音 AI 硬件 ====================
+  { name: "xiaozhi-esp32 (小智AI)", url: "https://github.com/78/xiaozhi-esp32", stars: 27400, desc: "基于 MCP 协议的 AI 语音聊天机器人，中国最火的开源 AI 硬件项目", platform: "ESP32-S3 (ESP-IDF)", features: ["语音唤醒","ASR","TTS","多LLM集成","MCP协议"], category: "语音 AI" },
+  { name: "xiaozhi-esp32-server", url: "https://github.com/xinnan-tech/xiaozhi-esp32-server", stars: 9800, desc: "小智 ESP32 的后端服务，支持快速部署设备管控服务器", platform: "Python Server + ESP32", features: ["ASR","TTS","LLM编排","设备管理","声纹识别"], category: "语音 AI" },
+  { name: "sherpa-onnx (新一代Kaldi)", url: "https://github.com/k2-fsa/sherpa-onnx", stars: 13000, desc: "实时语音识别推理框架，支持嵌入式/移动端/桌面全平台部署", platform: "RPi/ESP32/手机/PC", features: ["多语言ASR","TTS","说话人识别","嵌入式部署"], category: "语音 AI" },
+  { name: "Omi (原 Friend)", url: "https://github.com/BasedHardware/omi", stars: 12800, desc: "全球领先的开源 AI 可穿戴设备，录音转写+AI记忆", platform: "nRF52840 BLE", features: ["实时转写","AI记忆","语音录制","LLM人格"], category: "语音 AI" },
+  { name: "mi-gpt (小爱接入ChatGPT)", url: "https://github.com/idootop/mi-gpt", stars: 12400, desc: "将小爱音箱接入 ChatGPT 和豆包，改造成专属语音助手", platform: "小爱音箱", features: ["ChatGPT对话","角色扮演","流式响应","记忆","智能家居"], category: "语音 AI" },
+  { name: "xiaomusic", url: "https://github.com/hanxi/xiaomusic", stars: 10000, desc: "使用小爱音箱播放音乐，支持 yt-dlp 下载", platform: "小爱音箱", features: ["AI音乐播放","语音控制","Docker部署"], category: "语音 AI" },
+  { name: "wukong-robot (悟空机器人)", url: "https://github.com/wzpan/wukong-robot", stars: 7100, desc: "中文语音对话机器人/智能音箱项目，支持 ChatGPT", platform: "Raspberry Pi", features: ["语音唤醒","ASR","TTS","ChatGPT","技能插件"], category: "语音 AI" },
+  { name: "xiaogpt", url: "https://github.com/yihong0618/xiaogpt", stars: 6900, desc: "让小爱音箱接入 ChatGPT 等多种 LLM", platform: "小爱音箱", features: ["多模型","TTS选项","Docker部署"], category: "语音 AI" },
+  { name: "Open Interpreter 01", url: "https://github.com/openinterpreter/01", stars: 5100, desc: "排名第一的开源语音接口，Rabbit R1 的开源替代品", platform: "ESP32-S3 / RPi / Desktop", features: ["语音控制","代码执行","LLM Agent","多模态"], category: "语音 AI" },
+  { name: "Willow", url: "https://github.com/HeyWillow/willow", stars: 3050, desc: "开源本地自托管的 Amazon Echo/Google Home 替代品", platform: "ESP32-S3 (ESP-BOX)", features: ["本地ASR/TTS","Home Assistant","隐私优先","自托管"], category: "语音 AI" },
+  { name: "Open-XiaoAI", url: "https://github.com/idootop/open-xiaoai", stars: 2500, desc: "让小爱音箱「听见你的声音」，解锁无限可能", platform: "小爱音箱Pro", features: ["自定义唤醒词","AI Agent集成","多模态模型"], category: "语音 AI" },
+  { name: "volcengine/ai-app-lab", url: "https://github.com/volcengine/ai-app-lab", stars: 2300, desc: "火山引擎 AI 应用 Demo，含嵌入式硬件会话式 AI", platform: "ESP32-S3-Korvo-2", features: ["RTC实时语音","火山ASR","TTS","豆包LLM"], category: "语音 AI" },
+  { name: "esp-adf (Espressif)", url: "https://github.com/espressif/esp-adf", stars: 2300, desc: "乐鑫官方音频开发框架", platform: "ESP32 / ESP32-S3", features: ["音频流水线","语音唤醒","ASR","蓝牙音频"], category: "语音 AI" },
+  { name: "ElatoAI", url: "https://github.com/akdeb/elatoai", stars: 1800, desc: "基于 Arduino ESP32 的实时语音 AI，支持 100+ 模型", platform: "ESP32-S3 (Arduino)", features: ["OpenAI Realtime API","WebSocket","100+语音模型"], category: "语音 AI" },
+  { name: "openai-realtime-embedded", url: "https://github.com/openai/openai-realtime-embedded", stars: 1600, desc: "OpenAI 官方 Realtime API 嵌入式指南", platform: "ESP32-S3 (ESP-IDF)", features: ["OpenAI Realtime","WebRTC","低延迟语音AI"], category: "语音 AI" },
+  { name: "ESP-Claw", url: "https://github.com/espressif/esp-claw", stars: 1500, desc: "乐鑫官方 IoT AI Agent 框架", platform: "ESP32-S3/P4/C5", features: ["MCP协议","Function Calling","自主任务执行"], category: "语音 AI" },
+  { name: "MiGPT-Next", url: "https://github.com/idootop/migpt-next", stars: 1400, desc: "MiGPT 升级版，支持自定义消息回复，完全接管小爱音箱", platform: "小爱音箱", features: ["定制AI回复","刷机接管硬件"], category: "语音 AI" },
+  { name: "esp-sr (Espressif)", url: "https://github.com/espressif/esp-sr", stars: 1400, desc: "乐鑫语音识别框架 - 端侧唤醒词、命令词识别", platform: "ESP32-S3", features: ["端侧唤醒词","语音命令","AFE前端"], category: "语音 AI" },
+  { name: "Home LLM", url: "https://github.com/acon96/home-llm", stars: 1400, desc: "用本地 LLM 控制 Home Assistant 智能家居设备", platform: "RPi / 本地计算", features: ["本地LLM","智能家居控制","语音/文字控制"], category: "语音 AI" },
+  { name: "esp-box (Espressif)", url: "https://github.com/espressif/esp-box", stars: 1300, desc: "乐鑫 AIoT 开发平台，含离线语音助手能力", platform: "ESP32-S3-BOX", features: ["离线语音助手","连续识别","GUI","传感器融合"], category: "语音 AI" },
+  { name: "esp-dl (Espressif)", url: "https://github.com/espressif/esp-dl", stars: 1000, desc: "乐鑫深度学习推理库，轻量高效", platform: "ESP32-S3/P4", features: ["端侧神经网络推理","模型量化","双核调度"], category: "语音 AI" },
+  { name: "esp-ai", url: "https://github.com/wangzongming/esp-ai", stars: 837, desc: "硬件接入 AI 最简单、最低成本的方案", platform: "ESP32-S3/C3", features: ["完整AI对话","STT/TTS","LLM集成","插件系统"], category: "语音 AI" },
+  { name: "esp-skainet (Espressif)", url: "https://github.com/espressif/esp-skainet", stars: 877, desc: "乐鑫智能语音助手开发框架", platform: "ESP32-S3", features: ["语音唤醒","语音命令","音频前端处理"], category: "语音 AI" },
+  { name: "Pi-Card", url: "https://github.com/nkasmanoff/pi-card", stars: 812, desc: "完全在树莓派上本地运行的 AI 语音助手", platform: "Raspberry Pi 4/5", features: ["本地LLM(Ollama)","本地Whisper","完全离线"], category: "语音 AI" },
+  { name: "xiaozhi-esphome", url: "https://github.com/RealDeco/xiaozhi-esphome", stars: 764, desc: "小智 AI + ESPHome + Home Assistant 集成方案", platform: "ESP32-S3 (ESPHome)", features: ["多LLM语音助手","HA集成","ESPHome生态"], category: "语音 AI" },
+  { name: "HA Voice PE (ESPHome)", url: "https://github.com/esphome/home-assistant-voice-pe", stars: 694, desc: "Home Assistant Voice 预览版硬件的 ESPHome 源码", platform: "ESP32-S3 + XMOS", features: ["语音助手流水线","STT","TTS","唤醒词"], category: "语音 AI" },
+  { name: "GPT Home", url: "https://github.com/judahpaul16/gpt-home", stars: 642, desc: "树莓派上的 ChatGPT 家庭助手", platform: "Raspberry Pi 4", features: ["LLM语音助手","Spotify控制","智能家居"], category: "语音 AI" },
+  { name: "FoloToy Server", url: "https://github.com/FoloToy/folotoy-server-self-hosting", stars: 589, desc: "AI 大模型玩具自托管服务器，支持多种 LLM/STT/TTS", platform: "ESP32 (FoloToy Core)", features: ["ChatGPT/多模型对话","语音交互","角色扮演"], category: "语音 AI" },
+  { name: "ESP32_AI_LLM", url: "https://github.com/Explorerlowi/ESP32_AI_LLM", stars: 525, desc: "语音助手支持 15+ 种大模型 (GPT/Claude/DeepSeek等)", platform: "ESP32/ESP32-S3", features: ["多模型LLM","STT","TTS","语音交互"], category: "语音 AI" },
+  { name: "volcengine/rtc-aigc-embedded-demo", url: "https://github.com/volcengine/rtc-aigc-embedded-demo", stars: 337, desc: "火山引擎嵌入式 RTC AIGC Demo，实时语音 AI", platform: "ESP32-S3-Korvo-2", features: ["实时语音对话","RTC流","豆包LLM"], category: "语音 AI" },
+  { name: "OpenVoiceOS (OVOS)", url: "https://github.com/OpenVoiceOS/ovos-core", stars: 277, desc: "社区驱动的开源语音 AI 平台，Mycroft 继任者", platform: "Raspberry Pi / x86", features: ["唤醒词","STT","TTS","技能框架","隐私优先"], category: "语音 AI" },
+  { name: "OpenEmbodied (机智云)", url: "https://github.com/gizwits/OpenEmbodied", stars: 203, desc: "可量产的 AI 硬件方案 (机智云+Coze)", platform: "ESP32-S3", features: ["Coze LLM集成","语音交互","量产级"], category: "语音 AI" },
+  { name: "Satellite1-ESPHome", url: "https://github.com/FutureProofHomes/Satellite1-ESPHome", stars: 161, desc: "开源 AI 语音助手 & 多传感器卫星", platform: "ESP32-S3 (ESPHome)", features: ["私有AI语音","唤醒词","本地处理"], category: "语音 AI" },
+  { name: "WireClaw", url: "https://github.com/M64GitHub/WireClaw", stars: 140, desc: "$5 ESP32 上的自主 AI Agent，持久记忆", platform: "ESP32-C6/S3/C3", features: ["持久记忆","NTP同步","Telegram","自主行动"], category: "语音 AI" },
+  { name: "esp32-realtime-voice-assistant", url: "https://github.com/FabrikappAgency/esp32-realtime-voice-assistant", stars: 115, desc: "基于 HuggingFace 免费 AI 的实时语音助手", platform: "ESP32-S3", features: ["HuggingFace推理","实时语音处理"], category: "语音 AI" },
+  { name: "DAZI-AI (大智AI)", url: "https://github.com/zenhall/DAZI-AI", stars: 107, desc: "ESP32 无服务器 AI 语音助手，纯 Arduino 开发", platform: "ESP32 (Arduino)", features: ["无服务器","直连LLM API","多模态"], category: "语音 AI" },
+  { name: "Momy-Desk-Robot", url: "https://github.com/momysnow/Momy-Desk-Robot", stars: 103, desc: "智能桌面机器人，语音交互 + AI 表情", platform: "ESP32-S3", features: ["语音交互","AI对话","面部表情"], category: "语音 AI" },
+
+  // ==================== 视觉 AI 硬件 ====================
+  { name: "openpilot (comma.ai)", url: "https://github.com/commaai/openpilot", stars: 61400, desc: "开源高级驾驶辅助系统 (ADAS)，自动驾驶操作系统", platform: "comma 3X (Snapdragon)", features: ["车道检测","前车检测","驾驶员监控","端到端神经网络"], category: "视觉 AI" },
+  { name: "Frigate NVR", url: "https://github.com/blakeblackshear/frigate", stars: 33800, desc: "完整的本地 NVR，实时 AI 物体检测", platform: "x86/ARM + Coral TPU", features: ["实时目标检测","人/车/动物追踪","事件录制"], category: "视觉 AI" },
+  { name: "OpenALPR", url: "https://github.com/openalpr/openalpr", stars: 11400, desc: "自动车牌识别库", platform: "Linux/Windows + 摄像头", features: ["车牌检测","OCR识别","多地区格式"], category: "视觉 AI" },
+  { name: "jetson-inference", url: "https://github.com/dusty-nv/jetson-inference", stars: 8900, desc: "\"Hello AI World\" - NVIDIA Jetson 深度学习推理部署指南", platform: "Jetson Nano/Xavier/Orin", features: ["图像分类","目标检测","语义分割","姿态估计"], category: "视觉 AI" },
+  { name: "AI-on-the-edge-device", url: "https://github.com/jomjol/AI-on-the-edge-device", stars: 8500, desc: "用 ESP32 摄像头+端侧神经网络数字化模拟仪表", platform: "ESP32-CAM / ESP32-S3", features: ["CNN数字识别","TFLite端侧推理","仪表读数"], category: "视觉 AI" },
+  { name: "ZoneMinder", url: "https://github.com/ZoneMinder/zoneminder", stars: 5900, desc: "成熟的开源 CCTV 视频监控系统", platform: "x86 Linux", features: ["运动检测","区域报警","事件分析"], category: "视觉 AI" },
+  { name: "Scrypted", url: "https://github.com/koush/scrypted", stars: 5700, desc: "高性能家庭视频集成平台，含 NVR 插件", platform: "Any + Coral/OpenVINO", features: ["目标检测","HomeKit/Alexa桥接","智能家居"], category: "视觉 AI" },
+  { name: "jetson-containers", url: "https://github.com/dusty-nv/jetson-containers", stars: 4700, desc: "为 NVIDIA Jetson 优化的容器化 AI/ML 包", platform: "Jetson Orin/Xavier/Nano", features: ["LLMs","VLMs","视觉Transformer","实时相机AI"], category: "视觉 AI" },
+  { name: "motionEye", url: "https://github.com/motioneye-project/motioneye", stars: 4600, desc: "motion 守护进程的 Web 前端，将单板机变成监控系统", platform: "Raspberry Pi / Linux SBC", features: ["运动检测","定时录制","Webhooks"], category: "视觉 AI" },
+  { name: "Viseron", url: "https://github.com/roflcoopter/viseron", stars: 3200, desc: "自托管、本地化 NVR 和 AI 计算机视觉软件", platform: "x86/ARM + Coral/CUDA/Hailo", features: ["目标检测","人脸识别","车牌识别","姿态估计"], category: "视觉 AI" },
+  { name: "OpenMV", url: "https://github.com/openmv/openmv", stars: 2800, desc: "开源 MicroPython 可编程机器视觉相机模块", platform: "STM32H7 (OpenMV Cam)", features: ["人脸检测","颜色追踪","QR/条码","TFLite Micro"], category: "视觉 AI" },
+  { name: "DeepCamera (SharpAI)", url: "https://github.com/SharpAI/DeepCamera", stars: 2800, desc: "开源 AI 相机技能平台 & AI NVR", platform: "RPi / Jetson / x86", features: ["人脸识别","行人重识别","Qwen VLM分析"], category: "视觉 AI" },
+  { name: "ESP-WHO (Espressif)", url: "https://github.com/espressif/esp-who", stars: 2100, desc: "乐鑫官方人脸检测与识别框架", platform: "ESP32-S3 / ESP32", features: ["人脸检测","人脸识别","人体检测"], category: "视觉 AI" },
+  { name: "OpenIPC Firmware", url: "https://github.com/openipc/firmware", stars: 2100, desc: "IP 摄像头的替代开源 Linux 固件", platform: "HiSilicon/Ingenic/SigmaStar", features: ["开源固件","RTSP流","自定义神经网络部署"], category: "视觉 AI" },
+  { name: "Obico (3D打印AI监控)", url: "https://github.com/TheSpaghettiDetective/obico-server", stars: 1800, desc: "社区构建的智能 3D 打印平台，AI 失败检测", platform: "RPi + 摄像头 + OctoPrint", features: ["AI意面检测","打印失败预测","远程监控"], category: "视觉 AI" },
+  { name: "OpenDataCam", url: "https://github.com/opendatacam/opendatacam", stars: 1700, desc: "开源工具 - 用 AI 量化世界，追踪计数道路交通", platform: "Jetson Nano/Xavier", features: ["YOLO车辆/行人计数","轨迹追踪","交通流分析"], category: "视觉 AI" },
+  { name: "Double Take", url: "https://github.com/jakowenko/double-take", stars: 1400, desc: "统一的人脸识别 UI & API", platform: "x86/ARM (集成Frigate)", features: ["人脸识别","多检测器","训练管理"], category: "视觉 AI" },
+  { name: "OpenAIglasses_for_Navigation", url: "https://github.com/AI-FanGe/OpenAIglasses_for_Navigation", stars: 1300, desc: "AI 智能眼镜辅助盲人导航，YOLO 目标检测", platform: "ESP32-CAM", features: ["YOLO检测","盲道导航","物体识别","语音交互"], category: "视觉 AI" },
+  { name: "Luxonis DepthAI", url: "https://github.com/luxonis/depthai", stars: 1100, desc: "Luxonis OAK 摄像头的空间 AI 流水线平台", platform: "OAK-D (Intel Myriad X)", features: ["端侧神经网络推理","3D目标定位","立体深度"], category: "视觉 AI" },
+  { name: "Hailo RPi5 Examples", url: "https://github.com/hailo-ai/hailo-rpi5-examples", stars: 925, desc: "树莓派 5 + Hailo-8L 加速器的 AI 流水线示例", platform: "Raspberry Pi 5 + Hailo-8L", features: ["目标检测","姿态估计","实例分割","26 TOPS"], category: "视觉 AI" },
+  { name: "Luxonis OAK Hardware", url: "https://github.com/luxonis/oak-hardware", stars: 536, desc: "OAK 空间 AI 摄像头的开源硬件设计 (Altium)", platform: "Intel Myriad X VPU", features: ["立体深度感知","端侧推理","空间追踪"], category: "视觉 AI" },
+  { name: "CameraTrapAI (Google)", url: "https://github.com/google/cameratrapai", stars: 500, desc: "Google 野生动物相机陷阱 AI 模型", platform: "RPi / Trail Camera", features: ["物种分类","目标检测","野生动物监控"], category: "视觉 AI" },
+  { name: "reCamera (Seeed Studio)", url: "https://github.com/Seeed-Studio/OSHW-reCamera-Series", stars: 453, desc: "首款完全开源的小型 AI 摄像头", platform: "SOPHON SG2002 (RISC-V+ARM)", features: ["端侧YOLO推理","人/物检测","1 TOPS NPU"], category: "视觉 AI" },
+  { name: "Google Coral Camera Examples", url: "https://github.com/google-coral/examples-camera", stars: 392, desc: "Edge TPU 摄像头示例，Coral 加速器实时推理", platform: "Coral USB/M.2/Dev Board", features: ["目标检测","分类","4W下100+FPS"], category: "视觉 AI" },
+  { name: "Securade.ai HUB", url: "https://github.com/securade/hub", stars: 277, desc: "基于生成式 AI 的边缘工作安全监控平台", platform: "Edge设备 + IP摄像头", features: ["PPE检测","安全区监控","跌倒检测"], category: "视觉 AI" },
+
+  // ==================== 可穿戴 AI ====================
+  { name: "OpenGlass", url: "https://github.com/BasedHardware/OpenGlass", stars: 4100, desc: "用不到 $25 的配件把任何眼镜变成 AI 智能眼镜", platform: "XIAO ESP32-S3 + 摄像头", features: ["实时物体识别","对话转写","视觉AI查询"], category: "可穿戴 AI" },
+  { name: "ADeus", url: "https://github.com/adamcohenhillel/ADeus", stars: 3400, desc: "开源 AI 可穿戴设备，捕获你说的和听到的，自托管", platform: "Coral AI + Raspberry Pi", features: ["持续音频捕获","自托管转写","个性化AI","私有记忆"], category: "可穿戴 AI" },
+  { name: "OpenSourceSmartGlasses", url: "https://github.com/Mentra-Community/OpenSourceSmartGlasses", stars: 1100, desc: "开源智能眼镜，面向全天佩戴", platform: "ESP32 + 摄像头 + 麦克风", features: ["AI AR显示","语音命令","视觉辅助","App生态"], category: "可穿戴 AI" },
+  { name: "OpenBCI", url: "https://github.com/OpenBCI/OpenBCI_GUI", stars: 929, desc: "开源脑机接口平台，完整硬件+软件生态", platform: "OpenBCI Cyton/Ganglion", features: ["EEG/EMG/ECG","实时可视化","ML脑状态分类"], category: "可穿戴 AI" },
+  { name: "OpenPin", url: "https://github.com/MaxMaeder/OpenPin", stars: 500, desc: "让你的 Humane AI Pin 重新可用的开源项目", platform: "Humane AI Pin", features: ["自定义软件","AI Pin复活"], category: "可穿戴 AI" },
+  { name: "Pi Pin", url: "https://github.com/liltom-eth/pi-pin", stars: 200, desc: "基于树莓派的开源 AI Pin，可全天佩戴", platform: "Raspberry Pi", features: ["全天佩戴","AI助手"], category: "可穿戴 AI" },
+  { name: "Open Ring", url: "https://github.com/stawiski/open-ring", stars: 161, desc: "开源智能戒指，超低功耗 BLE 设备控制", platform: "nRF52 BLE SoC", features: ["手势检测","BLE控制","超低功耗"], category: "可穿戴 AI" },
+  { name: "OpenEarable", url: "https://github.com/OpenEarable/open-earable", stars: 100, desc: "全球首款完全开源 AI 感知耳机平台", platform: "自定义PCB + BLE + IMU", features: ["AI活动识别","健康监测","手势检测"], category: "可穿戴 AI" },
+
+  // ==================== 机器人 / 具身智能 ====================
+  { name: "AIRI (赛博伴侣)", url: "https://github.com/moeru-ai/airi", stars: 41100, desc: "开源 AI 伴侣/虚拟角色容器，重现 Neuro-sama", platform: "PC/桌面", features: ["实时语音","游戏交互","VRM/Live2D","多模态"], category: "机器人" },
+  { name: "LeRobot (Hugging Face)", url: "https://github.com/huggingface/lerobot", stars: 25100, desc: "让 AI for Robotics 更可及，端到端学习框架", platform: "硬件无关(支持SO-100等)", features: ["模仿学习","强化学习","预训练策略","Sim-to-Real"], category: "机器人" },
+  { name: "Dummy-Robot (稚晖君)", url: "https://github.com/peng-zhihui/Dummy-Robot", stars: 15100, desc: "超迷你机械臂机器人项目", platform: "自研驱动板", features: ["智能机械臂控制","视觉辅助","精密运动"], category: "机器人" },
+  { name: "ElectronBot (稚晖君)", url: "https://github.com/peng-zhihui/ElectronBot", stars: 9400, desc: "桌面级小机器工具人，灵感来源 WALL-E 中 EVE", platform: "STM32 + USB屏", features: ["USB表情显示","6自由度","AI扩展"], category: "机器人" },
+  { name: "SO-ARM100 / SO-101", url: "https://github.com/TheRobotStudio/SO-ARM100", stars: 6600, desc: "标准开源机械臂：低成本、全集成 LeRobot", platform: "3D打印 + STS3215舵机", features: ["模仿学习","遥操作","AI策略训练"], category: "机器人" },
+  { name: "HoloCubic (稚晖君)", url: "https://github.com/peng-zhihui/HoloCubic", stars: 6600, desc: "带网络功能的伪全息透明显示桌面站", platform: "ESP32-PICO-D4", features: ["透明显示","天气AI","多应用"], category: "机器人" },
+  { name: "OpenCat (Petoi)", url: "https://github.com/PetoiCamp/OpenCat-Quadruped-Robot", stars: 4900, desc: "开源 Arduino/树莓派 四足机器人框架", platform: "Arduino/ESP32 + RPi", features: ["AI步态","语音控制","计算机视觉","强化学习"], category: "机器人" },
+  { name: "JetBot (NVIDIA)", url: "https://github.com/NVIDIA-AI-IOT/jetbot", stars: 3200, desc: "基于 Jetson Nano 的教育 AI 机器人", platform: "Jetson Nano + 电机 + 摄像头", features: ["深度学习","物体跟随","避障","道路跟踪"], category: "机器人" },
+  { name: "OpenArm", url: "https://github.com/enactic/openarm", stars: 2600, desc: "全开源 7DOF 人形臂，面向物理 AI 研究", platform: "7-DOF 准直驱执行器", features: ["物理AI研究","柔顺操作","MuJoCo仿真"], category: "机器人" },
+  { name: "Claude Desktop Buddy", url: "https://github.com/anthropics/claude-desktop-buddy", stars: 2000, desc: "Anthropic 开源 BLE 硬件伴侣", platform: "ESP32-S3 / M5Stack", features: ["BLE AI交互","表情系统","物理AI伴侣"], category: "机器人" },
+  { name: "Reachy Mini (Pollen)", url: "https://github.com/pollen-robotics/reachy_mini", stars: 1300, desc: "开源表情机器人，面向 Hacker 和 AI 建造者", platform: "7-DOF 手臂 + 表情头", features: ["遥操作","模仿学习","VR控制"], category: "机器人" },
+  { name: "Mini Pupper", url: "https://github.com/mangdangroboticsclub/QuadrupedRobot", stars: 1100, desc: "基于 ROS 的开源机器狗，$500 以内", platform: "Raspberry Pi 4 + 12舵机", features: ["SLAM导航","OpenCV检测","ROS集成"], category: "机器人" },
+  { name: "StackChan (M5Stack)", url: "https://github.com/m5stack/StackChan", stars: 893, desc: "超可爱的开源 AI 桌面机器人", platform: "M5Stack (ESP32-S3)", features: ["LLM对话","表情系统","语音交互","可扩展Agent"], category: "机器人" },
+  { name: "ToddlerBot", url: "https://github.com/hshi74/toddlerbot", stars: 697, desc: "低成本开源人形机器人平台", platform: "3D打印人形 + 舵机", features: ["ML兼容运动","策略迁移","Sim-to-Real"], category: "机器人" },
+  { name: "MimiClaw", url: "https://github.com/memovai/mimiclaw", stars: 5500, desc: "将 ESP32-S3 变成私人 AI 助理，$5 芯片上运行 OpenClaw", platform: "ESP32-S3", features: ["本地AI Agent","事件驱动","OpenClaw协议"], category: "机器人" },
+
+  // ==================== 模型部署 & 推理框架 ====================
+  { name: "llama.cpp", url: "https://github.com/ggml-org/llama.cpp", stars: 75000, desc: "C/C++ LLM 推理框架，可在树莓派等 ARM 设备上运行", platform: "CPU优先 / 全平台", features: ["LLM推理","量化模型","嵌入式部署","低资源运行"], category: "模型部署" },
+  { name: "Ultralytics YOLO", url: "https://github.com/ultralytics/ultralytics", stars: 58500, desc: "YOLO v8/v10/v11 实时目标检测模型", platform: "全平台(TFLite/ONNX/CoreML)", features: ["目标检测","分割","姿态估计","追踪","分类"], category: "模型部署" },
+  { name: "LocalAI", url: "https://github.com/mudler/LocalAI", stars: 46900, desc: "开源 AI 引擎 — 在任何硬件上本地运行任何模型", platform: "x86/ARM 服务器/NAS", features: ["LLMs","视觉","语音","图像生成","自托管"], category: "模型部署" },
+  { name: "whisper.cpp", url: "https://github.com/ggml-org/whisper.cpp", stars: 37000, desc: "OpenAI Whisper 的 C/C++ 移植，边缘设备高性能语音识别", platform: "全平台 / RPi / 移动端", features: ["语音识别","边缘部署","低延迟"], category: "模型部署" },
+  { name: "Tabby (自托管代码助手)", url: "https://github.com/TabbyML/tabby", stars: 33600, desc: "自托管 AI 编程助手", platform: "任意服务器/工作站", features: ["代码补全","代码对话","仓库上下文","自托管"], category: "模型部署" },
+  { name: "MediaPipe (Google)", url: "https://github.com/google-ai-edge/mediapipe", stars: 28000, desc: "跨平台可定制 ML 方案，面向端侧推理", platform: "移动/嵌入式/Web/IoT", features: ["端侧ML","手势识别","人脸网格","姿态估计"], category: "模型部署" },
+  { name: "ncnn (Tencent)", url: "https://github.com/Tencent/ncnn", stars: 23400, desc: "高性能神经网络推理框架，为移动/嵌入式优化", platform: "ARM/RISC-V/x86/Vulkan GPU", features: ["YOLO","人脸检测","分割","超分辨率"], category: "模型部署" },
+  { name: "ONNX Runtime (Microsoft)", url: "https://github.com/microsoft/onnxruntime", stars: 15000, desc: "跨平台 ML 推理引擎，含 IoT/Edge 部署支持", platform: "全平台 / IoT / Edge", features: ["ONNX推理","Mobile部署","Edge优化"], category: "模型部署" },
+  { name: "Tengine (OAID)", url: "https://github.com/OAID/Tengine", stars: 4500, desc: "轻量高性能推理引擎，支持多种嵌入式设备", platform: "Khadas VIM3/ARM/Rockchip", features: ["多后端推理","量化","模型优化"], category: "模型部署" },
+  { name: "tflite-micro (TensorFlow)", url: "https://github.com/tensorflow/tflite-micro", stars: 3000, desc: "TensorFlow Lite for Microcontrollers", platform: "MCU (Arduino/ESP32/STM32)", features: ["MCU上ML","极低内存","端侧推理"], category: "模型部署" },
+  { name: "TinyMaix (Sipeed)", url: "https://github.com/sipeed/TinyMaix", stars: 1100, desc: "超轻量 MCU 神经网络推理库 (TinyML)", platform: "任何MCU (K210/STM32/RISC-V)", features: ["图像分类","关键词检测","极低资源"], category: "模型部署" },
+  { name: "NNoM", url: "https://github.com/majianjia/nnom", stars: 1200, desc: "面向 MCU 的高层神经网络库", platform: "STM32/nRF/Cortex-M", features: ["CNN","RNN","图像/音频分类"], category: "模型部署" },
+  { name: "TinyEngine (MIT)", url: "https://github.com/mit-han-lab/tinyengine", stars: 950, desc: "面向 MCU 的内存高效神经网络库 (NeurIPS 2020)", platform: "STM32/Arduino/Cortex-M", features: ["<512KB SRAM推理","图像分类","目标检测"], category: "模型部署" },
+  { name: "esp32-llm", url: "https://github.com/DaveBben/esp32-llm", stars: 542, desc: "在 ESP32 上运行 260K 参数 LLM (llama.2c)", platform: "ESP32-S3", features: ["MCU上LLM","实验性","极限部署"], category: "模型部署" },
+
+  // ==================== 芯片平台 & 开发板 ====================
+  { name: "RKNN-Toolkit2 (Rockchip)", url: "https://github.com/airockchip/rknn-toolkit2", stars: 3100, desc: "瑞芯微 NPU 模型部署官方工具链", platform: "RK3588/RK3576/RK3568/RV1106", features: ["模型转换","量化","NPU推理","6 TOPS"], category: "芯片平台" },
+  { name: "RKNN Model Zoo", url: "https://github.com/airockchip/rknn_model_zoo", stars: 2600, desc: "瑞芯微 NPU 主流 AI 模型部署示例", platform: "RK3588/RK3576/RK3568", features: ["YOLO","ResNet","PPOCR","LLM","音频模型"], category: "芯片平台" },
+  { name: "MaixPy-v1 (K210)", url: "https://github.com/sipeed/MaixPy-v1", stars: 1700, desc: "K210 RISC-V 的 MicroPython - 让边缘 AI 更简单", platform: "Kendryte K210 / Sipeed Maix", features: ["人脸检测","目标分类","关键词检测"], category: "芯片平台" },
+  { name: "TuyaOpen (涂鸦)", url: "https://github.com/tuya/tuyaopen", stars: 1600, desc: "新一代 AI+IoT 开发框架", platform: "T2/T3/T5AI/ESP32", features: ["ASR","TTS","LLM集成","多芯片支持"], category: "芯片平台" },
+  { name: "Qualcomm AI Hub Models", url: "https://github.com/qualcomm/ai-hub-models", stars: 1100, desc: "面向高通设备优化的 100+ AI 模型", platform: "Qualcomm QCS/Snapdragon", features: ["YOLO","Stable Diffusion","Whisper","LLMs"], category: "芯片平台" },
+  { name: "RKNPU2", url: "https://github.com/rockchip-linux/rknpu2", stars: 847, desc: "瑞芯微 NPU 高级接口和运行时库", platform: "RK3588/RK3568/RV1103", features: ["NPU运行时","C API推理","高性能"], category: "芯片平台" },
+  { name: "Sipeed MaixPy v4", url: "https://github.com/sipeed/MaixPy", stars: 765, desc: "边缘设备 Python AI 编程，MaixCAM + NPU 加速", platform: "MaixCAM (RISC-V+NPU)", features: ["端侧视觉AI","目标检测","人脸识别","Python"], category: "芯片平台" },
+  { name: "stm32ai-modelzoo (ST)", url: "https://github.com/STMicroelectronics/stm32ai-modelzoo", stars: 695, desc: "STM32 AI 模型库 - 优化的参考模型", platform: "STM32 (H7/N6/U5/L4)", features: ["图像分类","目标检测","姿态估计","音频事件检测"], category: "芯片平台" },
+  { name: "Milk-V Duo SDK", url: "https://github.com/milkv-duo/duo-buildroot-sdk", stars: 484, desc: "Milk-V Duo 官方 Buildroot SDK (RISC-V + TPU)", platform: "Milk-V Duo (CV1800B)", features: ["0.5 TOPS TPU推理","目标检测"], category: "芯片平台" },
+  { name: "AliOS Things (阿里)", url: "https://github.com/alibaba/AliOS-Things", stars: 4600, desc: "面向 IoT 领域的高可伸缩物联网操作系统", platform: "HaaS系列/多芯片", features: ["AI组件","云端AI集成","轻应用框架"], category: "芯片平台" },
+  { name: "K230 SDK (嘉楠)", url: "https://github.com/kendryte/k230_sdk", stars: 265, desc: "嘉楠 K230 官方 SDK，含 AI 示例", platform: "Canaan K230 (RISC-V+KPU)", features: ["KPU推理","视觉AI","音频处理"], category: "芯片平台" },
+  { name: "Seeed Jetson Examples", url: "https://github.com/Seeed-Projects/jetson-examples", stars: 264, desc: "reComputer (Jetson) 一键部署 AI Demo", platform: "Jetson Orin Nano/NX", features: ["目标检测","Stable Diffusion","LLM"], category: "芯片平台" },
+  { name: "TIM-VX (VeriSilicon)", url: "https://github.com/VeriSilicon/TIM-VX", stars: 257, desc: "VeriSilicon NPU 张量接口模块", platform: "Amlogic A311D/i.MX 8M Plus", features: ["NPU推理","OpenCV DNN后端"], category: "芯片平台" },
+  { name: "RPi IMX500 Model Zoo", url: "https://github.com/raspberrypi/imx500-models", stars: 143, desc: "树莓派 AI Camera 官方模型库 (片上推理)", platform: "RPi + AI Camera (IMX500)", features: ["片上神经网络推理","目标检测","姿态估计"], category: "芯片平台" },
+  { name: "BeagleBone AI", url: "https://github.com/beagleboard/beaglebone-ai", stars: 148, desc: "BeagleBone AI - TI AM5729 嵌入式机器学习", platform: "BeagleBone AI (TI AM5729)", features: ["TI深度学习","图像分类","目标检测"], category: "芯片平台" },
+
+  // ==================== 无人机 AI ====================
+  { name: "PX4-Autopilot", url: "https://github.com/PX4/PX4-Autopilot", stars: 9500, desc: "专业开源无人机自动驾驶仪，含 AI 能力", platform: "Pixhawk + 各种飞控", features: ["AI自主飞行","计算机视觉导航","避障"], category: "无人机" },
+  { name: "OpenDroneMap", url: "https://github.com/opendronemap/odm", stars: 4900, desc: "开源无人机摄影测量和建图工具包", platform: "任何带摄像头的无人机", features: ["AI增强测绘","点云分类","正射影像"], category: "无人机" },
+  { name: "GAAS (通用自主飞行系统)", url: "https://github.com/generalized-intelligence/GAAS", stars: 2100, desc: "全自主无人机框架", platform: "各种无人机 + Jetson", features: ["深度学习导航","SLAM","语义理解","路径规划"], category: "无人机" },
+  { name: "PULP-DroNet", url: "https://github.com/pulp-platform/pulp-dronet", stars: 300, desc: "深度学习驱动的纳米无人机视觉导航", platform: "Crazyflie + PULP SoC", features: ["CNN自主导航","超低功耗AI推理"], category: "无人机" },
+  { name: "Autonomous-AI-drone-scripts", url: "https://github.com/sieuwe1/Autonomous-Ai-drone-scripts", stars: 300, desc: "最先进的深度学习自主导航无人机", platform: "ArduPilot + RPi/Jetson", features: ["深度学习导航","目标检测","自主着陆"], category: "无人机" },
+
+  // ==================== AI 显示 & 创意 ====================
+  { name: "MagicMirror", url: "https://github.com/magicmirrororg/magicmirror", stars: 20000, desc: "开源模块化智能镜子平台", platform: "Raspberry Pi + LCD/Monitor", features: ["AI语音控制","人脸识别","NLP模块"], category: "显示创意" },
+  { name: "eink-art-gallery-esphome", url: "https://github.com/kotope/eink-art-gallery-esphome", stars: 200, desc: "E-Ink 艺术画廊，展示 AI 生成图像", platform: "ESP32-S3 + E-Ink", features: ["AI图像生成","自动轮播艺术品"], category: "显示创意" },
+  { name: "esp32-photoframe", url: "https://github.com/aitjcize/esp32-photoframe", stars: 148, desc: "ESP32 电子墨水相框 + AI 艺术生成", platform: "ESP32-S3 + E-Paper", features: ["AI图像生成","智能裁剪"], category: "显示创意" },
+  { name: "LeetAI (AI合成器)", url: "https://github.com/vonkonow/LeetAI", stars: 100, desc: "无线合成器集群 + AI 旋律灵感", platform: "ESP32 + RGB键盘", features: ["AI旋律生成","鼓点创建","变奏"], category: "显示创意" },
+
+  // ==================== 网络 & 基础设施 AI ====================
+  { name: "Netdata", url: "https://github.com/netdata/netdata", stars: 73000, desc: "实时基础设施监控 + ML 异常检测", platform: "Linux/BSD 服务器 / Docker", features: ["ML异常检测","预测告警","模式识别"], category: "网络AI" },
+  { name: "Suricata", url: "https://github.com/oisf/suricata", stars: 11000, desc: "网络 IDS/IPS/NSM 引擎，含 ML 检测能力", platform: "网络设备 / x86/ARM", features: ["ML规则引擎","协议异常检测","流量分类"], category: "网络AI" },
+
+  // ==================== 自动驾驶 & 汽车 AI ====================
+  { name: "Open-Mechanic (OBD2 AI)", url: "https://github.com/speed785/open-mechanic", stars: 200, desc: "开源 AI 汽车诊断，通过 OBD-II 接口", platform: "ELM327 OBD-II", features: ["LLM故障码解读","预测性诊断"], category: "汽车AI" },
+
+  // ==================== 农业 & 环境 AI ====================
+  { name: "mini_ai_camera (野生动物)", url: "https://github.com/LukeDitria/mini_ai_camera", stars: 200, desc: "迷你树莓派 AI 野生动物相机", platform: "Raspberry Pi Zero 2W", features: ["端侧物种检测","自动监控"], category: "农业环境" },
+
+  // ==================== AI 翻译设备 ====================
+  { name: "RTranslator", url: "https://github.com/niedev/RTranslator", stars: 1000, desc: "开源免费实时翻译应用（可离线运行）", platform: "Android", features: ["端侧神经翻译","实时语音到语音"], category: "翻译设备" },
+
+  // ==================== 参考合集 ====================
+  { name: "Awesome-Efficient-LLM", url: "https://github.com/horseee/Awesome-Efficient-LLM", stars: 3000, desc: "高效 LLM 部署精选，含 hardware.md 硬件章节", platform: "综合", features: ["高效LLM","硬件部署","模型优化"], category: "参考合集" },
+  { name: "awesome-local-ai", url: "https://github.com/janhq/awesome-local-ai", stars: 2000, desc: "本地 AI 工具精选列表", platform: "综合", features: ["本地AI","离线推理","隐私优先"], category: "参考合集" },
+  { name: "awesome-tinyml", url: "https://github.com/umitkacar/awesome-tinyml", stars: 1500, desc: "TinyML & Edge AI 精选列表", platform: "综合", features: ["TinyML","模型量化","端侧推理"], category: "参考合集" },
+  { name: "tinyml-papers-and-projects", url: "https://github.com/gigwegbe/tinyml-papers-and-projects", stars: 1000, desc: "TinyML 论文和项目汇总", platform: "综合", features: ["TinyML","学术论文","项目列表"], category: "参考合集" },
+  { name: "awesome-esp", url: "https://github.com/agucova/awesome-esp", stars: 800, desc: "ESP8266/32 项目精选列表(含 AI/ML)", platform: "ESP32/ESP8266", features: ["ESP32","物联网","嵌入式AI"], category: "参考合集" },
+  { name: "awesome-jetson-nano", url: "https://github.com/elloza/awesome-jetson-nano", stars: 700, desc: "NVIDIA Jetson Nano 项目精选列表", platform: "Jetson Nano", features: ["Jetson","AI推理","项目合集"], category: "参考合集" },
+  { name: "awesome-ai-gadgets", url: "https://github.com/tysoncung/awesome-ai-gadgets", stars: 500, desc: "AI 小工具/设备/硬件产品精选列表", platform: "综合", features: ["AI设备","硬件产品","消费电子"], category: "参考合集" },
+  { name: "awesome-edge-ai", url: "https://github.com/rcmalli/awesome-edge-ai", stars: 500, desc: "边缘 AI 应用设备精选列表", platform: "综合", features: ["边缘AI","设备列表"], category: "参考合集" },
+];
+
+// Categories config
+const CATEGORIES = [
+  { id: "语音 AI", icon: "🎙️", label: "语音 AI 硬件" },
+  { id: "视觉 AI", icon: "📷", label: "视觉 AI 硬件" },
+  { id: "可穿戴 AI", icon: "⌚", label: "可穿戴 AI" },
+  { id: "机器人", icon: "🤖", label: "机器人 / 具身智能" },
+  { id: "模型部署", icon: "⚡", label: "模型部署 & 推理框架" },
+  { id: "芯片平台", icon: "🧩", label: "芯片平台 & 开发板" },
+  { id: "无人机", icon: "🚁", label: "无人机 AI" },
+  { id: "显示创意", icon: "🖼️", label: "AI 显示 & 创意" },
+  { id: "网络AI", icon: "🌐", label: "网络 & 基础设施 AI" },
+  { id: "汽车AI", icon: "🚗", label: "自动驾驶 & 汽车 AI" },
+  { id: "农业环境", icon: "🌱", label: "农业 & 环境 AI" },
+  { id: "翻译设备", icon: "🌍", label: "AI 翻译设备" },
+  { id: "参考合集", icon: "📚", label: "Awesome 合集 & 参考" },
+];
+
+// State
+let activeFilters = new Set();
+let searchQuery = "";
+
+function render() {
+  const content = document.getElementById("content");
+  let html = "";
+  let visibleCount = 0;
+
+  CATEGORIES.forEach(cat => {
+    let projects = PROJECTS.filter(p => p.category === cat.id);
+    if (activeFilters.size > 0 && !activeFilters.has(cat.id)) return;
+    if (searchQuery) {
+      projects = projects.filter(p => {
+        const q = searchQuery.toLowerCase();
+        return p.name.toLowerCase().includes(q) ||
+               p.desc.toLowerCase().includes(q) ||
+               p.platform.toLowerCase().includes(q) ||
+               p.features.some(f => f.toLowerCase().includes(q));
+      });
+    }
+    if (projects.length === 0) return;
+
+    projects.sort((a, b) => b.stars - a.stars);
+    visibleCount += projects.length;
+
+    html += `<div class="category" data-category="${cat.id}">
+      <div class="category-header" onclick="toggleCategory(this)">
+        <span class="category-icon">${cat.icon}</span>
+        <span class="category-title">${cat.label}</span>
+        <span class="category-count">${projects.length} 项目</span>
+        <span class="category-toggle">▼</span>
+      </div>
+      <div class="projects-grid">`;
+
+    projects.forEach(p => {
+      html += `<div class="project-card">
+        <a class="project-name" href="${p.url}" target="_blank">${p.name}</a>
+        <div class="project-desc">${p.desc}</div>
+        <div class="project-meta">
+          <span class="meta-item"><span class="star">★</span> ${formatStars(p.stars)}</span>
+          <span class="platform-badge">${p.platform}</span>
+        </div>
+        <div class="feature-tags">
+          ${p.features.map(f => `<span class="feature-tag">${f}</span>`).join("")}
+        </div>
+      </div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  content.innerHTML = html;
+
+  // Update stats
+  document.getElementById("total-count").textContent = PROJECTS.length;
+  document.getElementById("category-count").textContent = CATEGORIES.length;
+  document.getElementById("top-stars").textContent = formatStars(Math.max(...PROJECTS.map(p => p.stars)));
+}
+
+function formatStars(n) {
+  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "k";
+  return n.toString();
+}
+
+function toggleCategory(el) {
+  const grid = el.nextElementSibling;
+  const toggle = el.querySelector(".category-toggle");
+  grid.classList.toggle("hidden");
+  toggle.classList.toggle("collapsed");
+}
+
+// Filter tags
+function renderFilters() {
+  const container = document.getElementById("filterTags");
+  container.innerHTML = CATEGORIES.map(cat =>
+    `<span class="tag ${activeFilters.has(cat.id) ? 'active' : ''}" data-id="${cat.id}" onclick="toggleFilter('${cat.id}')">${cat.icon} ${cat.label}</span>`
+  ).join("");
+}
+
+function toggleFilter(id) {
+  if (activeFilters.has(id)) activeFilters.delete(id);
+  else activeFilters.add(id);
+  renderFilters();
+  render();
+}
+
+// Search
+document.getElementById("searchInput").addEventListener("input", (e) => {
+  searchQuery = e.target.value.trim();
+  render();
+});
+
+// Init
+renderFilters();
+render();
+</script>
+</body>
+</html>
