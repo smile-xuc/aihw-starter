@@ -84,7 +84,7 @@ solutions/0X-xxxx/
 
 <table>
 <tr>
-<td width="34%">
+<td width="34%" valign="top">
 
 ### 🏭 方案商 / 品牌商
 
@@ -95,7 +95,7 @@ solutions/0X-xxxx/
 5. 读 [03-cost.md](./solutions/01-ipc/03-cost.md) 算清楚账
 
 </td>
-<td width="33%">
+<td width="33%" valign="top">
 
 ### 👩‍💻 开发者
 
@@ -103,7 +103,7 @@ solutions/0X-xxxx/
 2. 跑通示例 → 改造成自家产品
 
 </td>
-<td width="33%">
+<td width="33%" valign="top">
 
 ### 🔍 了解生态
 
