@@ -2,22 +2,7 @@
 
 > AI 硬件行业热门品类的**商业化最佳实践案例库**
 >
-> 不是 API 文档镜像，不是开源项目导航 — 而是从"这门生意能不能做、怎么搭、怎么算账"出发的工程化案例集。
-
----
-
-## 站位声明
-
-本仓库**客观中立**，不隶属于任何单一模型厂商或方案商。
-
-- **首发版本**：以**千问大模型**作为示例方案进行端到端演示
-- **后续会补充**：
-  - 主流大模型方案（豆包、Kimi、智谱、DeepSeek、OpenAI 等）
-  - 优秀方案商的端到端方案（已落地、可背书）
-  - 端侧/混合方案（轻量本地 + 云端协同）
-- **欢迎贡献**：参见 [CONTRIBUTING.md](./CONTRIBUTING.md)
-
-仓库的目的是让 AI 硬件方案商、品牌商、ODM、开发者**少走弯路、看清边界、算清账目**。
+> 从"这门生意能不能做、怎么搭、怎么算账"出发的工程化案例集。
 
 ---
 
@@ -32,7 +17,7 @@
 | 05 | [IPC / AI 视觉](./solutions/05-ipc/) | 完整版 | 视频以文搜图 + 摘要订阅 |
 | 06 | [AI 眼镜](./solutions/06-ai-glasses/) | 占位版 | 多模态交互套件，端到端打包 |
 
-未来计划：[future/](./future/)（龙虾硬件、手表等）
+未来计划：[future/](./future/)（具身智能 / 桌面服务机器人、智能手表等）
 
 ---
 
@@ -62,15 +47,15 @@ aihw-starter/
 
 ## 快速开始
 
-**如果你是方案商**：从感兴趣的品类进入 → 读 `01-business.md` 判断要不要做 → 读 `02-solution.md` 看技术方案 → 读 `03-cost.md` 算账。
+**方案商**：从感兴趣的品类进入 → 读 `01-business.md` 判断是否值得投入 → 读 `02-solution.md` 看技术方案 → 读 `03-cost.md` 算账。
 
-**如果你是品牌商**：先看 [docs/](./docs/) 门面页对全品类的总览 → 锁定方向后进入对应 solution 的 `01-business.md`。
+**品牌商**：先看 [docs/](./docs/) 门面页对全品类的总览 → 锁定方向后进入对应 solution 的 `01-business.md`。
 
-**如果你是开发者**：进入 `solutions/0X-xxx/demo/` 跑通示例 → 改造成自家产品。
+**开发者**：进入 `solutions/0X-xxx/demo/` 跑通示例 → 改造成自家产品。
 
-**如果你想了解开源生态**：[awesome/open-source/](./awesome/open-source/) 已收录 136 个 GitHub 开源项目，覆盖 15 品类。
+**了解开源生态**：[awesome/open-source/](./awesome/open-source/) 已收录 136 个 GitHub 开源项目，覆盖 15 品类。
 
-**如果你想看市场上有什么在售产品**：[awesome/commercial-products/](./awesome/commercial-products/) 持续收集中。
+**查看在售产品**：[awesome/commercial-products/](./awesome/commercial-products/) 持续收集中。
 
 ---
 
@@ -97,4 +82,9 @@ aihw-starter/
 
 ## License
 
-本仓库内容采用 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) 协议，代码采用 [MIT](./LICENSE) 协议。
+- **文档内容**（Markdown、表格、清单、示意图）：[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — 可自由复制、修改、商用，需注明来源
+- **代码**（`demo/` 下的脚本与 Python/Go 示例）：[MIT](./LICENSE) — 可自由使用，无担保
+
+> **SDK 协议说明**：demo 中引用的第三方 SDK（如 DashScope / 百炼 API）遵循其原厂服务协议，MIT 仅覆盖本仓库自身的示例代码。
+
+建议在引用时附上原文链接，方便读者回溯版本与更新。
