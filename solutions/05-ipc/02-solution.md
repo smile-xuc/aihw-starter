@@ -190,3 +190,259 @@ response = client.chat.completions.create(
 - OSS AI 内容感知：https://help.aliyun.com/zh/oss/user-guide/ai-content-awareness
 - Qwen-VL 视觉模型：https://help.aliyun.com/zh/model-studio/vision
 - DoMetaQuery API 参考：https://help.aliyun.com/zh/oss/developer-reference/dometaquery
+
+---
+
+## 十、摄像头画面洞察（视频摘要 / Caption）
+
+### 10.1 功能定位
+
+面向消费级摄像头场景，对 IPC 事件帧或短视频片段进行环境分析、行为识别和事件检测，输出结构化摘要（Caption）。
+
+输出结构：
+
+```json
+{
+  "object": ["女性成人"],
+  "action": [],
+  "event": [],
+  "description": "一位年轻的女性成人，黑色头发扎成低马尾，身穿黑色高领拉链外套，背景为模糊的书架。",
+  "title": "女子静立书架前"
+}
+```
+
+| 字段 | 含义 |
+|---|---|
+| `object` | 画面中识别到的主体（人物、宠物、车辆等） |
+| `action` | 正在发生的动作 |
+| `event` | 识别到的事件（如闯入、摔倒、异常停留） |
+| `description` | 100 字以内的详细场景描述 |
+| `title` | 20 字以内的精简摘要标题 |
+
+典型应用：事件录像自动摘要（替代传统"人形检测"推送）、AI 相册自动标签、监控回放的文字检索入口。
+
+### 10.2 接入链路
+
+```
+[IPC 事件帧/短视频] → [设备端抽帧或上传] → [百炼多模态交互 API]
+                                                    ↓
+                                          [物理世界感知 Agent · IPC 场景]
+                                                    ↓
+                                          [结构化 Caption JSON 返回]
+```
+
+底层走阿里云百炼的**多模态交互**接口（model = `multimodal-dialog`），通过「物理世界感知 Agent」路由到 IPC 场景模型。
+
+### 10.3 管控台配置（图文教程）
+
+#### Step 1：创建多模态交互应用
+
+进入百炼控制台 → 多模态开发套件 → 创建应用，选择**全能版**（不要选视觉版）。关闭语音交互，保持意图识别和文本模型开启。
+
+![创建应用 — 选择全能版，关闭语音交互](./assets/caption-step1-create-app.png)
+
+#### Step 2：关闭无关功能
+
+将**对话承接语**、**知识库**、**联网搜索**、**长期记忆**全部关闭。这些功能在 IPC Caption 场景下不需要，关闭可降低延迟和成本。
+
+![关闭对话承接语、知识库、联网搜索、长期记忆](./assets/caption-step2-disable-features.png)
+
+#### Step 3：添加物理世界感知 Agent
+
+在「Agent」配置区 → 百炼应用 → 点击「+」添加 → 勾选**物理世界感知**。技能、MCP 服务、插件全部清空，只保留物理世界感知 Agent。
+
+![在 Agent 列表中勾选「物理世界感知」](./assets/caption-step3-select-agent.png)
+
+#### Step 4：开通物理世界感知服务
+
+首次使用需点击「开通服务」激活物理世界感知能力。
+
+![首次需点击「开通服务」](./assets/caption-step4-enable-service.png)
+
+#### Step 5：进入 Agent 配置
+
+在 Agent 区域找到已添加的「物理世界感知」，点击右侧配置按钮进入详细设置。
+
+![点击配置按钮进入物理世界感知 Agent 设置](./assets/caption-step5-agent-config.png)
+
+#### Step 6：选择 IPC 场景
+
+在场景类型下拉框中选择 **IPC（消费级摄像头设备）**。另有「智能驾驶」和「具身智能」两个场景可选，本文档针对 IPC。
+
+![场景类型选择 IPC（消费级摄像头设备）](./assets/caption-step6-scene-type.png)
+
+#### Step 7：发布
+
+配置完成后点击右上角**发布**按钮。必须发布后才能通过 API 调用。
+
+### 10.4 HTTP 协议接入
+
+#### 请求地址
+
+```
+POST https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation
+```
+
+#### 请求头
+
+```
+Authorization: Bearer {YOUR_API_KEY}
+Content-Type: application/json
+X-DashScope-SSE: enable
+```
+
+#### 请求体
+
+```json
+{
+  "model": "multimodal-dialog",
+  "input": {
+    "directive": "Request",
+    "app_id": "{YOUR_APP_ID}",
+    "text": ""
+  },
+  "parameters": {
+    "client_info": {
+      "user_id": "{END_USER_ID}",
+      "device": {
+        "uuid": "{DEVICE_UUID}"
+      }
+    },
+    "biz_params": {
+      "commands": [{
+        "name": "agent_command",
+        "exec_params": {
+          "app_id": "physical_sense",
+          "intent": "open_physical_sense",
+          "slots": [{
+            "name": "scene",
+            "norm_value": "ipc"
+          }]
+        }
+      }],
+      "user_defined_params": {
+        "physical_sense": {
+          "user_prompt_params": {
+            "param": {
+              "format": "image",
+              "prompt": "",
+              "images": [
+                {
+                  "type": "url",
+                  "value": "https://example.com/event-frame.jpg"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+#### 关键参数说明
+
+| 参数路径 | 说明 |
+|---|---|
+| `model` | 固定 `multimodal-dialog` |
+| `input.app_id` | 在百炼「我的应用」页面获取 |
+| `input.text` | 本场景置为空字符串 `""` |
+| `client_info.user_id` | 终端用户 ID，最长 36 字符 |
+| `client_info.device.uuid` | 设备唯一 ID，最长 40 字符 |
+| `commands[0].exec_params.slots` | 场景槽位：`ipc` / `embodied` / `auto_driving` |
+| `user_prompt_params.param.format` | 资源类型：`image` 或 `video` |
+| `user_prompt_params.param.prompt` | 可选自定义提示词（空则用默认） |
+| `user_prompt_params.param.images[].type` | `url`（HTTPS）或 `base64` |
+| `user_prompt_params.param.images[].value` | 图片 URL 或 base64 字符串 |
+
+#### 约束
+
+- 图片分辨率推荐 640×480 ~ 1920×1080
+- `type=base64` 时，所有 image 累加不超过 10 MB
+- `type=url` 时必须 HTTPS，不支持 HTTP
+
+### 10.5 返回解析
+
+返回以 SSE 事件流推送，只需关注 `finished=true` 的最终包：
+
+```json
+{
+  "output": {
+    "finished": true,
+    "finish_reason": "stop",
+    "text": "{\"object\": [\"女性成人\"], \"action\": [], \"event\": [], \"description\": \"一位年轻的女性成人...\", \"title\": \"女子静立书架前\"}",
+    "event": "RespondingContent",
+    "dialog_id": "0a40fa17-faaa-4b3c-9b78-8e683a5ff7ad",
+    "extra_info": {
+      "agent_info": {
+        "intent_infos": [{
+          "intent": "open_physical_sense",
+          "domain": "physical_sense"
+        }]
+      }
+    }
+  },
+  "request_id": "xxx"
+}
+```
+
+`output.text` 为 JSON 字符串，需二次 `JSON.parse()` 得到结构化 Caption。
+
+### 10.6 curl 完整示例
+
+```bash
+curl --request POST \
+  --url https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation \
+  --header 'Authorization: Bearer YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --header 'X-DashScope-SSE: enable' \
+  --data '{
+"model": "multimodal-dialog",
+"input": {
+  "directive": "Request",
+  "app_id": "YOUR_APP_ID",
+  "text": ""
+},
+"parameters": {
+  "client_info": {
+    "user_id": "user_001",
+    "device": { "uuid": "cam_livingroom_01" }
+  },
+  "biz_params": {
+    "commands": [{
+      "name": "agent_command",
+      "exec_params": {
+        "app_id": "physical_sense",
+        "intent": "open_physical_sense",
+        "slots": [{ "name": "scene", "norm_value": "ipc" }]
+      }
+    }],
+    "user_defined_params": {
+      "physical_sense": {
+        "user_prompt_params": {
+          "param": {
+            "format": "image",
+            "prompt": "",
+            "images": [{
+              "type": "url",
+              "value": "https://your-oss-bucket.oss-cn-hangzhou.aliyuncs.com/events/frame_001.jpg"
+            }]
+          }
+        }
+      }
+    }
+  }
+}
+}'
+```
+
+### 10.7 与 OSS AI 内容感知的关系
+
+| 维度 | OSS AI 内容感知（第五章） | 物理世界感知 Agent（本章） |
+|---|---|---|
+| 触发方式 | 文件写入 OSS 自动触发 | 主动调 API，逐帧/逐段请求 |
+| 适用时机 | 事后批量索引与检索 | 实时事件触发分析 |
+| 输出形态 | description + summary + 向量索引 | 结构化 JSON（object/action/event/description/title） |
+| 典型用法 | "找小孩跳沙发那段" | 事件录像推送摘要、AI 相册标签 |
+| 组合方式 | 实时由本章能力生成 caption → 写入 OSS → 被 AI 内容感知索引 → 支持后续检索 |
