@@ -14,16 +14,52 @@
 
 ---
 
-## 品类导航
+## 热门品类
 
-| # | 品类 | 状态 | 核心能力 |
-|:---:|---|:---:|---|
-| 01 | [**IPC / AI 视觉**](./solutions/01-ipc/) | ✅ 完整版 | 视频以文搜图 + 摘要订阅 |
-| 02 | [**AI 眼镜**](./solutions/02-ai-glasses/) | 🚧 占位版 | 多模态交互套件，端到端打包 |
-| 03 | [**AI 玩具 / 陪伴 / 儿童伴学**](./solutions/03-toys-companion/) | ✅ 完整版 | 自定义对话角色 + 声音克隆 |
-| 04 | [**桌宠**](./solutions/04-desktop-pet/) | 🚧 占位版 | 动作情绪标签 + 情感 TTS |
-| 05 | [**AI 耳机**](./solutions/05-ai-earphone/) | ✅ 完整版 | 实时翻译 / 对话 / 听记多用途 |
-| 06 | [**录音卡 / 会议盒子**](./solutions/06-recorder/) | ✅ 完整版 | ASR + 纪要 Agent，结构化纪要 |
+<table width="100%">
+<tr>
+<th align="center">#</th>
+<th align="left">品类</th>
+<th align="center">状态</th>
+<th align="left">核心能力</th>
+</tr>
+<tr>
+<td align="center">01</td>
+<td><a href="./solutions/01-ipc/"><b>IPC / AI 视觉</b></a></td>
+<td align="center">✅ 完整版</td>
+<td>视频以文搜图 + 摘要订阅</td>
+</tr>
+<tr>
+<td align="center">02</td>
+<td><a href="./solutions/02-ai-glasses/"><b>AI 眼镜</b></a></td>
+<td align="center">🚧 占位版</td>
+<td>多模态交互套件，端到端打包</td>
+</tr>
+<tr>
+<td align="center">03</td>
+<td><a href="./solutions/03-toys-companion/"><b>AI 玩具 / 陪伴 / 儿童伴学</b></a></td>
+<td align="center">✅ 完整版</td>
+<td>自定义对话角色 + 声音克隆</td>
+</tr>
+<tr>
+<td align="center">04</td>
+<td><a href="./solutions/04-desktop-pet/"><b>桌宠</b></a></td>
+<td align="center">🚧 占位版</td>
+<td>动作情绪标签 + 情感 TTS</td>
+</tr>
+<tr>
+<td align="center">05</td>
+<td><a href="./solutions/05-ai-earphone/"><b>AI 耳机</b></a></td>
+<td align="center">✅ 完整版</td>
+<td>实时翻译 / 对话 / 听记多用途</td>
+</tr>
+<tr>
+<td align="center">06</td>
+<td><a href="./solutions/06-recorder/"><b>录音卡 / 会议盒子</b></a></td>
+<td align="center">✅ 完整版</td>
+<td>ASR + 纪要 Agent，结构化纪要</td>
+</tr>
+</table>
 
 > 📌 未来计划：[future/](./future/) — 具身智能 / 桌面服务机器人、智能手表等
 
@@ -48,35 +84,26 @@ solutions/0X-xxxx/
 
 <table>
 <tr>
-<td width="50%">
+<td width="34%">
 
-### 🏭 方案商
+### 🏭 方案商 / 品牌商
 
-1. 进入感兴趣的品类目录
-2. 读 `01-business.md` 判断值不值得投入
-3. 读 `02-solution.md` 看技术方案
-4. 读 `03-cost.md` 算清楚账
-
-</td>
-<td width="50%">
-
-### 🏢 品牌商
-
-1. 看 [docs/ 门面页](./docs/) 对全品类的总览
-2. 锁定方向后进入对应品类
+1. 看 [docs/ 门面页](./docs/) 了解全品类总览
+2. 进入感兴趣的品类目录
+3. 读 [01-business.md](./solutions/01-ipc/01-business.md) 判断值不值得投入
+4. 读 [02-solution.md](./solutions/01-ipc/02-solution.md) 看技术方案
+5. 读 [03-cost.md](./solutions/01-ipc/03-cost.md) 算清楚账
 
 </td>
-</tr>
-<tr>
-<td>
+<td width="33%">
 
 ### 👩‍💻 开发者
 
-1. 进入 `solutions/0X-xxxx/demo/`
+1. 进入 [solutions/0X-xxxx/demo/](./solutions/01-ipc/demo/)
 2. 跑通示例 → 改造成自家产品
 
 </td>
-<td>
+<td width="33%">
 
 ### 🔍 了解生态
 
