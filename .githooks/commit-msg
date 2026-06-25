@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+#
+# aihw-starter commit-msg hook
+# 强制 Conventional Commits 格式：
+#   <type>(<scope>)?: <subject>
+#   或带破坏性变更标记 <type>!: <subject>
+# 支持的 type：feat / fix / docs / style / refactor / perf / test / build / ci / chore / revert / catalog
+# subject 长度 ≤ 80 字符（用中文友好的字符数计算）
+# 允许 merge / revert / fixup 自动提交直接通过
+
+set -euo pipefail
+
+MSG_FILE="$1"
+FIRST_LINE=$(head -n1 "$MSG_FILE")
+
+# 放行特殊提交
+case "$FIRST_LINE" in
+  "Merge "*|"Revert "*|"fixup! "*|"squash! "*) exit 0 ;;
+esac
+
+RED='\033[0;31m'
+NC='\033[0m'
+
+PATTERN='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|catalog)(\([^)]+\))?!?:\ .+'
+
+if ! [[ "$FIRST_LINE" =~ $PATTERN ]]; then
+  echo -e "${RED}✗ commit-msg 不符合 Conventional Commits 规范${NC}"
+  echo "  当前: $FIRST_LINE"
+  echo ""
+  echo "  期望: <type>(<scope>)?: <subject>"
+  echo "  示例: feat(solutions): 新增 AI 录音卡品类完整版"
+  echo "        fix(docs): 修正商业模式表格列对齐"
+  echo "        feat!: v3.0.0 破坏性结构调整"
+  echo ""
+  echo "  type 可选值: feat / fix / docs / style / refactor / perf / test"
+  echo "             build / ci / chore / revert / catalog"
+  exit 1
+fi
+
+# 字符长度上限（中文 1 字符 = 1）
+LEN=$(echo -n "$FIRST_LINE" | wc -m | tr -d ' ')
+if [ "$LEN" -gt 80 ]; then
+  echo -e "${RED}✗ commit-msg 首行过长 (${LEN} > 80 字符)${NC}"
+  echo "  请把详情放到正文段（空一行后续写）"
+  exit 1
+fi
+
+exit 0
