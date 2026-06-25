@@ -15,8 +15,8 @@
 在已有品类目录下新增 `02-solution-{model}.md`，例如：
 
 ```
-solutions/01-toys-companion/02-solution-doubao.md
-solutions/05-ipc/02-solution-deepseek.md
+solutions/03-toys-companion/02-solution-doubao.md
+solutions/01-ipc/02-solution-deepseek.md
 ```
 
 `{model}` 用全小写英文短名（doubao / kimi / glm / deepseek / openai / wenxin / gemini ...）。
@@ -49,14 +49,14 @@ solutions/05-ipc/02-solution-deepseek.md
 **A. 作为某客户在某品类的脱敏案例**——补充到对应品类的 `04-cases.md`：
 
 ```
-solutions/05-ipc/04-cases.md  ← 末尾追加新案例
+solutions/01-ipc/04-cases.md  ← 末尾追加新案例
 ```
 
 **B. 作为在售产品记录**——提交到 `awesome/commercial-products/` 下对应品类的 markdown：
 
 ```
-awesome/commercial-products/by-category/01-toys-companion.md
-awesome/commercial-products/by-category/05-ipc.md
+awesome/commercial-products/by-category/03-toys-companion.md
+awesome/commercial-products/by-category/01-ipc.md
 ```
 
 ### 案例条目最小信息（脱敏版）
@@ -107,7 +107,7 @@ solutions/0X-{slug}/
 
 ### 6 文件的标准小节
 
-请直接参考 `solutions/01-toys-companion/` 或 `solutions/05-ipc/` 的完整版作为模板。
+请直接参考 `solutions/03-toys-companion/` 或 `solutions/01-ipc/` 的完整版作为模板。
 
 ---
 
@@ -141,8 +141,8 @@ solutions/0X-{slug}/
 补充到 `awesome/open-source/by-category/` 下对应品类的 markdown：
 
 ```
-awesome/open-source/by-category/01-toys-companion.md
-awesome/open-source/by-category/05-ipc.md
+awesome/open-source/by-category/03-toys-companion.md
+awesome/open-source/by-category/01-ipc.md
 ...
 ```
 
@@ -180,10 +180,10 @@ awesome/open-source/by-category/05-ipc.md
 ## 七、PR 流程
 
 1. **Fork 本仓库**到你自己的 GitHub 账号。
-2. 在你的 fork 上创建一个 feature 分支：`feat/01-toys-companion-doubao` 或 `docs/05-ipc-cost-update` 等语义化命名。
+2. 在你的 fork 上创建一个 feature 分支：`feat/03-toys-companion-doubao` 或 `docs/01-ipc-cost-update` 等语义化命名。
 3. 提交时请用清晰的 commit message：
-   - `feat(01-toys-companion): add doubao solution`
-   - `docs(05-ipc): update cost section with 2026 pricing`
+   - `feat(03-toys-companion): add doubao solution`
+   - `docs(01-ipc): update cost section with 2026 pricing`
    - `feat(awesome/commercial-products): add new IPC product entry`
 4. **PR 模板**会要求你填写：
    - 这次贡献属于上面哪一类（一/二/三/四/五）

@@ -10,12 +10,12 @@
 
 | # | 品类 | 状态 | 一句话定位 |
 |---|---|---|---|
-| 01 | [IPC / AI 视觉](./solutions/05-ipc/) | 完整版 | 视频以文搜图 + 摘要订阅 |
-| 02 | [AI 眼镜](./solutions/06-ai-glasses/) | 占位版 | 多模态交互套件，端到端打包 |
-| 03 | [AI 玩具 / 陪伴 / 儿童伴学](./solutions/01-toys-companion/) | 完整版 | 自定义对话角色 + 声音克隆，IP 与儿童陪伴双线 |
-| 04 | [桌宠](./solutions/02-desktop-pet/) | 占位版 | 动作情绪标签 + 情感 TTS，三路同步 |
-| 05 | [AI 耳机](./solutions/04-ai-earphone/) | 占位版 | 实时翻译 / 对话 / 听记多用途 |
-| 06 | [录音卡 / 会议盒子](./solutions/03-recorder/) | 占位版 | ASR + 纪要 Agent，2–5 分钟出结构化纪要 |
+| 01 | [IPC / AI 视觉](./solutions/01-ipc/) | 完整版 | 视频以文搜图 + 摘要订阅 |
+| 02 | [AI 眼镜](./solutions/02-ai-glasses/) | 占位版 | 多模态交互套件，端到端打包 |
+| 03 | [AI 玩具 / 陪伴 / 儿童伴学](./solutions/03-toys-companion/) | 完整版 | 自定义对话角色 + 声音克隆，IP 与儿童陪伴双线 |
+| 04 | [桌宠](./solutions/04-desktop-pet/) | 占位版 | 动作情绪标签 + 情感 TTS，三路同步 |
+| 05 | [AI 耳机](./solutions/05-ai-earphone/) | 占位版 | 实时翻译 / 对话 / 听记多用途 |
+| 06 | [录音卡 / 会议盒子](./solutions/06-recorder/) | 占位版 | ASR + 纪要 Agent，2–5 分钟出结构化纪要 |
 
 未来计划：[future/](./future/)（具身智能 / 桌面服务机器人、智能手表等）
 
@@ -47,11 +47,11 @@ aihw-starter/
 
 ## 快速开始
 
-**方案商**：从感兴趣的品类进入 → 读 [01-business.md](./solutions/05-ipc/01-business.md) 判断是否值得投入 → 读 [02-solution.md](./solutions/05-ipc/02-solution.md) 看技术方案 → 读 [03-cost.md](./solutions/05-ipc/03-cost.md) 算账。
+**方案商**：从感兴趣的品类进入 → 读 [01-business.md](./solutions/01-ipc/01-business.md) 判断是否值得投入 → 读 [02-solution.md](./solutions/01-ipc/02-solution.md) 看技术方案 → 读 [03-cost.md](./solutions/01-ipc/03-cost.md) 算账。
 
-**品牌商**：先看 [docs/ 门面页](./docs/) 对全品类的总览 → 锁定方向后进入对应 solution 的 [01-business.md](./solutions/05-ipc/01-business.md)。
+**品牌商**：先看 [docs/ 门面页](./docs/) 对全品类的总览 → 锁定方向后进入对应 solution 的 [01-business.md](./solutions/01-ipc/01-business.md)。
 
-**开发者**：进入 [solutions/05-ipc/demo/](./solutions/05-ipc/demo/) 跑通示例 → 改造成自家产品。
+**开发者**：进入 [solutions/01-ipc/demo/](./solutions/01-ipc/demo/) 跑通示例 → 改造成自家产品。
 
 **了解开源生态**：[awesome/open-source/](./awesome/open-source/) 已收录 136 个 GitHub 开源项目，覆盖 15 品类。
 
@@ -63,8 +63,8 @@ aihw-starter/
 
 仓库欢迎以下四类贡献：
 
-1. **新增其他大模型方案**：在现有 solution 下新增 [02-solution-{model}.md](./solutions/05-ipc/02-solution.md)
-2. **新增方案商端到端方案**：在 [04-cases.md](./solutions/05-ipc/04-cases.md) 加脱敏案例，或在 [awesome/commercial-products/](./awesome/commercial-products/) 加在售产品记录
+1. **新增其他大模型方案**：在现有 solution 下新增 [02-solution-{model}.md](./solutions/01-ipc/02-solution.md)
+2. **新增方案商端到端方案**：在 [04-cases.md](./solutions/01-ipc/04-cases.md) 加脱敏案例，或在 [awesome/commercial-products/](./awesome/commercial-products/) 加在售产品记录
 3. **新增品类**：从 [future/README.md](./future/README.md) 路线图认领，提交完整 6 文件 + demo
 4. **新增开源项目**：补充到 [awesome/open-source/by-category/](./awesome/open-source/by-category/) 对应文件
 

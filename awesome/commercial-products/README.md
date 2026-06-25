@@ -14,12 +14,12 @@
 
 详细按品类的产品列表见 [`by-category/`](./by-category/)：
 
-- [`01-toys-companion.md`](./by-category/01-toys-companion.md) — 玩具/陪伴方向商业产品
-- [`02-desktop-pet.md`](./by-category/02-desktop-pet.md) — 桌宠/毛绒方向商业产品
-- [`03-recorder.md`](./by-category/03-recorder.md) — 录音/纪要方向商业产品
-- [`04-ai-earphone.md`](./by-category/04-ai-earphone.md) — AI 耳机方向商业产品
-- [`05-ipc.md`](./by-category/05-ipc.md) — IPC/视觉方向商业产品
-- [`06-ai-glasses.md`](./by-category/06-ai-glasses.md) — AI 眼镜方向商业产品
+- [`01-ipc.md`](./by-category/01-ipc.md) — IPC/视觉方向商业产品
+- [`02-ai-glasses.md`](./by-category/02-ai-glasses.md) — AI 眼镜方向商业产品
+- [`03-toys-companion.md`](./by-category/03-toys-companion.md) — 玩具/陪伴方向商业产品
+- [`04-desktop-pet.md`](./by-category/04-desktop-pet.md) — 桌宠方向商业产品
+- [`05-ai-earphone.md`](./by-category/05-ai-earphone.md) — AI 耳机方向商业产品
+- [`06-recorder.md`](./by-category/06-recorder.md) — 录音/纪要方向商业产品
 
 ## 3. 产品卡片格式
 

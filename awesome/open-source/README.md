@@ -13,12 +13,12 @@
 
 详细按品类的项目列表见 [`by-category/`](./by-category/)，覆盖：
 
-- [`01-toys-companion.md`](./by-category/01-toys-companion.md) — 玩具/陪伴方向开源项目
-- [`02-desktop-pet.md`](./by-category/02-desktop-pet.md) — 桌宠/毛绒方向开源项目
-- [`03-recorder.md`](./by-category/03-recorder.md) — 录音/纪要方向开源项目
-- [`04-ai-earphone.md`](./by-category/04-ai-earphone.md) — AI 耳机方向开源项目
-- [`05-ipc.md`](./by-category/05-ipc.md) — IPC/视觉方向开源项目
-- [`06-ai-glasses.md`](./by-category/06-ai-glasses.md) — AI 眼镜方向开源项目
+- [`01-ipc.md`](./by-category/01-ipc.md) — IPC/视觉方向开源项目
+- [`02-ai-glasses.md`](./by-category/02-ai-glasses.md) — AI 眼镜方向开源项目
+- [`03-toys-companion.md`](./by-category/03-toys-companion.md) — 玩具/陪伴方向开源项目
+- [`04-desktop-pet.md`](./by-category/04-desktop-pet.md) — 桌宠方向开源项目
+- [`05-ai-earphone.md`](./by-category/05-ai-earphone.md) — AI 耳机方向开源项目
+- [`06-recorder.md`](./by-category/06-recorder.md) — 录音/纪要方向开源项目
 
 ## 3. 收录原则
 
