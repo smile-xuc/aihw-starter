@@ -10,12 +10,12 @@
 
 | # | 品类 | 状态 | 一句话定位 |
 |---|---|---|---|
-| 05 | [IPC / AI 视觉](./solutions/05-ipc/) | 完整版 | 视频以文搜图 + 摘要订阅 |
-| 06 | [AI 眼镜](./solutions/06-ai-glasses/) | 占位版 | 多模态交互套件，端到端打包 |
-| 01 | [AI 玩具 / 陪伴 / 儿童伴学](./solutions/01-toys-companion/) | 完整版 | 自定义对话角色 + 声音克隆，IP 与儿童陪伴双线 |
-| 02 | [桌宠](./solutions/02-desktop-pet/) | 占位版 | 动作情绪标签 + 情感 TTS，三路同步 |
-| 04 | [AI 耳机](./solutions/04-ai-earphone/) | 占位版 | 实时翻译 / 对话 / 听记多用途 |
-| 03 | [录音卡 / 会议盒子](./solutions/03-recorder/) | 占位版 | ASR + 纪要 Agent，2–5 分钟出结构化纪要 |
+| 01 | [IPC / AI 视觉](./solutions/05-ipc/) | 完整版 | 视频以文搜图 + 摘要订阅 |
+| 02 | [AI 眼镜](./solutions/06-ai-glasses/) | 占位版 | 多模态交互套件，端到端打包 |
+| 03 | [AI 玩具 / 陪伴 / 儿童伴学](./solutions/01-toys-companion/) | 完整版 | 自定义对话角色 + 声音克隆，IP 与儿童陪伴双线 |
+| 04 | [桌宠](./solutions/02-desktop-pet/) | 占位版 | 动作情绪标签 + 情感 TTS，三路同步 |
+| 05 | [AI 耳机](./solutions/04-ai-earphone/) | 占位版 | 实时翻译 / 对话 / 听记多用途 |
+| 06 | [录音卡 / 会议盒子](./solutions/03-recorder/) | 占位版 | ASR + 纪要 Agent，2–5 分钟出结构化纪要 |
 
 未来计划：[future/](./future/)（具身智能 / 桌面服务机器人、智能手表等）
 
