@@ -1,4 +1,17 @@
-# 录音卡（Recorder）
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">🎙️ 录音卡 / 会议盒子</a> &nbsp;›&nbsp; <b>📖 品类概述</b></sub>
+
+# 📖 录音卡（Recorder）
+
+`🎙️ 录音卡 / 会议盒子` · `品类概述`
+
+</div>
+
+---
+<!-- HERO:END -->
+
 ## 品类概述
 
 **便携式录音设备 + AI 转写 + AI 摘要** 的工作工具品类，面向会议、访谈、课堂、销售拜访等场景。形态：挂绳录音卡、笔形录音、夹式录音三类。客单价 200–800 元，叠加云端订阅服务。
@@ -49,3 +62,28 @@
 
 **版本**：千问大模型方案（首发版 · 占位）
 **说明**：本品类当前为占位版本，欢迎 PR 补全。参考 [CONTRIBUTING.md](../../CONTRIBUTING.md) 第三章。
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<sub>（首篇）</sub>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="01-business.md">💼 商业化分析 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

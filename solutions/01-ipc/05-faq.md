@@ -1,4 +1,16 @@
-# IPC / AI 视觉 常见问题
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">📷 IPC / AI 视觉</a> &nbsp;›&nbsp; <b>❓ 常见问答</b></sub>
+
+# ❓ IPC / AI 视觉 常见问题
+
+`📷 IPC / AI 视觉` · `常见问答`
+
+</div>
+
+---
+<!-- HERO:END -->
 
 > 本页只收录 IPC 品类的高频问题。通用问题（账号、API-KEY、跨境合规等）见根目录 [`faq.md`](../../faq.md)。
 
@@ -94,3 +106,28 @@ A：① 提前开通配额（联系阿里云架构师）；② 在文件过滤�
 **版本**：千问大模型方案 · 首发版
 **更新日期**：2026-06
 **贡献欢迎**：发现错误或想补充其他平台/方案商的 FAQ，请提 PR，详见 [`CONTRIBUTING.md`](../../CONTRIBUTING.md)
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<a href="04-cases.md">← 📦 公开案例</a>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="demo/README.md">🧪 Demo →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

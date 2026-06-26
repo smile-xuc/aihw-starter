@@ -1,4 +1,16 @@
-# 玩具/陪伴 常见问题
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">🧸 AI 玩具 / 陪伴</a> &nbsp;›&nbsp; <b>❓ 常见问答</b></sub>
+
+# ❓ 玩具/陪伴 常见问题
+
+`🧸 AI 玩具 / 陪伴` · `常见问答`
+
+</div>
+
+---
+<!-- HERO:END -->
 
 > 本页面只收录玩具/陪伴品类的高频问题。通用问题（账号、API-KEY、跨境合规等）见根目录 [`faq.md`](../../faq.md)。
 
@@ -79,3 +91,28 @@ A：可以。常见做法是按月给每台设备分配 token 包，超过后降
 **版本**：千问大模型方案 · 首发版
 **更新日期**：2026-06
 **贡献欢迎**：发现错误或想补充其他模型的 FAQ，请提 PR，详见 [`CONTRIBUTING.md`](../../CONTRIBUTING.md)
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<a href="04-cases.md">← 📦 公开案例</a>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="demo/README.md">🧪 Demo →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

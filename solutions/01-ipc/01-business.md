@@ -1,4 +1,16 @@
-# IPC / AI 视觉 商业化分析
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">📷 IPC / AI 视觉</a> &nbsp;›&nbsp; <b>💼 商业化分析</b></sub>
+
+# 💼 IPC / AI 视觉 商业化分析
+
+`📷 IPC / AI 视觉` · `商业化分析`
+
+</div>
+
+---
+<!-- HERO:END -->
 
 > 本页客观描述 IPC（智能摄像头）品类在 AI 化升级中的商业模式、客户画像与订阅可行性，所有数据为公开市场观察值的量级估计，不含具体客户营收信息。
 
@@ -100,3 +112,28 @@ IPC 的 AI 升级**不需要换硬件**，存量设备直接软件升级即可�
 **版本**：千问大模型方案 · 首发版
 **更新日期**：2026-06
 **贡献欢迎**：补充其他云存平台的 AI 升级案例，请见 [`CONTRIBUTING.md`](../../CONTRIBUTING.md)
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<a href="README.md">← 📖 品类概述</a>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="02-solution.md">🛠️ 技术方案 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

@@ -1,4 +1,16 @@
-# Demo · 玩具/陪伴
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="../README.md">🧸 AI 玩具 / 陪伴</a> &nbsp;›&nbsp; <b>🧪 Demo</b></sub>
+
+# 🧪 Demo · 玩具/陪伴
+
+`🧸 AI 玩具 / 陪伴` · `Demo`
+
+</div>
+
+---
+<!-- HERO:END -->
 
 > 本目录用于存放玩具/陪伴品类的可运行示例代码。
 > 当前为占位版，欢迎社区贡献最小可运行 demo。
@@ -21,3 +33,28 @@
 - 测试音频/示例输入（小尺寸）
 
 详见根目录 [`CONTRIBUTING.md`](../../../CONTRIBUTING.md)。
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<a href="../05-faq.md">← ❓ 常见问答</a>
+
+</td>
+<td align="center" width="34%">
+
+<a href="../README.md">↑ 返回品类首页</a> · <a href="../../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<sub>（末篇）</sub>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

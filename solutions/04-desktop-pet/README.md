@@ -1,4 +1,17 @@
-# 桌宠（Desktop Pet）
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">🪴 桌宠</a> &nbsp;›&nbsp; <b>📖 品类概述</b></sub>
+
+# 📖 桌宠（Desktop Pet）
+
+`🪴 桌宠` · `品类概述`
+
+</div>
+
+---
+<!-- HERO:END -->
+
 ## 品类概述
 
 **带屏幕情绪表达 + 舵机肢体动作 + AI 对话** 的桌面陪伴设备。客单价 500–2000 元，面向年轻人/办公场景的情感陪伴与小空间互动。代表形态：表情屏 + 舵机摆头/挥手 + 语音对话三路同步。
@@ -49,3 +62,28 @@ LLM 一次推理同时输出 **文字回复 + 情绪标签 + 动作标签**（�
 
 **版本**：千问大模型方案（首发版 · 占位）
 **说明**：本品类当前为占位版本，欢迎 PR 补全 01/03/04/05。参考 [CONTRIBUTING.md](../../CONTRIBUTING.md) 第三章。
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<sub>（首篇）</sub>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="01-business.md">💼 商业化分析 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

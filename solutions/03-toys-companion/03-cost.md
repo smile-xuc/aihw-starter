@@ -1,4 +1,16 @@
-# 玩具陪伴 成本与计费
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">🧸 AI 玩具 / 陪伴</a> &nbsp;›&nbsp; <b>💰 成本与计费</b></sub>
+
+# 💰 玩具陪伴 成本与计费
+
+`🧸 AI 玩具 / 陪伴` · `成本与计费`
+
+</div>
+
+---
+<!-- HERO:END -->
 
 > 所有数字为公开计费口径量级或一般性行业参考。具体单价以厂商官方计费页面为准。
 > 本文档不发布任何客户具体报价或转化率数字。
@@ -134,3 +146,28 @@
 - ASR 计费：参考上面页面中「语音识别」分类
 
 > 本仓库不维护具体单价数字，避免过期误导。
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<a href="02-solution.md">← 🛠️ 技术方案</a>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="04-cases.md">📦 公开案例 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

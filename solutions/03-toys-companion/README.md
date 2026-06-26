@@ -1,4 +1,17 @@
-# 玩具陪伴（Toys & Companion）
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">🧸 AI 玩具 / 陪伴</a> &nbsp;›&nbsp; <b>📖 品类概述</b></sub>
+
+# 📖 玩具陪伴（Toys & Companion）
+
+`🧸 AI 玩具 / 陪伴` · `品类概述`
+
+</div>
+
+---
+<!-- HERO:END -->
+
 ## 品类概述
 
 **毛绒玩具、桌面陪聊娃娃、卡通儿童伴学机** 这一类 200–500 元价位、面向儿童与情感陪伴场景的 AI 硬件。核心特征：以语音对话为主交互、有 IP 形象、续航/无线优先。
@@ -50,3 +63,28 @@
 
 **版本**：千问大模型方案（首发版）
 **期待补充**：豆包、Kimi、智谱、其他模型方案 PR 欢迎，参考 [CONTRIBUTING.md](../../CONTRIBUTING.md) 第一章。
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<sub>（首篇）</sub>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="01-business.md">💼 商业化分析 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

@@ -1,4 +1,16 @@
-# AI 耳机 公开案例（占位版）
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">🎧 AI 耳机</a> &nbsp;›&nbsp; <b>📦 公开案例</b></sub>
+
+# 📦 AI 耳机 公开案例（占位版）
+
+`🎧 AI 耳机` · `公开案例`
+
+</div>
+
+---
+<!-- HERO:END -->
 
 > **占位说明**：本页只列出方向性的公开案例线索，详细案例分析待后续版本补充。
 > 案例不代表本仓库立场，欢迎补充更多公开渠道可查证的案例（详见 [`CONTRIBUTING.md`](../../CONTRIBUTING.md)）。
@@ -60,3 +72,28 @@
 
 **版本**：千问大模型方案 · 占位版
 **更新日期**：2026-06
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<a href="03-cost.md">← 💰 成本与计费</a>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="05-faq.md">❓ 常见问答 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

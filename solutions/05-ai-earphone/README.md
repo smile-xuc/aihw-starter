@@ -1,4 +1,17 @@
-# AI 耳机（AI Earphone）
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">🎧 AI 耳机</a> &nbsp;›&nbsp; <b>📖 品类概述</b></sub>
+
+# 📖 AI 耳机（AI Earphone）
+
+`🎧 AI 耳机` · `品类概述`
+
+</div>
+
+---
+<!-- HERO:END -->
+
 ## 品类概述
 
 **带 AI 能力的无线耳机**——覆盖三个细分场景：
@@ -55,3 +68,28 @@
 
 **版本**：千问大模型方案（首发版 · 占位）
 **说明**：本品类当前为占位版本，欢迎 PR 补全。参考 [CONTRIBUTING.md](../../CONTRIBUTING.md) 第三章。
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<sub>（首篇）</sub>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="01-business.md">💼 商业化分析 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

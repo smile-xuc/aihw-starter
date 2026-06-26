@@ -1,4 +1,16 @@
-# 桌宠 / 毛绒 常见问题（占位版）
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">🪴 桌宠</a> &nbsp;›&nbsp; <b>❓ 常见问答</b></sub>
+
+# ❓ 桌宠 / 毛绒 常见问题（占位版）
+
+`🪴 桌宠` · `常见问答`
+
+</div>
+
+---
+<!-- HERO:END -->
 
 > **占位说明**：本页只收录最高频的几个问题，详细 FAQ 待后续版本补充。
 > 通用问题见根目录 [`faq.md`](../../faq.md)。
@@ -34,3 +46,28 @@ A：固件层为每个 action 设置最大执行时长，到时强制归位。�
 
 **版本**：千问大模型方案 · 占位版
 **更新日期**：2026-06
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<a href="04-cases.md">← 📦 公开案例</a>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="demo/README.md">🧪 Demo →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

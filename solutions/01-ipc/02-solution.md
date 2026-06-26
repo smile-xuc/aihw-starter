@@ -1,4 +1,16 @@
-# 推荐方案与接入指南
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">📷 IPC / AI 视觉</a> &nbsp;›&nbsp; <b>🛠️ 技术方案</b></sub>
+
+# 🛠️ 推荐方案与接入指南
+
+`📷 IPC / AI 视觉` · `技术方案`
+
+</div>
+
+---
+<!-- HERO:END -->
 
 > **方案版本**：千问大模型方案（首发版）
 >
@@ -465,3 +477,28 @@ response = client.chat.completions.create(
 - OSS AI 内容感知：https://help.aliyun.com/zh/oss/user-guide/ai-content-awareness
 - Qwen-VL 视觉模型：https://help.aliyun.com/zh/model-studio/vision
 - DoMetaQuery API 参考：https://help.aliyun.com/zh/oss/developer-reference/dometaquery
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<a href="01-business.md">← 💼 商业化分析</a>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="03-cost.md">💰 成本与计费 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

@@ -1,4 +1,16 @@
-# 桌宠 / 毛绒 商业化分析（占位版）
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">🪴 桌宠</a> &nbsp;›&nbsp; <b>💼 商业化分析</b></sub>
+
+# 💼 桌宠 / 毛绒 商业化分析（占位版）
+
+`🪴 桌宠` · `商业化分析`
+
+</div>
+
+---
+<!-- HERO:END -->
 
 > **占位说明**：本品类商业化分析为简版，详细内容（市场规模、客户画像、定价区间、订阅可行性等）将在后续版本补充。
 > 完整接入方案请见 [`02-solution.md`](./02-solution.md)。
@@ -38,3 +50,28 @@
 **版本**：千问大模型方案 · 占位版
 **更新日期**：2026-06
 **贡献欢迎**：补充本品类商业化分析，请见 [`CONTRIBUTING.md`](../../CONTRIBUTING.md)
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<a href="README.md">← 📖 品类概述</a>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="02-solution.md">🛠️ 技术方案 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

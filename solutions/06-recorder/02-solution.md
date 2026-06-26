@@ -1,4 +1,16 @@
-# 推荐方案与接入指南
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">🎙️ 录音卡 / 会议盒子</a> &nbsp;›&nbsp; <b>🛠️ 技术方案</b></sub>
+
+# 🛠️ 推荐方案与接入指南
+
+`🎙️ 录音卡 / 会议盒子` · `技术方案`
+
+</div>
+
+---
+<!-- HERO:END -->
 
 > **方案版本**：千问大模型方案（首发版）
 >
@@ -206,3 +218,28 @@ recognition.send_audio_frame(audio_chunk)
 - Paraformer-v2 文件转写：https://help.aliyun.com/zh/model-studio/paraformer
 - bailian-cli（本地 mp3 直传）：https://bailian.aliyun.com/cli/install.md
 - 计费页面：https://bailian.console.aliyun.com/?productCode=p_efm#/billing
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<a href="01-business.md">← 💼 商业化分析</a>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="03-cost.md">💰 成本与计费 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

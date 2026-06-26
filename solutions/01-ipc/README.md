@@ -1,4 +1,16 @@
-# IPC（家用摄像头）
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">📷 IPC / AI 视觉</a> &nbsp;›&nbsp; <b>📖 品类概述</b></sub>
+
+# 📖 IPC（家用摄像头）
+
+`📷 IPC / AI 视觉` · `品类概述`
+
+</div>
+
+---
+<!-- HERO:END -->
 
 ## 品类概述
 
@@ -54,3 +66,28 @@
 
 **版本**：千问大模型方案（首发版）
 **期待补充**：豆包、智谱、其他模型方案 PR 欢迎。参考 [CONTRIBUTING.md](../../CONTRIBUTING.md) 第一章。
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<sub>（首篇）</sub>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="01-business.md">💼 商业化分析 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

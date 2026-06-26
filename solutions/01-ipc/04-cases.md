@@ -1,4 +1,16 @@
-# IPC / AI 视觉 公开案例
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">📷 IPC / AI 视觉</a> &nbsp;›&nbsp; <b>📦 公开案例</b></sub>
+
+# 📦 IPC / AI 视觉 公开案例
+
+`📷 IPC / AI 视觉` · `公开案例`
+
+</div>
+
+---
+<!-- HERO:END -->
 
 > 本页只收录公开渠道可查证的产品/案例，所有数据为厂商官方页面或公开报道引用。
 > 案例不代表本仓库立场，欢迎补充其他云存平台/方案商的 IPC AI 升级案例（详见 [`CONTRIBUTING.md`](../../CONTRIBUTING.md)）。
@@ -93,3 +105,28 @@
 
 **版本**：千问大模型方案 · 首发版
 **更新日期**：2026-06
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<a href="03-cost.md">← 💰 成本与计费</a>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="05-faq.md">❓ 常见问答 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

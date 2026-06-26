@@ -1,4 +1,16 @@
-# 玩具陪伴 公开案例
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">🧸 AI 玩具 / 陪伴</a> &nbsp;›&nbsp; <b>📦 公开案例</b></sub>
+
+# 📦 玩具陪伴 公开案例
+
+`🧸 AI 玩具 / 陪伴` · `公开案例`
+
+</div>
+
+---
+<!-- HERO:END -->
 
 > 收录已在公开渠道（官网、官方公众号、媒体报道、官方发布会）披露过技术路线的代表性产品。
 > 本文档不涉及任何客户内部信息或未授权数据。
@@ -87,3 +99,28 @@
 - [ ] 卢卡博士 / 听力熊 / 阿尔法蛋 等头部品牌的公开技术路线
 - [ ] 喜马拉雅小雅 nano / 学而思 / 贝乐虎 / 倾听者 的公开 AI 能力描述
 - [ ] 海外典型案例：Moflin、Pixel Pets、Joy For All 等
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<a href="03-cost.md">← 💰 成本与计费</a>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="05-faq.md">❓ 常见问答 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

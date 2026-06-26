@@ -1,4 +1,16 @@
-# 推荐方案与接入指南
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">👓 AI 眼镜</a> &nbsp;›&nbsp; <b>🛠️ 技术方案</b></sub>
+
+# 🛠️ 推荐方案与接入指南
+
+`👓 AI 眼镜` · `技术方案`
+
+</div>
+
+---
+<!-- HERO:END -->
 
 > **方案版本**：千问大模型方案（首发版）
 >
@@ -193,3 +205,28 @@ tts.play(response.text)
 - Demo 仓库：https://github.com/aliyun/alibabacloud-bailian-speech-demo
 - Qwen-VL 视觉模型：https://help.aliyun.com/zh/model-studio/vision
 - 计费页面：https://bailian.console.aliyun.com/?productCode=p_efm#/billing
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<a href="01-business.md">← 💼 商业化分析</a>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="03-cost.md">💰 成本与计费 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

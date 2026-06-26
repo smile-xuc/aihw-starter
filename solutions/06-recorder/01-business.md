@@ -1,4 +1,16 @@
-# 录音卡 / 会议盒子 商业化分析（占位版）
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">🎙️ 录音卡 / 会议盒子</a> &nbsp;›&nbsp; <b>💼 商业化分析</b></sub>
+
+# 💼 录音卡 / 会议盒子 商业化分析（占位版）
+
+`🎙️ 录音卡 / 会议盒子` · `商业化分析`
+
+</div>
+
+---
+<!-- HERO:END -->
 
 > **占位说明**：本品类商业化分析为简版，详细数据将在后续版本补充。
 > 完整接入方案请见 [`02-solution.md`](./02-solution.md)。
@@ -44,3 +56,28 @@
 
 **版本**：千问大模型方案 · 占位版
 **更新日期**：2026-06
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<a href="README.md">← 📖 品类概述</a>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="02-solution.md">🛠️ 技术方案 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

@@ -1,4 +1,16 @@
-# 玩具陪伴 商业化分析
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">🧸 AI 玩具 / 陪伴</a> &nbsp;›&nbsp; <b>💼 商业化分析</b></sub>
+
+# 💼 玩具陪伴 商业化分析
+
+`🧸 AI 玩具 / 陪伴` · `商业化分析`
+
+</div>
+
+---
+<!-- HERO:END -->
 
 > **范围**：毛绒玩具（带 AI 对话）、桌面陪聊娃娃、儿童伴学机、卡通陪伴机器人
 > **客单价**：200–500 元零售
@@ -102,3 +114,28 @@ AI 模块成本目前主要靠「售价加 5–10 元」直接覆盖，并未亏
 - **生态完整**：从 ASR、LLM、TTS、视觉到长记忆链路打通，无需多家拼接
 
 > 本品类下也欢迎补充豆包、Kimi、智谱、其他模型方案的对应 `01-business-{model}.md` 视角。
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<a href="README.md">← 📖 品类概述</a>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="02-solution.md">🛠️ 技术方案 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->
