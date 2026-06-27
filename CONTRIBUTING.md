@@ -95,7 +95,7 @@ awesome/commercial-products/by-category/01-ipc.md
 solutions/0X-{slug}/
 ├── README.md             ← 1 分钟读完，给读者快速判断要不要继续看
 ├── 01-business.md        ← 市场&需求&可行性
-├── 02-solution.md        ← 推荐架构 + 接入步骤（千问版作为首发，其他模型可后续 PR）
+├── 02-solution.md        ← 推荐架构 + 接入步骤（千问版作为示例方案，其他模型欢迎后续 PR）
 ├── 03-cost.md            ← BOM 拆分 + Token 测算 + 报价口径
 ├── 04-cases.md           ← 公开案例 / 脱敏案例
 ├── 05-faq.md             ← 该品类客户高频问答
