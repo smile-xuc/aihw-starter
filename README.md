@@ -73,9 +73,9 @@
 </tr>
 <tr>
 <td align="center">09</td>
-<td><b>具身智能 / 桌面服务机器人</b></td>
+<td><b>具身智能</b></td>
 <td align="center">📌 计划中</td>
-<td>VLA 端云协同 + 多本体形态</td>
+<td>Qwen-Robot Suite 三模型矩阵（操作 + 导航 + 世界模型）</td>
 </tr>
 </table>
 
