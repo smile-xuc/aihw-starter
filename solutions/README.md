@@ -7,23 +7,26 @@
 | **按品类** | 品牌商 / 方案商 / 决策者：先选赛道，再看方案 | [`by-category/`](./by-category/) |
 | **按方案** | 开发者 / 架构师：先选模型/框架，再看在各品类中的落地 | [`by-solution/`](./by-solution/) |
 
-两个维度互相正交，最终都指向同一份品类内容（`solutions/0X-xxx/`）。
+两个维度互相正交，最终都指向同一份品类内容（`solutions/by-category/0X-xxx/`）。
 
-## 实际品类内容存放位置
-
-为避免破坏既有链接，所有品类的"商业 / 方案 / 算账 / 案例 / FAQ / demo"实际内容仍位于 `solutions/0X-xxx/`：
+## 目录结构
 
 ```
 solutions/
-├── README.md          ← 本页
-├── by-category/       ← 品类维度入口（品牌商视角）
-├── by-solution/       ← 方案维度入口（开发者视角）
-├── 01-ipc/            ← IPC / AI 视觉（完整版）
-├── 02-ai-glasses/     ← AI 眼镜（占位版）
-├── 03-toys-companion/ ← AI 玩具 / 陪伴（完整版）
-├── 04-desktop-pet/    ← 桌宠（占位版）
-├── 05-ai-earphone/    ← AI 耳机（占位版）
-└── 06-recorder/       ← 录音卡 / 会议盒子（占位版）
+├── README.md              ← 本页
+├── by-category/           ← 品类维度（品牌商视角）
+│   ├── README.md          ← 品类总览表格
+│   ├── 01-ipc/            ← IPC / AI 视觉（完整版）
+│   ├── 02-ai-glasses/     ← AI 眼镜（占位版）
+│   ├── 03-toys-companion/ ← AI 玩具 / 陪伴（完整版）
+│   ├── 04-desktop-pet/    ← 桌宠（占位版）
+│   ├── 05-ai-earphone/    ← AI 耳机（完整版）
+│   └── 06-recorder/       ← 录音卡 / 会议盒子（完整版）
+└── by-solution/           ← 方案维度（开发者视角）
+    ├── README.md          ← 方案总览表格
+    ├── 01-qwen.md         ← 千问大模型方案（主示例）
+    ├── 02-xiaozhi.md      ← 小智开源方案（占位）
+    └── 04-talk-to-fengge.md ← Talk-to-Fengge 开源案例（架构启发）
 ```
 
 ## 怎么开始

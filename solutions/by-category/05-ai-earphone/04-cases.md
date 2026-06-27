@@ -1,0 +1,99 @@
+<!-- HERO:START -->
+<div align="center">
+
+<sub><a href="../../../README.md">🏠 aihw-starter</a> &nbsp;›&nbsp; <a href="README.md">🎧 AI 耳机</a> &nbsp;›&nbsp; <b>📦 公开案例</b></sub>
+
+# 📦 AI 耳机 公开案例（占位版）
+
+`🎧 AI 耳机` · `公开案例`
+
+</div>
+
+---
+<!-- HERO:END -->
+
+> **占位说明**：本页只列出方向性的公开案例线索，详细案例分析待后续版本补充。
+> 案例不代表本仓库立场，欢迎补充更多公开渠道可查证的案例（详见 [`CONTRIBUTING.md`](../../../CONTRIBUTING.md)）。
+
+## 1. 翻译耳机
+
+### 1.1 时空壶（Timekettle）
+
+公开渠道：[时空壶官网](https://www.timekettle.co/)
+
+- 同传/翻译耳机龙头品牌
+- 主打商务、跨境、旅游场景
+- 多产品线（耳机、翻译棒、会议翻译）
+
+### 1.2 讯飞翻译机系列
+
+公开渠道：[讯飞商城](https://www.iflyrec.com/)
+
+- 含耳机形态与手持机形态
+- 国内出货量大、品牌认知强
+
+### 1.3 出海白牌
+
+- Anker / Soundcore 等海外品牌的 AI 翻译耳机产品线
+- 借助亚马逊、Best Buy 等渠道快速规模化
+
+## 2. AI 对话耳机
+
+### 2.1 Apple AirPods + Siri
+
+- 集成式 AI 对话标杆
+- 不开放给第三方接入
+
+### 2.2 OpenAI 投资的耳机品牌（如 IO 系列）
+
+- Jony Ive 设计、OpenAI 模型
+- 公开信息有限，对标"无屏 AI 助手"方向
+
+### 2.3 国内 AI 耳机厂商
+
+- AI 耳机在国内属于探索期，多个白牌厂商在尝试 Qwen-Omni 接入
+- 见 [`awesome/commercial-products/`](../../../awesome/commercial-products/) 商业产品集
+
+## 3. 录音耳机
+
+部分录音耳机品牌见 [`06-recorder/04-cases.md`](../06-recorder/04-cases.md)。
+
+## 4. 待补充清单
+
+欢迎社区贡献以下方向的公开案例：
+
+- [ ] 翻译耳机出海北美/欧洲的具体案例
+- [ ] AI 对话耳机的爆款分析
+- [ ] 跨境对讲机的 B 端项目案例
+- [ ] 旅游团/外贸场景的 AI 耳机批量采购
+- [ ] 健康监测 + AI 对话的复合场景
+
+---
+
+**版本**：千问大模型方案 · 占位版
+**更新日期**：2026-06
+
+<!-- FOOTER:START -->
+
+---
+
+<table width="100%">
+<tr>
+<td align="left" width="33%">
+
+<a href="03-cost.md">← 💰 成本与计费</a>
+
+</td>
+<td align="center" width="34%">
+
+<a href="README.md">↑ 返回品类首页</a> · <a href="../../../README.md">🏠 仓库首页</a>
+
+</td>
+<td align="right" width="33%">
+
+<a href="05-faq.md">❓ 常见问答 →</a>
+
+</td>
+</tr>
+</table>
+<!-- FOOTER:END -->

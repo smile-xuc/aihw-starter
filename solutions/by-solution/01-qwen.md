@@ -21,18 +21,18 @@
 
 | 品类 | 对应方案文档 | 推荐能力组合 |
 |---|---|---|
-| 📷 [IPC / AI 视觉](../01-ipc/02-solution.md) | 双版本：百炼 物理世界感知 Agent / OSS AI 内容感知 | Qwen-VL + OSS 内容感知 |
-| 👓 [AI 眼镜](../02-ai-glasses/02-solution.md) | 多模态交互套件端到端打包 | Qwen-Omni + Qwen-VL + TTS |
-| 🧸 [AI 玩具 / 陪伴](../03-toys-companion/02-solution.md) | 角色对话 + 声音克隆 | Qwen-Max + CosyVoice + Function Call |
-| 🪴 [桌宠](../04-desktop-pet/02-solution.md) | 动作 / 情绪标签 + 情感 TTS 三路同步 | Qwen-Max + Qwen-TTS |
-| 🎧 [AI 耳机](../05-ai-earphone/02-solution.md) | 实时翻译 / 听记 / 对话多用途 | Qwen-Omni + Paraformer |
-| 🎙️ [录音卡 / 会议盒子](../06-recorder/02-solution.md) | ASR + 纪要 Agent | Paraformer + Qwen-Max |
+| 📷 [IPC / AI 视觉](../by-category/01-ipc/02-solution.md) | 双版本：百炼 物理世界感知 Agent / OSS AI 内容感知 | Qwen-VL + OSS 内容感知 |
+| 👓 [AI 眼镜](../by-category/02-ai-glasses/02-solution.md) | 多模态交互套件端到端打包 | Qwen-Omni + Qwen-VL + TTS |
+| 🧸 [AI 玩具 / 陪伴](../by-category/03-toys-companion/02-solution.md) | 角色对话 + 声音克隆 | Qwen-Max + CosyVoice + Function Call |
+| 🪴 [桌宠](../by-category/04-desktop-pet/02-solution.md) | 动作 / 情绪标签 + 情感 TTS 三路同步 | Qwen-Max + Qwen-TTS |
+| 🎧 [AI 耳机](../by-category/05-ai-earphone/02-solution.md) | 实时翻译 / 听记 / 对话多用途 | Qwen-Omni + Paraformer |
+| 🎙️ [录音卡 / 会议盒子](../by-category/06-recorder/02-solution.md) | ASR + 纪要 Agent | Paraformer + Qwen-Max |
 
 ## 3. 典型 BOM 与计费量级
 
 - **硬件 BOM 增量**：依品类而异，最低可至 0（IPC 直接软件升级），最高 20–50 元（玩具新增语音 SoC + 麦克风阵列）
 - **云端按量计费**：百炼 / DashScope 公开 token / 时长 / 次计价，详见 [百炼定价页](https://help.aliyun.com/zh/model-studio/billing-of-model-studio)
-- **典型用户单价**：在 IPC 品类已能跑通 5–10 元/月 AI 订阅（见 [01-ipc/03-cost.md](../01-ipc/03-cost.md)）
+- **典型用户单价**：在 IPC 品类已能跑通 5–10 元/月 AI 订阅（见 [01-ipc/03-cost.md](../by-category/01-ipc/03-cost.md)）
 
 ## 4. 接入路径
 

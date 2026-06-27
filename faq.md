@@ -2,12 +2,12 @@
 
 > 本页收录跨品类的通用问题（账号、API-KEY、计费方式、模型选型对照等）。
 > 品类专属问题请见各品类目录下的 `05-faq.md`：
-> [IPC](./solutions/01-ipc/05-faq.md) ·
-> [AI 眼镜](./solutions/02-ai-glasses/05-faq.md) ·
-> [玩具陪伴](./solutions/03-toys-companion/05-faq.md) ·
-> [桌宠](./solutions/04-desktop-pet/05-faq.md) ·
-> [AI 耳机](./solutions/05-ai-earphone/05-faq.md) ·
-> [录音卡](./solutions/06-recorder/05-faq.md)
+> [IPC](./solutions/by-category/01-ipc/05-faq.md) ·
+> [AI 眼镜](./solutions/by-category/02-ai-glasses/05-faq.md) ·
+> [玩具陪伴](./solutions/by-category/03-toys-companion/05-faq.md) ·
+> [桌宠](./solutions/by-category/04-desktop-pet/05-faq.md) ·
+> [AI 耳机](./solutions/by-category/05-ai-earphone/05-faq.md) ·
+> [录音卡](./solutions/by-category/06-recorder/05-faq.md)
 
 ## A. 商业模式与订阅（通用）
 

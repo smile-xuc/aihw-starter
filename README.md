@@ -25,55 +25,55 @@
 </tr>
 <tr>
 <td align="center">01</td>
-<td><a href="./solutions/01-ipc/"><b>IPC / AI 视觉</b></a></td>
+<td><a href="./solutions/by-category/01-ipc/"><b>IPC / AI 视觉</b></a></td>
 <td align="center">✅ 完整版</td>
 <td>视频以文搜图 + 摘要订阅</td>
 </tr>
 <tr>
 <td align="center">02</td>
-<td><a href="./solutions/02-ai-glasses/"><b>AI 眼镜</b></a></td>
+<td><a href="./solutions/by-category/02-ai-glasses/"><b>AI 眼镜</b></a></td>
 <td align="center">🚧 占位版</td>
 <td>多模态交互套件，端到端打包</td>
 </tr>
 <tr>
 <td align="center">03</td>
-<td><a href="./solutions/03-toys-companion/"><b>AI 玩具 / 陪伴 / 儿童伴学</b></a></td>
+<td><a href="./solutions/by-category/03-toys-companion/"><b>AI 玩具 / 陪伴 / 儿童伴学</b></a></td>
 <td align="center">✅ 完整版</td>
 <td>自定义对话角色 + 声音克隆</td>
 </tr>
 <tr>
 <td align="center">04</td>
-<td><b>Agent 硬件（如桌面盒子）</b></td>
+<td><a href="./solutions/by-category/"><b>Agent 硬件（如桌面盒子）</b></a></td>
 <td align="center">📌 计划中</td>
-<td>多 Agent 协同 + 端侧执行</td>
+<td>多 Agent 协同 + 端云模型协同</td>
 </tr>
 <tr>
 <td align="center">05</td>
-<td><a href="./solutions/04-desktop-pet/"><b>桌宠</b></a></td>
+<td><a href="./solutions/by-category/04-desktop-pet/"><b>桌宠</b></a></td>
 <td align="center">🚧 占位版</td>
 <td>动作情绪标签 + 情感 TTS</td>
 </tr>
 <tr>
 <td align="center">06</td>
-<td><a href="./solutions/05-ai-earphone/"><b>AI 耳机</b></a></td>
+<td><a href="./solutions/by-category/05-ai-earphone/"><b>AI 耳机</b></a></td>
 <td align="center">✅ 完整版</td>
 <td>实时翻译 / 对话 / 听记多用途</td>
 </tr>
 <tr>
 <td align="center">07</td>
-<td><a href="./solutions/06-recorder/"><b>录音卡 / 会议盒子</b></a></td>
+<td><a href="./solutions/by-category/06-recorder/"><b>录音卡 / 会议盒子</b></a></td>
 <td align="center">✅ 完整版</td>
 <td>ASR + 纪要 Agent，结构化纪要</td>
 </tr>
 <tr>
 <td align="center">08</td>
-<td><a href="./future/watch.md"><b>智能手表 / 健康可穿戴</b></a></td>
+<td><b>智能手表 / 健康可穿戴</b></td>
 <td align="center">📌 计划中</td>
 <td>健康指标解读 + 订阅商业化</td>
 </tr>
 <tr>
 <td align="center">09</td>
-<td><a href="./future/lobster.md"><b>具身智能 / 桌面服务机器人</b></a></td>
+<td><b>具身智能 / 桌面服务机器人</b></td>
 <td align="center">📌 计划中</td>
 <td>VLA 端云协同 + 多本体形态</td>
 </tr>
@@ -84,7 +84,7 @@
 ## 每个品类包含什么
 
 ```
-solutions/0X-xxxx/
+solutions/by-category/0X-xxxx/
 ├── README.md        # 1 分钟读完的品类概述
 ├── 01-business.md   # 商业模式与市场判断
 ├── 02-solution.md   # 技术方案：推荐架构 + 接入步骤 + 代码示例
@@ -107,10 +107,10 @@ solutions/0X-xxxx/
 ### 🏭 方案商 / 品牌商
 
 1. 看 [solutions/by-category/](./solutions/by-category/) — 品类总览（IPC / 玩具陪伴 / 耳机 / 录音卡 …）
-2. 进入感兴趣的品类目录（如 [`solutions/01-ipc/`](./solutions/01-ipc/)）
-3. 读 [01-business.md](./solutions/01-ipc/01-business.md) 判断值不值得投入
-4. 读 [02-solution.md](./solutions/01-ipc/02-solution.md) 看技术方案
-5. 读 [03-cost.md](./solutions/01-ipc/03-cost.md) 算清楚账
+2. 进入感兴趣的品类目录（如 [`solutions/01-ipc/`](./solutions/by-category/01-ipc/)）
+3. 读 [01-business.md](./solutions/by-category/01-ipc/01-business.md) 判断值不值得投入
+4. 读 [02-solution.md](./solutions/by-category/01-ipc/02-solution.md) 看技术方案
+5. 读 [03-cost.md](./solutions/by-category/01-ipc/03-cost.md) 算清楚账
 
 </td>
 <td width="33%" valign="top">
@@ -118,7 +118,7 @@ solutions/0X-xxxx/
 ### 👩‍💻 开发者
 
 1. 看 [solutions/by-solution/](./solutions/by-solution/) — 方案总览（千问大模型 / 小智 / 端侧 …）
-2. 选定方案后回到具体品类的 [demo/](./solutions/01-ipc/demo/)
+2. 选定方案后回到具体品类的 [demo/](./solutions/by-category/01-ipc/demo/)
 3. 跑通示例 → 改造成自家产品
 
 </td>
@@ -141,30 +141,35 @@ solutions/0X-xxxx/
 ```
 aihw-starter/
 ├── solutions/
-│   ├── README.md             # 双维度入口说明（品类 × 方案）
-│   ├── by-category/          # 品类总览（品牌商视角）
-│   ├── by-solution/          # 方案总览（开发者视角：千问 / 小智 …）
-│   └── 0X-xxxx/              # 各品类的实际内容（README + 01~05 + demo）
+│   ├── README.md              # 双维度入口说明（品类 × 方案）
+│   ├── by-category/           # 品类总览 + 各品类内容
+│   │   ├── README.md          # 品类总览表格
+│   │   ├── 01-ipc/            # IPC / AI 视觉
+│   │   ├── 02-ai-glasses/     # AI 眼镜
+│   │   ├── 03-toys-companion/ # AI 玩具 / 陪伴
+│   │   ├── 04-desktop-pet/    # 桌宠
+│   │   ├── 05-ai-earphone/    # AI 耳机
+│   │   └── 06-recorder/       # 录音卡 / 会议盒子
+│   └── by-solution/           # 方案总览（开发者视角：千问 / 小智 …）
 ├── awesome/
-│   ├── open-source/          # 开源项目索引（136 项目，15 品类）
-│   └── commercial-products/  # 在售商业化产品案例
-├── future/                   # 早期方向：智能手表 / 具身智能等
-├── docs/                     # GitHub Pages 门面页
-├── faq.md                    # 跨品类通用 FAQ
-└── CONTRIBUTING.md           # 贡献指南
+│   ├── open-source/           # 开源项目索引（136 项目，15 品类）
+│   └── commercial-products/   # 在售商业化产品案例
+├── docs/                      # GitHub Pages 门面页
+├── faq.md                     # 跨品类通用 FAQ
+└── CONTRIBUTING.md            # 贡献指南
 ```
 
 ---
 
 ## 参与贡献
 
-欢迎以下四类贡献：
+欢迎以下贡献：
 
 | 贡献类型 | 说明 |
 |---|---|
-| **新增其他大模型方案** | 在现有品类下新增 `02-solution-{model}.md` |
-| **新增案例** | 在 `04-cases.md` 加脱敏案例，或在 `awesome/` 加产品记录 |
-| **新增品类** | 从 [future/](./future/) 路线图认领，提交完整 6 文件 + demo |
+| **新增品类** | 在 `solutions/by-category/` 下新建目录，提交完整 6 文件 + demo |
+| **新增方案** | 在 `solutions/by-solution/` 新增方案页，并在各品类 `02-solution-{model}.md` 补充接入代码 |
+| **新增案例** | 在对应品类 `04-cases.md` 加脱敏案例，或在 `awesome/` 加产品记录 |
 | **新增开源项目** | 补充到 `awesome/open-source/by-category/` 对应文件 |
 
 详细规则参见 [CONTRIBUTING.md](./CONTRIBUTING.md)

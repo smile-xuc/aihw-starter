@@ -15,8 +15,8 @@
 在已有品类目录下新增 `02-solution-{model}.md`，例如：
 
 ```
-solutions/03-toys-companion/02-solution-doubao.md
-solutions/01-ipc/02-solution-deepseek.md
+solutions/by-category/03-toys-companion/02-solution-doubao.md
+solutions/by-category/01-ipc/02-solution-deepseek.md
 ```
 
 `{model}` 用全小写英文短名（doubao / kimi / glm / deepseek / openai / wenxin / gemini ...）。
@@ -49,7 +49,7 @@ solutions/01-ipc/02-solution-deepseek.md
 **A. 作为某客户在某品类的脱敏案例**——补充到对应品类的 `04-cases.md`：
 
 ```
-solutions/01-ipc/04-cases.md  ← 末尾追加新案例
+solutions/by-category/01-ipc/04-cases.md  ← 末尾追加新案例
 ```
 
 **B. 作为在售产品记录**——提交到 `awesome/commercial-products/` 下对应品类的 markdown：
@@ -88,11 +88,11 @@ awesome/commercial-products/by-category/01-ipc.md
 ### 流程
 
 1. **先在 `future/README.md` 路线图中开 Issue 认领**——避免重复劳动。
-2. 在 `solutions/` 下新建目录 `solutions/0X-{slug}/`，目录命名采用 kebab-case 全小写英文（如 `07-ai-nas`、`08-learning-machine`）。
+2. 在 `solutions/by-category/` 下新建目录 `solutions/by-category/0X-{slug}/`，目录命名采用 kebab-case 全小写英文（如 `07-ai-nas`、`08-learning-machine`）。
 3. 提交一份**完整 6 文件 + demo 占位**：
 
 ```
-solutions/0X-{slug}/
+solutions/by-category/0X-{slug}/
 ├── README.md             ← 1 分钟读完，给读者快速判断要不要继续看
 ├── 01-business.md        ← 市场&需求&可行性
 ├── 02-solution.md        ← 推荐架构 + 接入步骤（千问版作为示例方案，其他模型欢迎后续 PR）
@@ -107,7 +107,7 @@ solutions/0X-{slug}/
 
 ### 6 文件的标准小节
 
-请直接参考 `solutions/03-toys-companion/` 或 `solutions/01-ipc/` 的完整版作为模板。
+请直接参考 `solutions/by-category/03-toys-companion/` 或 `solutions/by-category/01-ipc/` 的完整版作为模板。
 
 ---
 
