@@ -43,25 +43,41 @@
 </tr>
 <tr>
 <td align="center">04</td>
+<td><b>Agent 硬件（如桌面盒子）</b></td>
+<td align="center">📌 计划中</td>
+<td>多 Agent 协同 + 端侧执行</td>
+</tr>
+<tr>
+<td align="center">05</td>
 <td><a href="./solutions/04-desktop-pet/"><b>桌宠</b></a></td>
 <td align="center">🚧 占位版</td>
 <td>动作情绪标签 + 情感 TTS</td>
 </tr>
 <tr>
-<td align="center">05</td>
+<td align="center">06</td>
 <td><a href="./solutions/05-ai-earphone/"><b>AI 耳机</b></a></td>
 <td align="center">✅ 完整版</td>
 <td>实时翻译 / 对话 / 听记多用途</td>
 </tr>
 <tr>
-<td align="center">06</td>
+<td align="center">07</td>
 <td><a href="./solutions/06-recorder/"><b>录音卡 / 会议盒子</b></a></td>
 <td align="center">✅ 完整版</td>
 <td>ASR + 纪要 Agent，结构化纪要</td>
 </tr>
+<tr>
+<td align="center">08</td>
+<td><a href="./future/watch.md"><b>智能手表 / 健康可穿戴</b></a></td>
+<td align="center">📌 计划中</td>
+<td>健康指标解读 + 订阅商业化</td>
+</tr>
+<tr>
+<td align="center">09</td>
+<td><a href="./future/lobster.md"><b>具身智能 / 桌面服务机器人</b></a></td>
+<td align="center">📌 计划中</td>
+<td>VLA 端云协同 + 多本体形态</td>
+</tr>
 </table>
-
-> 📌 未来计划：[future/](./future/) — 具身智能 / 桌面服务机器人、智能手表等
 
 ---
 
@@ -82,14 +98,16 @@ solutions/0X-xxxx/
 
 ## 快速开始
 
+> 📑 **两条进入路径**：品牌商按「品类」找市场，开发者按「方案」找技术栈。两个维度互相正交，可以任意切换。
+
 <table>
 <tr>
 <td width="34%" valign="top">
 
 ### 🏭 方案商 / 品牌商
 
-1. 看 [docs/ 门面页](./docs/) 了解全品类总览
-2. 进入感兴趣的品类目录
+1. 看 [solutions/by-category/](./solutions/by-category/) — 品类总览（IPC / 玩具陪伴 / 耳机 / 录音卡 …）
+2. 进入感兴趣的品类目录（如 [`solutions/01-ipc/`](./solutions/01-ipc/)）
 3. 读 [01-business.md](./solutions/01-ipc/01-business.md) 判断值不值得投入
 4. 读 [02-solution.md](./solutions/01-ipc/02-solution.md) 看技术方案
 5. 读 [03-cost.md](./solutions/01-ipc/03-cost.md) 算清楚账
@@ -99,8 +117,9 @@ solutions/0X-xxxx/
 
 ### 👩‍💻 开发者
 
-1. 进入 [solutions/0X-xxxx/demo/](./solutions/01-ipc/demo/)
-2. 跑通示例 → 改造成自家产品
+1. 看 [solutions/by-solution/](./solutions/by-solution/) — 方案总览（千问大模型 / 小智 / 端侧 …）
+2. 选定方案后回到具体品类的 [demo/](./solutions/01-ipc/demo/)
+3. 跑通示例 → 改造成自家产品
 
 </td>
 <td width="33%" valign="top">
@@ -109,6 +128,7 @@ solutions/0X-xxxx/
 
 - [awesome/open-source/](./awesome/open-source/) — 136 个 GitHub 开源项目，15 品类
 - [awesome/commercial-products/](./awesome/commercial-products/) — 在售商业产品
+- [docs/ 门面页](https://smile-xuc.github.io/aihw-starter/) — GitHub Pages 总览
 
 </td>
 </tr>
@@ -120,14 +140,18 @@ solutions/0X-xxxx/
 
 ```
 aihw-starter/
-├── solutions/                 # 6 个品类的商业化方案（核心内容）
+├── solutions/
+│   ├── README.md             # 双维度入口说明（品类 × 方案）
+│   ├── by-category/          # 品类总览（品牌商视角）
+│   ├── by-solution/          # 方案总览（开发者视角：千问 / 小智 …）
+│   └── 0X-xxxx/              # 各品类的实际内容（README + 01~05 + demo）
 ├── awesome/
-│   ├── open-source/           # 开源项目索引（136 项目，15 品类）
-│   └── commercial-products/   # 在售商业化产品案例
-├── future/                    # 路线图：计划纳入的品类
-├── docs/                      # GitHub Pages 门面页
-├── faq.md                     # 跨品类通用 FAQ
-└── CONTRIBUTING.md            # 贡献指南
+│   ├── open-source/          # 开源项目索引（136 项目，15 品类）
+│   └── commercial-products/  # 在售商业化产品案例
+├── future/                   # 早期方向：智能手表 / 具身智能等
+├── docs/                     # GitHub Pages 门面页
+├── faq.md                    # 跨品类通用 FAQ
+└── CONTRIBUTING.md           # 贡献指南
 ```
 
 ---
