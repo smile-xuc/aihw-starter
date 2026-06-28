@@ -43,38 +43,38 @@
 </tr>
 <tr>
 <td align="center">04</td>
-<td><a href="./solutions/by-category/"><b>Agent 硬件（如桌面盒子）</b></a></td>
-<td align="center">📌 计划中</td>
+<td><a href="./solutions/by-category/04-agent-hardware/"><b>Agent 硬件（如桌面盒子）</b></a></td>
+<td align="center">🚧 占位版</td>
 <td>多 Agent 协同 + 端云模型协同</td>
 </tr>
 <tr>
 <td align="center">05</td>
-<td><a href="./solutions/by-category/04-desktop-pet/"><b>桌宠</b></a></td>
+<td><a href="./solutions/by-category/05-desktop-pet/"><b>桌宠</b></a></td>
 <td align="center">🚧 占位版</td>
 <td>动作情绪标签 + 情感 TTS</td>
 </tr>
 <tr>
 <td align="center">06</td>
-<td><a href="./solutions/by-category/05-ai-earphone/"><b>AI 耳机</b></a></td>
+<td><a href="./solutions/by-category/06-ai-earphone/"><b>AI 耳机</b></a></td>
 <td align="center">✅ 完整版</td>
 <td>实时翻译 / 对话 / 听记多用途</td>
 </tr>
 <tr>
 <td align="center">07</td>
-<td><a href="./solutions/by-category/06-recorder/"><b>录音卡 / 会议盒子</b></a></td>
+<td><a href="./solutions/by-category/07-recorder/"><b>录音卡 / 会议盒子</b></a></td>
 <td align="center">✅ 完整版</td>
 <td>ASR + 纪要 Agent，结构化纪要</td>
 </tr>
 <tr>
 <td align="center">08</td>
-<td><b>智能手表 / 健康可穿戴</b></td>
-<td align="center">📌 计划中</td>
+<td><a href="./solutions/by-category/08-smart-watch/"><b>智能手表 / 健康可穿戴</b></a></td>
+<td align="center">🚧 占位版</td>
 <td>健康指标解读 + 订阅商业化</td>
 </tr>
 <tr>
 <td align="center">09</td>
-<td><b>具身智能</b></td>
-<td align="center">📌 计划中</td>
+<td><a href="./solutions/by-category/09-embodied/"><b>具身智能</b></a></td>
+<td align="center">🚧 占位版</td>
 <td>VLA 端云协同 + 多本体形态适配</td>
 </tr>
 </table>
@@ -147,9 +147,12 @@ aihw-starter/
 │   │   ├── 01-ipc/            # IPC / AI 视觉
 │   │   ├── 02-ai-glasses/     # AI 眼镜
 │   │   ├── 03-toys-companion/ # AI 玩具 / 陪伴
-│   │   ├── 04-desktop-pet/    # 桌宠
-│   │   ├── 05-ai-earphone/    # AI 耳机
-│   │   └── 06-recorder/       # 录音卡 / 会议盒子
+│   │   ├── 04-agent-hardware/ # Agent 硬件
+│   │   ├── 05-desktop-pet/    # 桌宠
+│   │   ├── 06-ai-earphone/    # AI 耳机
+│   │   ├── 07-recorder/       # 录音卡 / 会议盒子
+│   │   ├── 08-smart-watch/    # 智能手表 / 健康可穿戴
+│   │   └── 09-embodied/       # 具身智能
 │   └── by-solution/           # 方案总览（开发者视角：千问 / 小智 …）
 ├── awesome/
 │   ├── open-source/           # 开源项目索引（136 项目，15 品类）
