@@ -291,6 +291,8 @@ curl --request POST \
 }'
 ```
 
+> 🧪 **可运行 Python 示例**：[`demo/physical-sense/`](./demo/physical-sense/) — 含 SSE 流式解析与结构化结果展示（⚠️ AI 生成代码，仅作参考）
+
 ---
 
 ## 二、OSS — AI 内容感知接入

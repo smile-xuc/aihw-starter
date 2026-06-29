@@ -13,7 +13,11 @@
 <!-- HERO:END -->
 
 > 本目录用于存放 IPC / AI 视觉品类的可运行示例代码。
-> 当前为占位版，欢迎社区贡献最小可运行 demo。
+> 标注 ⚠️ 的示例由 AI 生成，仅作参考实现，生产使用前请务必自测。
+
+## 已包含的 demo
+
+- ⚠️ [**`physical-sense/`**](./physical-sense/) — 百炼物理世界感知 Agent（IPC 场景）调用示例，输入一张图片输出结构化描述（object / action / event / description / title）
 
 ## 计划包含的 demo
 
