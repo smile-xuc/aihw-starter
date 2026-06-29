@@ -38,7 +38,7 @@
 <tr>
 <td align="center">03</td>
 <td><a href="./solutions/by-category/03-toys-companion/"><b>AI 玩具 / 陪伴 / 儿童伴学</b></a></td>
-<td align="center">✅ 完整版</td>
+<td align="center">🚧 占位版</td>
 <td>自定义对话角色 + 声音克隆</td>
 </tr>
 <tr>
@@ -56,13 +56,13 @@
 <tr>
 <td align="center">06</td>
 <td><a href="./solutions/by-category/06-ai-earphone/"><b>AI 耳机</b></a></td>
-<td align="center">✅ 完整版</td>
+<td align="center">🚧 占位版</td>
 <td>实时翻译 / 对话 / 听记多用途</td>
 </tr>
 <tr>
 <td align="center">07</td>
 <td><a href="./solutions/by-category/07-recorder/"><b>录音卡 / 会议盒子</b></a></td>
-<td align="center">✅ 完整版</td>
+<td align="center">🚧 占位版</td>
 <td>ASR + 纪要 Agent，结构化纪要</td>
 </tr>
 <tr>
