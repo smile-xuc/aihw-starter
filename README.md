@@ -27,7 +27,7 @@
 <td align="center">01</td>
 <td><a href="./solutions/by-category/01-ipc/"><b>IPC / AI 视觉</b></a></td>
 <td align="center">✅ 完整版</td>
-<td>视频以文搜图 + 摘要订阅</td>
+<td>事件摘要、自然语言检索、自定义事件告警、每日总结、一键成片等</td>
 </tr>
 <tr>
 <td align="center">02</td>
