@@ -233,7 +233,14 @@ X-DashScope-SSE: enable
         "intent_infos": [{
           "intent": "open_physical_sense",
           "domain": "physical_sense"
-        }]
+        }],
+        "ext_params": {
+          "usage": {
+            "input_tokens": 1234,
+            "output_tokens": 56,
+            "total_tokens": 1290
+          }
+        }
       }
     }
   },
@@ -241,7 +248,8 @@ X-DashScope-SSE: enable
 }
 ```
 
-`output.text` 为 JSON 字符串，需二次 `JSON.parse()` 得到结构化 Caption。
+- `output.text` 为 JSON 字符串，需二次 `JSON.parse()` 得到结构化 Caption。
+- `output.extra_info.agent_info.ext_params.usage` 字段返回本次调用的 tokens 用量，可用于成本核算与配额监控。
 
 ### curl 完整示例
 
@@ -290,6 +298,15 @@ curl --request POST \
 }
 }'
 ```
+
+### 显式缓存（自动启用）
+
+本方案已做**显式缓存自动化处理**：每一条请求数据都会带上显式缓存的标记。
+
+- 第一次请求：服务侧记录该标记里的内容
+- 后续请求：服务侧对内容做对比，**匹配上即直接走显式缓存**，跳过重复推理
+
+这意味着对于固定的 system prompt、Agent 配置、重复出现的场景帧等内容，无需自行实现 prompt 缓存逻辑——开发者只需正常构造请求即可享受缓存带来的延迟与 tokens 成本下降。
 
 > 🧪 **可运行 Python 示例**：[`demo/physical-sense/`](./demo/physical-sense/) — 含 SSE 流式解析与结构化结果展示（⚠️ AI 生成代码，仅作参考）
 
