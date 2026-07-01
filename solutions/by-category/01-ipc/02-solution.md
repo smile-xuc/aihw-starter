@@ -87,6 +87,11 @@ IPC 品类当前提供 **两类接入方式**，可按需选用或组合使用�
 
 底层走阿里云百炼的**多模态交互**接口（model = `multimodal-dialog`），通过「物理世界感知 Agent」路由到 IPC 场景模型。
 
+### 前提条件
+
+- 已开通[阿里云百炼模型服务并获取 API-KEY](https://help.aliyun.com/zh/model-studio/get-api-key)，作为百炼模型服务的鉴权凭证
+- 进入[多模态交互开发套件](https://bailian.console.aliyun.com/#/multimodal-dialog)控制台，点右上角【免费开通】完成服务开通
+
 ### 管控台配置（图文教程）
 
 #### Step 1：创建多模态交互应用
@@ -97,7 +102,7 @@ IPC 品类当前提供 **两类接入方式**，可按需选用或组合使用�
 
 #### Step 2：关闭无关功能
 
-将**对话承接语**、**知识库**、**联网搜索**、**长期记忆**全部关闭。这些功能在 IPC Caption 场景下不需要，关闭可降低延迟和成本。
+将**对话承接语**、**知识库**、**联网搜索**、**长期记忆**全部关闭，并**删除全部指令、插件、MCP 服务**。这些在 IPC Caption 场景下都不需要，关闭可降低延迟和成本。
 
 ![关闭对话承接语、知识库、联网搜索、长期记忆](./assets/caption-step2-disable-features.png)
 
@@ -197,59 +202,186 @@ X-DashScope-SSE: enable
 
 #### 关键参数说明
 
-| 参数路径 | 说明 |
-|---|---|
-| `model` | 固定 `multimodal-dialog` |
-| `input.app_id` | 在百炼「我的应用」页面获取 |
-| `input.text` | 本场景置为空字符串 `""` |
-| `client_info.user_id` | 终端用户 ID，最长 36 字符 |
-| `client_info.device.uuid` | 设备唯一 ID，最长 40 字符 |
-| `commands[0].exec_params.slots` | 场景槽位：`ipc` / `embodied` / `auto_driving` |
-| `user_prompt_params.param.format` | 资源类型：`image` 或 `video` |
-| `user_prompt_params.param.prompt` | 可选自定义提示词（空则用默认） |
-| `user_prompt_params.param.images[].type` | `url`（HTTPS）或 `base64` |
-| `user_prompt_params.param.images[].value` | 图片 URL 或 base64 字符串 |
+| 参数路径 | 类型 | 必选 | 说明 |
+|---|---|---|---|
+| `model` | string | 是 | 固定 `multimodal-dialog` |
+| `input.directive` | string | 是 | 固定 `Request` |
+| `input.app_id` | string | 是 | 在百炼「我的应用」页面获取 |
+| `input.text` | string | 是 | 本场景置为空字符串 `""` |
+| `client_info.user_id` | string | 是 | 终端用户 ID，最长 36 字符 |
+| `client_info.device.uuid` | string | 否 | 设备唯一 ID，最长 40 字符；同一用户多个设备时区分 |
+| `commands[0].name` | string | 是 | 固定 `agent_command` |
+| `commands[0].exec_params.app_id` | string | 是 | 固定 `physical_sense` |
+| `commands[0].exec_params.intent` | string | 是 | 固定 `open_physical_sense` |
+| `commands[0].exec_params.slots` | list | 是 | 场景槽位：`ipc` / `embodied` / `auto_driving` |
+| `user_prompt_params.param.format` | string | 是 | 资源类型：`image` 或 `video` |
+| `user_prompt_params.param.prompt` | string | 否 | IPC 场景提示词（空则用默认） |
+| `user_prompt_params.param.images[].type` | string | 是 | `url`（HTTPS）或 `base64` |
+| `user_prompt_params.param.images[].value` | string | 是 | 图片/视频 URL 或 base64 字符串（含 `data:...;base64,` 前缀） |
+| `user_prompt_params.param.frame_enabled` | boolean | 否 | 图片序列模式，仅在 `format=video` 时生效 |
+| `user_prompt_params.param.high_resolution` | boolean | 否 | 是否开启高精度，默认关闭 |
+| `user_prompt_params.param.max_pixels` | integer | 否 | 像素上限，`high_resolution=false` 时最终上限取决于本值 |
+| `user_prompt_params.param.fps` | double | 否 | 抽帧频率，范围 `[0.1, 10.0]`，默认 `2.0` |
+| `user_prompt_params.param.max_frames` | integer | 否 | 抽取帧的上限 |
+| `user_prompt_params.param.max_tokens` | integer | 否 | 输出最大 token 数 |
+| `user_prompt_params.param.temperature` | float | 否 | 温度，默认 `0.0` |
+| `user_prompt_params.param.sub_scene` | string | 否 | 二级场景，无特殊约定为空 |
+| `user_prompt_params.param.version` | string | 否 | 版本号，无特殊约定为空 |
 
 #### 约束
 
 - 图片分辨率推荐 640×480 ~ 1920×1080
 - `type=base64` 时，所有 image 累加不超过 10 MB
 - `type=url` 时必须 HTTPS，不支持 HTTP
+- `format=video` 且用 `image_list` 模拟时，图像数量至少 4 张且必须为偶数
+
+#### 输入格式示例
+
+**图像输入**支持多图，即可模拟视频抽帧：
+
+```json
+// URL 方式
+{
+  "format": "image",
+  "prompt": "ipc场景提示词",
+  "images": [
+    {"type": "url", "value": "https://example.com/frame.jpg"}
+  ]
+}
+
+// base64 方式
+{
+  "format": "image",
+  "prompt": "ipc场景提示词",
+  "images": [
+    {"type": "base64", "value": "data:image/png;base64,xxx"}
+  ]
+}
+```
+
+**视频输入**支持多视频拼接（模型会拼接后处理，业务需自行评估适配性）：
+
+```json
+// URL 方式
+{
+  "format": "video",
+  "prompt": "ipc场景提示词",
+  "images": [
+    {"type": "url", "value": "https://example.com/clip.mp4"}
+  ]
+}
+
+// base64 方式
+{
+  "format": "video",
+  "prompt": "ipc场景提示词",
+  "images": [
+    {"type": "base64", "value": "data:video/mp4;base64,xxx"}
+  ]
+}
+
+// image_list 方式（至少 4 张、且为偶数）
+{
+  "format": "video",
+  "prompt": "ipc场景提示词",
+  "images": [
+    {"type": "base64", "value": "data:image/png;base64,xxx"},
+    {"type": "base64", "value": "data:image/png;base64,xxx"},
+    {"type": "base64", "value": "data:image/png;base64,xxx"},
+    {"type": "base64", "value": "data:image/png;base64,xxx"}
+  ],
+  "frame_enabled": true
+}
+```
+
+**base64 编码工具函数**：
+
+```python
+import base64
+
+def encode_file(file_path: str) -> str:
+    with open(file_path, "rb") as f:
+        return base64.b64encode(f.read()).decode("utf-8")
+
+# 图像
+image_path = "xxx.png"
+suffix = image_path.split(".")[-1]
+images = [{
+    "type": "base64",
+    "value": f"data:image/{suffix};base64," + encode_file(image_path),
+}]
+
+# 视频
+video_path = "xxx.mp4"
+suffix = video_path.split(".")[-1]
+images = [{
+    "type": "base64",
+    "value": f"data:video/{suffix};base64," + encode_file(video_path),
+}]
+```
 
 ### 返回解析
 
-返回以 SSE 事件流推送，只需关注 `finished=true` 的最终包：
+返回以 SSE 事件流推送。**只需关注 `finished=true` 的最终包**，中间过程的 `finished=false` 数据可忽略。
 
 ```json
 {
   "output": {
+    "round_id": "xxx",
+    "llm_request_id": "xxx",
+    "dialog_id": "0a40fa17-faaa-4b3c-9b78-8e683a5ff7ad",
+    "event": "RespondingContent",
     "finished": true,
     "finish_reason": "stop",
     "text": "{\"object\": [\"女性成人\"], \"action\": [], \"event\": [], \"description\": \"一位年轻的女性成人...\", \"title\": \"女子静立书架前\"}",
-    "event": "RespondingContent",
-    "dialog_id": "0a40fa17-faaa-4b3c-9b78-8e683a5ff7ad",
+    "spoken": "",
     "extra_info": {
+      "tool_infos": [{
+        "output": "",
+        "tool_name": "physical_sense",
+        "arguments": {},
+        "type": "agent",
+        "success": true
+      }],
       "agent_info": {
+        "ext_params": {
+          "usage": {
+            "inputTokens": 2570,
+            "outputTokens": 41,
+            "totalTokens": 2611
+          }
+        },
+        "round": 1,
+        "device": { "device_id": "xxx" },
         "intent_infos": [{
           "intent": "open_physical_sense",
           "domain": "physical_sense"
-        }],
-        "ext_params": {
-          "usage": {
-            "input_tokens": 1234,
-            "output_tokens": 56,
-            "total_tokens": 1290
-          }
-        }
-      }
+        }]
+      },
+      "query": ""
     }
   },
   "request_id": "xxx"
 }
 ```
 
-- `output.text` 为 JSON 字符串，需二次 `JSON.parse()` 得到结构化 Caption。
-- `output.extra_info.agent_info.ext_params.usage` 字段返回本次调用的 tokens 用量，可用于成本核算与配额监控。
+#### 关键字段说明
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `request_id` | string | 百炼网关的请求 ID |
+| `output.round_id` | string | 本轮交互的 ID |
+| `output.dialog_id` | string | 对话 ID |
+| `output.llm_request_id` | string | 调用 LLM 的 request_id |
+| `output.event` | string | 事件名称，取值 `RespondingContent` |
+| `output.finished` | bool | 输出是否结束，**关注 `true` 的包** |
+| `output.finish_reason` | string | 结束原因，目前仅 `stop`（正常结束） |
+| `output.text` | string | 返回内容，**JSON 字符串**，需二次 `JSON.parse()` 得到结构化 Caption |
+| `output.spoken` | string | 用于 TTS 合成的内容，未开启语音合成时无需关注 |
+| `output.extra_info.tool_infos` | object | 工具调用信息，`tool_name=physical_sense` 表示走了物理世界感知 Agent |
+| `output.extra_info.agent_info.ext_params.usage` | object | 本次调用 tokens 用量：`inputTokens` / `outputTokens` / `totalTokens`（**注意驼峰命名**），可用于成本核算与配额监控 |
+| `output.extra_info.agent_info.intent_infos` | list | 意图识别信息 |
+| `output.extra_info.query` | string | 对应请求的 `input.text` 字段 |
 
 ### curl 完整示例
 
