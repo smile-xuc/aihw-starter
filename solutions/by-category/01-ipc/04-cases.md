@@ -48,8 +48,6 @@
 - **Nest**（谷歌）：Nest Aware 订阅含智能事件类型识别，月费 $8 起
 - **Arlo**：Arlo Secure 含 AI 物体检测、活动区域、车牌识别，月费 $7.99 起
 
-国内品牌出海时，AI 升级是对抗 Ring/Nest 的关键差异化武器。
-
 ---
 
 ## 2. 头部方案商 / ODM 的 AI 打包能力
@@ -81,30 +79,20 @@
 公开渠道：[Juancloud 官网](https://trade.juancloud.com/zh-cn/)
 
 - **规模**：1999 年成立，600+ 员工规模；**2025 深交所创业板 IPO 已受理**（招股书披露财务数据保持增长）
-- **AI 能力**：官方公开为基础 AI（人形侦测、全景拼接），大模型级别的"事件摘要 / 自然语言检索"暂未在官方页披露
+- **AI 能力**：基础 AI（人形侦测、全景拼接）+ **AI 大模型**——"事件摘要 / 自然语言检索"已搭载**通义千问大模型**在部分产品中上线
 - **售卖方式**：**ODM + 自主平台运营**——为品牌客户提供 IPC 模组/终端 ODM，同时经营 JuanCloud 平台，把 **数据流量包、云存储、AI 服务、广告服务** 打包成 B2B2C SaaS 订阅
 - 参考：[招股书申报稿](https://qxb-pdf-osscache.qixin.com/AnBaseinfo/a71b6a0e24aea6b03f44223d8a3b4dc2.pdf) · [证券时报 IPO 报道](https://www.stcn.com/article/detail/3559005.html)
 
-### 2.3 广州宏视 Macro-Video
+### 2.3 深圳乔安 JOOAN
 
-公开渠道：[macro-video.com](https://www.macro-video.com/zh-cn/) · [V380 官网](https://v380.app/zh/)
+公开渠道：[qacctv.com](http://www.qacctv.com/) · 海外站 [jooancam.com](https://www.jooancam.com/)
 
-- **多品牌矩阵**：
-  - **V380**：大众/出海主品牌，V380 App 在多国家庭安防榜长期居前
-  - **XiaoVV**：米家生态品牌
-  - **精灵眼**：阿里 IoT 生态品牌
-- **AI 能力**：AI 人形侦测/跟踪、双向语音、10× 变焦、云台巡航；旗舰机型 V380 D8 上线"**AI 事件卡片式聚合**"（人形/宠物/包裹等事件聚合，非全量录制）
-- **大模型接入**：官方未公开自研大模型或与厂商的直接合作，通过 **米家（小爱同学）** 与 **阿里 IoT（天猫精灵）** 生态方完成部分自然语言交互
-- **售卖方式**：自有品牌 D2C + 面向品牌方 ODM/OEM 双轨
-- 参考：[V380 D8 报道](https://zhuanlan.zhihu.com/p/1980338211298488428)
-
-### 2.4 方案商横向对比
-
-| 方案商 | 大模型后端 | 招牌 AI 功能 | 商业模式 | 代表客户 |
-|---|---|---|---|---|
-| **技威 Yoosee** | 豆包 + 通义千问 + 自研 LM100 | 事件摘要、自然语言检索、一键 Vlog、AI 客服 | VSaaS + 硬件分润 | 华为/OPPO/荣耀/Wyze/Telenor |
-| **九安 Juan** | 未披露 | 人形侦测 + AI 服务订阅 | ODM + 云 SaaS 分成 | 未披露 |
-| **宏视 V380 / XiaoVV** | 生态方（米家/阿里 IoT）借力 | AI 事件卡片聚合 | 自有品牌 D2C + ODM 双轨 | 米家 / 天猫精灵生态 |
+- **定位**：家用视频安防高科技企业，研发/生产/销售/服务一体
+- **产品线**：WiFi IPC、4G 无网远程监控（AOV-4G 三摄太阳能）、**AI 大模型摄像头**（双摄 AI 大模型 / 双向可视）、AI 门锁（双摄人脸掌静脉可视猫眼）、监控套装
+- **AI 能力**：官方产品线已明确标注 **"AI 大模型摄像头"**，将大模型能力应用于视觉物联终端；具体大模型厂商合作官方未公开披露
+- **出海**：亮相第 139 届广交会；海外独立站 JOOANCAM 面向欧美/东南亚市场
+- **荣誉**：入选"2025'物联之星'AIoT 行业年度榜单"·"中国最有创新力视觉物联企业"
+- 参考：[乔安官网](http://www.qacctv.com/) · [JOOANCAM 海外站](https://www.jooancam.com/)
 
 ---
 
@@ -207,7 +195,7 @@
 ## 6. 阿里云 OSS AI 内容感知公开案例
 
 - **产品介绍**：[OSS AI 内容感知产品页](https://help.aliyun.com/zh/oss/user-guide/ai-content-awareness)
-- **产品纪录片**（推荐观看）：[bilibili 视频 BV16d6vBAEJt](https://www.bilibili.com/video/BV16d6vBAEJt/)
+- **产品纪录片**（推荐观看）：[看见生活，懂得守护——通义实验室 x 云存储打造 IPC 行业的智能新标杆](https://www.bilibili.com/video/BV16d6vBAEJt/)
 - **行业案例频道**：[阿里云行业案例](https://www.aliyun.com/customer)
 
 ---
@@ -221,7 +209,7 @@
 - [ ] 商用 IPC 的事件分析订阅模式（连锁零售 / 工业巡检）
 - [ ] 私域监控（小店、工作室）的轻量 AI 升级
 - [ ] 政企/工业 IPC 的 AI 边缘部署方案（除 Eufy 外的本地大模型架构）
-- [ ] 头部 ODM（技威/九安/宏视等）为品牌方的分润白牌案例细节
+- [ ] 头部 ODM（技威/九安/乔安等）为品牌方的分润白牌案例细节
 - [ ] 更多 AI 视觉可穿戴案例（对标 Looki / Humane AI Pin / Rabbit R1）
 
 ---
