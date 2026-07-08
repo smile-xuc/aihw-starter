@@ -135,6 +135,16 @@ CLI 版适合快速验证 `bl` 命令是否可用，SDK 版才能精细拆分 AS
 
 WebSocket 双工协议 + server_vad，体感延迟 ≈ 330～394ms，比 HTTP 流式再快 3 倍。支持语义打断和连续多轮对话。需配置 `DASHSCOPE_WORKSPACE_ID` 环境变量。
 
+### 方案 4 · 百炼多模态交互开发套件（全双工套件方案）
+
+| 级别 | 体感延迟 |
+|---|---:|
+| 轻度 | **991** |
+| 中度 | **1120** |
+| 复杂 | **1036** |
+
+百炼平台托管的全双工语音交互方案，内置 ASR + LLM + TTS 全链路。体感延迟 ≈ 1s，支持语义打断、多轮对话、应用级配置（通过 APP_ID 绑定 prompt/知识库等）。需配置 `DASHSCOPE_WORKSPACE_ID` 和 `DASHSCOPE_APP_ID` 环境变量。
+
 ### 横向对比
 
 | 方案 | 体感延迟（中度） | 结论 |
@@ -142,11 +152,13 @@ WebSocket 双工协议 + server_vad，体感延迟 ≈ 330～394ms，比 HTTP �
 | 方案 1 · 阻塞 | 4628 ms | 简单实现，体验最差 |
 | 方案 2 · 流式 | 2368 ms | 体验最优的裸模型方案 |
 | 方案 3 · Omni (HTTP) | 1291 ms | 单模型端到端，体感快 |
+| 方案 4 · 多模态套件 | 1120 ms | 平台托管，支持应用配置 |
 | 方案 3b · Omni Realtime (WS) | **354 ms** | 体感最快，支持语义打断 |
 
 **选型建议**：
 
 - 追求极致体感 + 语义打断 → 方案 3b（WebSocket Realtime，≈350ms）
+- 需要平台托管 + 应用级能力（知识库/prompt 模板）→ 方案 4（≈1s）
 - 玩具/桌宠等短对话场景 → 方案 3 HTTP 或方案 2 流式
 - 一定不要用方案 1，除非只是 POC 验证
 
@@ -167,6 +179,7 @@ solutions/benchmark/
 │   ├── method2_streaming_sdk.py
 │   ├── method3_omni_sdk.py
 │   ├── method3_omni_realtime_sdk.py
+│   ├── method4_duplex_sdk.py
 │   └── method3_omni_cli.sh
 └── results/                         # 实测数据（json）
     ├── method1_blocking.json

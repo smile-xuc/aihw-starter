@@ -25,7 +25,7 @@
 |---|---|---|---|---|
 | 裸模型串接（ASR → LLM → TTS，阻塞式） | 3876 / 4628 / 5938 ms | 依不同模型而定，可扩容 | 不支持 | [method1_blocking](../benchmark/scripts/method1_blocking_sdk.py) |
 | 裸模型串接（ASR → LLM → TTS，流式） | 2198 / 2368 / 3087 ms | 依不同模型而定，可扩容 | 不支持 | [method2_streaming](../benchmark/scripts/method2_streaming_sdk.py) |
-| 百炼多模态交互开发套件（全双工套件方案） | 待测 | 依不同模型而定，可扩容 | 支持 | 待补充 |
+| 百炼多模态交互开发套件（全双工套件方案） | **991 / 1120 / 1036 ms** | 依不同模型而定，可扩容 | 支持 | [method4_duplex](../benchmark/scripts/method4_duplex_sdk.py) |
 | Qwen-Omni 端到端（qwen3.5-omni-flash，HTTP 流式） | **1035 / 1291 / 1284 ms** | 依不同模型而定，可扩容 | 支持 | [method3_omni](../benchmark/scripts/method3_omni_sdk.py) |
 | Qwen-Omni Realtime（qwen3.5-omni-flash-realtime，WebSocket 双工） | **330 / 354 / 394 ms** | 依不同模型而定，可扩容 | 支持 | [method3_omni_realtime](../benchmark/scripts/method3_omni_realtime_sdk.py) |
 
