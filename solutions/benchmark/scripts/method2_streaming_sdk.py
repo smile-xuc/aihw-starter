@@ -16,11 +16,9 @@ from dashscope.audio.asr import Recognition
 from openai import OpenAI
 
 sys.path.insert(0, str(Path(__file__).parent))
-from common import get_api_key, mask_key, now_ms, SAMPLES
+from common import ensure_env, now_ms, SAMPLES
 
-API_KEY = get_api_key()
-dashscope.api_key = API_KEY
-print(f"[方案2-流式] 使用 key {mask_key(API_KEY)}")
+ensure_env()
 
 
 class TTSCallback(ResultCallback):
@@ -63,7 +61,7 @@ def run_one(sample_id: str) -> dict:
     print(f"  ASR({asr_ms:.0f}ms) → {text}")
 
     # ---------- Step 2+3: LLM stream 边生成边送 TTS ----------
-    client = OpenAI(api_key=API_KEY, base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
+    client = OpenAI(base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
 
     tts_cb = TTSCallback()
     synthesizer = SpeechSynthesizer(

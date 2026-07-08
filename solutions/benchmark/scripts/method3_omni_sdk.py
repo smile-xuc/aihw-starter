@@ -13,17 +13,16 @@ from pathlib import Path
 from openai import OpenAI
 
 sys.path.insert(0, str(Path(__file__).parent))
-from common import get_api_key, mask_key, now_ms, SAMPLES
+from common import ensure_env, now_ms, SAMPLES
 
-API_KEY = get_api_key()
-print(f"[方案3-Omni] 使用 key {mask_key(API_KEY)}")
+ensure_env()
 
 
 def run_one(sample_id: str) -> dict:
     wav_path = Path(__file__).parent.parent / "samples" / f"{sample_id}.wav"
     audio_b64 = base64.b64encode(wav_path.read_bytes()).decode()
 
-    client = OpenAI(api_key=API_KEY, base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
+    client = OpenAI(base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
 
     t0 = now_ms()
     first_text_ms = None

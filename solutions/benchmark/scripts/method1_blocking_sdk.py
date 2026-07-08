@@ -15,11 +15,9 @@ from dashscope.audio.tts_v2 import SpeechSynthesizer, AudioFormat
 from openai import OpenAI
 
 sys.path.insert(0, str(Path(__file__).parent))
-from common import get_api_key, mask_key, now_ms, SAMPLES
+from common import ensure_env, now_ms, SAMPLES
 
-API_KEY = get_api_key()
-dashscope.api_key = API_KEY
-print(f"[方案1-阻塞] 使用 key {mask_key(API_KEY)}")
+ensure_env()
 
 
 def run_one(sample_id: str) -> dict:
@@ -53,7 +51,7 @@ def run_one(sample_id: str) -> dict:
     print(f"  ASR({asr_ms:.0f}ms) → {text}")
 
     # ---------- Step 2: LLM (Qwen-Plus, 非流式) ----------
-    client = OpenAI(api_key=API_KEY, base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
+    client = OpenAI(base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
     t1 = now_ms()
     resp = client.chat.completions.create(
         model="qwen-plus",

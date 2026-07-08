@@ -11,7 +11,7 @@ if [ ! -f "$WAV" ]; then
 fi
 
 if [ -z "${DASHSCOPE_API_KEY:-}" ]; then
-  echo "请先 export DASHSCOPE_API_KEY=sk-..." >&2
+  echo "环境变量未就位，请参考 benchmark/.env.example 配置后再运行" >&2
   exit 1
 fi
 

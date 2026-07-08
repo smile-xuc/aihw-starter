@@ -1,6 +1,6 @@
 # benchmark - 方案延迟横评实测
 
-本目录包含对 [solutions/by-solution](../solutions/by-solution/) 中"方案延迟横评"表格的可复现 demo。
+本目录包含对 [by-solution](../by-solution/) 中"方案延迟横评"表格的可复现 demo。
 
 同一批测试样本，用不同技术链路跑一遍，量化「首包延迟」和「端到端延迟」。
 
@@ -52,12 +52,12 @@ cp .env.example .env
 export DASHSCOPE_API_KEY=sk-...
 ```
 
-> ⚠️ `.env` 已在 `.gitignore` 中，不会被提交。所有脚本都通过 `os.environ["DASHSCOPE_API_KEY"]` 读取，日志中只打印脱敏形式 `sk-xx...xxxx`。
+> ⚠️ `.env` 已在 `.gitignore` 中，不会被提交。所有脚本都通过 SDK 从环境变量 `DASHSCOPE_API_KEY` 读取，脚本本身不持有 key 变量，日志中也不打印任何 key 相关信息（连脱敏形式都没有）。
 
 ### 3. 跑 SDK 版
 
 ```bash
-cd benchmark
+cd solutions/benchmark
 
 # 方案 1（阻塞式）
 python3 scripts/method1_blocking_sdk.py
@@ -74,7 +74,7 @@ python3 scripts/method3_omni_sdk.py
 ### 4. 跑 CLI 版
 
 ```bash
-cd benchmark
+cd solutions/benchmark
 
 # 方案 1 · CLI 单条
 ./scripts/method1_blocking_cli.sh samples/q1_light.wav
@@ -136,7 +136,7 @@ CLI 版适合快速验证 `bl` 命令是否可用，SDK 版才能精细拆分 AS
 ## 目录结构
 
 ```
-benchmark/
+solutions/benchmark/
 ├── README.md                        # 本文件
 ├── .env.example                     # API Key 配置模板
 ├── samples/                         # 测试音频样本 (wav)
@@ -144,7 +144,7 @@ benchmark/
 │   ├── q2_medium.wav
 │   └── q3_complex.wav
 ├── scripts/                         # 测试脚本
-│   ├── common.py                    # 加载 .env / 脱敏 key / 时间戳
+│   ├── common.py                    # 加载 .env / 时间戳 / 样本清单
 │   ├── method1_blocking_sdk.py
 │   ├── method1_blocking_cli.sh
 │   ├── method2_streaming_sdk.py

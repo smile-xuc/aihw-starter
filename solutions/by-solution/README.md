@@ -17,14 +17,14 @@
 
 ## 方案延迟横评
 
-同一场景（如「孩子问一个问题到听到回答」）下，不同技术架构串起来端到端的实际延迟差异，是选型最直观的决策依据。以下数据来自 [benchmark/](../../benchmark/) 目录的可复现 demo（2026-07-08 实测，macOS + 公司 Wi-Fi，仅供参考）。
+同一场景（如「孩子问一个问题到听到回答」）下，不同技术架构串起来端到端的实际延迟差异，是选型最直观的决策依据。以下数据来自 [benchmark/](../benchmark/) 目录的可复现 demo（2026-07-08 实测，macOS + 公司 Wi-Fi，仅供参考）。
 
 | 方案链路 | 首包延迟（轻/中/复杂） | 端到端延迟（轻/中/复杂） | 并发承载 | 语义打断 | Demo |
 |---|---|---|---|---|---|
-| 裸模型串接（ASR → LLM → TTS，阻塞式） | 4053 / 5915 / 5430 ms | 4053 / 5915 / 5430 ms | 自行限流 | 不支持 | [method1_blocking](../../benchmark/scripts/method1_blocking_sdk.py) |
-| 裸模型串接（ASR → LLM → TTS，流式） | **2289 / 2714 / 2898 ms** | 4741 / 5021 / 5527 ms | 自行限流 | 弱支持 | [method2_streaming](../../benchmark/scripts/method2_streaming_sdk.py) |
+| 裸模型串接（ASR → LLM → TTS，阻塞式） | 4053 / 5915 / 5430 ms | 4053 / 5915 / 5430 ms | 自行限流 | 不支持 | [method1_blocking](../benchmark/scripts/method1_blocking_sdk.py) |
+| 裸模型串接（ASR → LLM → TTS，流式） | **2289 / 2714 / 2898 ms** | 4741 / 5021 / 5527 ms | 自行限流 | 弱支持 | [method2_streaming](../benchmark/scripts/method2_streaming_sdk.py) |
 | 百炼多模态交互开发套件（全双工套件方案） | 待测 | 待测 | 平台托管 | 原生支持 | 待补充 |
-| Qwen-Omni 端到端（语音进语音出） | **1294 / 1294 / 1068 ms** | 4188 / 14012 / 9410 ms | 平台托管 | 原生支持 | [method3_omni](../../benchmark/scripts/method3_omni_sdk.py) |
+| Qwen-Omni 端到端（语音进语音出） | **1294 / 1294 / 1068 ms** | 4188 / 14012 / 9410 ms | 平台托管 | 原生支持 | [method3_omni](../benchmark/scripts/method3_omni_sdk.py) |
 | 端云协同（端侧唤醒 + 端侧 ASR + 云端 LLM/TTS） | 待测 | 待测 | 混合 | 视端侧实现 | 待补充 |
 
 > Qwen-Omni 首包最短，但**端到端受回复长度直接影响** — 如果不在系统提示词里死磕字数上限，中/复杂题目端到端会拉到 10s 以上。玩具/桌宠这类短对话场景，流式裸模型是当前最平衡的选择。
@@ -37,7 +37,7 @@
 - **语义打断**：用户中途插话时的响应表现
 - **测试语音样本**：统一 3～5 句短问答，覆盖轻度 / 中度 / 复杂三档
 
-> 🧪 **Demo 位置**：可运行 benchmark 脚本位于 [`benchmark/`](../../benchmark/)，含 3 段测试音频 + SDK/CLI 两套脚本，可完整复现表格中数字。测试机、网络环境、时间点等前置条件写在 [benchmark/README.md](../../benchmark/README.md)。
+> 🧪 **Demo 位置**：可运行 benchmark 脚本位于 [`benchmark/`](../benchmark/)，含 3 段测试音频 + SDK/CLI 两套脚本，可完整复现表格中数字。测试机、网络环境、时间点等前置条件写在 [benchmark/README.md](../benchmark/README.md)。
 
 ---
 

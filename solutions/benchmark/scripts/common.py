@@ -1,4 +1,7 @@
-"""公用工具：加载 .env、脱敏 key、计时装饰器。"""
+"""公用工具：加载 .env、时间戳、测试样本。
+
+设计原则：脚本本身不持有 key 变量，只保证环境变量已就位，交给 SDK 从环境读取。
+"""
 import os
 import time
 from pathlib import Path
@@ -19,19 +22,17 @@ def load_env():
             os.environ[k] = v
 
 
-def get_api_key() -> str:
+def ensure_env():
+    """确保 DASHSCOPE_API_KEY 已就位（只做校验，不返回值）。
+
+    同时把值同步到 OPENAI_API_KEY，让走 OpenAI 兼容协议的 client 可以直接免参初始化。
+    """
     load_env()
-    key = os.environ.get("DASHSCOPE_API_KEY", "")
+    key = os.environ.get("DASHSCOPE_API_KEY")
     if not key:
         raise RuntimeError("DASHSCOPE_API_KEY 未设置，请参考 benchmark/.env.example 配置")
-    return key
-
-
-def mask_key(key: str) -> str:
-    """脱敏 API Key 用于日志输出。"""
-    if not key or len(key) < 8:
-        return "***"
-    return f"{key[:4]}...{key[-4:]}"
+    # OpenAI 兼容协议下，SDK 默认读 OPENAI_API_KEY
+    os.environ.setdefault("OPENAI_API_KEY", key)
 
 
 def now_ms() -> float:
