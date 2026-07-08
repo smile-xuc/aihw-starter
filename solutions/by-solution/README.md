@@ -26,12 +26,12 @@
 | 千问大模型串接（ASR → LLM → TTS，阻塞式） | 5502 / 9449 / 7416 ms | 依不同模型而定，可扩容 | 支持 | 不支持 | [method1_blocking](../benchmark/scripts/method1_blocking_sdk.py) |
 | 千问大模型串接（ASR → LLM → TTS，流式） | 2473 / 2846 / 2980 ms | 依不同模型而定，可扩容 | 支持 | 不支持 | [method2_streaming](../benchmark/scripts/method2_streaming_sdk.py) |
 | 百炼多模态交互开发套件（全双工套件方案） | **997 / 1058 / 1660 ms** | 默认 10 QPS，可扩容 | 支持 | 支持 | [method4_duplex](../benchmark/scripts/method4_duplex_sdk.py) |
-| Qwen-Omni 端到端（qwen3.5-omni-flash，HTTP 流式） | **1230 / 1377 / — ms** | 可扩容 | 不支持 | 支持 | [method3_omni](../benchmark/scripts/method3_omni_sdk.py) |
-| Qwen-Omni Realtime（qwen3.5-omni-flash-realtime，WebSocket 双工） | **330 / 413 / — ms** | 可扩容 | 不支持 | 支持 | [method3_omni_realtime](../benchmark/scripts/method3_omni_realtime_sdk.py) |
+| Qwen-Omni 端到端（qwen3.5-omni-flash，HTTP 流式） | **1204 / 1317 / 1318 ms** | 可扩容 | 支持 | 支持 | [method3_omni](../benchmark/scripts/method3_omni_sdk.py) |
+| Qwen-Omni Realtime（qwen3.5-omni-flash-realtime，WebSocket 双工） | **347 / 375 / 433 ms** | 可扩容 | 支持 | 支持 | [method3_omni_realtime](../benchmark/scripts/method3_omni_realtime_sdk.py) |
 
 > ⚠️ 延迟数据因网络环境会略有不同，以上为特定测试环境下的参考值，具体测试条件见下方说明。
 
-**测试环境**（2026-07-09 01:30 CST）：macOS 26.3 / Apple Silicon / 无线网络 / ping dashscope.aliyuncs.com ≈ 42ms。LLM 联网搜索通过 enable_search 参数开启（方案 1/2），多模态套件通过应用内置搜索插件实现（方案 4）。
+**测试环境**（2026-07-09 01:30 CST）：macOS 26.3 / Apple Silicon / 无线网络 / ping dashscope.aliyuncs.com ≈ 42ms。联网搜索通过 enable_search 参数开启（方案 1/2/3/3b），多模态套件通过应用内置搜索插件实现（方案 4）。
 
 **测试口径**：
 
