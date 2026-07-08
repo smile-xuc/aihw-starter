@@ -31,7 +31,7 @@
 
 > ⚠️ 延迟数据因网络环境会略有不同，以上为特定测试环境下的参考值，具体测试条件见下方说明。
 
-**测试环境**（2026-07-09 01:30 CST）：macOS 26.3 / Apple Silicon / 无线网络 / ping dashscope.aliyuncs.com ≈ 42ms。联网搜索通过 enable_search 参数开启（方案 1/2/3/3b），多模态套件通过应用内置搜索插件实现（方案 4）。
+**测试环境**（2026-07-09 01:30 CST）：macOS 26.3 / Apple Silicon / 无线网络 / ping dashscope.aliyuncs.com ≈ 42ms。联网搜索：方案 1/2 通过 enable_search 参数开启，方案 3 通过 enable_search + search_strategy=agent 开启，方案 3b 通过 session.update 中 enable_search 开启，方案 4 通过应用内置搜索插件实现。
 
 **测试口径**：
 
