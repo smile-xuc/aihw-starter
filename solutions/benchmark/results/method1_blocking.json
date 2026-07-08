@@ -1,35 +1,35 @@
 [
   {
     "sample": "q1_light",
-    "asr_ms": 853,
-    "llm_ms": 1031,
-    "tts_ms": 2058,
-    "first_pkt_ms": 3941,
-    "e2e_ms": 3941,
+    "asr_ms": 661,
+    "llm_ms": 1016,
+    "tts_ms": 2200,
+    "first_pkt_ms": 3876,
+    "e2e_ms": 3876,
     "asr_text": "今天天气怎么样？",
-    "llm_reply": "今天阳光暖暖的，像棉花糖一样甜哦！☀️",
+    "llm_reply": "今天阳光暖暖的，像小太阳在笑呢！☀️",
     "level": "轻度"
   },
   {
     "sample": "q2_medium",
-    "asr_ms": 1145,
-    "llm_ms": 1262,
-    "tts_ms": 2883,
-    "first_pkt_ms": 5290,
-    "e2e_ms": 5290,
+    "asr_ms": 1101,
+    "llm_ms": 1041,
+    "tts_ms": 2486,
+    "first_pkt_ms": 4628,
+    "e2e_ms": 4628,
     "asr_text": "帮我讲一个关于恐龙的小故事。",
-    "llm_reply": "小三角龙豆豆迷路了，遇到会发光的萤火虫朋友，一起找到回家的彩虹桥！✨🦖",
+    "llm_reply": "小三角龙豆豆迷路了，遇到会发光的萤火虫朋友，一起找到妈妈啦！✨🦖",
     "level": "中度"
   },
   {
     "sample": "q3_complex",
-    "asr_ms": 1827,
-    "llm_ms": 1305,
-    "tts_ms": 4805,
-    "first_pkt_ms": 7936,
-    "e2e_ms": 7936,
+    "asr_ms": 1760,
+    "llm_ms": 1235,
+    "tts_ms": 2942,
+    "first_pkt_ms": 5938,
+    "e2e_ms": 5938,
     "asr_text": "如果我在河边发现了一只受伤的小鸟，应该怎么办？我需要考虑哪些方面？",
-    "llm_reply": "先轻轻把它放在纸盒里，盖上小洞透气，别喂食喝水，快找大人帮忙送动物医院哦～",
+    "llm_reply": "先轻轻把它放在纸盒里，盖上小洞透气，别喂食喝水，快找大人帮忙送兽医哦！🐦",
     "level": "复杂"
   }
 ]
