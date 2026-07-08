@@ -8,8 +8,8 @@
 
 | 方案 | 脚本 | 说明 |
 |---|---|---|
-| 方案 1 · 裸模型串接（阻塞式） | [scripts/method1_blocking_sdk.py](./scripts/method1_blocking_sdk.py) / [scripts/method1_blocking_cli.sh](./scripts/method1_blocking_cli.sh) | ASR → LLM → TTS，每步等前一步完成 |
-| 方案 2 · 裸模型串接（流式） | [scripts/method2_streaming_sdk.py](./scripts/method2_streaming_sdk.py) | ASR + LLM 流式 + TTS 流式输入 |
+| 方案 1 · 千问大模型串接（阻塞式） | [scripts/method1_blocking_sdk.py](./scripts/method1_blocking_sdk.py) / [scripts/method1_blocking_cli.sh](./scripts/method1_blocking_cli.sh) | ASR → LLM → TTS，每步等前一步完成 |
+| 方案 2 · 千问大模型串接（流式） | [scripts/method2_streaming_sdk.py](./scripts/method2_streaming_sdk.py) | ASR + LLM 流式 + TTS 流式输入 |
 | 方案 3 · Qwen-Omni 端到端 | [scripts/method3_omni_sdk.py](./scripts/method3_omni_sdk.py) / [scripts/method3_omni_cli.sh](./scripts/method3_omni_cli.sh) | 一个模型同时吞音频吐音频 |
 
 > 待补：百炼多模态交互开发套件（全双工套件方案）、端云协同方案。
@@ -93,7 +93,7 @@ CLI 版适合快速验证 `bl` 命令是否可用，SDK 版才能精细拆分 AS
 
 > ⚠️ 延迟数据因网络环境会略有不同，仅供选型参考。
 
-### 方案 1 · 裸模型串接（阻塞式）
+### 方案 1 · 千问大模型串接（阻塞式）
 
 | 级别 | ASR | LLM | TTS | 体感延迟 |
 |---|---:|---:|---:|---:|
@@ -103,7 +103,7 @@ CLI 版适合快速验证 `bl` 命令是否可用，SDK 版才能精细拆分 AS
 
 阻塞式最大问题：TTS 必须等 LLM 完整拿完才开工，体感延迟 = ASR + LLM + TTS 三者顺序叠加，用户会经历 4～6 秒的沉默。
 
-### 方案 2 · 裸模型串接（流式）
+### 方案 2 · 千问大模型串接（流式）
 
 | 级别 | ASR | LLM 首 token | TTS 首字节 | 体感延迟 |
 |---|---:|---:|---:|---:|
@@ -150,7 +150,7 @@ WebSocket 双工协议 + server_vad，体感延迟 ≈ 330～394ms，比 HTTP �
 | 方案 | 体感延迟（中度） | 结论 |
 |---|---:|---|
 | 方案 1 · 阻塞 | 4628 ms | 简单实现，体验最差 |
-| 方案 2 · 流式 | 2368 ms | 体验最优的裸模型方案 |
+| 方案 2 · 流式 | 2368 ms | 体验最优的千问大模型串接方案 |
 | 方案 3 · Omni (HTTP) | 1291 ms | 单模型端到端，体感快 |
 | 方案 4 · 多模态套件 | 1120 ms | 平台托管，支持应用配置 |
 | 方案 3b · Omni Realtime (WS) | **354 ms** | 体感最快，支持语义打断 |
