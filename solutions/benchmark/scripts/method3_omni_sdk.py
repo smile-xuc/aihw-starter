@@ -1,13 +1,15 @@
-"""方案 3：Qwen-Omni 端到端（语音进语音出）
+"""方案 3：Qwen-Omni 端到端（qwen3.5-omni-flash，语音进语音出）
 
-链路：wav → qwen-omni-turbo-realtime（同一模型直接吐出文字+音频）
-首包延迟 = 从上传到收到首个音频块的时间
-端到端 = 首个到最后一个音频块
-使用 OpenAI 兼容协议 (chat.completions) 流式调用。
+链路：wav → qwen3.5-omni-flash（OpenAI 兼容 HTTP stream）→ 流式音频输出
+体感延迟 = 从请求发出到收到第一个 audio delta 的时间
+
+注：该模型也有 WebSocket 实时版本 qwen3.5-omni-flash-realtime，
+支持连续对话和语义打断，体感延迟预计更低。此处用 HTTP 接口便于跨网络环境复现。
 """
 import base64
 import json
 import sys
+import time
 from pathlib import Path
 
 from openai import OpenAI
@@ -25,25 +27,33 @@ def run_one(sample_id: str) -> dict:
     client = OpenAI(base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
 
     t0 = now_ms()
-    first_text_ms = None
     first_audio_ms = None
     last_audio_ms = None
-    text_out = ""
+    transcript = ""
     audio_bytes = 0
 
     completion = client.chat.completions.create(
-        model="qwen-omni-turbo",
+        model="qwen3.5-omni-flash",
         messages=[
-            {"role": "system", "content": [{"type": "text", "text": "你是儿童陪伴AI，回答简短亲切，不超过40字。"}]},
+            {
+                "role": "system",
+                "content": [{"type": "text", "text": "你是儿童陪伴AI，回答简短亲切，不超过40字。"}],
+            },
             {
                 "role": "user",
                 "content": [
-                    {"type": "input_audio", "input_audio": {"data": f"data:audio/wav;base64,{audio_b64}", "format": "wav"}},
+                    {
+                        "type": "input_audio",
+                        "input_audio": {
+                            "data": f"data:audio/wav;base64,{audio_b64}",
+                            "format": "wav",
+                        },
+                    },
                 ],
             },
         ],
         modalities=["text", "audio"],
-        audio={"voice": "Cherry", "format": "wav"},
+        audio={"voice": "Ethan", "format": "wav"},
         stream=True,
         stream_options={"include_usage": True},
     )
@@ -52,16 +62,9 @@ def run_one(sample_id: str) -> dict:
         if not chunk.choices:
             continue
         delta = chunk.choices[0].delta
-        # 文本增量
-        if hasattr(delta, "content") and delta.content:
-            if first_text_ms is None:
-                first_text_ms = now_ms() - t0
-            text_out += delta.content
-        # audio 字段（Qwen-Omni: delta.audio 是 dict，含 data/transcript）
         audio_field = getattr(delta, "audio", None)
-        if audio_field:
-            data_b64 = audio_field.get("data") if isinstance(audio_field, dict) else None
-            transcript = audio_field.get("transcript") if isinstance(audio_field, dict) else None
+        if audio_field and isinstance(audio_field, dict):
+            data_b64 = audio_field.get("data")
             if data_b64:
                 if first_audio_ms is None:
                     first_audio_ms = now_ms() - t0
@@ -70,29 +73,27 @@ def run_one(sample_id: str) -> dict:
                     audio_bytes += len(base64.b64decode(data_b64))
                 except Exception:
                     pass
-            if transcript:
-                if first_text_ms is None:
-                    first_text_ms = now_ms() - t0
-                text_out += transcript
+            t = audio_field.get("transcript")
+            if t:
+                transcript += t
 
-    total = now_ms() - t0
-    print(f"  first_text: {first_text_ms}ms, first_audio: {first_audio_ms}ms, last_audio: {last_audio_ms}ms")
-    print(f"  text_out: {text_out}")
-    print(f"  audio_bytes: {audio_bytes}, total: {total:.0f}ms")
+    print(f"  first_audio: {first_audio_ms:.0f}ms, last_audio: {last_audio_ms:.0f}ms")
+    print(f"  transcript: {transcript[:60]}")
+    print(f"  audio_bytes: {audio_bytes}")
 
     return {
         "sample": sample_id,
-        "first_text_ms": round(first_text_ms) if first_text_ms else None,
         "first_audio_ms": round(first_audio_ms) if first_audio_ms else None,
         "last_audio_ms": round(last_audio_ms) if last_audio_ms else None,
-        "first_pkt_ms": round(first_audio_ms) if first_audio_ms else round(first_text_ms or total),
-        "e2e_ms": round(last_audio_ms) if last_audio_ms else round(total),
+        "first_pkt_ms": round(first_audio_ms) if first_audio_ms else None,
         "audio_bytes": audio_bytes,
-        "text_out": text_out,
+        "transcript": transcript,
     }
 
 
 def main():
+    print("[方案3-Omni] 模型: qwen3.5-omni-flash")
+
     results = []
     for s in SAMPLES:
         print(f"\n=== [{s['level']}] {s['text']} ===")
@@ -110,13 +111,13 @@ def main():
     out.write_text(json.dumps(results, ensure_ascii=False, indent=2))
     print(f"\n结果写入 {out}")
 
-    print("\n" + "=" * 70)
-    print(f"{'级别':<6}{'首text':<10}{'首audio':<10}{'末audio':<10}{'首包':<8}{'端到端':<8}")
+    print("\n" + "=" * 60)
+    print(f"{'级别':<6}{'体感延迟(ms)':<14}")
     for r in results:
         if "error" in r:
             print(f"{r['level']:<6}FAIL: {r['error'][:50]}")
         else:
-            print(f"{r['level']:<6}{str(r['first_text_ms']):<10}{str(r['first_audio_ms']):<10}{str(r['last_audio_ms']):<10}{r['first_pkt_ms']:<8}{r['e2e_ms']:<8}")
+            print(f"{r['level']:<6}{str(r['first_pkt_ms']):<14}")
 
 
 if __name__ == "__main__":
