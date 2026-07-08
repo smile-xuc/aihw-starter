@@ -1,29 +1,29 @@
 [
   {
+    "first_audio_ms": 330.0485420227051,
+    "last_audio_ms": 742.3756256103516,
+    "transcript": "今天天气很好，阳光暖暖的，适合出去玩哦！",
+    "error": null,
+    "audio_bytes": 165120,
     "sample": "q1_light",
-    "first_audio_ms": null,
-    "last_audio_ms": null,
-    "audio_bytes": 0,
-    "transcript": "",
-    "error": "连接关闭: None None",
     "level": "轻度"
   },
   {
+    "first_audio_ms": 354.10837507247925,
+    "last_audio_ms": 2373.436083316803,
+    "transcript": "有个小霸王龙叫嘟嘟，它最怕打雷。一天雷雨来了，嘟嘟躲进树洞，发现一只小鸟也在发抖，于是它轻轻哼歌哄小鸟睡觉啦。",
+    "error": null,
+    "audio_bytes": 591360,
     "sample": "q2_medium",
-    "first_audio_ms": null,
-    "last_audio_ms": null,
-    "audio_bytes": 0,
-    "transcript": "",
-    "error": "连接关闭: None None",
     "level": "中度"
   },
   {
+    "first_audio_ms": 393.74550008773804,
+    "last_audio_ms": 1277.2514162063599,
+    "transcript": "先别碰它，观察一下。如果伤口大或流血就赶紧联系专业救助人员哦。",
+    "error": null,
+    "audio_bytes": 280320,
     "sample": "q3_complex",
-    "first_audio_ms": null,
-    "last_audio_ms": null,
-    "audio_bytes": 0,
-    "transcript": "",
-    "error": "Connection is already closed.",
     "level": "复杂"
   }
 ]
