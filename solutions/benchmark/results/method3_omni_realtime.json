@@ -1,0 +1,29 @@
+[
+  {
+    "sample": "q1_light",
+    "first_audio_ms": null,
+    "last_audio_ms": null,
+    "audio_bytes": 0,
+    "transcript": "",
+    "error": "连接关闭: None None",
+    "level": "轻度"
+  },
+  {
+    "sample": "q2_medium",
+    "first_audio_ms": null,
+    "last_audio_ms": null,
+    "audio_bytes": 0,
+    "transcript": "",
+    "error": "连接关闭: None None",
+    "level": "中度"
+  },
+  {
+    "sample": "q3_complex",
+    "first_audio_ms": null,
+    "last_audio_ms": null,
+    "audio_bytes": 0,
+    "transcript": "",
+    "error": "Connection is already closed.",
+    "level": "复杂"
+  }
+]

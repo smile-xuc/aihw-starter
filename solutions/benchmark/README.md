@@ -89,7 +89,7 @@ CLI 版适合快速验证 `bl` 命令是否可用，SDK 版才能精细拆分 AS
 
 **体感延迟**定义：从音频发起请求，到 TTS 第一帧音频播出（即用户说完话到听到 AI 第一个字的等待时间）。
 
-**测试环境**（2026-07-08 20:26 CST）：macOS 26.3 / Apple Silicon / 有线网络 / ping dashscope.aliyuncs.com ≈ 42ms（出口 Los Angeles）。国内网络环境下延迟预计更低。
+**测试环境**（2026-07-08 20:26 CST）：macOS 26.3 / Apple Silicon / 无线网络 / ping dashscope.aliyuncs.com ≈ 42ms。
 
 > ⚠️ 延迟数据因网络环境会略有不同，仅供选型参考。
 
@@ -125,6 +125,16 @@ CLI 版适合快速验证 `bl` 命令是否可用，SDK 版才能精细拆分 AS
 
 > 注：此处用 HTTP stream 接口测试。该模型的 WebSocket 实时版本（qwen3.5-omni-flash-realtime）支持连续对话和语义打断，体感延迟预计更低。
 
+### 方案 3b · Qwen-Omni Realtime（qwen3.5-omni-flash-realtime，WebSocket 双工）
+
+| 级别 | 体感延迟 |
+|---|---:|
+| 轻度 | 待测 |
+| 中度 | 待测 |
+| 复杂 | 待测 |
+
+WebSocket 双工协议支持 server_vad（语义打断）和连续多轮对话。当前脚本已就绪（`method3_omni_realtime_sdk.py`），但 WebSocket 协议需要国内网络直连测试，海外出口因中间代理返回超长 close frame 导致连接中断。
+
 ### 横向对比
 
 | 方案 | 体感延迟（中度） | 结论 |
@@ -155,6 +165,7 @@ solutions/benchmark/
 │   ├── method1_blocking_cli.sh
 │   ├── method2_streaming_sdk.py
 │   ├── method3_omni_sdk.py
+│   ├── method3_omni_realtime_sdk.py
 │   └── method3_omni_cli.sh
 └── results/                         # 实测数据（json）
     ├── method1_blocking.json
