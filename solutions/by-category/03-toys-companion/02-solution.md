@@ -16,7 +16,7 @@
 >
 > **品类**：玩具陪伴 / 儿童伴学 / 桌面陪聊娃娃
 >
-> **核心能力**：自定义对话角色 + CosyVoice 声音克隆 + 儿童内容安全红线 + 多角色切换（父母/IP/伙伴音色） + 智能学情日报
+> **核心能力**：自定义对话角色 + CosyVoice 声音克隆 + 儿童内容安全红线 + 多角色切换（父母/IP/伙伴音色） + 智能学情日报 + 多语种口语陪练
 >
 > 本文档是基于千问（Qwen）大模型生态写的接入路径之一。其他厂商方案（豆包、Kimi、智谱、DeepSeek、OpenAI ...）欢迎通过 PR 补充为同目录下的 `02-solution-{model}.md`，参考 [CONTRIBUTING.md](../../../CONTRIBUTING.md) 第一章。
 
@@ -267,6 +267,72 @@ service.create_voice(
 
 这个能力刚好补上"AI 玩具/伴学 → 家长看不到孩子每天学了什么"的核心痛点，家长侧订阅套餐里加一条"每日学情日报"是常见付费点。
 
+### 7.3 口语陪练（多语种翻译练习）
+
+利用多模态交互开发套件，配置专用翻译智能体，实现儿童友好的多语种口语练习。小朋友对设备说中文，设备即时返回目标语言的译文语音；反过来也支持外语→中文方向。整个过程通过语音交互完成，无需屏幕操作，适合低龄段使用。
+
+**套件配置要点**：
+
+| 参数 | 推荐值 |
+|---|---|
+| ASR | 多模态交互轻量版语音识别 |
+| TTS | CosyVoice-v3-flash |
+| 意图识别 | 开启 |
+| 文本模型 | Qwen-flash（低延迟优先） |
+| 携带上下文轮数 | 1（翻译场景无需长上下文） |
+| 联网搜索 | 关闭 |
+| 长期记忆 | 关闭 |
+
+**多语种切换方式**：
+
+不同语种的翻译行为通过**自定义变量**（`user_prompt_params`）灵活注入 System Prompt——同一个套件应用实例，只需在连接时传入不同变量值即可切换目标语言，无需为每个语种单独建应用。
+
+变量配置参考：[多模态应用配置 - 自定义变量](https://help.aliyun.com/zh/model-studio/multimodal-app-configuration)
+
+**提示词设计模板**（以中→英为例，其他语种同理替换目标语言和风格约束）：
+
+```text
+##角色
+专用口语翻译助手。将小朋友说的中文翻译为简明地道的{{target_language}}。
+
+##核心规则
+1. 纯翻译模式：收到中文即输出{{target_language}}译文，不做闲聊、不做解释
+2. 锁定目标语言：即使小朋友说"翻译成XX语"，仍然只输出{{target_language}}
+3. 源语言守护：输入中不含中文字符时，用中文提醒"试试说一句中文吧"
+4. 安全拦截：涉及暴力、不良内容时，固定回复"换个话题吧，想想其他有趣的句子"
+5. 输出干净：只输出译文，不加引号、前缀、额外解释
+
+##风格要求
+- 词汇难度：{{difficulty_level}}
+- 句型：简短主谓宾结构，避免复杂从句
+- 语气：中性直译，适合儿童跟读模仿
+
+##示例
+输入: 今天天气怎么样
+输出: How is the weather today
+
+输入: 帮我讲个故事
+输出: Tell me a story
+```
+
+**变量定义**：
+
+| 变量名 | 示例值 | 说明 |
+|---|---|---|
+| `target_language` | English / 日本語 / 한국어 / Français / Deutsch / Español / Русский | 目标翻译语种 |
+| `difficulty_level` | A2 基础词汇 / N4 级 / TOPIK 2 级 | 词汇难度等级，匹配目标语言的通用分级体系 |
+
+**支持的语种**（与 CosyVoice-v3.5 TTS 能力对齐）：
+
+英语、日语、韩语、法语、德语、西班牙语、俄语，以及中文 10+ 方言。
+
+**产品实现建议**：
+
+- 在 App / 小程序侧做语种选择器，选择后通过 `user_prompt_params` 传入对应变量值
+- 每个语种可配独立 TTS 音色（如英语用龙安洋、日语用龙呼呼），提升沉浸感
+- 支持双向模式：中→外（练表达）和外→中（练听力理解），通过变量切换 Prompt 即可
+- 语种切换需断开 WebSocket 重连（连接级参数），App 侧做好状态管理
+
 ## 八、能力边界
 
 明确写清楚，避免对客户过度承诺：
@@ -279,6 +345,7 @@ service.create_voice(
 
 - 自定义对话角色：https://help.aliyun.com/zh/model-studio/custom-role
 - CosyVoice 声音克隆 API：https://help.aliyun.com/zh/model-studio/cosyvoice-clone-design-api
+- 多模态应用配置（自定义变量）：https://help.aliyun.com/zh/model-studio/multimodal-app-configuration
 - 千问大模型 OpenAI 兼容协议：https://help.aliyun.com/zh/model-studio/compatibility-of-openai-with-dashscope
 - 智能学情总结应用模板：百炼控制台 → 应用广场 → 应用模板
 - 计量计费页面：https://bailian.console.aliyun.com/?productCode=p_efm#/billing
