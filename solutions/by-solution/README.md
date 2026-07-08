@@ -30,7 +30,7 @@
 
 > ⚠️ 延迟数据因网络环境会略有不同，以上为特定测试环境下的参考值，具体测试条件见下方说明。
 
-**测试环境**（2026-07-08 20:26 CST）：macOS 26.3 / Apple Silicon / 有线网络 / ping dashscope.aliyuncs.com ≈ 42ms（出口 Los Angeles）。国内网络环境下延迟预计更低。
+**测试环境**（2026-07-08 20:26 CST）：macOS 26.3 / Apple Silicon / 无线网络 / ping dashscope.aliyuncs.com ≈ 42ms。
 
 **测试口径**：
 
