@@ -41,6 +41,6 @@ def now_ms() -> float:
 
 SAMPLES = [
     {"id": "q1_light", "text": "今天天气怎么样", "level": "轻度"},
-    {"id": "q2_medium", "text": "帮我讲一个关于恐龙的小故事", "level": "中度"},
     {"id": "q3_complex", "text": "如果我在河边发现了一只受伤的小鸟应该怎么办我需要考虑哪些方面", "level": "复杂"},
+    {"id": "q4_search", "text": "杭州今天天气怎么样，气温多少度", "level": "搜索"},
 ]

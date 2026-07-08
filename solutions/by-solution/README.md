@@ -21,22 +21,22 @@
 
 **体感延迟**定义：从音频发起请求，到 TTS 第一帧音频播出（即用户说完话到听到 AI 第一个字的等待时间）。
 
-| 方案链路 | 体感延迟（轻/中/复杂） | 并发承载 | 语义打断 | Demo |
-|---|---|---|---|---|
-| 千问大模型串接（ASR → LLM → TTS，阻塞式） | 3876 / 4628 / 5938 ms | 依不同模型而定，可扩容 | 不支持 | [method1_blocking](../benchmark/scripts/method1_blocking_sdk.py) |
-| 千问大模型串接（ASR → LLM → TTS，流式） | 2198 / 2368 / 3087 ms | 依不同模型而定，可扩容 | 不支持 | [method2_streaming](../benchmark/scripts/method2_streaming_sdk.py) |
-| 百炼多模态交互开发套件（全双工套件方案） | **991 / 1120 / 1036 ms** | 默认 10 QPS，可扩容 | 支持 | [method4_duplex](../benchmark/scripts/method4_duplex_sdk.py) |
-| Qwen-Omni 端到端（qwen3.5-omni-flash，HTTP 流式） | **1035 / 1291 / 1284 ms** | 可扩容 | 支持 | [method3_omni](../benchmark/scripts/method3_omni_sdk.py) |
-| Qwen-Omni Realtime（qwen3.5-omni-flash-realtime，WebSocket 双工） | **330 / 354 / 394 ms** | 可扩容 | 支持 | [method3_omni_realtime](../benchmark/scripts/method3_omni_realtime_sdk.py) |
+| 方案链路 | 体感延迟（轻/复杂/搜索） | 并发承载 | 联网搜索 | 语义打断 | Demo |
+|---|---|---|---|---|---|
+| 千问大模型串接（ASR → LLM → TTS，阻塞式） | 5502 / 9449 / 7416 ms | 依不同模型而定，可扩容 | 支持 | 不支持 | [method1_blocking](../benchmark/scripts/method1_blocking_sdk.py) |
+| 千问大模型串接（ASR → LLM → TTS，流式） | 2473 / 2846 / 2980 ms | 依不同模型而定，可扩容 | 支持 | 不支持 | [method2_streaming](../benchmark/scripts/method2_streaming_sdk.py) |
+| 百炼多模态交互开发套件（全双工套件方案） | **997 / 1058 / 1660 ms** | 默认 10 QPS，可扩容 | 支持 | 支持 | [method4_duplex](../benchmark/scripts/method4_duplex_sdk.py) |
+| Qwen-Omni 端到端（qwen3.5-omni-flash，HTTP 流式） | **1230 / 1377 / — ms** | 可扩容 | 不支持 | 支持 | [method3_omni](../benchmark/scripts/method3_omni_sdk.py) |
+| Qwen-Omni Realtime（qwen3.5-omni-flash-realtime，WebSocket 双工） | **330 / 413 / — ms** | 可扩容 | 不支持 | 支持 | [method3_omni_realtime](../benchmark/scripts/method3_omni_realtime_sdk.py) |
 
 > ⚠️ 延迟数据因网络环境会略有不同，以上为特定测试环境下的参考值，具体测试条件见下方说明。
 
-**测试环境**（2026-07-08 20:26 CST）：macOS 26.3 / Apple Silicon / 无线网络 / ping dashscope.aliyuncs.com ≈ 42ms。
+**测试环境**（2026-07-09 01:30 CST）：macOS 26.3 / Apple Silicon / 无线网络 / ping dashscope.aliyuncs.com ≈ 42ms。LLM 联网搜索通过 enable_search 参数开启（方案 1/2），多模态套件通过应用内置搜索插件实现（方案 4）。
 
 **测试口径**：
 
 - **体感延迟**：从音频发起请求到 TTS 第一帧音频返回的时间
-- **测试语音样本**：统一 3 句短问答，覆盖轻度 / 中度 / 复杂三档
+- **测试语音样本**：统一 3 句短问答，覆盖轻度 / 复杂 / 搜索（需联网）三档
 
 > 🧪 **Demo 位置**：可运行 benchmark 脚本位于 [`benchmark/`](../benchmark/)，含 3 段测试音频 + SDK/CLI 两套脚本，可完整复现表格中数字。测试机、网络环境、时间点等前置条件写在 [benchmark/README.md](../benchmark/README.md)。
 
