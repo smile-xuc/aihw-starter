@@ -21,13 +21,13 @@
 
 **体感延迟**定义：从音频发起请求，到 TTS 第一帧音频播出（即用户说完话到听到 AI 第一个字的等待时间）。
 
-| 方案链路 | 体感延迟（轻/复杂/搜索） | 并发承载 | 联网搜索 | 语义打断 | Demo |
-|---|---|---|---|---|---|
-| 千问大模型串接（ASR → LLM → TTS，阻塞式） | 5502 / 9449 / 7416 ms | 依不同模型而定，可扩容 | 支持 | 不支持 | [method1_blocking](../benchmark/scripts/method1_blocking_sdk.py) |
-| 千问大模型串接（ASR → LLM → TTS，流式） | 2473 / 2846 / 2980 ms | 依不同模型而定，可扩容 | 支持 | 不支持 | [method2_streaming](../benchmark/scripts/method2_streaming_sdk.py) |
-| 百炼多模态交互开发套件（全双工套件方案） | **997 / 1058 / 1660 ms** | 默认 10 QPS，可扩容 | 支持 | 支持 | [method4_duplex](../benchmark/scripts/method4_duplex_sdk.py) |
-| Qwen-Omni 端到端（qwen3.5-omni-flash，HTTP 流式） | **1204 / 1317 / 1318 ms** | 可扩容 | 支持 | 支持 | [method3_omni](../benchmark/scripts/method3_omni_sdk.py) |
-| Qwen-Omni Realtime（qwen3.5-omni-flash-realtime，WebSocket 双工） | **347 / 375 / 433 ms** | 可扩容 | 支持 | 支持 | [method3_omni_realtime](../benchmark/scripts/method3_omni_realtime_sdk.py) |
+| 方案链路 | 体感延迟（轻/复杂/搜索） | 并发承载 | 语义打断 | Demo |
+|---|---|---|---|---|
+| 千问大模型串接（ASR → LLM → TTS，阻塞式） | 5502 / 9449 / 7416 ms | 依不同模型而定，可扩容 | 不支持 | [method1_blocking](../benchmark/scripts/method1_blocking_sdk.py) |
+| 千问大模型串接（ASR → LLM → TTS，流式） | 2473 / 2846 / 2980 ms | 依不同模型而定，可扩容 | 不支持 | [method2_streaming](../benchmark/scripts/method2_streaming_sdk.py) |
+| 百炼多模态交互开发套件（全双工套件方案） | **997 / 1058 / 1660 ms** | 默认 10 QPS，可扩容 | 支持 | [method4_duplex](../benchmark/scripts/method4_duplex_sdk.py) |
+| Qwen-Omni 端到端（qwen3.5-omni-flash，HTTP 流式） | **1204 / 1317 / 1318 ms** | 可扩容 | 支持 | [method3_omni](../benchmark/scripts/method3_omni_sdk.py) |
+| Qwen-Omni Realtime（qwen3.5-omni-flash-realtime，WebSocket 双工） | **347 / 375 / 433 ms** | 可扩容 | 支持 | [method3_omni_realtime](../benchmark/scripts/method3_omni_realtime_sdk.py) |
 
 > ⚠️ 延迟数据因网络环境会略有不同，以上为特定测试环境下的参考值，具体测试条件见下方说明。
 
