@@ -5,7 +5,7 @@
 
 ## 1. 综合索引
 
-完整项目集（136+ 项目，15 个品类）：[`ai-hardware-projects.html`](./ai-hardware-projects.html)
+完整项目集（137+ 项目，15 个品类）：[`ai-hardware-projects.html`](./ai-hardware-projects.html)
 
 可在浏览器打开 HTML 进行搜索、分类筛选、Star 数排序。
 
