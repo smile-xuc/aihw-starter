@@ -327,5 +327,15 @@
   </div>
 </footer>
 
+<script>
+  // 外域链接一律新窗口打开，避免读者离开本站
+  document.querySelectorAll('a[href^="http"]').forEach(function (a) {
+    if (a.hostname !== location.hostname) {
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener noreferrer');
+    }
+  });
+</script>
+
 </body>
 </html>
