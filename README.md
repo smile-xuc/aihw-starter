@@ -63,7 +63,7 @@
 <td align="center">02</td>
 <td><a href="./solutions/by-category/02-ai-glasses/"><b>AI 眼镜</b></a></td>
 <td align="center" nowrap>🚧 占位版</td>
-<td>多模态交互套件，端到端打包</td>
+<td>视觉问答（一看即懂）、同声传译、实时音视频交互、会议听记、屏显导航/提词</td>
 </tr>
 <tr>
 <td align="center">03</td>
