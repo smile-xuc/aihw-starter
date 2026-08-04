@@ -17,7 +17,7 @@ solutions/
 ├── by-category/           ← 品类维度（品牌商视角）
 │   ├── README.md          ← 品类总览表格
 │   ├── 01-ipc/            ← IPC / AI 视觉（完整版）
-│   ├── 02-ai-glasses/     ← AI 眼镜（占位版）
+│   ├── 02-ai-glasses/     ← AI 眼镜（完整版）
 │   ├── 03-toys-companion/ ← AI 玩具 / 陪伴（完整版）
 │   ├── 04-desktop-pet/    ← 桌宠（占位版）
 │   ├── 05-ai-earphone/    ← AI 耳机（完整版）
