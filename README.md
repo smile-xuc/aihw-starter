@@ -156,6 +156,7 @@ solutions/by-category/0X-xxxx/
 
 ### 🔍 了解生态
 
+- [primer/](./primer/) — AI 通识：开放权重与授权、模型规格与芯片载体
 - [awesome/open-source/](./awesome/open-source/) — 136 个 GitHub 开源项目，15 品类
 - [awesome/commercial-products/](./awesome/commercial-products/) — 在售商业产品
 - [docs/ 门面页](https://smile-xuc.github.io/aihw-starter/) — GitHub Pages 总览
@@ -187,6 +188,7 @@ aihw-starter/
 ├── awesome/
 │   ├── open-source/           # 开源项目索引（136 项目，15 品类）
 │   └── commercial-products/   # 在售商业化产品案例
+├── primer/                    # AI 通识（开放权重与授权 / 模型规格与芯片载体 …）
 ├── docs/                      # GitHub Pages 门面页
 ├── faq.md                     # 跨品类通用 FAQ
 └── CONTRIBUTING.md            # 贡献指南
