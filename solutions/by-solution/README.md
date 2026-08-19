@@ -15,6 +15,8 @@
 | 05 | [🦾 千问具身智能方案（Qwen-Robot Suite）](./05-qwen-robot.md) | 📖 架构参考 | RobotManip / RobotNav / RobotWorld 三模型矩阵 | 具身智能（机械臂 / 四足 / 人形） |
 | 06 | 端侧 / 混合方案（端云协同） | 📌 计划中 | 离线唤醒 + 端侧推理 + 云增强 | 欢迎 PR 贡献 |
 
+> 千问方案的子形态：[Omni 实时端到端 · Runtime Host 中间层](./omni-realtime/) — Qwen-Omni-Realtime 端到端实时语音 + 自建宿主，适合桌面 / 伴随机器人等对首字延迟和拟人度要求高的高价值单品。可视化架构页：<https://smile-xuc.github.io/aihw-starter/omni-runtime-host.html>
+
 ## 方案延迟横评
 
 同一场景（如「孩子问一个问题到听到回答」）下，不同技术架构串起来的实际体感延迟差异，是选型最直观的决策依据。以下数据来自 [benchmark/](../benchmark/) 目录的可复现 demo。

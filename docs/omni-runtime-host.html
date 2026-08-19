@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Omni Realtime · Runtime Host 中间层架构</title>
+<meta name="description" content="Qwen-Omni-Realtime 端到端实时语音的自建宿主（Runtime Host）架构：六类职责、三条落地路径、三个执行语义、session.update 时机与硬约束。已脱敏。">
+<style>
+  :root {
+    --bg: #0b0d12;
+    --bg-2: #131722;
+    --bg-3: #1a2030;
+    --fg: #e8ecf3;
+    --fg-2: #98a2b3;
+    --accent: #4f8cff;
+    --accent-2: #7aa9ff;
+    --border: #2a3142;
+    --tag-arch: #2d5a8c;
+    --tag-dispatch: #1f7a3a;
+    --tag-semantic: #7a5a1f;
+    --tag-proto: #6a3a7a;
+    --tag-cost: #8c4a2d;
+    --code-bg: #0d1017;
+    --max-w: 1080px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, "PingFang SC", "Helvetica Neue", "Segoe UI", "Microsoft YaHei", sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent-2); text-decoration: none; }
+  a:hover { color: var(--accent); text-decoration: underline; }
+  .wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+  code {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
+    font-size: 0.88em;
+    color: #cdd6e6;
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: #cdd6e6;
+  }
+  pre code { background: none; border: none; padding: 0; font-size: inherit; }
+
+  /* Hero */
+  .hero {
+    padding: 64px 0 40px;
+    border-bottom: 1px solid var(--border);
+    background: radial-gradient(1200px 600px at 50% -100px, rgba(79,140,255,0.18), transparent 60%);
+  }
+  .hero .crumb { font-size: 13px; color: var(--fg-2); margin: 0 0 16px; }
+  .hero h1 { margin: 0 0 12px; font-size: 36px; letter-spacing: -0.5px; }
+  .hero .tagline { color: var(--fg-2); font-size: 17px; margin: 0 0 24px; max-width: 760px; }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 9px 16px; border-radius: 8px;
+    border: 1px solid var(--border); color: var(--fg); font-size: 14px;
+  }
+  .btn-primary { background: var(--accent); border-color: var(--accent); }
+  .btn-primary:hover { background: var(--accent-2); text-decoration: none; }
+  .btn:hover { text-decoration: none; border-color: var(--accent); }
+
+  /* Controls */
+  .controls {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(11,13,18,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+  }
+  .controls .wrap { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  #search {
+    flex: 1 1 260px; min-width: 200px;
+    background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px;
+    color: var(--fg); font-size: 14px; padding: 9px 14px; outline: none;
+  }
+  #search:focus { border-color: var(--accent); }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    cursor: pointer; user-select: none;
+    padding: 5px 12px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--bg-2);
+    color: var(--fg-2); font-size: 12.5px; transition: all 0.15s;
+  }
+  .chip:hover { color: var(--fg); border-color: var(--accent); }
+  .chip.active { color: #fff; border-color: transparent; }
+  .chip[data-cat="all"].active { background: var(--accent); }
+  .chip[data-cat="arch"].active { background: var(--tag-arch); }
+  .chip[data-cat="dispatch"].active { background: var(--tag-dispatch); }
+  .chip[data-cat="semantic"].active { background: var(--tag-semantic); }
+  .chip[data-cat="proto"].active { background: var(--tag-proto); }
+  .chip[data-cat="cost"].active { background: var(--tag-cost); }
+
+  /* Sections */
+  main { padding: 24px 0 40px; }
+  .block {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin: 14px 0;
+    background: var(--bg-2);
+    overflow: hidden;
+  }
+  .block > summary {
+    cursor: pointer; list-style: none;
+    padding: 18px 22px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 18px; font-weight: 600;
+  }
+  .block > summary::-webkit-details-marker { display: none; }
+  .block > summary::after {
+    content: "▸"; margin-left: auto; color: var(--fg-2);
+    transition: transform 0.15s; font-size: 14px;
+  }
+  .block[open] > summary::after { transform: rotate(90deg); }
+  .block > summary:hover { background: var(--bg-3); }
+  .cat-tag {
+    display: inline-block; padding: 2px 9px; border-radius: 4px;
+    font-size: 11px; font-weight: 500; color: #fff; flex-shrink: 0;
+  }
+  .cat-arch { background: var(--tag-arch); }
+  .cat-dispatch { background: var(--tag-dispatch); }
+  .cat-semantic { background: var(--tag-semantic); }
+  .cat-proto { background: var(--tag-proto); }
+  .cat-cost { background: var(--tag-cost); }
+  .block .body { padding: 4px 22px 22px; color: var(--fg); }
+  .block .body p { color: var(--fg); font-size: 14.5px; }
+  .block .body .muted { color: var(--fg-2); font-size: 13.5px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13.5px; }
+  th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--bg-3); color: var(--fg); font-weight: 600; }
+  td { color: var(--fg-2); }
+  td strong, th strong { color: var(--fg); }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--bg-3);
+    border-radius: 6px;
+    padding: 12px 16px; margin: 14px 0;
+    font-size: 13.5px; color: var(--fg-2);
+  }
+  .callout strong { color: var(--fg); }
+  .callout.warn { border-left-color: #c9852b; }
+
+  .no-result { text-align: center; color: var(--fg-2); padding: 40px 0; display: none; }
+
+  footer {
+    padding: 32px 0 56px; color: var(--fg-2); font-size: 13px;
+    text-align: center; border-top: 1px solid var(--border);
+  }
+  footer a { color: var(--fg-2); }
+  footer .links { margin-top: 10px; }
+  footer .links a { margin: 0 8px; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 44px 0 32px; }
+    .hero h1 { font-size: 28px; }
+    .block > summary { font-size: 16px; padding: 15px 16px; }
+    .block .body { padding: 4px 16px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="crumb">aihw-starter / 千问方案 / Omni 实时端到端 · Runtime Host</p>
+    <h1>Runtime Host 中间层架构</h1>
+    <p class="tagline">一个 Qwen-Omni-Realtime 模型只会输出文本、音频、<code>function_call</code> 三样东西。把它变成一台能动、能看、有记忆、有时间感的设备，靠的是模型与硬件之间那一层自建宿主。本页是同名方案文档的可视化版本，内容已脱敏。</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-solution/omni-realtime">方案全文</a>
+      <a class="btn" href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-solution/omni-realtime/session.update.template.json">session 模板</a>
+      <a class="btn" href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-solution/omni-realtime/harness_skeleton.py">Python 骨架</a>
+      <a class="btn" href="https://help.aliyun.com/zh/model-studio/realtime">官方文档</a>
+    </div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="wrap">
+    <input id="search" type="text" placeholder="搜索：路由 / 打断 / 首包 / 记忆 / VAD …" autocomplete="off">
+    <div class="filters">
+      <span class="chip active" data-cat="all">全部</span>
+      <span class="chip" data-cat="arch">架构职责</span>
+      <span class="chip" data-cat="dispatch">落地路径</span>
+      <span class="chip" data-cat="semantic">执行语义</span>
+      <span class="chip" data-cat="proto">协议约束</span>
+      <span class="chip" data-cat="cost">成本落地</span>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+
+    <details class="block" data-cat="arch" open>
+      <summary><span class="cat-tag cat-arch">架构职责</span> 链路总览：云端模型 ↔ Runtime Host ↔ 设备</summary>
+      <div class="body">
+        <p>模型侧只进出三种东西，其余全由中间层补齐。设备指令走下行通道，外部服务走带外 HTTP，记忆管道离线运行、不在实时链路上。</p>
+        <pre><code>┌──────────────── 云端 ────────────────┐
+│  Qwen-Omni-Realtime                  │
+│  输入：音频流 / 图像帧 / 文本 item     │
+│  输出：文本 + 音频 + function_call     │
+└──────▲───────────────────┬───────────┘
+       │ session.update    │ function_call
+       │ 音频/事件注入      ▼
+┌──────┴───────────────────────────────┐
+│           Runtime Host（自建）         │
+│  ① 装配器  ② 路由器  ③ 状态机          │
+│  ④ 注入器  ⑤ 设备桥  ⑥ 记忆管道(离线)  │
+└──────┬───────────────────┬───────────┘
+       │ 下行设备指令        │ 带外 HTTP
+       ▼                   ▼
+   设备侧（屏/舵机/灯/       搜索 / 三方服务
+   摄像头/时钟/音乐App）</code></pre>
+        <p class="muted">设备侧拓扑有两种常见形态，直接影响状态注入的字段数量：</p>
+        <table>
+          <tr><th>形态</th><th>结构</th><th>状态注入特征</th></tr>
+          <tr><td>两段式</td><td>云 → 手机 App → 底座 MCU（蓝牙）</td><td>注入两个独立电量（手机 + 底座）；屏幕、摄像头、日历、时钟由手机承担</td></tr>
+          <tr><td>一体式</td><td>云 → 设备主控 → 舵机 / 屏</td><td>单一电量与网络状态；圆屏兼作表情与表盘</td></tr>
+        </table>
+        <div class="callout">判据示例：启动上下文里同时出现两个电量数值，即可判定为两段结构。</div>
+      </div>
+    </details>
+
+    <details class="block" data-cat="arch">
+      <summary><span class="cat-tag cat-arch">架构职责</span> 模型缺什么，中间层补什么（核对清单）</summary>
+      <div class="body">
+        <p>左列是 Realtime 模型天生没有的东西，右列是最小实现。复制这套能力时逐行对照。</p>
+        <table>
+          <tr><th>模型原本没有</th><th>中间层补的东西</th><th>最小实现</th></tr>
+          <tr><td>时钟</td><td>读设备时间工具 + 启动上下文种子</td><td>工具返回本地日期/时间/星期/时区；提示词强制「问时间先调工具」</td></tr>
+          <tr><td>地理位置</td><td>启动上下文注入</td><td>建会话时拼一段纯文本，不需要工具</td></tr>
+          <tr><td>身体状态感知</td><td>电量、充电态、网络连通性注入</td><td>两段结构注入两个电量</td></tr>
+          <tr><td>跨会话记忆</td><td>三层记忆结构</td><td>先只做「上轮对话 JSONL 回填」，性价比最高</td></tr>
+          <tr><td>真实视觉</td><td>拍摄触发工具 + 事后事件注入</td><td>触发与结果<strong>必须解耦</strong>，别指望工具返回值塞图片</td></tr>
+          <tr><td>知道动作演完没</td><td>派发收据 / 完成回执两级语义</td><td>先只做派发收据，禁止模型宣称「已经做好了」</td></tr>
+          <tr><td>流程顺序保证</td><td>enter / exit 工具外化状态机</td><td>关键流程前加空参数 enter 工具当闸门</td></tr>
+          <tr><td>不编造的自觉</td><td>工具强制前置 + 反复禁令</td><td>有真值来源的问题一律先调工具再答</td></tr>
+          <tr><td>主动开口</td><td>伪事件注入</td><td>静默计时器触发，注入系统事件当输入</td></tr>
+          <tr><td>自己结束会话</td><td>道别工具 + 宿主关连接</td><td>模型说完告别调工具，宿主关</td></tr>
+          <tr><td>链路可靠性感知</td><td>等待重连工具</td><td>会话状态留宿主侧，设备掉线不重开 session</td></tr>
+          <tr><td>联网搜索</td><td>宿主带外接搜索服务</td><td>下发 <code>tools</code> 后模型内建搜索不可用，见协议约束</td></tr>
+        </table>
+      </div>
+    </details>
+
+    <details class="block" data-cat="arch">
+      <summary><span class="cat-tag cat-arch">架构职责</span> Runtime Host 六类职责</summary>
+      <div class="body">
+        <p>前五类在实时链路上，第六类是独立的离线管道。</p>
+        <table>
+          <tr><th>职责</th><th>做什么</th></tr>
+          <tr><td><strong>① 装配器</strong></td><td>会话建立时拼整份系统上下文与工具集。<code>instructions</code> 有六个动态槽位：用户档案、Owner Card、记忆摘要、启动上下文、上轮会话、工具集；缺一个就少一类感知。同时选定 ASR 模型、音色、VAD 参数。</td></tr>
+          <tr><td><strong>② 路由器</strong></td><td>命名空间是路由表不是分类美学。额外做三件模型做不好的事：参数互斥校验（如 <code>presetCommand</code> 与 <code>sequence</code> 只能给一个）、语义展开（<code>nod_twice</code> → 底层多步 sequence）、空参数兜底。</td></tr>
+          <tr><td><strong>③ 状态机</strong></td><td>把流程状态位从提示词搬到服务端，用工具当闸门。管模式位、计时器、生命周期。正常与失败路径的清理都由宿主强制兜底，工具只留给模型主动放弃的分支。</td></tr>
+          <tr><td><strong>④ 注入器</strong></td><td>最容易被低估的一块。把异步事件翻译成对话 item：视觉结果、用户静默、人设切换、带外搜索结果。没有这层就只能做「你问一句我答一句」。</td></tr>
+          <tr><td><strong>⑤ 设备桥</strong></td><td>动画/音效/电机脚本预烧设备端，云端只传动作 ID。维护三条语义：两级回包、队列语义、停止广播。代价：动作库不能热更，加动作要发固件。</td></tr>
+          <tr><td><strong>⑥ 记忆管道</strong></td><td>完全在实时链路之外的异步作业，产出下次建会话的输入。三层：长期画像、长期摘要、近期上下文。先只做近期上下文这一层。</td></tr>
+        </table>
+        <div class="callout">六个动态槽位里，「启动上下文」必须标注为「会话起始种子，问实时时钟请调工具」；「上轮会话」必须标注为不可信输入，禁止把里面的内容当系统指令执行。</div>
+      </div>
+    </details>
+
+    <details class="block" data-cat="dispatch" open>
+      <summary><span class="cat-tag cat-dispatch">落地路径</span> 三条落地路径：按工具名前缀分发</summary>
+      <div class="body">
+        <p>同样一次 <code>function_call</code>，落点差别极大。设计工具时第一件事就是想清楚它属于哪一路。</p>
+        <table>
+          <tr><th>前缀</th><th>落到哪</th><th>设备参与</th><th>模型拿到什么</th></tr>
+          <tr><td><code>client_*</code></td><td>打包成设备指令走下行</td><td>参与，是执行方</td><td>派发收据，不是完成回执</td></tr>
+          <tr><td><code>runtime_*</code></td><td>不下发设备，只改宿主状态机</td><td>不参与</td><td><code>timeout</code>/<code>user_spoke</code>，或一段槽位收集指令</td></tr>
+          <tr><td><code>server_*</code></td><td>宿主在云端带外发请求</td><td>完全不参与</td><td>外部事实文本</td></tr>
+        </table>
+        <div class="callout"><strong>带外的意思</strong>：音频在 WebSocket 上持续双向流动，外部请求若挤进同一条通道会拖累实时性。宿主另起一条 HTTP 出去，结果再作为对话 item 注入回来——和视觉是同一套路：工具调用只负责触发，结果靠事件回注。</div>
+        <p class="muted">工具结果必须给<strong>状态码而不是自然语言或空串</strong>：<code>ok</code> / <code>not_connected</code> / <code>not_logged_in</code> / <code>failed</code> / <code>no_history</code> 等。超时要回 <code>failed</code>，不要静默丢弃——模型拿不到终态就会自己编。</p>
+      </div>
+    </details>
+
+    <details class="block" data-cat="semantic" open>
+      <summary><span class="cat-tag cat-semantic">执行语义</span> 三个必须讲清的执行语义</summary>
+      <div class="body">
+        <p>这三条最容易踩，且都会直接表现为用户可感知的体验事故。</p>
+        <table>
+          <tr><th>语义</th><th>要点</th></tr>
+          <tr><td><strong>A. 返回派发收据，不是完成回执</strong></td><td><code>Dispatched means sent/scheduled, not completed</code>。画个方形要十几秒，模型调完只知道指令发出去了。默认不等、默认不许宣称完成，是更安全的起点。</td></tr>
+          <tr><td><strong>B. 设备端是队列 + 插队两级</strong></td><td>长表演进队列排队；短情绪抢占当前播放立刻插入，但<strong>不清空队列</strong>。要真停必须显式发清队指令。「嘴上说停了但没发清队」应直接定义为失败。</td></tr>
+          <tr><td><strong>C. 感知类能力是两段异步</strong></td><td>触发工具 → 设备采集 → 走另一条上行送云端理解 → 成功后宿主把结果作为新输入注入 → 模型此刻才第一次拿到事实。</td></tr>
+        </table>
+        <div class="callout warn">空窗期话术逐能力定义，两条相反规则可直接抄：<strong>视觉</strong>允许先说「我看看」（有可见物理动作）；<strong>搜索</strong>全程禁止叙述过程（没有外部表现，说「正在查询网络」纯属暴露实现）。统一禁止叙述「加载中/处理中」这类技术状态。</div>
+      </div>
+    </details>
+
+    <details class="block" data-cat="proto" open>
+      <summary><span class="cat-tag cat-proto">协议约束</span> session.update 时机与四条硬约束</summary>
+      <div class="body">
+        <p><strong>每建一次连接发一次，不是每轮发。</strong>建连 → 发 <code>session.update</code> → 服务端校验回 <code>session.updated</code> → 之后才开始送音频。单轮对话的事件序列里不含 <code>session.update</code>。</p>
+        <pre><code>input_audio_buffer.append …          (持续送 base64 音频)
+  ← input_audio_buffer.speech_started / speech_stopped
+  ← input_audio_buffer.committed     (server_vad 自动提交)
+  ← conversation.item.created        (message 或 function_call)
+  ← response.created
+  ← response.audio_transcript.delta / response.audio.delta …
+  ← response.done
+
+命中工具时补一段：
+  ← conversation.item.created (type=function_call, call_id/name)
+  ← response.function_call_arguments.done
+→ conversation.item.create {item:{type:"function_call_output",call_id,output}}
+→ response.create                    (VAD 模式下这一步仍然必须发)</code></pre>
+        <table>
+          <tr><th>约束</th><th>说明</th></tr>
+          <tr><td><strong>① <code>response.create</code> 没有覆盖参数</strong></td><td>只有 <code>type</code> 一个字段，<strong>不能按轮切换提示词或工具集</strong>。逐轮变化只能作为对话内容注入。</td></tr>
+          <tr><td><strong>② 中途改配置要发全量</strong></td><td>没有定义省略字段的语义，每次都发完整 <code>session</code> 对象，绝不局部 patch。<code>audio.input.format</code> 必须在首帧音频之前定好。</td></tr>
+          <tr><td><strong>③ <code>tools</code> 与联网搜索互斥</strong></td><td>下发工具集后模型内建搜索不可用，搜索能力必须宿主自接（<code>runtime_enter_web_search</code> + <code>server_web_search</code>）。</td></tr>
+          <tr><td><strong>④ 会话有硬上限，必须滚动</strong></td><td>单会话最长 120 分钟，到点服务端主动断开。逼近上限前主动开新会话、重发全量、用「上轮会话」槽位续上。</td></tr>
+        </table>
+        <table>
+          <tr><th>模型</th><th>音频最大轮次</th><th>音频最大时长</th><th>视频最大轮次</th><th>视频最大时长</th></tr>
+          <tr><td>qwen3.5-omni-plus-realtime</td><td>100 轮</td><td>600 秒</td><td>50 轮</td><td>240 秒</td></tr>
+          <tr><td>qwen3.5-omni-flash-realtime</td><td>80 轮</td><td>480 秒</td><td>50 轮</td><td>120 秒</td></tr>
+        </table>
+        <div class="callout"><strong>人设热切换两条路</strong>：A（推荐）在轮边界发全量 <code>session.update</code> 换 <code>voice</code> + 换 instructions 人设段，上下文不丢但中途换 voice 生效行为官方未明确；B（兜底）断开重连，把上一段压缩成「上轮会话」注入。按 A 实现，实测不生效或有杂音自动降级到 B。</div>
+      </div>
+    </details>
+
+    <details class="block" data-cat="cost">
+      <summary><span class="cat-tag cat-cost">成本落地</span> 首包成本：两份真实配置的反直觉对照</summary>
+      <div class="body">
+        <p>两组数字来自两个不同项目的真实 <code>session</code> 配置快照（已脱敏，仅保留体积口径）。</p>
+        <table>
+          <tr><th>项</th><th>配置 A</th><th>配置 B</th></tr>
+          <tr><td>工具总数</td><td>129</td><td>62</td></tr>
+          <tr><td>instructions</td><td>44,133 字符 / 612 行</td><td>61,929 字符 / 937 行</td></tr>
+          <tr><td>tools 定义</td><td>37,755 字符</td><td>26,117 字符</td></tr>
+          <tr><td><strong>首包合计</strong></td><td><strong>81,888 字符</strong></td><td><strong>88,046 字符</strong></td></tr>
+        </table>
+        <div class="callout warn"><strong>反直觉</strong>：配置 B 把工具数砍掉一半以上（129 → 62），tools 段省了约 31%，但 instructions 因话术分支写细涨了约 40%，首包总量反而略增。结论：<strong>首包预算要按「工具定义 + 提示词」合并管理</strong>，只砍工具数不看提示词膨胀等于白砍。</div>
+        <p class="muted">两条可直接执行的裁剪：按日期/场景/固件版本做工具子集下发（候选集砍半也能提升选择准确率）；话术模板尽量搬到工具返回值里（改策略不用重发几万字系统上下文）。</p>
+      </div>
+    </details>
+
+    <details class="block" data-cat="cost">
+      <summary><span class="cat-tag cat-cost">成本落地</span> 成本结构：为什么比三段式贵</summary>
+      <div class="body">
+        <table>
+          <tr><th></th><th>三段式（ASR→LLM→TTS）</th><th>Omni Realtime 端到端</th></tr>
+          <tr><td>计费维度</td><td>ASR 按时长 + LLM 按文本 token + TTS 按字符</td><td>输入音频 token + 输出音频 token（+文本）</td></tr>
+          <tr><td>静默与附和</td><td>被 VAD 挡在 ASR 前，几乎不计费</td><td>进入上下文即计费</td></tr>
+          <tr><td>上下文累积</td><td>只累积文本</td><td>累积音频轮次，长会话单轮成本随历史增长</td></tr>
+          <tr><td>首包</td><td>只在 LLM 一段计一次系统提示</td><td>每次建会话重发全份 instructions + tools</td></tr>
+        </table>
+        <p class="muted">四条降本手段按性价比排序：① 优先 flash 档（快约 0.7 秒、价格档更低）；② 控制首包与会话滚动频率；③ 逼近轮次上限前主动压缩成「上轮会话」文本，用文本 token 替代音频 token 携带历史；④ 场景分流——闲聊走 Realtime，长文任务切文本链路 + TTS，两条链路共用记忆。</p>
+      </div>
+    </details>
+
+    <details class="block" data-cat="cost">
+      <summary><span class="cat-tag cat-cost">成本落地</span> 分三阶段落地 + 三个要提前告知的坑</summary>
+      <div class="body">
+        <table>
+          <tr><th>阶段</th><th>内容</th></tr>
+          <tr><td><strong>1 · 地基</strong></td><td>前缀路由 · 参数校验兜底 · 派发收据语义 · 启动上下文注入。「发出去」和「做完了」从第一天就分开。</td></tr>
+          <tr><td><strong>2 · 体验层</strong></td><td>异步事件注入 · 打断与清队 · 上轮会话回填。上轮会话回填最便宜，但「它还记得上次」贡献最大。</td></tr>
+          <tr><td><strong>3 · 黏性层</strong></td><td>结构化记忆抽取 · 模式状态机。可后补，但 instructions 里必须提前留占位段，否则后期插入会撕整份提示词。</td></tr>
+        </table>
+        <table>
+          <tr><th>坑</th><th>说明</th></tr>
+          <tr><td>首包成本被低估</td><td>每次建会话下发数万字符且滚动重复付费。按日期/场景/固件裁子集，同时盯提示词膨胀。</td></tr>
+          <tr><td>动作库无法热更</td><td>资产预烧固件是实时性的必要代价。有节日活动/IP 联名需求，须在架构期单设可下载资产包通道。</td></tr>
+          <tr><td>工具名本身在泄密</td><td>语义全在名字里，只能靠保密条款硬压。但保密只约束对用户说什么，<strong>不得因此减少正常的工具调用</strong>。</td></tr>
+        </table>
+        <div class="callout">合规提示：桌面/伴随机器人属情感陪伴类，适用《人工智能拟人化互动服务管理暂行办法》（2026-07-15 施行）。AI 身份标识要求与「不许承认自己是 AI」的人设互斥；超 2 小时使用提醒须由宿主计时器驱动。</div>
+      </div>
+    </details>
+
+    <p class="no-result" id="noResult">没有匹配的内容，换个关键词试试。</p>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>内容来源说明：本页结论基于两份真实项目的 <code>session</code> 配置快照做架构反推，已移除全部客户标识、人设名称、音色 ID 与业务话术；能力清单为通用形态，不代表任何具体产品的功能范围。</div>
+    <div class="links">
+      <a href="https://github.com/smile-xuc/aihw-starter">GitHub</a> ·
+      <a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-solution/omni-realtime">方案全文</a> ·
+      <a href="https://help.aliyun.com/zh/model-studio/realtime">官方实时文档</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // 外域链接一律新窗口打开
+  document.querySelectorAll('a[href^="http"]').forEach(function (a) {
+    if (a.hostname !== location.hostname) {
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener noreferrer');
+    }
+  });
+
+  var blocks = Array.prototype.slice.call(document.querySelectorAll('.block'));
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
+  var search = document.getElementById('search');
+  var noResult = document.getElementById('noResult');
+  var activeCat = 'all';
+
+  function apply() {
+    var q = search.value.trim().toLowerCase();
+    var shown = 0;
+    blocks.forEach(function (b) {
+      var catOk = (activeCat === 'all') || (b.getAttribute('data-cat') === activeCat);
+      var textOk = (q === '') || (b.textContent.toLowerCase().indexOf(q) !== -1);
+      var show = catOk && textOk;
+      b.style.display = show ? '' : 'none';
+      if (show) {
+        shown++;
+        if (q !== '') b.setAttribute('open', '');   // 搜索时自动展开命中块
+      }
+    });
+    noResult.style.display = shown === 0 ? 'block' : 'none';
+  }
+
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () {
+      chips.forEach(function (x) { x.classList.remove('active'); });
+      c.classList.add('active');
+      activeCat = c.getAttribute('data-cat');
+      apply();
+    });
+  });
+  search.addEventListener('input', apply);
+</script>
+
+</body>
+</html>

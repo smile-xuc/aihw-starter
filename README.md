@@ -150,6 +150,7 @@ solutions/by-category/0X-xxxx/
 1. 看 [solutions/by-solution/](./solutions/by-solution/) — 方案总览（千问大模型 / 小智 / 端侧 …）
 2. 选定方案后回到具体品类的 [demo/](./solutions/by-category/01-ipc/demo/)
 3. 跑通示例 → 改造成自家产品
+4. 做实时语音机器人？看 [Omni 实时端到端 · Runtime Host](./solutions/by-solution/omni-realtime/)
 
 </td>
 <td width="33%" valign="top">

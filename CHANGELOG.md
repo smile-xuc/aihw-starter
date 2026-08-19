@@ -3,6 +3,33 @@
 本仓库的所有重要变更记录于此。
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [2.1.0] - 2026-08-19
+
+### 新增
+
+#### `solutions/by-solution/omni-realtime/` — Omni 实时端到端方案 · Runtime Host 中间层
+
+千问方案的子形态：用 Qwen-Omni-Realtime 做端到端实时语音，配一层自建宿主（Runtime Host）把模型接到硬件上。适合桌面 / 伴随机器人等对首字延迟和拟人度要求高的高价值单品。内容基于真实项目配置快照做架构反推，已脱敏。
+
+- `README.md` — 15 节方案主文档：链路总览、能力核对清单、六类职责、三条落地路径、三个执行语义、`session.update` 时机与四条硬约束、首包成本对照、成本结构、三阶段落地、三个坑、合规提示
+- `session.update.template.json` — 脱敏首包模板，含三类前缀的代表性工具与全部占位槽
+- `instructions.template.md` — 提示词骨架：章节顺序 + 六个动态槽位 + 各段写法
+- `harness_skeleton.py` — Runtime Host 最小可运行骨架（MIT）：建连、装配、前缀路由、`function_call_output` 回传、事件注入、会话滚动、打断
+- `.env.example` — 环境变量样例
+
+#### `docs/omni-runtime-host.html` — 交互式架构页
+
+Runtime Host 架构的可视化版本，含搜索、分类标签过滤、折叠区块，风格与门面页一致。
+
+### 变更
+
+- `solutions/by-solution/01-qwen.md` 新增 1.3 节「端到端实时语音：Qwen-Omni-Realtime + Runtime Host 中间层」，能力地图补充 Realtime 指向
+- `solutions/by-solution/README.md`、根 `README.md`、`docs/index.html` 增加新方案入口
+
+### 修复
+
+- 修正 `01-qwen.md` 品类适配表三个失效链接：桌宠 `04→05-desktop-pet`、AI 耳机 `05→06-ai-earphone`、录音卡 `06→07-recorder`
+
 ## [2.0.0] - 2026-06-24
 
 ### ⚠️ BREAKING CHANGE：仓库定位重构

@@ -1,0 +1,177 @@
+{
+  "event_id": "event_REPLACE_WITH_UUID",
+  "type": "session.update",
+  "_comment": "脱敏的 session.update 首包模板。建连收到 session.created 后发送此事件，等 session.updated 校验通过再送音频。客户端发送时不要带 session.id / session.object（那是服务端回显字段）。所有 <占位> 值上线前必须替换为真实数据。",
+  "session": {
+    "model": "qwen3.5-omni-plus-realtime",
+    "modalities": ["text", "audio"],
+    "voice": "<CLONED_VOICE_ID_OR_BUILTIN>",
+    "audio": {
+      "input": { "format": { "type": "pcm", "sample_rate": 16000 } },
+      "output": { "format": { "type": "pcm", "sample_rate": 24000 } }
+    },
+    "input_audio_transcription": {
+      "model": "qwen3-asr-flash-realtime",
+      "language": "zh"
+    },
+    "turn_detection": {
+      "type": "server_vad",
+      "threshold": 0.5,
+      "prefix_padding_ms": 300,
+      "silence_duration_ms": 800,
+      "idle_timeout_ms": 15000,
+      "create_response": true,
+      "interrupt_response": true
+    },
+    "enable_search": false,
+    "instructions": "见 instructions.template.md —— 由 Runtime Host 在建会话时拼装，含六个动态槽位：[User Profile] / [Owner Card] / [Memory Snapshot] / [Startup Context] / [Previous Conversation] / 工具集清单。此处内联为占位摘要。\n\n[Identity] 一台带屏 + 舵机的陪伴机器人。圆屏即脸，可做表情；舵机可点头/摇头/转身，无位移。\n[Persona] <当前激活人设：名字 + 音色ID + 语言风格>，与 voice 字段保持一致。\n[Startup Context] 电量=<pct> 充电=<bool> 网络=<online|offline> 音乐App登录=<bool> 当前表盘=<clock|expression|weather|music> 位置=<city> 设备本地时间=<ISO>（种子值，问实时时钟必须调 client_get_client_time）。\n[Tool Rules] client_* 派发到设备（返回派发收据非完成回执）；runtime_* 宿主虚拟执行；server_* 宿主带外执行。工具结果只信状态码字段。\n[Confidentiality] 不回显工具名/事件名/字段名；保密不得减少正常工具调用。",
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "client_behavior_happy",
+          "description": "示例：表情行为类工具（空参数，工具名即动作 ID）。眼睛弯起、嘴角上扬。氛围轻松或用户分享好事时调用；用户难过/生气时禁止调用。isInstantExpression: true。真实配置里这类工具有数十个（基础情绪 / 夸骂 / 天气联动 / 节日 / 道具才艺），此处仅留一个作代表。",
+          "parameters": { "type": "object", "properties": {} }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "client_perform_motion",
+          "description": "设备的头部 / 底座物理动作。CRITICAL：presetCommand 与 sequence 恰好给一个，绝不能都给或都空。preset：nod / nod_twice / shake_head / turn_left / turn_right / turn_around / spin / stop。本设备只能原地转向与摆头，无前后位移；用户要求走近/取物时说明限制而非调用。表情用 client_behavior_*，不是这个工具。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "presetCommand": { "type": "string", "description": "具名动作，与 sequence 互斥。" },
+              "speed": { "type": "string", "description": "default | fast | slow。用户没给速度线索时省略。" },
+              "sequence": { "type": "array", "description": "自定义多步动作，仅在需要组合时用，与 presetCommand 互斥。每步 head(direction+angle) 或 turn(direction+angle)，无 move 步。" }
+            }
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "client_switch_watch_face",
+          "description": "切换圆屏显示内容。REQUIRED mode：clock | expression | weather | music。仅口头问时间不要切，用 client_get_client_time 保持当前脸。已是目标模式时不再调。派发即发送非确认，terminal 结果前不要宣称已切好。",
+          "parameters": {
+            "type": "object",
+            "properties": { "mode": { "type": "string", "description": "clock | expression | weather | music" } },
+            "required": ["mode"]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "client_music_play",
+          "description": "在设备音乐 App 上播放。设备负责判定歌曲/歌手/专辑是否存在，模型永不自行判断。REQUIRED intent：play|song|singer|album|singer_song|singer_album|duet|work|singer_type|language|genre。只填用户真正说了的槽位，先调工具再从结果说话，不要凭空报歌名。结果携带匹配态（完全匹配/模糊匹配/不匹配/完全无结果）与前置态（ok|not_connected|not_logged_in）。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "intent": { "type": "string", "description": "play | song | singer | album | singer_song | singer_album | duet | work | singer_type | language | genre" },
+              "song": { "type": "string" },
+              "singer": { "type": "string" },
+              "singers": { "type": "array" },
+              "album": { "type": "string" },
+              "work": { "type": "string" },
+              "singerType": { "type": "string" },
+              "language": { "type": "string" },
+              "genre": { "type": "string" }
+            },
+            "required": ["intent"]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "client_music_control",
+          "description": "对已加载音乐的走带 / 列表操作。REQUIRED command：next|previous|pause|resume|replay|dislike|favorite|unfavorite。SILENCE RULE：正常播放态下 previous/next/resume/pause 不出声，设备 UI 即反馈；只有异常态（空列表/无播放/未连接/未登录）才念固定兜底话术。开始播放用 client_music_play，停动画用 client_stop_all。",
+          "parameters": {
+            "type": "object",
+            "properties": { "command": { "type": "string", "description": "next | previous | pause | resume | replay | dislike | favorite | unfavorite" } },
+            "required": ["command"]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "client_stop_all",
+          "description": "停止一切进行中的客户端动作：当前表情动画、排队动画、头/底座运动。拿不准用户是否想停/取消/切换时，本轮先调这个工具再简短口头确认。空放无害（no-op）。只说好停了却不调用属于失败——设备上排队与在播动画会继续跑。暂停当前歌曲是 client_music_control 的 pause，不是这个工具。鼓励继续（别停/继续）不触发。",
+          "parameters": { "type": "object", "properties": { "scope": { "type": "array" } } }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "client_get_client_time",
+          "description": "读设备本地墙钟，让回答与用户在设备上看到的一致。问几点/几号/星期几时 REQUIRED FIRST，空参数调用。结果字段：localDate / localTime / weekday / timezone / utcOffsetMinutes。只用结果字段回答，不用服务端或训练数据的钟。生日彩蛋、跨年倒数等依赖真实日期的场景也先调它。",
+          "parameters": { "type": "object", "properties": {} }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "runtime_check_idle",
+          "description": "仅在收到 [HOST_RUNTIME_EVENT: USER_IDLE] 后的静默等待，不出声调用。用户刚说再见/拜拜/晚安/退下时禁止调用，改用 runtime_check_farewell。宿主虚拟执行，返回 timeout 或 user_spoke。",
+          "parameters": {
+            "type": "object",
+            "properties": { "timeoutMs": { "type": "number" } },
+            "required": ["timeoutMs"]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "runtime_check_farewell",
+          "description": "用户明确结束会话时（再见/拜拜/晚安/退下/我先走了/不聊了）本轮 REQUIRED：先说一句简短告别，再调本工具（不等结果就说）。绝不用于 USER_IDLE。宿主随后收尾关会话。",
+          "parameters": {
+            "type": "object",
+            "properties": { "timeoutMs": { "type": "number" } },
+            "required": ["timeoutMs"]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "runtime_wait_for_reconnect",
+          "description": "断连事件后等待客户端重连。宿主虚拟执行；会话状态留在宿主侧，设备掉线不重开 session。",
+          "parameters": {
+            "type": "object",
+            "properties": { "timeoutMs": { "type": "number" } },
+            "required": ["timeoutMs"]
+          }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "runtime_enter_web_search",
+          "description": "用户要天气或其他实时网络事实时 REQUIRED FIRST，在 server_web_search 之前调。歧义闸门：关键词有多个常见无关义项且上下文未选定时，先问一句再进入。音乐请求不是搜索。搜索完成后从结果说话，happy path 不要再调 exit（宿主硬清模式）；仅当用户搜索前放弃才调 runtime_exit_web_search。",
+          "parameters": { "type": "object", "properties": {} }
+        }
+      },
+      {
+        "type": "function",
+        "function": {
+          "name": "server_web_search",
+          "description": "宿主带外拉取实时天气或网络事实。仅在 runtime_enter_web_search 之后、槽位就绪时调。REQUIRED intent(weather|general) + 非空 query，可选 location / when。结果只说 1–3 句，不读裸 URL，不堆长文。天气结果配对应 client_behavior_weather_* 表情。失败/超时说拿不到实时信息，不调 exit。",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "intent": { "type": "string" },
+              "query": { "type": "string" },
+              "location": { "type": "string" },
+              "when": { "type": "string" }
+            },
+            "required": ["intent", "query"]
+          }
+        }
+      }
+    ]
+  }
+}

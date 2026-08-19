@@ -105,13 +105,38 @@ npm i -g @alibaba/bailian-cli
 
 ---
 
+### 1.3 端到端实时语音：Qwen-Omni-Realtime + Runtime Host 中间层
+
+> 完整方案：[omni-realtime/](./omni-realtime/) · 可视化架构页：<https://smile-xuc.github.io/aihw-starter/omni-runtime-host.html>
+> 官方文档：<https://help.aliyun.com/zh/model-studio/realtime>
+
+前两种接入把语音链路当成一条可组装的流水线。Qwen-Omni-Realtime 走的是另一条路：音频直接进模型、直接出音频，WebSocket 双工，首包时延进入数百毫秒量级，还支持语义打断和情绪起伏。桌面机器人、伴随机器人这类高价值单品接入后，已知项目反馈用户单日活跃时长出现数量级增长。代价是单位时长成本显著高于三段式。
+
+| 链路 | 体感延迟（轻 / 复杂 / 搜索） | 语义打断 |
+|---|---|---|
+| 三段式阻塞（ASR → LLM → TTS） | 5502 / 9449 / 7416 ms | 不支持 |
+| 三段式流式 | 2473 / 2846 / 2980 ms | 不支持 |
+| Omni Realtime（WebSocket 双工） | **347 / 375 / 433 ms** | 支持 |
+
+一个 Realtime 模型只输出三样东西：文本、音频、`function_call`。要把它变成一台能动、能看、有记忆、有时间感的设备，靠的是模型与硬件之间那一层自建宿主，本方案统称 **Runtime Host**。它承担六类职责：装配器（建会话时拼 instructions / tools / voice）、路由器（按工具名前缀三路分发 + 参数校验兜底）、状态机（模式位 / 计时器 / 生命周期）、注入器（异步事件转对话轮次）、设备桥（动作 ID 转指令帧，两级回包语义）、记忆管道（离线，不在实时链路上）。
+
+三条落地路径按工具名前缀区分：`client_*` 打包成设备指令走下行、`runtime_*` 只改宿主状态机不下发设备、`server_*` 宿主带外发 HTTP 请求。三个最容易踩的执行语义：工具返回的是派发收据不是完成回执；设备端是队列 + 插队两级，要真停必须显式清队；感知类能力是两段异步，触发与结果解耦。
+
+协议侧有四条硬约束：`response.create` 没有覆盖参数，不能按轮切换提示词或工具集；中途改配置要发全量 `session` 对象；`tools` 与联网搜索互斥；单会话最长 120 分钟、上下文有轮次上限，必须做会话滚动。
+
+**适用判断**：对话是产品主体验、需要拟人细节、硬件有屏 / 舵机 / 灯效需要语音动作同步、客单价吃得下音频 token 成本时选它；语音只是偶发指令入口、一问一答足够、走低价白牌时不选它。
+
+配套交付：[脱敏 session.update 首包模板](./omni-realtime/session.update.template.json)、[提示词骨架](./omni-realtime/instructions.template.md)、[Python harness 最小骨架](./omni-realtime/harness_skeleton.py)、[环境变量样例](./omni-realtime/.env.example)。
+
+---
+
 ## 2. 能力地图
 
 | 能力 | 模型 / 接口 | 适用场景 | 接入方式 |
 |---|---|---|---|
 | **文本对话 / 推理** | Qwen-Max / Qwen-Plus / Qwen-Turbo | 角色对话、摘要、规划 | DashScope Chat API / `bl` CLI |
 | **视觉理解** | Qwen-VL（图像）/ Qwen-VL-Video（视频） | IPC 摘要 / 以文搜图 / 户外告警 | DashScope 多模态接口 |
-| **全模态对话** | Qwen-Omni | 实时语音对话、端到端低时延 | 多模态交互开发套件 / `bl omni` |
+| **全模态对话** | Qwen-Omni / Qwen-Omni-Realtime | 实时语音对话、端到端低时延 | 多模态交互套件 / `bl omni` / [Realtime + Runtime Host](./omni-realtime/) |
 | **TTS / 情感语音** | Qwen-TTS / CosyVoice | 角色音色、声音克隆、情感合成 | DashScope 语音接口 / `bl speech synthesize` |
 | **ASR / 语音识别** | Paraformer 系列 | 录音卡纪要、AI 耳机听写 | DashScope ASR / `bl speech recognize` |
 | **Function Calling** | Qwen Chat + tools | Agent 调度（设备控制 / 检索 / 翻译） | DashScope 通用工具调用 |
@@ -127,9 +152,9 @@ npm i -g @alibaba/bailian-cli
 | 📷 [IPC / AI 视觉](../by-category/01-ipc/02-solution.md) | 双版本：百炼物理世界感知 Agent / OSS AI 内容感知 | 原子能力（Qwen-VL + OSS） |
 | 👓 [AI 眼镜](../by-category/02-ai-glasses/02-solution.md) | 多模态交互套件端到端打包 | **成套产品**（开发套件直接对接） |
 | 🧸 [AI 玩具 / 陪伴](../by-category/03-toys-companion/02-solution.md) | 角色对话 + 声音克隆 | 成套产品 或 原子能力均可 |
-| 🪴 [桌宠](../by-category/04-desktop-pet/02-solution.md) | 动作 / 情绪标签 + 情感 TTS 三路同步 | 原子能力（精细控制动作同步） |
-| 🎧 [AI 耳机](../by-category/05-ai-earphone/02-solution.md) | 实时翻译 / 听记 / 对话多用途 | 成套产品（低延迟全双工） |
-| 🎙️ [录音卡 / 会议盒子](../by-category/06-recorder/02-solution.md) | ASR + 纪要 Agent | 原子能力（`bl speech recognize`） |
+| 🪴 [桌宠](../by-category/05-desktop-pet/02-solution.md) | 动作 / 情绪标签 + 情感 TTS 三路同步 | 原子能力（精细控制动作同步） |
+| 🎧 [AI 耳机](../by-category/06-ai-earphone/02-solution.md) | 实时翻译 / 听记 / 对话多用途 | 成套产品（低延迟全双工） |
+| 🎙️ [录音卡 / 会议盒子](../by-category/07-recorder/02-solution.md) | ASR + 纪要 Agent | 原子能力（`bl speech recognize`） |
 
 ## 4. 典型 BOM 与计费量级
 
