@@ -7,7 +7,7 @@
 
 ### 新增
 
-#### `solutions/by-solution/omni-realtime/` — Omni 实时端到端方案 · Runtime Host 中间层
+#### `solutions/by-solution/01-qwen/omni-realtime/` — Omni 实时端到端方案 · Runtime Host 中间层
 
 千问方案的子形态：用 Qwen-Omni-Realtime 做端到端实时语音，配一层自建宿主（Runtime Host）把模型接到硬件上。适合桌面 / 伴随机器人等对首字延迟和拟人度要求高的高价值单品。内容基于真实项目配置快照做架构反推，已脱敏。
 
@@ -23,12 +23,13 @@ Runtime Host 架构的可视化版本，含搜索、分类标签过滤、折叠�
 
 ### 变更
 
-- `solutions/by-solution/01-qwen.md` 新增 1.3 节「端到端实时语音：Qwen-Omni-Realtime + Runtime Host 中间层」，能力地图补充 Realtime 指向
-- `solutions/by-solution/README.md`、根 `README.md`、`docs/index.html` 增加新方案入口
+- `solutions/by-solution/01-qwen.md` 升级为目录 `solutions/by-solution/01-qwen/`：原总览内容迁至 `01-qwen/README.md`，Omni 实时端到端方案作为子目录 `01-qwen/omni-realtime/` 收纳其下，避免读者误以为它是独立于千问的平级方案
+- `01-qwen/README.md` 新增 1.3 节「端到端实时语音：Qwen-Omni-Realtime + Runtime Host 中间层」，能力地图补充 Realtime 指向
+- `solutions/by-solution/README.md`、`solutions/README.md`、根 `README.md`、`docs/index.html` 同步更新入口与目录树至嵌套后的路径
 
 ### 修复
 
-- 修正 `01-qwen.md` 品类适配表三个失效链接：桌宠 `04→05-desktop-pet`、AI 耳机 `05→06-ai-earphone`、录音卡 `06→07-recorder`
+- 修正 `01-qwen/README.md` 品类适配表三个失效链接：桌宠 `04→05-desktop-pet`、AI 耳机 `05→06-ai-earphone`、录音卡 `06→07-recorder`
 
 ## [2.0.0] - 2026-06-24
 

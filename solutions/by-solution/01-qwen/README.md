@@ -149,18 +149,18 @@ npm i -g @alibaba/bailian-cli
 
 | 品类 | 对应方案文档 | 推荐接入模式 |
 |---|---|---|
-| 📷 [IPC / AI 视觉](../by-category/01-ipc/02-solution.md) | 双版本：百炼物理世界感知 Agent / OSS AI 内容感知 | 原子能力（Qwen-VL + OSS） |
-| 👓 [AI 眼镜](../by-category/02-ai-glasses/02-solution.md) | 多模态交互套件端到端打包 | **成套产品**（开发套件直接对接） |
-| 🧸 [AI 玩具 / 陪伴](../by-category/03-toys-companion/02-solution.md) | 角色对话 + 声音克隆 | 成套产品 或 原子能力均可 |
-| 🪴 [桌宠](../by-category/05-desktop-pet/02-solution.md) | 动作 / 情绪标签 + 情感 TTS 三路同步 | 原子能力（精细控制动作同步） |
-| 🎧 [AI 耳机](../by-category/06-ai-earphone/02-solution.md) | 实时翻译 / 听记 / 对话多用途 | 成套产品（低延迟全双工） |
-| 🎙️ [录音卡 / 会议盒子](../by-category/07-recorder/02-solution.md) | ASR + 纪要 Agent | 原子能力（`bl speech recognize`） |
+| 📷 [IPC / AI 视觉](../../by-category/01-ipc/02-solution.md) | 双版本：百炼物理世界感知 Agent / OSS AI 内容感知 | 原子能力（Qwen-VL + OSS） |
+| 👓 [AI 眼镜](../../by-category/02-ai-glasses/02-solution.md) | 多模态交互套件端到端打包 | **成套产品**（开发套件直接对接） |
+| 🧸 [AI 玩具 / 陪伴](../../by-category/03-toys-companion/02-solution.md) | 角色对话 + 声音克隆 | 成套产品 或 原子能力均可 |
+| 🪴 [桌宠](../../by-category/05-desktop-pet/02-solution.md) | 动作 / 情绪标签 + 情感 TTS 三路同步 | 原子能力（精细控制动作同步） |
+| 🎧 [AI 耳机](../../by-category/06-ai-earphone/02-solution.md) | 实时翻译 / 听记 / 对话多用途 | 成套产品（低延迟全双工） |
+| 🎙️ [录音卡 / 会议盒子](../../by-category/07-recorder/02-solution.md) | ASR + 纪要 Agent | 原子能力（`bl speech recognize`） |
 
 ## 4. 典型 BOM 与计费量级
 
 - **硬件 BOM 增量**：依品类而异，最低可至 0（IPC 直接软件升级），最高 20–50 元（玩具新增语音 SoC + 麦克风阵列）
 - **云端按量计费**：百炼 / DashScope 公开 token / 时长 / 次计价，详见 [百炼定价页](https://help.aliyun.com/zh/model-studio/billing-of-model-studio)
-- **典型用户单价**：在 IPC 品类已能跑通 5–10 元/月 AI 订阅（见 [01-ipc/03-cost.md](../by-category/01-ipc/03-cost.md)）
+- **典型用户单价**：在 IPC 品类已能跑通 5–10 元/月 AI 订阅（见 [01-ipc/03-cost.md](../../by-category/01-ipc/03-cost.md)）
 
 ## 5. 接入路径
 
@@ -178,11 +178,11 @@ npm i -g @alibaba/bailian-cli
 
 | 场景 | 替代或补充方案 |
 |---|---|
-| 端侧离线唤醒 | 见 [小智开源方案](./02-xiaozhi.md) |
+| 端侧离线唤醒 | 见 [小智开源方案](../02-xiaozhi.md) |
 | 海外模型成本对比 | OpenAI / Gemini / Claude（欢迎 PR） |
 | 端侧推理 | Qwen 开源系列 + Hugging Face / Ollama |
-| 开源全栈参考 | 见 [Talk-to-Fengge 架构启发](./04-talk-to-fengge.md) |
+| 开源全栈参考 | 见 [Talk-to-Fengge 架构启发](../04-talk-to-fengge.md) |
 
 ---
 
-> 回到 [方案总览](./README.md) · 切到 [按品类](../by-category/) 视角
+> 回到 [方案总览](../README.md) · 切到 [按品类](../../by-category/) 视角

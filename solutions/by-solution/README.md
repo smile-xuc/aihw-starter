@@ -8,14 +8,14 @@
 
 | # | 方案 | 状态 | 主要能力 | 在哪些品类中已示例 |
 |---|---|:-:|---|---|
-| 01 | [🤖 千问大模型方案（Qwen / 百炼）](./01-qwen.md) | ✅ 主示例 | Qwen-Max / Qwen-VL / Qwen-Omni / Qwen-TTS / ASR / Function Calling | 全部 6 个品类 |
+| 01 | [🤖 千问大模型方案（Qwen / 百炼）](./01-qwen/README.md) | ✅ 主示例 | Qwen-Max / Qwen-VL / Qwen-Omni / Qwen-TTS / ASR / Function Calling | 全部 6 个品类 |
 | 02 | [💡 小智（XiaoZhi）开源方案](./02-xiaozhi.md) | 🚧 占位 | 端侧 Wake / 对话编排 / 开源生态 | AI 玩具 / 桌宠 / AI 耳机 |
 | 03 | 豆包 / Kimi / 智谱 / DeepSeek / OpenAI | 📌 计划中 | 各家主流大模型方案 | 欢迎 PR 贡献 |
 | 04 | [🔊 Talk-to-Fengge（开源案例）](./04-talk-to-fengge.md) | 📖 架构启发 | WebRTC 实时语音 + 声音克隆 + 人格注入 | 玩具陪伴 / 桌宠 / 耳机 |
 | 05 | [🦾 千问具身智能方案（Qwen-Robot Suite）](./05-qwen-robot.md) | 📖 架构参考 | RobotManip / RobotNav / RobotWorld 三模型矩阵 | 具身智能（机械臂 / 四足 / 人形） |
 | 06 | 端侧 / 混合方案（端云协同） | 📌 计划中 | 离线唤醒 + 端侧推理 + 云增强 | 欢迎 PR 贡献 |
 
-> 千问方案的子形态：[Omni 实时端到端 · Runtime Host 中间层](./omni-realtime/) — Qwen-Omni-Realtime 端到端实时语音 + 自建宿主，适合桌面 / 伴随机器人等对首字延迟和拟人度要求高的高价值单品。可视化架构页：<https://smile-xuc.github.io/aihw-starter/omni-runtime-host.html>
+> 千问方案的子形态：[Omni 实时端到端 · Runtime Host 中间层](./01-qwen/omni-realtime/) — Qwen-Omni-Realtime 端到端实时语音 + 自建宿主，适合桌面 / 伴随机器人等对首字延迟和拟人度要求高的高价值单品。可视化架构页：<https://smile-xuc.github.io/aihw-starter/omni-runtime-host.html>
 
 ## 方案延迟横评
 

@@ -24,7 +24,9 @@ solutions/
 │   └── 06-recorder/       ← 录音卡 / 会议盒子（完整版）
 └── by-solution/           ← 方案维度（开发者视角）
     ├── README.md          ← 方案总览表格
-    ├── 01-qwen.md         ← 千问大模型方案（主示例）
+    ├── 01-qwen/           ← 千问大模型方案（主示例）
+    │   ├── README.md      ← 千问方案总览
+    │   └── omni-realtime/ ← 子形态：Omni 实时端到端 · Runtime Host 中间层
     ├── 02-xiaozhi.md      ← 小智开源方案（占位）
     └── 04-talk-to-fengge.md ← Talk-to-Fengge 开源案例（架构启发）
 ```
