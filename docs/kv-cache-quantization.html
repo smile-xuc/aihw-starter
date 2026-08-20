@@ -1,0 +1,2063 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TurboQuant 交互式学习 — 用学生成绩理解大模型量化压缩</title>
+<style>
+  :root{
+    --bg:#f6f4ef; --ink:#211f1a; --muted:#75705f; --card:#ffffff;
+    --line:rgba(40,33,15,.08); --accent:#4f46b8; --accent2:#7c6cf0; --accent-soft:#edeaff;
+    --teal:#0f766e; --teal-soft:#e0f2ef;
+    --warn:#b45309; --warn-soft:#fdf3e3;
+    --ok:#15803d; --ok-soft:#e5f5ea;
+    --bad:#b91c1c; --bad-soft:#fdeaea;
+    --code:#f2efe6;
+    --shadow-s:0 1px 2px rgba(40,33,18,.05), 0 6px 18px rgba(40,33,18,.06);
+    --shadow-m:0 2px 5px rgba(40,33,18,.06), 0 18px 40px rgba(40,33,18,.10);
+    --r-l:20px; --r-m:15px; --r-s:11px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; color:var(--ink); overflow-x:hidden;
+    background:
+      radial-gradient(1100px 540px at 88% -100px, rgba(124,108,240,.11), transparent 62%),
+      radial-gradient(900px 500px at -12% 160px, rgba(15,118,110,.08), transparent 62%),
+      var(--bg);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:16.5px; line-height:1.85;
+  }
+  ::selection{background:rgba(124,108,240,.25);}
+  ::-webkit-scrollbar{width:10px; height:10px;}
+  ::-webkit-scrollbar-thumb{background:#cfc9b8; border-radius:99px; border:2.5px solid var(--bg);}
+  ::-webkit-scrollbar-track{background:transparent;}
+  /* ============ 顶部阅读进度 ============ */
+  #progress{position:fixed; top:0; left:0; height:4px; width:0%; border-radius:0 99px 99px 0;
+    background:linear-gradient(90deg,var(--accent),var(--accent2),var(--teal));
+    box-shadow:0 0 12px rgba(99,86,220,.55); z-index:99;}
+  /* ============ 布局 ============ */
+  main{max-width:860px; margin:0 auto; padding:0 22px 90px;}
+  /* 左侧目录 */
+  .toc{display:none;}
+  @media (min-width:1240px){
+    .toc{
+      display:block; position:fixed; left:calc(50% - 645px); top:110px; width:196px;
+      font-size:13px; line-height:1.5; background:rgba(255,255,255,.55); backdrop-filter:blur(10px);
+      border:1px solid var(--line); border-radius:16px; padding:10px; box-shadow:var(--shadow-s);
+    }
+    .toc a{
+      display:block; color:var(--muted); text-decoration:none; padding:6px 12px; margin:1px 0;
+      border-radius:9px; transition:all .18s;
+    }
+    .toc a:hover{color:var(--ink); background:rgba(40,33,15,.05);}
+    .toc a.on{color:var(--accent); font-weight:700; background:var(--accent-soft);}
+  }
+  /* ============ Hero ============ */
+  .hero{position:relative; isolation:isolate; padding:100px 0 34px; text-align:center;}
+  .hero::before,.hero::after{
+    content:""; position:absolute; border-radius:50%; filter:blur(72px); pointer-events:none; z-index:-1;
+  }
+  .hero::before{width:440px; height:440px; left:-150px; top:-90px;
+    background:radial-gradient(circle, rgba(124,108,240,.32), transparent 65%);
+    animation:drift1 16s ease-in-out infinite alternate;}
+  .hero::after{width:400px; height:400px; right:-130px; top:60px;
+    background:radial-gradient(circle, rgba(15,118,110,.22), transparent 65%);
+    animation:drift2 19s ease-in-out infinite alternate;}
+  @keyframes drift1{to{transform:translate(70px,50px) scale(1.18);}}
+  @keyframes drift2{to{transform:translate(-60px,36px) scale(1.12);}}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:none;}}
+  .hero > *{animation:fadeUp .8s cubic-bezier(.2,.65,.3,1) both;}
+  .hero > *:nth-child(2){animation-delay:.09s;}
+  .hero > *:nth-child(3){animation-delay:.18s;}
+  .hero > *:nth-child(4){animation-delay:.27s;}
+  .hero .kicker{font-size:12.5px; letter-spacing:.42em; color:var(--muted); text-transform:uppercase; font-weight:600;}
+  .hero h1{
+    font-size:clamp(38px,6vw,56px); font-weight:800; letter-spacing:-.02em; margin:14px 0 10px; line-height:1.2;
+    background:linear-gradient(115deg,#2b2668 5%,var(--accent) 45%,var(--teal) 95%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero .sub{font-size:17.5px; color:var(--muted); margin:0;}
+  .roadmap{
+    display:flex; flex-wrap:wrap; gap:9px; justify-content:center; margin:34px auto 0; max-width:760px;
+  }
+  .roadmap a{
+    font-size:13px; text-decoration:none; color:var(--ink); background:rgba(255,255,255,.85);
+    border:1px solid var(--line); border-radius:999px; padding:6px 15px; box-shadow:var(--shadow-s);
+    transition:all .18s;
+  }
+  .roadmap a:hover{transform:translateY(-2px); box-shadow:var(--shadow-m); color:var(--accent); border-color:rgba(79,70,184,.3);}
+  .roadmap a b{color:var(--accent); font-weight:800; margin-right:5px;}
+  /* ============ 章节 ============ */
+  section{margin-top:100px; position:relative;}
+  section::before{
+    position:absolute; top:-64px; right:-14px; font-size:172px; font-weight:800; line-height:1;
+    color:rgba(79,70,184,.045); -webkit-text-stroke:2px rgba(79,70,184,.10);
+    pointer-events:none; z-index:0; font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  #l0::before{content:"0";} #l1::before{content:"1";} #l2::before{content:"2";} #l3::before{content:"3";}
+  #l4::before{content:"4";} #l5::before{content:"5";} #l6::before{content:"6";} #l7::before{content:"7";}
+  #l8::before{content:"8";} #l9::before{content:"9";}
+  .lv{
+    display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:700;
+    color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent2));
+    border-radius:999px; padding:5px 16px; letter-spacing:.05em;
+    box-shadow:0 4px 14px rgba(79,70,184,.32);
+  }
+  .lv .depth{font-weight:400; opacity:.85;}
+  section h2{font-size:32px; font-weight:800; letter-spacing:-.02em; margin:16px 0 6px; line-height:1.3;}
+  section .lede{color:var(--muted); margin:0 0 20px; font-size:16.5px;}
+  h3{font-size:20px; font-weight:700; margin:38px 0 10px;}
+  h3::before{
+    content:""; display:inline-block; width:4.5px; height:.95em; margin-right:11px; vertical-align:-2px;
+    border-radius:99px; background:linear-gradient(180deg,var(--accent),var(--teal));
+  }
+  p{margin:10px 0;}
+  em{font-style:normal; background:linear-gradient(transparent 60%, rgba(255,214,102,.55) 60%); padding:0 2px; border-radius:3px;}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--r-l);
+    padding:24px 28px; margin:18px 0; box-shadow:var(--shadow-s);
+    transition:box-shadow .3s ease;
+  }
+  .card:hover{box-shadow:var(--shadow-m);}
+  /* 术语 tooltip */
+  .term{
+    border-bottom:1.5px dotted var(--accent); cursor:help; position:relative;
+  }
+  .term::after{
+    content:attr(data-tip);
+    position:absolute; left:50%; bottom:135%; transform:translateX(-50%) translateY(5px);
+    width:max-content; max-width:300px; background:#2b2823; color:#fdfcf9;
+    font-size:13px; line-height:1.6; padding:10px 14px; border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+    opacity:0; pointer-events:none; transition:all .2s; z-index:20; white-space:normal;
+  }
+  .term:hover::after{opacity:1; transform:translateX(-50%) translateY(0);}
+  /* 公式块 */
+  .formula{
+    background:linear-gradient(150deg,#2b2830,#242129); color:#f2eee2;
+    border-radius:var(--r-m); padding:16px 20px; margin:14px 0;
+    font-family:"SF Mono",Menlo,Consolas,monospace; font-size:15px; overflow-x:auto;
+    box-shadow:var(--shadow-s); border:1px solid rgba(255,255,255,.04);
+  }
+  .formula b{color:#c9bfff;}
+  code{background:var(--code); border-radius:6px; padding:1px 7px; font-size:.92em; font-family:"SF Mono",Menlo,Consolas,monospace; border:1px solid var(--line);}
+  .formula code{background:rgba(255,255,255,.1); border-color:transparent; color:#e8e2d2;}
+  /* 数据 chips */
+  .chips{display:flex; flex-wrap:wrap; gap:7px; margin:10px 0;}
+  .chip{
+    min-width:52px; text-align:center; background:linear-gradient(135deg,#eeebff,#e6f0ee);
+    color:var(--accent); border:1px solid rgba(79,70,184,.14);
+    border-radius:10px; padding:5px 10px; font-family:"SF Mono",Menlo,monospace; font-size:14px; font-weight:600;
+  }
+  .chip.gray{background:#efece4; color:var(--muted); border-color:var(--line);}
+  /* 提示框 */
+  .note,.pit,.good{
+    border-radius:var(--r-m); padding:16px 20px; margin:18px 0; font-size:15.5px;
+    border:1px solid; box-shadow:var(--shadow-s);
+  }
+  .note{background:var(--teal-soft); border-color:rgba(15,118,110,.18);}
+  .pit{background:var(--warn-soft); border-color:rgba(180,83,9,.20);}
+  .good{background:var(--ok-soft); border-color:rgba(21,128,61,.18);}
+  .note b:first-child,.pit b:first-child,.good b:first-child{display:block; margin-bottom:5px;}
+  .note b:first-child{color:var(--teal);} .pit b:first-child{color:var(--warn);} .good b:first-child{color:var(--ok);}
+  .note b:first-child::before{content:"◈ ";} .pit b:first-child::before{content:"⚠ ";} .good b:first-child::before{content:"✦ ";}
+  /* 深入一层 */
+  details.deep{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--r-m);
+    padding:0; margin:16px 0; overflow:hidden; box-shadow:var(--shadow-s); transition:box-shadow .3s;
+  }
+  details.deep:hover{box-shadow:var(--shadow-m);}
+  details.deep summary{
+    cursor:pointer; list-style:none; padding:15px 20px; font-weight:700; color:var(--accent);
+    display:flex; align-items:center; gap:9px; user-select:none; transition:background .18s;
+  }
+  details.deep summary:hover{background:rgba(79,70,184,.04);}
+  details.deep summary::before{content:"▸"; transition:transform .25s; font-size:13px;}
+  details.deep[open] summary::before{transform:rotate(90deg);}
+  details.deep .body{padding:4px 22px 18px; border-top:1px solid var(--line); font-size:15.5px;}
+  /* 预备知识卡 */
+  .pregrid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:720px){.pregrid{grid-template-columns:1fr;}}
+  .pregrid .card{margin:0;}
+  /* 表格 */
+  table{
+    width:100%; border-collapse:separate; border-spacing:0; margin:16px 0; font-size:15px;
+    background:var(--card); border-radius:var(--r-m); overflow:hidden;
+    border:1px solid var(--line); box-shadow:var(--shadow-s);
+  }
+  th,td{padding:11px 16px; text-align:left; border-bottom:1px solid var(--line);}
+  tr:last-child th, tr:last-child td{border-bottom:none;}
+  th{background:#f4f1e8; font-weight:700; font-size:13.5px; letter-spacing:.02em; white-space:nowrap;}
+  tr{transition:background .15s;}
+  tr:hover td{background:#faf8f1;}
+  td.num{font-family:"SF Mono",Menlo,monospace; font-size:14px;}
+  /* ============ bit 滑杆 ============ */
+  .slider-box{display:flex; flex-direction:column; gap:10px;}
+  .slider-box input[type=range]{width:100%; accent-color:var(--accent); height:26px; cursor:pointer;}
+  .slider-read{display:flex; flex-wrap:wrap; gap:12px;}
+  .stat{
+    flex:1; min-width:150px; background:linear-gradient(160deg,#f0edff,#e6f2ef);
+    border:1px solid rgba(79,70,184,.10); border-radius:14px; padding:13px 16px; text-align:center;
+  }
+  .stat .v{
+    font-size:25px; font-weight:800; font-family:"SF Mono",Menlo,monospace; letter-spacing:-.02em;
+    background:linear-gradient(120deg,var(--accent),var(--teal));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .stat .k{font-size:12.5px; color:var(--muted); margin-top:2px;}
+  /* ============ 流程 stepper ============ */
+  .stepper{margin:18px 0;}
+  .step-pills{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:16px;}
+  .step-pill{
+    font-size:13px; padding:6px 14px; border-radius:999px; border:1px solid var(--line);
+    background:#faf9f4; color:var(--muted); cursor:pointer; transition:all .18s; font-weight:600;
+  }
+  .step-pill:hover{transform:translateY(-1px); border-color:rgba(79,70,184,.35);}
+  .step-pill.done{border-color:rgba(15,118,110,.3); color:var(--teal); background:var(--teal-soft);}
+  .step-pill.cur{
+    border-color:transparent; color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 4px 12px rgba(79,70,184,.32);
+  }
+  .step-panel{background:#faf9f3; border:1px solid var(--line); border-radius:var(--r-m); padding:20px 24px;}
+  .step-panel h4{margin:0 0 6px; font-size:17px; font-weight:700;}
+  .step-panel .why{color:var(--muted); font-size:15px; margin:10px 0 0;}
+  .step-nav{display:flex; gap:10px; margin-top:16px;}
+  button.btn{
+    font-size:14.5px; padding:10px 24px; border-radius:12px; border:none;
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; cursor:pointer; font-weight:700;
+    box-shadow:0 4px 14px rgba(79,70,184,.30); transition:all .18s; font-family:inherit;
+  }
+  button.btn:hover{transform:translateY(-1.5px); box-shadow:0 7px 20px rgba(79,70,184,.38);}
+  button.btn:active{transform:translateY(0) scale(.97);}
+  button.btn.ghost{background:#fff; color:var(--accent); border:1.5px solid rgba(79,70,184,.25); box-shadow:none;}
+  button.btn.ghost:hover{background:var(--accent-soft);}
+  button.btn:disabled{opacity:.35; cursor:default; transform:none; box-shadow:none;}
+  .trace{margin-top:16px; overflow-x:auto;}
+  .trace table{margin:0; font-size:13.5px; box-shadow:none;}
+  .trace td,.trace th{padding:6px 10px; text-align:center;}
+  .trace tr.new td{animation:flashRow 1.1s ease;}
+  @keyframes flashRow{from{background:#fff3bd;} to{background:transparent;}}
+  /* ============ Lloyd-Max 数轴 ============ */
+  .lm-wrap{margin:20px 0 8px;}
+  .lm-bar{position:relative; height:88px; border-radius:14px; overflow:visible; display:flex; box-shadow:inset 0 1px 4px rgba(0,0,0,.06);}
+  .lm-zone{flex:1; position:relative; display:flex; align-items:flex-start; justify-content:center; padding-top:9px; font-size:13px; font-weight:700; border-right:2px dashed rgba(255,255,255,.75);}
+  .lm-zone:last-child{border-right:none;}
+  .lm-zone .rep{position:absolute; bottom:7px; font-family:Menlo,monospace; font-size:12.5px; font-weight:600;}
+  .z0{background:linear-gradient(180deg,#f8cfcb,#f3bcb6); color:#a72a20; border-radius:14px 0 0 14px;}
+  .z1{background:linear-gradient(180deg,#fce6bd,#f8dba4); color:#9c6104;}
+  .z2{background:linear-gradient(180deg,#c9eed6,#b4e6c6); color:#177245;}
+  .z3{background:linear-gradient(180deg,#c8e0f8,#b3d4f2); color:#1b5fa8; border-radius:0 14px 14px 0;}
+  .lm-dot{
+    position:absolute; top:50%; width:24px; height:24px; margin:-12px 0 0 -12px; border-radius:50%;
+    background:#2b2823; color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; border:2.5px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,.35); transition:transform .18s, background .18s; z-index:3;
+  }
+  .lm-dot:hover{transform:scale(1.3);}
+  .lm-dot.sel{background:linear-gradient(135deg,var(--accent),var(--accent2)); transform:scale(1.35); box-shadow:0 3px 12px rgba(79,70,184,.5);}
+  .lm-axis{display:flex; justify-content:space-between; font-family:Menlo,monospace; font-size:12.5px; color:var(--muted); margin-top:8px;}
+  .lm-info{
+    margin-top:14px; background:#faf9f3; border:1px solid var(--line); border-radius:var(--r-s);
+    padding:13px 17px; font-size:15px; min-height:48px;
+  }
+  /* ============ 公式点击拆解 ============ */
+  .fx{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--r-m); padding:22px 18px; text-align:center;
+    font-family:"STIX Two Math","Times New Roman",serif; font-size:21px; margin:16px 0 10px; overflow-x:auto; white-space:nowrap;
+    box-shadow:var(--shadow-s);
+  }
+  .fx .t{cursor:pointer; padding:5px 9px; border-radius:10px; transition:all .18s; border-bottom:2.5px solid transparent;}
+  .fx .t:hover{background:var(--accent-soft);}
+  .fx .t.on{background:var(--accent-soft); border-bottom-color:var(--accent); box-shadow:0 2px 10px rgba(79,70,184,.22);}
+  .fx-tabs{display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-bottom:8px;}
+  .fx-info{background:var(--card); border:1px solid var(--line); border-radius:var(--r-m); padding:17px 21px; font-size:15.5px; min-height:70px; box-shadow:var(--shadow-s);}
+  .fx-info h5{margin:0 0 6px; font-size:16px; color:var(--accent);}
+  /* ============ 符号对比 ============ */
+  .sign-rows{display:flex; flex-direction:column; gap:9px; margin:14px 0; overflow-x:auto;}
+  .sign-row{display:flex; align-items:center; gap:7px;}
+  .sign-row .who{width:110px; flex:none; font-size:14px; color:var(--muted);}
+  .sg{
+    width:38px; height:38px; flex:none; border-radius:11px; display:flex; align-items:center; justify-content:center;
+    font-family:Menlo,monospace; font-size:17px; font-weight:800; background:#faf9f4; border:1.5px solid var(--line); transition:all .28s;
+  }
+  .sg.hit{background:var(--ok-soft); border-color:rgba(21,128,61,.45); color:var(--ok);}
+  .sg.miss{background:var(--bad-soft); border-color:rgba(185,28,28,.4); color:var(--bad);}
+  .sg.mark{transform:translateY(-4px);}
+  #signResult{font-size:15.5px; margin-top:12px; min-height:26px; font-weight:600;}
+  /* ============ 存储条形图 ============ */
+  .bars{display:flex; flex-direction:column; gap:14px; margin:18px 0;}
+  .bar-row{display:grid; grid-template-columns:170px 1fr 84px; gap:12px; align-items:center; font-size:14.5px;}
+  .bar-row .name{text-align:right; line-height:1.35;}
+  .bar-row .name small{color:var(--muted);}
+  .bar-track{background:#edeadf; border-radius:99px; height:32px; overflow:hidden; box-shadow:inset 0 1px 3px rgba(0,0,0,.07);}
+  .bar-fill{height:100%; border-radius:99px; display:flex; align-items:center; justify-content:flex-end; padding-right:11px; color:#fff; font-weight:700; font-size:13px; font-family:Menlo,monospace; width:0; transition:width 1.1s cubic-bezier(.2,.7,.3,1);}
+  .bf-red{background:linear-gradient(90deg,#e2695e,#d34a3d);} .bf-blue{background:linear-gradient(90deg,#54a3e0,#2f80c4);}
+  .bf-purple{background:linear-gradient(90deg,#a475d4,#8352b5);} .bf-green{background:linear-gradient(90deg,#48c485,#27a563);}
+  .bar-row .ratio{font-weight:700; font-family:Menlo,monospace; color:var(--muted);}
+  /* ============ 翻转卡 ============ */
+  .flips{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:18px 0;}
+  @media (max-width:720px){.flips{grid-template-columns:1fr;}}
+  .flip{perspective:1000px; cursor:pointer; height:190px;}
+  .flip .inner{position:relative; width:100%; height:100%; transition:transform .6s cubic-bezier(.3,.7,.3,1); transform-style:preserve-3d;}
+  .flip.flipped .inner{transform:rotateY(180deg);}
+  .flip .face{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:var(--r-l); padding:19px 22px;
+    display:flex; flex-direction:column; justify-content:center; gap:6px;
+  }
+  .flip .front{background:var(--card); border:1px solid var(--line); box-shadow:var(--shadow-s);}
+  .flip:hover .front{box-shadow:var(--shadow-m);}
+  .flip .back{
+    background:linear-gradient(150deg,#332f42,#221f2d); color:#f0edE4;
+    border:1px solid rgba(255,255,255,.06); transform:rotateY(180deg); box-shadow:var(--shadow-m);
+  }
+  .flip h4{margin:0; font-size:17px;}
+  .flip .front h4{color:var(--accent);}
+  .flip .back h4{color:#c9bfff;}
+  .flip p{margin:0; font-size:14.5px; line-height:1.7;}
+  .flip .hint{font-size:12px; color:var(--muted); margin-top:auto;}
+  .flip .back .hint{color:#9d97ae;}
+  /* ============ 自测 ============ */
+  .quiz{background:var(--card); border:1px solid var(--line); border-radius:var(--r-l); padding:20px 24px; margin:18px 0; box-shadow:var(--shadow-s);}
+  .quiz .q{font-weight:700; margin-bottom:10px;}
+  .quiz .opt{
+    display:block; width:100%; text-align:left; margin:8px 0; padding:11px 16px; font-size:15px;
+    border:1.5px solid var(--line); border-radius:12px; background:#faf9f4; cursor:pointer; transition:all .18s; font-family:inherit; line-height:1.6;
+  }
+  .quiz .opt:hover{border-color:rgba(79,70,184,.4); transform:translateX(3px); background:#fff;}
+  .quiz .opt.right{border-color:rgba(21,128,61,.5); background:var(--ok-soft); font-weight:700;}
+  .quiz .opt.wrong{border-color:rgba(185,28,28,.45); background:var(--bad-soft);}
+  .quiz .expl{display:none; margin-top:12px; font-size:14.5px; background:var(--teal-soft); border:1px solid rgba(15,118,110,.15); border-radius:var(--r-s); padding:11px 15px;}
+  .quiz.answered .expl{display:block;}
+  #quizScore{font-size:17px; font-weight:700; text-align:center; margin-top:22px;}
+  footer{margin-top:90px; text-align:center; color:var(--muted); font-size:13.5px; padding-top:26px; border-top:1px solid var(--line);}
+  .arrow-flow{display:flex; flex-wrap:wrap; align-items:center; gap:9px; margin:14px 0; font-size:14.5px;}
+  .arrow-flow .nd{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:9px 15px; box-shadow:var(--shadow-s);}
+  .arrow-flow .ar{color:var(--muted); font-weight:700;}
+  /* ============ 滚动入场 ============ */
+  .rv{opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s cubic-bezier(.2,.65,.3,1);}
+  .rv.in{opacity:1; transform:none;}
+  @media (prefers-reduced-motion:reduce){
+    .rv{opacity:1; transform:none; transition:none;}
+    .hero > *{animation:none;}
+    .hero::before,.hero::after{animation:none;}
+  }
+  /* ============ 数学示意图 ============ */
+  .fig{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--r-l);
+    padding:22px 24px 20px; margin:20px 0; box-shadow:var(--shadow-s);
+    transition:box-shadow .3s ease;
+  }
+  .fig:hover{box-shadow:var(--shadow-m);}
+  .fig-h{display:flex; align-items:center; gap:11px; flex-wrap:wrap;}
+  .fig-h .tag{
+    font-size:11px; font-weight:800; letter-spacing:.08em; color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    padding:4px 11px; border-radius:999px; white-space:nowrap;
+  }
+  .fig-h .ttl{font-size:17px; font-weight:700; letter-spacing:-.01em;}
+  .fig-sub{color:var(--muted); font-size:14px; margin:9px 0 15px; line-height:1.75;}
+  .fig-sub em{color:var(--accent); font-style:normal; font-weight:700;}
+  .fig-stage{
+    background:radial-gradient(120% 120% at 50% 0%,#fdfcfa,#f3f1ea);
+    border:1px solid var(--line); border-radius:var(--r-m); padding:8px;
+  }
+  .fig svg{display:block; width:100%; max-width:560px; margin:0 auto; height:auto; touch-action:none; user-select:none;}
+  .fig svg text{font-family:inherit;}
+  .hd{cursor:grab;}
+  .hd:active{cursor:grabbing;}
+  .fig-ctl{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:15px;}
+  .fig-ctl .cl{font-size:12.5px; color:var(--muted); font-weight:700; margin-right:2px;}
+  .chip{
+    font-size:13px; padding:6px 15px; border-radius:999px; border:1px solid var(--line);
+    background:#fff; cursor:pointer; font-weight:600; color:var(--muted);
+    transition:all .18s ease; font-family:inherit;
+  }
+  .chip:hover{border-color:var(--accent); color:var(--accent); transform:translateY(-1px);}
+  .chip.on{
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff;
+    border-color:transparent; box-shadow:0 4px 13px rgba(79,70,184,.30);
+  }
+  .fig-ctl input[type=range]{flex:1; min-width:150px; accent-color:var(--accent);}
+  .fig-read{display:grid; grid-template-columns:repeat(auto-fit,minmax(132px,1fr)); gap:9px; margin-top:15px;}
+  .rd{background:var(--code); border-radius:var(--r-s); padding:9px 13px; border:1px solid transparent;}
+  .rd .k{font-size:11.5px; color:var(--muted); font-weight:700; letter-spacing:.02em;}
+  .rd .v{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:15.5px; font-weight:700; margin-top:3px; letter-spacing:-.02em;
+  }
+  .rd.hi{background:var(--accent-soft); border-color:rgba(79,70,184,.16);}
+  .rd.hi .v{color:var(--accent);}
+  .rd.ok{background:var(--ok-soft); border-color:rgba(21,128,61,.16);}
+  .rd.ok .v{color:var(--ok);}
+  .rd.bad{background:var(--bad-soft); border-color:rgba(185,28,28,.16);}
+  .rd.bad .v{color:var(--bad);}
+  .fig-eq{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:13.5px; background:var(--code); border-radius:var(--r-s);
+    padding:11px 14px; margin-top:11px; line-height:1.9; overflow-x:auto; white-space:nowrap;
+  }
+  .fig-note{font-size:13.5px; color:var(--muted); margin:13px 0 0; line-height:1.8;}
+  .fig-note b{color:var(--ink); font-weight:700;}
+  .fig-2col{display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:start;}
+  @media (max-width:720px){.fig-2col{grid-template-columns:1fr;}}
+  /* 矩阵 */
+  .mtxrow{display:flex; flex-wrap:wrap; gap:18px; align-items:center; margin-top:14px;}
+  .mtxbox{display:flex; align-items:center; gap:9px;}
+  .mtxbox .lbl{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:14px; font-weight:700; color:var(--muted);
+  }
+  .mtx{display:flex; align-items:stretch;}
+  .mtx .br{width:7px; border:2px solid rgba(40,33,15,.28); border-right:none; border-radius:4px 0 0 4px;}
+  .mtx .br.r{border:2px solid rgba(40,33,15,.28); border-left:none; border-radius:0 4px 4px 0;}
+  .mtx .g{display:grid; grid-template-columns:1fr 1fr; gap:3px 14px; padding:7px 8px;}
+  .mtx i{
+    font-style:normal; text-align:right; min-width:50px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:13.5px; font-weight:600;
+  }
+  .mtx.idt i{color:var(--ok);}
+  .mtx.warn i{color:var(--bad);}
+
+  /* ============ 序章地图 / 主线七步 / 讲人话 / 复述卡 ============ */
+  #map::before{content:"序";} #retell::before{content:"终";}
+  .mp-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:18px 0 6px;}
+  @media (max-width:820px){.mp-grid{grid-template-columns:1fr;}}
+  .mp-card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--r-m);
+    padding:18px 20px; box-shadow:var(--shadow-s); position:relative; display:flex; flex-direction:column;
+  }
+  .mp-card h4{margin:0 0 4px; font-size:16.5px;}
+  .mp-tag{display:inline-block; align-self:flex-start; font-size:11.5px; font-weight:800; letter-spacing:.04em;
+    border-radius:999px; padding:2.5px 11px; margin-bottom:10px;}
+  .mp-tag.t1{background:var(--ok-soft); color:var(--ok);}
+  .mp-tag.t2{background:var(--warn-soft); color:var(--warn);}
+  .mp-tag.t3{background:var(--accent-soft); color:var(--accent);}
+  .mp-card p{font-size:14px; margin:5px 0; line-height:1.75;}
+  .mp-names{margin-top:auto; padding-top:10px;}
+  .mp-pill{display:inline-block; font-size:12px; font-weight:600; background:var(--code);
+    border:1px solid var(--line); border-radius:7px; padding:1.5px 9px; margin:2.5px 4px 0 0; color:var(--ink);}
+  .mp-pill.star{background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border-color:transparent;}
+  .mp-hero{outline:2.5px solid rgba(124,108,240,.5); outline-offset:-1px;}
+  .mp-here{position:absolute; top:-11px; right:14px; font-size:11.5px; font-weight:800; color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); border-radius:999px; padding:3px 12px;
+    box-shadow:0 4px 12px rgba(79,70,184,.35);}
+  /* 省显存三条路 */
+  .roads{margin:14px 0 6px;}
+  .road{display:flex; gap:14px; align-items:flex-start; background:var(--card); border:1px solid var(--line);
+    border-radius:var(--r-m); padding:13px 18px; margin:9px 0; box-shadow:var(--shadow-s); position:relative;}
+  .road .mp-tag{margin-bottom:0; margin-top:3px; flex:0 0 auto; white-space:nowrap;}
+  .road .rd-body{flex:1; font-size:14.5px; line-height:1.78;}
+  .road.hero{outline:2.5px solid rgba(124,108,240,.5); outline-offset:-1px;}
+  @media (max-width:640px){.road{flex-wrap:wrap;}}
+  /* 主线七步 */
+  .spine{margin:14px 0 6px;}
+  .sp-step{
+    display:flex; gap:14px; align-items:flex-start; text-decoration:none; color:var(--ink);
+    background:var(--card); border:1px solid var(--line); border-radius:var(--r-m);
+    padding:12px 18px; margin:9px 0; box-shadow:var(--shadow-s);
+    transition:transform .18s, box-shadow .18s, border-color .18s;
+  }
+  .sp-step:hover{transform:translateX(5px); box-shadow:var(--shadow-m); border-color:rgba(79,70,184,.35);}
+  .sp-num{flex:0 0 28px; height:28px; border-radius:50%; margin-top:3px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff;
+    font-weight:800; font-size:13.5px; display:flex; align-items:center; justify-content:center;}
+  .sp-body{flex:1; line-height:1.7;}
+  .sp-kw{font-weight:800; margin-right:8px;}
+  .sp-tx{font-size:15px;}
+  .sp-go{flex:0 0 auto; font-size:12.5px; color:var(--accent); font-weight:700; white-space:nowrap; margin-top:6px;}
+  /* 讲人话 */
+  .say{
+    display:flex; gap:13px; align-items:flex-start; background:var(--teal-soft);
+    border:1px solid rgba(15,118,110,.18); border-radius:var(--r-m);
+    padding:13px 18px; margin:0 0 26px; font-size:15px; line-height:1.8; position:relative; z-index:1;
+  }
+  .say .stag{flex:0 0 auto; font-size:12px; font-weight:800; color:#fff; background:var(--teal);
+    border-radius:999px; padding:3px 11px; margin-top:4px; letter-spacing:.08em; white-space:nowrap;}
+  .say b{color:var(--teal);}
+  /* 复述卡 */
+  .rt-modes{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:16px 0 4px;}
+  .rt-list{margin:12px 0 6px;}
+  .rl{
+    display:flex; gap:13px; align-items:flex-start; background:var(--card);
+    border:1px solid var(--line); border-radius:var(--r-m); padding:12px 17px; margin:8px 0;
+    box-shadow:var(--shadow-s);
+  }
+  .rl .kw{flex:0 0 104px; font-weight:800; font-size:14px; color:var(--accent); margin-top:1px;}
+  .rl .tx{flex:1; font-size:15px; line-height:1.75; transition:filter .35s, opacity .35s;}
+  .rl .lk{flex:0 0 auto; font-size:12px; color:var(--muted); text-decoration:none; margin-top:4px; white-space:nowrap;}
+  .rl .lk:hover{color:var(--accent);}
+  .rt-list.hint .rl{cursor:pointer;}
+  .rt-list.hint .rl:not(.show) .tx{filter:blur(6px); opacity:.5; user-select:none;}
+  @media (max-width:640px){.rl{flex-wrap:wrap;} .rl .kw{flex:0 0 auto;}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<nav class="toc" id="toc">
+  <a href="#map">序 量化技术地图</a>
+  <a href="#l0">第0层 预备知识</a>
+  <a href="#l1">第1层 为什么要量化</a>
+  <a href="#l2">第2层 案例：小明的成绩</a>
+  <a href="#l3">第3层 PolarQuant 四步</a>
+  <a href="#l4">第4层 QJL 残差纠错</a>
+  <a href="#l5">第5层 注意力内积修正</a>
+  <a href="#l6">第6层 反量化</a>
+  <a href="#l7">第7层 性能：TTFT 与 TPS</a>
+  <a href="#l8">第8层 总账与全景</a>
+  <a href="#l9">第9层 自测</a>
+  <a href="#retell">终 60秒复述卡</a>
+</nav>
+
+<main>
+<header class="hero">
+  <div class="kicker">Interactive Study</div>
+  <h1>TurboQuant 算法详解</h1>
+  <p class="sub">用「小明的 8 门课成绩」理解大模型量化压缩 · 由浅入深的交互式阅读</p>
+  <div class="roadmap">
+    <a href="#map"><b>序</b>为什么读</a>
+    <a href="#l0"><b>0</b>预备知识</a>
+    <a href="#l1"><b>1</b>为什么量化</a>
+    <a href="#l2"><b>2</b>成绩案例</a>
+    <a href="#l3"><b>3</b>PolarQuant</a>
+    <a href="#l4"><b>4</b>QJL 纠错</a>
+    <a href="#l5"><b>5</b>内积修正</a>
+    <a href="#l6"><b>6</b>反量化</a>
+    <a href="#l7"><b>7</b>性能影响</a>
+    <a href="#l8"><b>8</b>总账全景</a>
+    <a href="#l9"><b>9</b>自测</a>
+    <a href="#retell"><b>终</b>复述卡</a>
+  </div>
+</header>
+
+<!-- ================= 序 量化地图 ================= -->
+<section id="map">
+  <span class="lv">序 <span class="depth">· 为什么读这一篇</span></span>
+  <h2>先看地图：TurboQuant 在量化技术版图中的位置</h2>
+  <p class="lede">先花 3 分钟看清三件事：省显存一共有几条路、量化这条路上有哪些方法、TurboQuant 为什么值得了解。</p>
+
+  <div class="say"><span class="stag">讲人话</span><span>「量化」= 用更少的格子存数字，省显存。常见的量化方法多数压的是<b>模型本身</b>——发布前压好一次即可；TurboQuant 压的是<b>聊天时不断新生成的「草稿纸」</b>——必须边生成边压、一次压对。难度高得多，这也是长上下文时代真正的显存瓶颈。</span></div>
+
+  <h3>显存告急之后：三条不同的技术路线</h3>
+  <p>显存不够，是所有大模型都躲不开的难题。到 2026 年，业界已经形成三条截然不同的路线：</p>
+  <div class="roads">
+    <div class="road">
+      <span class="mp-tag t1">改建筑 · 架构路线</span>
+      <span class="rd-body">从图纸上就少占地，这条路线走得最远：DeepSeek 从 V2 的 MLA（把 Key/Value 先压成小摘要再存）、V3.2 的 DSA（回头看历史时只挑重点看），再到 2026 年的 <em>DeepSeek-V4</em>——把两种压缩注意力 <em>CSA + HCA</em> 逐层交替叠起来，历史先按段压成摘要，再稀疏地挑着看。结果是百万字上下文成为常规配置：同样 1M 上下文，KV Cache 只有 V3.2 的 <em>10%</em>（Flash 版 7%），相当于传统 BF16 注意力的 2%。效果最彻底，代价是必须在<em>训练阶段</em>就定型，只有模型开发方才能采用。</span>
+    </div>
+    <div class="road hero">
+      <span class="mp-here">故事走这条路</span>
+      <span class="mp-tag t3">压数字 · 量化路线</span>
+      <span class="rd-body">房子不动，把里面每件家具做小：模型结构一点不改，只把每个数占用的 bit 数从 16 压到 2～4，<em>任何现成的模型都能直接套用</em>。它与架构路线也不是二选一——V4 自己就把 KV 存成 FP8（只有 RoPE 那几维留 BF16），索引缓存用 FP4，等于在新架构之上又叠了一层量化。TurboQuant 就在这条路线上。</span>
+    </div>
+    <div class="road">
+      <span class="mp-tag t2">挪地方 · 工程路线</span>
+      <span class="rd-body">显存放不下就先搬到隔壁：offloading 把暂时用不到的 KV 挪去内存、磁盘，再靠前缀缓存复用公共开头，需要时搬回来。空间省下了，代价是来回搬运带来的延迟——通常作为补充手段，与前两条路线配合使用。</span>
+    </div>
+  </div>
+  <div class="pit"><b>一个容易混淆的概念：DSpark 不属于省显存的方法</b>与 V4 同期发布的 <em>DSpark</em>（同系列还有 DFlash、Eagle3）走的是<em>投机解码</em>：先由一个轻量草稿模型连续预测若干个词，再由大模型一次性校验，校验通过的部分直接采用，从而减少大模型的串行步数。它在 V4 的线上服务中把单用户生成速度提高了 <em>60～85%</em>，但并不减少 KV Cache 的占用，额外的草稿模型本身还要再占一部分显存。<em>压缩显存与提升速度是两类不同的优化目标，评估时需要分开看待。</em></div>
+
+  <p>三条路线各解决一部分问题，真实系统中往往叠加使用。下文只沿<em>量化</em>这条路线展开——先认清这条路线上的三大战场。</p>
+
+  <h3>量化的三大战场</h3>
+  <div class="mp-grid">
+    <div class="mp-card">
+      <span class="mp-tag t1">战场一 · 压权重｜最普及</span>
+      <h4>把模型文件压小</h4>
+      <p>权重是<em>静态的</em>：发布前用校准数据慢慢压一次，用户直接下载压好的模型。平时说的「4-bit 模型」多数属于这一类。</p>
+      <div class="mp-names">
+        <span class="mp-pill">GGUF / llama.cpp（本地部署事实标准）</span>
+        <span class="mp-pill">GPTQ</span><span class="mp-pill">AWQ</span>
+        <span class="mp-pill">NVFP4 / MXFP4（4-bit 新格式）</span>
+        <span class="mp-pill">NF4 / QLoRA（微调场景）</span>
+      </div>
+    </div>
+    <div class="mp-card">
+      <span class="mp-tag t2">战场二 · 压计算｜生产标配</span>
+      <h4>让矩阵乘法本身用低精度跑</h4>
+      <p>不光存得小，算得也快：H100 一代原生支持 FP8，DeepSeek-V3 的训练也用了它；到了 Blackwell 一代，原生支持的精度又降到 FP4——V4 的 MoE 专家权重就是 FP4 存的，还专门做了 FP4 量化感知训练。</p>
+      <div class="mp-names">
+        <span class="mp-pill">FP8（数据中心主流）</span>
+        <span class="mp-pill">NVFP4（Blackwell 原生）</span>
+        <span class="mp-pill">SmoothQuant / W8A8</span>
+      </div>
+    </div>
+    <div class="mp-card mp-hero">
+      <span class="mp-here">主角在这里</span>
+      <span class="mp-tag t3">战场三 · 压 KV Cache｜新战场</span>
+      <h4>压聊天时的「草稿纸」</h4>
+      <p>KV Cache 是<em>动态的</em>：边聊边长，必须<em>即来即压、一次压对</em>，没机会校准重来。上下文一长（百万 token 级），它才是显存占用的主要来源。</p>
+      <div class="mp-names">
+        <span class="mp-pill">FP8 KV（工业界保守做法，省 2×）</span>
+        <span class="mp-pill">KIVI / KVQuant（学术 2-bit）</span>
+        <span class="mp-pill star">TurboQuant（本篇主角，已进 vLLM 主线）</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="note"><b>为什么「压 KV Cache」比「压权重」难</b>压权重像出版社印书：开印前有的是时间反复校对。压 KV Cache 像速记员：话音刚落就得记完，记错了没机会改。因此权重量化的常用手段（用数据校准、反复微调）在这里大多无法使用——<em>免校准、在线、一次压对</em>是这个战场的硬门槛，也正是 TurboQuant 的立足点。</div>
+
+  <h3>TurboQuant 的名片与技术定位</h3>
+  <div class="card">
+    <p style="margin-top:0;"><b>出身</b>：Google Research 2025 年提出（arXiv:2504.19874，已被 ICLR 2026 接收），由 PolarQuant（旋转 + 极坐标量化）和 QJL（1-bit 残差纠错）两个部件组成。</p>
+    <p><b>战绩</b>：KV Cache 压到约 3 bit/数<em>几乎无损</em>（KV 显存缩减 6 倍以上），不需要任何训练或校准数据，且理论上逼近失真率下界——在相同比特数下，任何方法都不可能明显比它更准。</p>
+    <p><b>落地进展</b>：TurboQuant 已经进入 vLLM 主线，启动服务时通过 <code>--kv-cache-dtype turboquant_4bit_nc</code> 即可启用；AMD 在 2026 年 6 月给出了 MI355X 上的生产级实现，并重写了解码核。</p>
+    <p><b>独立评测更保守</b>：Red Hat AI 团队 2026 年 5 月的横向评测显示，<em>4-bit 档才是实用区间</em>（容量约 3.4 倍，精度下降 1～4 分）；论文主打的 3-bit 档在长上下文和高难度推理任务上明显退化，最差下降近 20 分。另有一项代价：它只压缩存储，参与计算前仍需还原成 BF16，吞吐约为 BF16 的 66～80%。</p>
+    <p><b>选型参考</b>：显存不紧张时，FP8 KV 仍是默认选择——容量翻倍、代价极低，且能直接用 FP8 张量核参与计算。TurboQuant 的价值集中在<em>显存接近饱和</em>的场景：突发高并发下，BF16 的 P99 首字延迟可达 17 秒，改用它后降到 3.5 秒以内；AMD 的 agentic 多轮测试中，首字延迟从 13.9 秒降到 0.89 秒，吞吐提升 1.63 倍，KV 缓存命中率从 5.3% 升到 67.7%。已知边界是它目前只支持标准 MHA/GQA，尚不支持 DeepSeek 采用的 MLA。</p>
+    <p style="margin-bottom:0;"><b>它代表的路线已成主流</b>：「先随机旋转、再量化」这套思路（同类方法还有 QuaRot、SpinQuant）已经从论文走进产品——Meta 官方发布的 Llama 3.2 端侧量化版用的就是 SpinQuant。<em>看懂了 TurboQuant，也就看懂了整个旋转类方法的底层逻辑。</em></p>
+  </div>
+
+  <h3>一个七幕的故事</h3>
+  <p>从显存告急，到旋转登场，再到最后结账——全文共七幕。先看一遍梗概；读完正文，试着用自己的话把这七句串起来。</p>
+  <div class="spine">
+    <a class="sp-step" href="#l1"><span class="sp-num">1</span><span class="sp-body"><span class="sp-kw">显存告急</span><span class="sp-tx">长对话时，模型的「草稿纸」（KV Cache）越堆越厚，最先占满显存。</span></span><span class="sp-go">第 1 层 →</span></a>
+    <a class="sp-step" href="#l1"><span class="sp-num">2</span><span class="sp-body"><span class="sp-kw">少用格子</span><span class="sp-tx">省显存最直接的办法：每个数原来用 16 个 bit 存，改成 2～3 个。</span></span><span class="sp-go">第 1 层 →</span></a>
+    <a class="sp-step" href="#l3"><span class="sp-num">3</span><span class="sp-body"><span class="sp-kw">巨值主导</span><span class="sp-tx">但格子一少，刻度就粗；个别特别大的数撑大量程，其他小数字全被存糊。</span></span><span class="sp-go">第 3 层 →</span></a>
+    <a class="sp-step" href="#l3"><span class="sp-num">4</span><span class="sp-body"><span class="sp-kw">旋转摊匀</span><span class="sp-tx">TurboQuant 先把整排数「随机转一下」，大数被摊平，再粗存也不容易失真。</span></span><span class="sp-go">第 3 层 →</span></a>
+    <a class="sp-step" href="#l3"><span class="sp-num">5</span><span class="sp-body"><span class="sp-kw">精确还原</span><span class="sp-tx">旋转选 Hadamard 矩阵：只做加减法、计算开销极低，用时还能一步不差转回来。</span></span><span class="sp-go">第 3 层 →</span></a>
+    <a class="sp-step" href="#l4"><span class="sp-num">6</span><span class="sp-body"><span class="sp-kw">符号纠偏</span><span class="sp-tx">剩下的零头，往几个随机方向投影、只记「正负号」，把误差再砍掉大半。</span></span><span class="sp-go">第 4-5 层 →</span></a>
+    <a class="sp-step" href="#l7"><span class="sp-num">7</span><span class="sp-body"><span class="sp-kw">结账</span><span class="sp-tx">每个数只花 3～4 bit，显存省到约 1/4，答案几乎不变，显存吃紧时反而更快。</span></span><span class="sp-go">第 7-8 层 →</span></a>
+  </div>
+
+  <div class="good"><b>两种读法</b>时间有限，可以只看梗概：这张地图 → 七幕梗概 → 每一幕开头的「讲人话」→ 最后的 60 秒复述，约 10 分钟。想读完整版：从第 0 层顺读到第 9 层，每张图都动手拖一拖、每个「深入一层」都翻开看看，约 60 分钟。</div>
+</section>
+
+<!-- ================= L0 预备知识 ================= -->
+<section id="l0">
+  <span class="lv">第 0 层 <span class="depth">· 入门铺垫</span></span>
+  <h2>预备知识：四个够用的小概念</h2>
+  <p class="lede">故事里会用到一点线性代数。先垫好四块砖，每块约 1 分钟，后面读起来不卡。</p>
+
+  <div class="say"><span class="stag">讲人话</span><span>先认识四个词：<b>bit</b> 是存数字用的格子；<b>向量</b>是一排数；<b>内积</b>是给两排数「像不像」打分；<b>正交矩阵</b>是只转方向、不变形状的旋转。先掌握这四个概念就够了。</span></div>
+
+  <div class="pregrid">
+    <div class="card">
+      <h3 style="margin-top:0;">① 比特与精度</h3>
+      <p>计算机存数字要花「比特（bit）」。<em>n 个比特能表示 2ⁿ 个不同的值</em>：16 bit 能分 65536 档（很精细），2 bit 只能分 4 档（很粗糙）。</p>
+      <p>大模型的参数原本用 <span class="term" data-tip="16 位浮点数，一种用 16 个比特表示小数的格式，是大模型最常见的存储精度">FP16</span> 存，每个数 16 bit。「量化」就是把 16 bit 换成 2～4 bit，代价是精度变粗。</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;">② 向量与内积</h3>
+      <p>一排数就是一个<em>向量</em>。小明 8 门课的成绩单 [85, 78, 92, …] 就是一个 8 维向量。</p>
+      <p><em>内积（点积）＝对应位置相乘再求和</em>，衡量两个向量「像不像」：两个学生成绩模式越接近（都理科强、文科中等），内积越大。这是第 5 层的主角。</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;">③ 正交矩阵＝纯旋转</h3>
+      <p>用矩阵乘一个向量，相当于把它「变换」到另一个坐标系。<span class="term" data-tip="满足 RᵀR = I 的方阵。几何上对应旋转或翻转，不拉伸、不压缩">正交矩阵</span>做的变换是<em>纯旋转：不改变长度、不改变夹角，信息一点不丢</em>。</p>
+      <p>它还有个好性质：逆矩阵＝转置（R⁻¹ = Rᵀ），想转回去非常便宜。这是第 3 层「随机旋转」敢转的底气。</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;">④ 这些在大模型里对应什么</h3>
+      <p>大模型推理时要存两大块数据：<em>权重</em>（模型学到的参数）和 <span class="term" data-tip="Key-Value Cache：注意力机制中缓存的历史 Key/Value 向量，长对话时体积巨大，是量化压缩的重点对象">KV Cache</span>（对话过程中缓存的向量）。</p>
+      <p>它们本质上都是「一大堆向量」——和成绩单一样。所以后面每次出现「小明成绩」，你都可以在脑中替换成「模型里的一个向量」。</p>
+    </div>
+  </div>
+
+  <h3>看得见的三块砖：把上面的概念画出来</h3>
+  <p>文字读一遍容易停留在「好像懂了」，动手操作才能真正理解。下面三张图都可以拖动、点击。</p>
+
+  <!-- 图 0-1 比特与精度 -->
+  <div class="fig" id="figBit">
+    <div class="fig-h"><span class="tag">图 0-1</span><span class="ttl">n 个比特 = 2ⁿ 个档位</span></div>
+    <p class="fig-sub">斜线是「真实值」，台阶是「存下来的值」。<em>在图上左右拖动</em>，看真实值怎么掉进最近的台阶；换比特数，看台阶变粗变细。</p>
+    <div class="fig-stage"><svg id="svgBit" viewBox="0 0 420 250" aria-label="比特数与量化台阶示意图"></svg></div>
+    <div class="fig-ctl">
+      <span class="cl">比特数</span>
+      <button class="chip" data-bit="1">1 bit · 2 档</button>
+      <button class="chip on" data-bit="2">2 bit · 4 档</button>
+      <button class="chip" data-bit="3">3 bit · 8 档</button>
+      <button class="chip" data-bit="4">4 bit · 16 档</button>
+    </div>
+    <div class="fig-read">
+      <div class="rd"><div class="k">真实值</div><div class="v" id="bitTrue">—</div></div>
+      <div class="rd"><div class="k">存下来的值</div><div class="v" id="bitQ">—</div></div>
+      <div class="rd hi"><div class="k">这一次的误差</div><div class="v" id="bitErr">—</div></div>
+      <div class="rd"><div class="k">最大可能误差</div><div class="v" id="bitMax">—</div></div>
+    </div>
+    <p class="fig-note">每多 1 个比特，档位数翻倍、最大误差减半。（「这一次的误差」看的是真实值恰好离台阶多近，带运气成分，可能出现 3 bit 比 2 bit 还大的情况；能横向比较的是「最大可能误差」。）<b>量化的全部代价，就是这个「掉进最近台阶」的误差。</b>FP16 有 65536 档，台阶细到肉眼看不见，所以我们平时把它当成连续值。</p>
+  </div>
+
+  <!-- 图 0-2 向量与内积 -->
+  <div class="fig" id="figDot">
+    <div class="fig-h"><span class="tag">图 0-2</span><span class="ttl">内积 = 影子的长度 × 自己的长度</span></div>
+    <p class="fig-sub"><em>拖动两个箭头的端点</em>。橙色那段是「b 投在 a 上的影子」，内积就等于影子长度 × ‖a‖。方向越一致，影子越长，内积越大；垂直时影子为零；反向时影子跑到反面，内积变负。</p>
+    <div class="fig-stage"><svg id="svgDot" viewBox="0 0 420 262" aria-label="二维向量内积与投影示意图"></svg></div>
+    <div class="fig-ctl">
+      <span class="cl">快速摆位</span>
+      <button class="chip" data-ang="0">完全同向</button>
+      <button class="chip" data-ang="60">夹角 60°</button>
+      <button class="chip" data-ang="90">互相垂直</button>
+      <button class="chip" data-ang="150">几乎反向</button>
+    </div>
+    <div class="fig-read">
+      <div class="rd"><div class="k">‖a‖ · ‖b‖</div><div class="v" id="dotLen">—</div></div>
+      <div class="rd"><div class="k">夹角 θ</div><div class="v" id="dotAng">—</div></div>
+      <div class="rd"><div class="k">影子长 ‖b‖cosθ</div><div class="v" id="dotProj">—</div></div>
+      <div class="rd hi"><div class="k">内积 ⟨a, b⟩</div><div class="v" id="dotVal">—</div></div>
+    </div>
+    <div class="fig-eq" id="dotEq">—</div>
+    <p class="fig-note">两种算法必然相等：<b>逐位相乘再求和</b>（第一行，计算机爱用）＝<b>长度 × 长度 × cos 夹角</b>（第二行，几何直觉）。第 5 层要修正的，正是这个数被压缩搞歪之后的偏差。</p>
+  </div>
+
+  <!-- 图 0-3 正交矩阵 -->
+  <div class="fig" id="figRot">
+    <div class="fig-h"><span class="tag">图 0-3</span><span class="ttl">正交矩阵：只转不捏，形状原封不动</span></div>
+    <p class="fig-sub">浅灰虚线是原图形，实色是变换后的结果。<em>拖动角度滑杆</em>看它转起来，再切到「非正交矩阵」对比一下——同样是矩阵乘法，一个保长度保夹角，一个把图形捏扁。</p>
+    <div class="fig-stage"><svg id="svgRot" viewBox="0 0 420 300" aria-label="正交矩阵旋转与非正交矩阵拉伸对比示意图"></svg></div>
+    <div class="fig-ctl">
+      <button class="chip on" data-mode="rot">正交矩阵 R（纯旋转）</button>
+      <button class="chip" data-mode="str">非正交矩阵（带拉伸）</button>
+    </div>
+    <div class="fig-ctl">
+      <span class="cl">角度 θ</span>
+      <input type="range" id="rotSlider" min="0" max="180" step="1" value="35" aria-label="旋转角度">
+      <span class="cl" id="rotDeg" style="min-width:44px;text-align:right;">35°</span>
+    </div>
+    <div class="mtxrow">
+      <div class="mtxbox"><span class="lbl">M =</span>
+        <div class="mtx" id="mtxM"><div class="br"></div><div class="g"><i>1</i><i>0</i><i>0</i><i>1</i></div><div class="br r"></div></div>
+      </div>
+      <div class="mtxbox"><span class="lbl">MᵀM =</span>
+        <div class="mtx idt" id="mtxI"><div class="br"></div><div class="g"><i>1</i><i>0</i><i>0</i><i>1</i></div><div class="br r"></div></div>
+      </div>
+    </div>
+    <div class="fig-read">
+      <div class="rd" id="rdLenU"><div class="k">‖u‖ 变换前 → 后</div><div class="v">—</div></div>
+      <div class="rd" id="rdAng"><div class="k">u、v 夹角 前 → 后</div><div class="v">—</div></div>
+      <div class="rd" id="rdDot"><div class="k">内积 ⟨u,v⟩ 前 → 后</div><div class="v">—</div></div>
+      <div class="rd" id="rdArea"><div class="k">面积 前 → 后</div><div class="v">—</div></div>
+    </div>
+    <p class="fig-note" id="rotNote">—</p>
+  </div>
+
+</section>
+
+<!-- ================= L1 为什么要量化 ================= -->
+<section id="l1">
+  <span class="lv">第 1 层 <span class="depth">· 问题背景</span></span>
+  <h2>为什么要量化压缩</h2>
+  <p class="lede">先感受一下问题有多大，再谈怎么解。</p>
+
+  <div class="say"><span class="stag">讲人话</span><span><b>问题</b>：模型本身占地大、草稿纸又厚，显存装不下。<b>解法</b>：每个数少用格子存。<b>难点</b>：格子少了精度掉，怎么保住？——这就是主线的第 ①② 步。</span></div>
+
+  <p>一个 70B（700 亿）参数的模型，每个参数用 FP16 存要 16 bit，仅权重就需要约 <em>140GB</em>——远超单张 GPU 的显存。这就是部署大模型的头号障碍。</p>
+  <p><em>量化压缩（Quantization）</em>：把高精度数值转成低精度表示。比如 16 bit → 2～4 bit，存储直接缩到原来的 1/8～1/4，同时想办法让模型精度尽量不掉。</p>
+
+  <div class="card slider-box">
+    <b>动手感受：拖动滑杆，看每个参数用几 bit 存，70B 模型有多大</b>
+    <input type="range" id="bitSlider" min="1" max="16" value="16" step="1">
+    <div class="slider-read">
+      <div class="stat"><div class="v" id="bitV">16 bit</div><div class="k">每参数存储</div></div>
+      <div class="stat"><div class="v" id="lvlV">65536 档</div><div class="k">可表示等级数 2ⁿ</div></div>
+      <div class="stat"><div class="v" id="gbV">140 GB</div><div class="k">70B 模型权重体积</div></div>
+      <div class="stat"><div class="v" id="cmpV">1.0×</div><div class="k">相对 FP16 压缩比</div></div>
+    </div>
+    <p class="why" style="color:var(--muted); font-size:14px; margin:4px 0 0;">拖到 2 bit：只剩 17.5GB，但每个数只能分 4 档——精度怎么保住？这就是 TurboQuant 要解决的核心矛盾。</p>
+  </div>
+
+  <h3>TurboQuant 的两层核心思想</h3>
+  <div class="arrow-flow">
+    <span class="nd"><b>1. PolarQuant（极坐标量化）</b><br><small>先随机旋转，把数据变到更适合量化的坐标系，再用 Beta 分布特性做最优量化</small></span>
+    <span class="ar">＋</span>
+    <span class="nd"><b>2. QJL（量化 Johnson-Lindenstrauss）</b><br><small>可选的残差纠错：随机投影＋只存正负号，进一步压低误差</small></span>
+  </div>
+  <div class="note"><b>一句话记住创新点</b>传统量化在原始坐标系里「硬切」；TurboQuant 先旋转，让数据分布变得规整可预测，再切——同样的比特数，切得准得多。</div>
+</section>
+
+<!-- ================= L2 案例 ================= -->
+<section id="l2">
+  <span class="lv">第 2 层 <span class="depth">· 案例引入</span></span>
+  <h2>案例：小明的成绩单</h2>
+  <p class="lede">故事的主角登场了，后面每一步操作都在它身上进行。</p>
+
+  <div class="say"><span class="stag">讲人话</span><span>这个故事拿<b>小明的 8 门课成绩</b>当例子——它就是模型里的一个向量。后面每一步操作都在这份成绩单上进行：看懂它，就看懂了算法。</span></div>
+
+  <p>小明有 8 门课的成绩要存（满分 100）：</p>
+  <div class="chips">
+    <span class="chip">语文 85</span><span class="chip">数学 78</span><span class="chip">英语 92</span><span class="chip">物理 88</span>
+    <span class="chip">化学 76</span><span class="chip">生物 82</span><span class="chip">历史 79</span><span class="chip">地理 81</span>
+  </div>
+  <p>每门课用 16 bit 存，共 <em>8 × 16 = 128 bit</em>。目标：用 2～3 bit/门 实现「近无损」压缩——也就是压完再还原，分数几乎不变。</p>
+  <div class="note"><b>对应关系</b>成绩单 = 模型里的一个向量；8 门课 = 8 个维度；16 bit/门 = FP16 精度。整个流程对模型向量做的事，和对成绩单做的一模一样。</div>
+</section>
+
+<!-- ================= L3 PolarQuant ================= -->
+<section id="l3">
+  <span class="lv">第 3 层 <span class="depth">· 核心机制</span></span>
+  <h2>第一阶段：PolarQuant 四步压缩</h2>
+  <p class="lede">归一化 → 随机旋转 → Lloyd-Max 量化 → 逆旋转重建。点「下一步」跟着数据一步步变。</p>
+
+  <div class="say"><span class="stag">讲人话</span><span>四个步骤：<b>归一化</b>（先记住总长度）→ <b>随机旋转</b>（把分数摊匀）→ <b>2-bit 粗存</b>（每门课只挑 4 档之一）→ <b>用时转回来</b>。旋转是关键：摊匀之后，粗存才不伤精度。——主线第 ③④⑤ 步。</span></div>
+
+  <div class="stepper card">
+    <div class="step-pills" id="stepPills"></div>
+    <div class="step-panel" id="stepPanel"></div>
+    <div class="step-nav">
+      <button class="btn ghost" id="prevStep">上一步</button>
+      <button class="btn" id="nextStep">下一步</button>
+    </div>
+    <div class="trace" id="stepTrace"></div>
+  </div>
+
+  
+  <h3>放大看第 2 步：随机旋转到底做了什么</h3>
+  <p>「旋转」听起来抽象，实际做的事很朴素：<em>把挤在少数几个维度上的能量摊匀到所有维度</em>。下图用真实的 8 阶 Hadamard 矩阵演算，数字都是现算的。</p>
+  <div class="fig" id="figHad">
+    <div class="fig-h"><span class="tag">图 3-1</span><span class="ttl">能量摊匀：一根独大 → 高低相当</span></div>
+    <p class="fig-sub">柱子是向量的 8 个分量，横向虚线是 2-bit 的 4 个量化档位边界。<em>按顺序点下面三个按钮</em>，看能量怎么被摊平、又怎么被精确转回来。</p>
+    <div class="fig-stage"><svg id="svgHad" viewBox="0 0 420 260" aria-label="Hadamard 旋转前后分量分布对比"></svg></div>
+    <div class="fig-ctl">
+      <button class="chip on" data-had="0">① 原始向量</button>
+      <button class="chip" data-had="1">② 旋转后 y = Hx/√8</button>
+      <button class="chip" data-had="2">③ 再乘一次 H/√8 转回来</button>
+    </div>
+    <div class="fig-read">
+      <div class="rd ok"><div class="k">向量长度 ‖·‖₂</div><div class="v" id="hadNorm">—</div></div>
+      <div class="rd"><div class="k">最大 / 最小 幅值比</div><div class="v" id="hadRange">—</div></div>
+      <div class="rd hi"><div class="k">2-bit 量化均方根误差</div><div class="v" id="hadErr">—</div></div>
+      <div class="rd"><div class="k">与原始向量的差距</div><div class="v" id="hadDiff">—</div></div>
+    </div>
+    <p class="fig-note" id="hadNote">—</p>
+  </div>
+
+<h3>放大看第 3 步：Lloyd-Max 量化是怎么「切」的</h3>
+  <p>旋转后的 8 个值落在 [-1, 1] 区间。2-bit 只有 4 个格子，每个格子用一个「代表值」概括落进来的所有数。<em>点击下面数轴上的圆点</em>，看每个值被切到哪个格子：</p>
+  <div class="card lm-wrap">
+    <div class="lm-bar" id="lmBar">
+      <div class="lm-zone z0">等级 0 (00)<span class="rep">代表值 -0.75</span></div>
+      <div class="lm-zone z1">等级 1 (01)<span class="rep">代表值 -0.25</span></div>
+      <div class="lm-zone z2">等级 2 (10)<span class="rep">代表值 +0.25</span></div>
+      <div class="lm-zone z3">等级 3 (11)<span class="rep">代表值 +0.75</span></div>
+    </div>
+    <div class="lm-axis"><span>-1.0</span><span>-0.5</span><span>0.0</span><span>+0.5</span><span>+1.0</span></div>
+    <div class="lm-info" id="lmInfo">点击任意圆点，查看它的量化过程。</div>
+  </div>
+  <div class="pit"><b>细节提醒</b>旋转之后，每个维度<em>不再对应某一门课</em>——旋转把 8 门课的信息「搅匀」了，所以图中圆点标 d1～d8（旋转坐标系的维度），而不是科目名。</div>
+
+  <details class="deep"><summary>深入一层：为什么旋转之后就「适合量化」了？（Beta 分布）</summary>
+    <div class="body">
+      <p>直接看成绩表，数据会在某些方向「扎堆」：理科分都高、文科分都居中——维度之间强相关，分布形状因数据而异，量化边界没法预先算好。</p>
+      <p>随机旋转（Hadamard 或高斯正交矩阵）把这种相关性打散。数学上可以证明：<em>归一化向量经过随机旋转后，单个坐标的分布收敛到一个固定的 Beta 分布</em>（对称、集中在 0 附近、形状只和维度 d 有关，和你的具体数据无关）。</p>
+      <p>分布一旦「已知且固定」，就可以<em>离线预先算出最优的量化边界和代表值</em>——这正是 Lloyd-Max 算法做的事：给定分布，找到让均方误差（MSE）最小的分段方案。文档里 [-1,-0.5,0,0.5,1] 的均匀边界是教学简化版，实际按 Beta 分布算出的边界是非均匀的，中间密、两头疏。</p>
+    </div>
+  </details>
+  <details class="deep"><summary>深入一层：Lloyd-Max 算法本身在干什么？</summary>
+    <div class="body">
+      <p>它是个交替迭代算法，目标是让「量化误差的平方和」最小：</p>
+      <p>① 固定各格子的边界，把每个格子的<em>代表值</em>更新为格内数据的条件均值（重心）；<br>② 固定代表值，把<em>边界</em>更新为相邻两个代表值的中点；<br>③ 重复到收敛。</p>
+      <p>你可以把它理解成一维版的 K-Means 聚类。因为旋转后分布已知，这个迭代可以离线做一次、全模型复用，推理时零开销。</p>
+    </div>
+  </details>
+  <details class="deep"><summary>深入一层：Hadamard 矩阵为什么是首选旋转？</summary>
+    <div class="body">
+      <p>Hadamard 矩阵的元素只有 +1 和 -1（乘上 1/√d 归一化后正交）。用它做旋转/逆旋转时<em>不需要乘法，只需要加减法</em>，还有 O(n log n) 的快速变换算法（类似 FFT）。这让「旋转」这个额外步骤几乎不增加计算成本，甚至可以融合进矩阵乘法里。</p>
+    </div>
+  </details>
+
+  <h3>PolarQuant 的存储小账</h3>
+  <table>
+    <tr><th>存储项</th><th>大小</th><th>说明</th></tr>
+    <tr><td>量化索引</td><td class="num">8 × 2 bit = 16 bit</td><td>每个维度记一个等级号（0～3）</td></tr>
+    <tr><td>向量<span class="term" data-tip="向量的长度 ‖x‖₂ = √(x₁²+x₂²+…)。量化前把向量除以范数变成单位向量，还原时再乘回来">范数</span>（FP16）</td><td class="num">16 bit</td><td><em>整组共享一个</em>，记录「能量尺度」</td></tr>
+    <tr><td><b>小计</b></td><td class="num"><b>32 bit</b></td><td>对比原始 128 bit，<b>4× 压缩</b>；平均误差仅 1.25 分</td></tr>
+  </table>
+  <div class="pit"><b>辨析：「对比原始 64 bit，2× 压缩」的口径差异</b>原文这一句是按「每门课 8 bit」的基准算的（8×8=64 bit），与开头设定的 16 bit/门（128 bit）基准不一致。按全文统一口径（表 1、图 4），应为 128 bit → 32 bit，<em>4× 压缩</em>。读文档时以 4× 为准。</div>
+
+  <h3>重建效果：误差有多大</h3>
+  <table>
+    <tr><th>科目</th><td>语文</td><td>数学</td><td>英语</td><td>物理</td><td>化学</td><td>生物</td><td>历史</td><td>地理</td></tr>
+    <tr><th>原始</th><td class="num">85</td><td class="num">78</td><td class="num">92</td><td class="num">88</td><td class="num">76</td><td class="num">82</td><td class="num">79</td><td class="num">81</td></tr>
+    <tr><th>重建</th><td class="num">84</td><td class="num">79</td><td class="num">89</td><td class="num">86</td><td class="num">77</td><td class="num">80</td><td class="num">79</td><td class="num">81</td></tr>
+    <tr><th>误差</th><td class="num">1</td><td class="num">1</td><td class="num" style="color:var(--bad); font-weight:700;">3</td><td class="num">2</td><td class="num">1</td><td class="num">2</td><td class="num" style="color:var(--ok);">0</td><td class="num" style="color:var(--ok);">0</td></tr>
+  </table>
+  <p>平均误差 <em>1.25 分</em>——用 2 bit 替代 16 bit，成绩几乎没变样。但注意英语差了 3 分：这些残余误差，就是下一层 QJL 要处理的对象。</p>
+</section>
+
+<!-- ================= L4 QJL ================= -->
+<section id="l4">
+  <span class="lv">第 4 层 <span class="depth">· 可选增强</span></span>
+  <h2>第二阶段：QJL 残差纠错</h2>
+  <p class="lede">压缩必有误差。QJL 的思路：不存误差的精确值，只存误差的「正负号地图」。</p>
+
+  <div class="say"><span class="stag">讲人话</span><span>粗存完总会差一点零头。QJL 不存零头本身，只往几个随机方向投影、<b>记下正负号</b>——每维再花 1 bit，把误差压掉大半。——主线第 ⑥ 步。</span></div>
+
+  <div class="pit"><b>先说结论：它是可选的</b>实际生产环境（如 llama.cpp）通常省略 QJL，PolarQuant 单独使用已经足够。这里的原理仍值得展开，第 5 层的修正公式正源于它。</div>
+
+  <h3>三步走</h3>
+  <div class="arrow-flow">
+    <span class="nd"><b>① 算残差</b><br><small>δ = 原始 − 重建</small></span>
+    <span class="ar">→</span>
+    <span class="nd"><b>② 随机投影</b><br><small>乘高斯随机矩阵 S</small></span>
+    <span class="ar">→</span>
+    <span class="nd"><b>③ 只存符号</b><br><small>sign(S·δ)，每维 1 bit</small></span>
+  </div>
+
+  <p><b>① 残差</b>：归一化尺度下，原始与重建的差：</p>
+  <div class="chips">
+    <span class="chip">+0.02</span><span class="chip">-0.02</span><span class="chip">+0.06</span><span class="chip">+0.04</span>
+    <span class="chip">-0.03</span><span class="chip">+0.03</span><span class="chip">-0.01</span><span class="chip">-0.01</span>
+  </div>
+  <p><b>② 投影 + ③ 符号化</b>：用高斯随机矩阵 S 把残差搅一遍，然后只留正负号：</p>
+  <div class="formula">sign(S · δ) = [+, -, +, +, -, +, -, -]</div>
+  <p>这类似于<em>错题本只记「对/错」，不记扣了几分</em>：量级信息丢失，但方向信息被保留，且每个维度只花 1 bit。</p>
+
+  <table>
+    <tr><th>QJL 存储项</th><th>大小</th></tr>
+    <tr><td>符号向量</td><td class="num">8 × 1 bit = 8 bit</td></tr>
+    <tr><td>残差范数 ‖δ‖₂（FP16）</td><td class="num">16 bit</td></tr>
+  </table>
+
+  
+  <div class="fig" id="figSign2">
+    <div class="fig-h"><span class="tag">图 4-1</span><span class="ttl">为什么「只存正负号」还能留住方向</span></div>
+    <p class="fig-sub">一次随机投影，相当于在平面上随手画一条过原点的线，把空间劈成两半；存下来的那 1 个比特，只回答一个问题——「我在线的哪一边」。<em>拖动圆点改变方向，再逐步加线</em>，看紫色扇形（所有仍然可能的方向）怎么被夹窄。</p>
+    <div class="fig-stage"><svg id="svgSign2" viewBox="0 0 420 300" aria-label="随机超平面与符号量化定位方向示意图"></svg></div>
+    <div class="fig-ctl">
+      <span class="cl">随机投影条数 m</span>
+      <button class="chip on" data-m="1">1 条</button>
+      <button class="chip" data-m="2">2 条</button>
+      <button class="chip" data-m="4">4 条</button>
+      <button class="chip" data-m="8">8 条</button>
+      <button class="chip" data-m="-1" style="border-style:dashed;">换一组随机线</button>
+    </div>
+    <div class="fig-read">
+      <div class="rd"><div class="k">存下来的符号串</div><div class="v" id="sgBits">—</div></div>
+      <div class="rd"><div class="k">花掉的比特</div><div class="v" id="sgCost">—</div></div>
+      <div class="rd hi"><div class="k">方向还剩多大不确定</div><div class="v" id="sgArc">—</div></div>
+      <div class="rd"><div class="k">平均水平 180°/m</div><div class="v" id="sgRes">—</div></div>
+    </div>
+    <p class="fig-note">只有 1 条线时几乎无法判断方向（半个圆都有可能）；加到 8 条，扇形通常只剩十几到二十几度。具体宽窄取决于随机线的落点，点「换一组随机线」多试几次就能看出波动，平均水平在 180°/m 上下。<b>单看一位毫无信息，凑够 m 位，方向就被钉住了</b>——这就是「1 bit 也够用」的直觉来源。在这张二维图上不确定度大约按 180°/m 收缩，<b>真正的威力在高维</b>：d 维空间里 m 个随机超平面能切出的区域数按 m^(d−1) 量级增长，所以上千维的 KV 向量，用几百个 1-bit 符号就能把方向定得相当准。<b>JL 引理正是这件事的严格版本</b>，它保证随机投影后向量之间的内积关系以高概率被保住，误差随 m 增大而收缩。</p>
+  </div>
+
+<details class="deep"><summary>深入一层：JL 引理凭什么保证「只存符号还有用」？</summary>
+    <div class="body">
+      <p><span class="term" data-tip="Johnson-Lindenstrauss 引理：高维点集经随机投影到低维后，点与点之间的距离/内积关系能以高概率近似保持">Johnson-Lindenstrauss 引理</span>说：用随机矩阵把向量投影后，<em>向量之间的内积（相似度）关系以高概率近似保持</em>。</p>
+      <p>也就是说，两个残差向量「像不像」，在投影之后依然「像不像」。再进一步只取符号，虽然每个分量的量级没了，但「方向一致性」的统计信息还在——配合范数（第 5 层会用到），就能把误差的修正量估出来。这是一种「用极少比特保住最关键统计量」的思想。</p>
+    </div>
+  </details>
+</section>
+
+<!-- ================= L5 注意力修正 ================= -->
+<section id="l5">
+  <span class="lv">第 5 层 <span class="depth">· 最精妙的一幕</span></span>
+  <h2>注意力计算：内积的误差与修正</h2>
+  <p class="lede">这是 TurboQuant 比其他压缩方法更准的核心，也是 QJL 存的那点符号信息发挥价值的地方。</p>
+
+  <div class="say"><span class="stag">讲人话</span><span>注意力只关心<b>内积</b>。符号内积会系统性地把结果低估约 20%，乘上固定系数 <b>1.2533</b> 即可消除这一偏差。这一章解释这个系数的来历。</span></div>
+
+  <h3>5.1 为什么要算内积</h3>
+  <p>在成绩场景里，内积就是两个学生的「相似度分数」：</p>
+  <div class="formula">小明 [84, 79, 89, 86, 77, 80, 79, 81]（重建值）<br>小红 [82, 81, 85, 88, 79, 78, 82, 80]<br>相似度 = 84×82 + 79×81 + 89×85 + … = 52,847</div>
+  <p>数值越大，两人成绩模式越像。在大模型里，这个「相似度」就是<em>注意力分数</em>——query 向量 q 和 key 向量 k 的内积 ⟨q, k⟩，决定模型该「关注」哪些信息。<em>注意力算错，模型就看错重点</em>，所以内积精度直接决定压缩方法的成败。</p>
+
+  <h3>5.2 压缩带来的问题</h3>
+  <p>用重建值算内积得 52,847，但用原始值算的「真实内积」是 53,001——压缩误差传导到了内积上。QJL 的补救思路：<em>我不知道原始值的精确大小，但我记了残差的方向（正负号）。利用「比重建值高一点还是低一点」的统计信息，可以估算出修正量。</em></p>
+
+  <h3>5.3 修正公式：点击每一项看它是干嘛的</h3>
+  <div class="fx" id="fxBar">
+    <span style="opacity:.75;">⟨q, k⟩̂ =</span>
+    <span class="t" data-k="base">⟨q, k⟩<sub>base</sub></span>
+    <span style="opacity:.75;">+</span>
+    <span class="t" data-k="coef">√(π/2) / m</span>
+    <span style="opacity:.75;">·</span>
+    <span class="t" data-k="norm">‖k‖₂</span>
+    <span style="opacity:.75;">·</span>
+    <span class="t" data-k="sign">⟨Sq, sign(Sk)⟩</span>
+  </div>
+  <div class="fx-info" id="fxInfo"><h5>先点公式里的一项</h5>四个部分各司其职：粗估 + 缩放系数 + 能量尺度 + 方向信息 = 修正后的精确内积。</div>
+
+  <h3>5.4 亲手对比：符号内积怎么算</h3>
+  <p>符号内积的直觉：两人残差的「高低模式」如果经常同向（同时偏高/同时偏低），说明基础内积被系统性低估了，要往上补。点「逐位对比」：</p>
+  <div class="card">
+    <div class="sign-rows">
+      <div class="sign-row"><span class="who">小明残差符号</span><span class="sg" data-r="q">+</span><span class="sg" data-r="q">-</span><span class="sg" data-r="q">+</span><span class="sg" data-r="q">+</span><span class="sg" data-r="q">-</span><span class="sg" data-r="q">+</span><span class="sg" data-r="q">-</span><span class="sg" data-r="q">-</span></div>
+      <div class="sign-row"><span class="who">小红残差符号</span><span class="sg" data-r="k">+</span><span class="sg" data-r="k">+</span><span class="sg" data-r="k">-</span><span class="sg" data-r="k">+</span><span class="sg" data-r="k">-</span><span class="sg" data-r="k">-</span><span class="sg" data-r="k">+</span><span class="sg" data-r="k">-</span></div>
+      <div class="sign-row"><span class="who">是否一致</span><span class="sg res">?</span><span class="sg res">?</span><span class="sg res">?</span><span class="sg res">?</span><span class="sg res">?</span><span class="sg res">?</span><span class="sg res">?</span><span class="sg res">?</span></div>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn" id="cmpBtn">逐位对比</button>
+      <button class="btn ghost" id="cmpReset">重置</button>
+    </div>
+    <div id="signResult"></div>
+  </div>
+  <div class="pit"><b>辨析：教学示例中的数字并不自洽</b>上面对比结果是 4 同 4 异，(4−4)/8 = 0；但文档随后取 <em>0.6 作为示例值</em>继续算（原文自己也标注了「示例值」）。同样，「误差 154 ≈ 1.9%」「修正后 0.1%」这些百分比也和绝对数字对不上。这些都是<em>演示用数字，重点是机制</em>：符号一致偏多 → 内积被低估 → 补正量为正。</div>
+
+  <h3>5.5 数值验证（按文档示例走一遍）</h3>
+  <div class="formula">修正量 = √(π/2)/m × ‖k‖₂ × 符号内积 × 10000<br>　　　 = 0.157 × 0.92 × 0.6 × 10000 ≈ 865<br><br>最终内积 = 52,847 + 865 = 53,712 ≈ 真实值 53,001 ✓</div>
+  <p>那个 <em>×10000</em> 是什么？归一化时成绩除以了 100，两个成绩相乘时就相当于除了 10000，这里乘回来以匹配百分制的数值范围。</p>
+  <div class="good"><b>关键洞察</b>QJL 只用 1 bit/元素 的符号信息，就把内积精度大幅补回——这是 TurboQuant 以极小代价换取精度的关键设计。</div>
+
+  
+  <div class="fig" id="figPi">
+    <div class="fig-h"><span class="tag">图 5-1</span><span class="ttl">√(π/2) ≈ 1.253 是怎么冒出来的</span></div>
+    <p class="fig-sub">把一个数换成它的正负号，等于丢掉了「幅值」。丢掉之后，估计值会被系统性地压小一个固定倍数——这个倍数正好是 √(2/π) ≈ 0.798，所以外面要乘回它的倒数。<em>点按钮看这个 0.798 从哪来</em>。</p>
+    <div class="fig-stage"><svg id="svgPi" viewBox="0 0 420 230" aria-label="高斯分布折叠得到半正态均值示意图"></svg></div>
+    <div class="fig-ctl">
+      <button class="chip on" data-pi="0">① 标准高斯 g</button>
+      <button class="chip" data-pi="1">② 乘上 sign(g) → 变成 |g|</button>
+      <button class="chip" data-pi="2">③ 求平均值</button>
+    </div>
+    <div class="fig-eq">E[ g · sign(g) ]  =  E[ |g| ]  =  √(2/π)  ≈  0.7979<br>修正系数  =  1 / 0.7979  =  √(π/2)  ≈  1.2533</div>
+    <div class="fig-read">
+      <div class="rd"><div class="k">真实内积（举例）</div><div class="v">100.0</div></div>
+      <div class="rd bad"><div class="k">只用符号估出来</div><div class="v">79.8</div></div>
+      <div class="rd ok"><div class="k">× √(π/2) 之后</div><div class="v">100.0</div></div>
+      <div class="rd"><div class="k">这一步的作用</div><div class="v" style="font-size:13.5px;">去掉系统偏差</div></div>
+    </div>
+    <p class="fig-note">注意它<b>只修掉「平均意义上偏小」这件事</b>（统计上叫无偏），单次估计仍然会上下抖动；抖动靠的是除以 m——m 个独立投影取平均，方差按 1/m 缩小。<b>公式里的 √(π/2)/m，一个管准头、一个管稳定。</b></p>
+  </div>
+
+<details class="deep"><summary>深入一层：√(π/2) 这个常数是从哪来的？</summary>
+    <div class="body">
+      <p>对一个标准高斯随机变量 g，只保留符号后，它与自身的相关性会「缩水」：E[g · sign(g)] = E[|g|] = √(2/π) ≈ 0.798。</p>
+      <p>也就是说，用符号代替真实值算内积，结果会被系统性地乘上一个 √(2/π) 的收缩因子。要让估计<em>无偏</em>（平均意义上不高估也不低估），就要在外面乘回它的倒数——√(π/2) ≈ 1.253。除以 m（投影维度数）则是对 m 个独立估计取平均。这类「符号量化 + 常数校正」的技巧在压缩感知和哈希检索里非常经典。</p>
+    </div>
+  </details>
+</section>
+
+<!-- ================= L6 反量化 ================= -->
+<section id="l6">
+  <span class="lv">第 6 层 <span class="depth">· 工程视角</span></span>
+  <h2>反量化：压缩了，用的时候贵不贵？</h2>
+  <p class="lede">量化省的是存储，但推理时要把数据「解压」回来用——这一步的成本决定量化是否真的划算。</p>
+
+  <div class="say"><span class="stag">讲人话</span><span>「解压」不是重建原始数据，只是<b>查表 + 转回去</b>：代价很小，而且可以和模型本来就要做的计算合并完成。</span></div>
+
+  <p><em>反量化（Dequantization）</em>是量化的逆过程：把压缩后的低精度数据恢复成可以参与矩阵乘法的高精度数。以成绩为例：</p>
+  <div class="arrow-flow">
+    <span class="nd">量化等级<br><small class="num">[3, 3, 1, 2, 2, 1, 2, 2]（2-bit 整数）</small></span>
+    <span class="ar">查表 →</span>
+    <span class="nd">代表值<br><small class="num">[0.75, 0.75, -0.25, …]（浮点）</small></span>
+    <span class="ar">逆旋转 →</span>
+    <span class="nd">重建值<br><small class="num">[0.68, 0.58, 0.78, …]（原始坐标系）</small></span>
+  </div>
+
+  <table>
+    <tr><th>步骤</th><th>操作</th><th>计算成本</th></tr>
+    <tr><td>① 查表</td><td>量化索引 → 代表值</td><td class="num">O(1) / 元素，极低</td></tr>
+    <tr><td>② 尺度恢复</td><td>乘以整组共享的范数：x × ‖x‖₂</td><td class="num">1 次乘法 / 元素</td></tr>
+    <tr><td>③ 逆旋转（可选）</td><td>矩阵乘法 R⁻¹·x</td><td class="num">O(n²) 或 O(n log n)</td></tr>
+  </table>
+
+  <p>看起来第 ③ 步最贵，但 TurboQuant 有两个化解办法：</p>
+  <div class="card">
+    <p style="margin-top:0;"><b>办法一：Hadamard 旋转只需加减法。</b>Hadamard 矩阵元素只有 +1/-1，逆旋转不需要乘法，全是加减，还能走 O(n log n) 快速变换——成本大幅降低。</p>
+    <p style="margin-bottom:0;"><b>办法二：延迟反量化。</b>注意力计算时<em>直接在量化空间做内积</em>（正交旋转不改变内积，第 5 层的公式就是在量化空间算的），只在最后一步反量化结果，而不是提前把所有数据解压一遍。算得少，搬得也少。</p>
+  </div>
+</section>
+
+<!-- ================= L7 性能 ================= -->
+<section id="l7">
+  <span class="lv">第 7 层 <span class="depth">· 性能收益</span></span>
+  <h2>性能影响：TTFT 与 TPS 为什么都变快</h2>
+  <p class="lede">量化不只是省显存，它直接换来推理速度。理解这一层，要先接受一个反直觉的事实。</p>
+
+  <div class="say"><span class="stag">讲人话</span><span>省下的显存换来两件事：同样的卡<b>装得下更长的上下文</b>；读草稿纸的搬运量变小，<b>长文生成反而更快</b>。——主线第 ⑦ 步的前半。</span></div>
+
+  <h3>两个指标</h3>
+  <div class="pregrid">
+    <div class="card">
+      <h3 style="margin-top:0;">TTFT（Time To First Token）</h3>
+      <p>首 token 延迟：从输入 prompt 到吐出第一个字的时间，反映「响应速度」。主要受限于<span class="term" data-tip="Prefill：推理的第一阶段，一次性处理整个输入序列，计算量大">预填充（prefill）</span>阶段——要一口气处理整个输入序列。</p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;">TPS（Tokens Per Second）</h3>
+      <p>每秒生成 token 数：反映「生成速度」，决定长文本输出效率。主要受限于<span class="term" data-tip="Decode：推理的第二阶段，一个一个地生成 token，每步都要读全部权重">解码（decode）</span>阶段——每次只生成一个 token，却要读一遍全部权重。</p>
+    </div>
+  </div>
+
+  <h3>反直觉的关键：瓶颈不在「算」，在「搬」</h3>
+  <p>大模型推理通常是<em>内存带宽受限</em>而非计算受限——GPU 大部分时间花在从显存把权重读进来，而不是做乘加运算。所以：</p>
+  <div class="formula">FP16 读取量：16 bit × 参数量 → 高带宽压力<br>2-bit 读取量：&nbsp;2 bit × 参数量 → <b>8× 带宽节省</b></div>
+  <p>再加上<em>缓存友好性</em>：70B 模型 FP16 要 140GB，塞不进任何单卡；2-bit 后约 18GB，可以常驻高端 GPU 显存，大幅减少数据搬运。</p>
+
+  <table>
+    <tr><th>指标</th><th>量化前（FP16）</th><th>量化后（2-bit）</th></tr>
+    <tr><td>TTFT</td><td>内存带宽受限，权重加载慢</td><td>8× 带宽节省，加载快；Hadamard 旋转可融合进矩阵乘法，额外开销很小</td></tr>
+    <tr><td>TPS</td><td>权重可能溢出缓存，每步都从主存重读</td><td>权重常驻缓存，避免反复搬运</td></tr>
+    <tr><td>反量化开销</td><td>无</td><td>极小（查表 + 乘法，可并行，几乎不加延迟）</td></tr>
+  </table>
+  <div class="good"><b>实测结论</b>TurboQuant 在保持模型精度的同时，推理速度可提升 2～4 倍；显存越紧张的设备，收益越明显。</div>
+</section>
+
+<!-- ================= L8 总账 ================= -->
+<section id="l8">
+  <span class="lv">第 8 层 <span class="depth">· 全景收束</span></span>
+  <h2>存储总账与核心概念全景</h2>
+  <p class="lede">把前面所有账目摊开对比，再用四张卡片收束全部概念。</p>
+
+  <div class="say"><span class="stag">讲人话</span><span>最终账本：小明的成绩单从 128 bit 压到 40 bit（3.2×）；真实部署里每个数 3～4 bit，<b>约 4～5× 压缩</b>，精度基本保住。——七幕至此收尾。</span></div>
+
+  <h3>存储总账（8 门课成绩）</h3>
+  <div class="card">
+    <div class="bars" id="storeBars">
+      <div class="bar-row"><span class="name">原始 FP16<br><small>8×16 bit</small></span><div class="bar-track"><div class="bar-fill bf-red" data-w="100">128 bit</div></div><span class="ratio">1×</span></div>
+      <div class="bar-row"><span class="name">PolarQuant (2-bit)<br><small>索引 16 + 范数 16</small></span><div class="bar-track"><div class="bar-fill bf-blue" data-w="25">32 bit</div></div><span class="ratio">4×</span></div>
+      <div class="bar-row"><span class="name">TurboQuant (2+1bit)<br><small>16 + 8 + 范数 16</small></span><div class="bar-track"><div class="bar-fill bf-purple" data-w="31.25">40 bit</div></div><span class="ratio">3.2×</span></div>
+      <div class="bar-row"><span class="name">实际部署 (3-bit)<br><small>8×3 + 范数 16</small></span><div class="bar-track"><div class="bar-fill bf-green" data-w="31.25">40 bit</div></div><span class="ratio">3.2×</span></div>
+    </div>
+    <p style="color:var(--muted); font-size:14px; margin:0;">精度损失对比：PolarQuant 单用约 2.5%，TurboQuant（加 QJL）约 0.5%，实际部署 3-bit 约 1.0%，原始 FP16 无损。可以看到 QJL 用 8 bit 换回了 2 个百分点的精度。</p>
+  </div>
+  <div class="note"><b>实际部署口径</b>真实 LLM 部署常用 3-bit（而非教学演示的 2-bit），加上各类开销后约 3.125 bit/元素，对 FP16 压缩比约 <em>5×</em>，且通常省略 QJL。</div>
+  <div class="pit"><b>后续实测对这个数字有所修正</b>论文里的「3-bit 近无损」是在标准评测集上得出的。2026 年上半年 vLLM 与 AMD 各做了一轮独立评测，结论更保守：生产环境更常用 <em>4-bit</em>（Key、Value 各 4 bit，容量约 3.4～3.8 倍），3-bit 在长上下文和高难度推理任务上会明显掉分。值得注意的是，AMD 的默认 4-bit 路径去掉了 <em>QJL</em>（其评测认为 QJL 反而损伤精度、还增加开销），旋转也从随机旋转改为固定的 Walsh–Hadamard——这与下方表格中的第 2 条和第 5 条正好呼应。</div>
+
+  <h3>四个核心概念：点卡片翻面，看「生活类比 → 数学本质」</h3>
+  <div class="flips">
+    <div class="flip"><div class="inner">
+      <div class="face front"><h4>PolarQuant</h4><p>把成绩表拍成低清照片，但智能分段保留细节。</p><span class="hint">点击翻面看数学本质</span></div>
+      <div class="face back"><h4>数学本质</h4><p>旋转后数据服从 Beta 分布，Lloyd-Max 找到 MSE 最优量化边界。效果：64bit → 32bit，误差仅 1.25 分。</p><span class="hint">再点一下翻回</span></div>
+    </div></div>
+    <div class="flip"><div class="inner">
+      <div class="face front"><h4>随机旋转</h4><p>把成绩表转 45 度再看，发现偏科规律更明显。</p><span class="hint">点击翻面看数学本质</span></div>
+      <div class="face back"><h4>数学本质</h4><p>Hadamard 变换去相关，让各维度独立同分布。效果：数据集中在 0 附近，适合压缩。</p><span class="hint">再点一下翻回</span></div>
+    </div></div>
+    <div class="flip"><div class="inner">
+      <div class="face front"><h4>QJL（可选）</h4><p>只记残差的「正负号地图」，像错题本只记对错不记分数。</p><span class="hint">点击翻面看数学本质</span></div>
+      <div class="face back"><h4>数学本质</h4><p>JL 引理保证投影后内积关系保持，符号化 1-bit 存储。效果：用 8 bit 纠正 865 分的内积偏差。</p><span class="hint">再点一下翻回</span></div>
+    </div></div>
+    <div class="flip"><div class="inner">
+      <div class="face front"><h4>范数存储</h4><p>记住「总分 650 的水平」作为基准。</p><span class="hint">点击翻面看数学本质</span></div>
+      <div class="face back"><h4>数学本质</h4><p>向量长度 ‖x‖₂ 决定能量规模，整组共享一个 FP16。效果：16 bit 存储，用于恢复缩放量级。</p><span class="hint">再点一下翻回</span></div>
+    </div></div>
+  </div>
+
+  <h3>文档的 5 个关键修正点（相比更早的版本）</h3>
+  <table>
+    <tr><th>#</th><th>修正内容</th></tr>
+    <tr><td>1</td><td><b>存储计算</b>：范数是整组共享（per-vector），不是每个元素各存一份</td></tr>
+    <tr><td>2</td><td><b>QJL 可选性</b>：生产环境通常跳过 QJL，PolarQuant 单独已足够</td></tr>
+    <tr><td>3</td><td><b>投影维度</b>：应保持原维度或按 JL 引理计算，而非随意选小值</td></tr>
+    <tr><td>4</td><td><b>修正公式</b>：使用 √(π/2)/m · ‖k‖₂ · ⟨Sq, sign(Sk)⟩，不是拍脑袋的数值</td></tr>
+    <tr><td>5</td><td><b>实际精度</b>：2-bit 是教学演示，LLM 部署用 3～3.5 bit，压缩比约 4.6×</td></tr>
+  </table>
+</section>
+
+<!-- ================= L9 自测 ================= -->
+<section id="l9">
+  <span class="lv">第 9 层 <span class="depth">· 检验消化</span></span>
+  <h2>自测：6 道题验证你读懂了</h2>
+  <p class="lede">每题点选项立即反馈。答错也无妨，解释里会指回对应章节。</p>
+
+  <div class="say"><span class="stag">讲人话</span><span>做完 6 道题，全文也接近尾声。最后用 60 秒复述一遍：七幕能自己串下来，这篇内容就算真正掌握了。</span></div>
+  <div id="quizBox"></div>
+  <div id="quizScore"></div>
+</section>
+
+<!-- ================= 终 复述卡 ================= -->
+<section id="retell">
+  <span class="lv">终 <span class="depth">· 把它带走</span></span>
+  <h2>合上书：60 秒复述全文</h2>
+  <p class="lede">故事到这里结束。检验是否真正读懂只有一个办法：合上书，用自己的话把七幕串一遍。下面就是那 60 秒的版本。</p>
+
+  <div class="rt-modes">
+    <span class="cl">模式</span>
+    <button class="chip on" data-rt="full">全文模式 · 先读一遍</button>
+    <button class="chip" data-rt="hint">提示模式 · 只留关键词，自己复述</button>
+  </div>
+  <p class="fig-sub" style="margin:6px 0 0;">切到提示模式后句子会被蒙住：先自己复述，再点某一行核对。</p>
+
+  <div class="rt-list" id="rtList">
+    <div class="rl"><span class="kw">① 显存告急</span><span class="tx">大模型聊天越久，要记的「草稿」（KV Cache）越厚——占满显存的先是草稿纸，而不是模型本身。</span><a class="lk" href="#l1">回看 第1层</a></div>
+    <div class="rl"><span class="kw">② 少用格子</span><span class="tx">省显存最直接的办法：每个数原来用 16 个 bit 的格子存，改用 2～3 个。</span><a class="lk" href="#l1">回看 第1层</a></div>
+    <div class="rl"><span class="kw">③ 巨值主导</span><span class="tx">但格子一少刻度就粗，只要有一个特别大的数撑大量程，其他小数字就全被存糊了。</span><a class="lk" href="#l3">回看 第3层</a></div>
+    <div class="rl"><span class="kw">④ 旋转摊匀</span><span class="tx">TurboQuant 的关键一步：先把整排数「随机转一下」，大数被摊平到各个维度上，再粗存就不损伤精度。</span><a class="lk" href="#l3">回看 第3层</a></div>
+    <div class="rl"><span class="kw">⑤ 精确还原</span><span class="tx">旋转专挑 Hadamard 矩阵：只做加减法、开销几乎可以忽略，用的时候还能一步不差地转回来。</span><a class="lk" href="#l3">回看 第3层</a></div>
+    <div class="rl"><span class="kw">⑥ 符号纠偏</span><span class="tx">粗存剩下的零头不存数值，只往几个随机方向投影、记住「正还是负」，再乘固定系数 1.2533 修正偏差。</span><a class="lk" href="#l4">回看 第4-5层</a></div>
+    <div class="rl"><span class="kw">⑦ 结账</span><span class="tx">最后每个数只花 3～4 个 bit：显存省到约 1/4，回答质量几乎不变；显存被打满时，长文反而生成得更快。</span><a class="lk" href="#l7">回看 第7-8层</a></div>
+  </div>
+
+  <div class="note"><b>全文完</b>不必逐字背诵。切到提示模式，能用自己的话把七幕大致串起来，就算真正记住了。某一幕想不起来也不影响，点那一行的「回看」重温一遍再继续。</div>
+</section>
+
+<footer>基于《TurboQuant 学习讨论》文档整理 · 交互式学习页 · 行业现状核对至 2026 年 8 月</footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- 阅读进度条 ---------- */
+  var prog = document.getElementById("progress");
+  window.addEventListener("scroll", function(){
+    var h = document.documentElement;
+    var pct = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100;
+    prog.style.width = pct + "%";
+  }, {passive:true});
+
+  /* ---------- 目录 scroll-spy ---------- */
+  var tocLinks = document.querySelectorAll("#toc a");
+  var secs = [];
+  tocLinks.forEach(function(a){
+    var el = document.querySelector(a.getAttribute("href"));
+    if(el) secs.push({el:el, a:a});
+  });
+  function spy(){
+    var y = window.scrollY + 140;
+    var cur = null;
+    for(var i=0;i<secs.length;i++){ if(secs[i].el.offsetTop <= y) cur = secs[i]; }
+    tocLinks.forEach(function(a){ a.classList.remove("on"); });
+    if(cur) cur.a.classList.add("on");
+  }
+  window.addEventListener("scroll", spy, {passive:true});
+  spy();
+
+  /* ---------- L1 bit 滑杆 ---------- */
+  var slider = document.getElementById("bitSlider");
+  function fmtGB(n){ return n >= 100 ? Math.round(n) : (Math.round(n*10)/10); }
+  function updSlider(){
+    var n = parseInt(slider.value, 10);
+    document.getElementById("bitV").textContent = n + " bit";
+    var lv = Math.pow(2, n);
+    document.getElementById("lvlV").textContent = (lv >= 1024 ? lv.toLocaleString("en-US") : lv) + " 档";
+    var gb = 70e9 * n / 8 / 1e9;
+    document.getElementById("gbV").textContent = fmtGB(gb) + " GB";
+    document.getElementById("cmpV").textContent = (Math.round(16 / n * 10) / 10) + "\u00d7";
+  }
+  slider.addEventListener("input", updSlider);
+  updSlider();
+
+  /* ---------- L3 stepper ---------- */
+  var DIMS = ["d1","d2","d3","d4","d5","d6","d7","d8"];
+  var SUBJ = ["语文","数学","英语","物理","化学","生物","历史","地理"];
+  var steps = [
+    { pill:"原始成绩", title:"第 0 步 · 原始数据",
+      formula:"小明的 8 门课成绩（满分 100），每门 16 bit，共 128 bit",
+      rows:[{label:"原始成绩", head:SUBJ, vals:[85,78,92,88,76,82,79,81]}],
+      why:"这就是待压缩的向量。目标：2～3 bit/门，还原后几乎不变。" },
+    { pill:"1 归一化", title:"第 1 步 · 归一化到 [-1, 1]",
+      formula:"x_norm = (2x − 100) / 100",
+      rows:[{label:"归一化", head:SUBJ, vals:["0.70","0.56","0.84","0.76","0.52","0.64","0.58","0.62"]}],
+      why:"量化前的标准预处理：把百分制映射到对称区间 [-1,1]，后面的量化边界都按这个区间设计。" },
+    { pill:"2 随机旋转", title:"第 2 步 · 随机旋转（Hadamard / 高斯正交矩阵）",
+      formula:"x_rot = R · x_norm",
+      rows:[{label:"旋转后", head:DIMS, vals:["0.65","0.72","-0.15","0.45","0.23","-0.08","0.31","0.12"]}],
+      why:"关键创新。原始数据在某些方向「扎堆」（理科都高、文科都低）。旋转打散相关性，让数据服从已知的 Beta 分布——分布已知，最优量化边界就能预先算好。注意：旋转后每个维度不再对应单一科目，所以表头改成 d1～d8。" },
+    { pill:"3 Lloyd-Max 量化", title:"第 3 步 · Lloyd-Max 量化（2-bit，4 个等级）",
+      formula:"等级0: [-1,-0.5)→-0.75　等级1: [-0.5,0)→-0.25　等级2: [0,0.5)→+0.25　等级3: [0.5,1]→+0.75",
+      rows:[
+        {label:"量化等级", head:DIMS, vals:[3,3,1,2,2,1,2,2]},
+        {label:"代表值", head:DIMS, vals:["+0.75","+0.75","-0.25","+0.25","+0.25","-0.25","+0.25","+0.25"]}
+      ],
+      why:"每个值只记它落在哪个格子（2 bit 的等级号），格子的代表值全模型共享、无需存储。这一步是真正「压缩」发生的地方——16 bit 变 2 bit。" },
+    { pill:"4 逆旋转重建", title:"第 4 步 · 逆旋转重建",
+      formula:"x_recon = R⁻¹ · x_quant　（正交矩阵：R⁻¹ = Rᵀ，转回去很便宜）",
+      rows:[
+        {label:"重建值", head:DIMS, vals:["0.68","0.58","0.78","0.72","0.55","0.61","0.59","0.63"]},
+        {label:"还原成绩", head:SUBJ, vals:[84,79,89,86,77,80,79,81]}
+      ],
+      why:"把量化代表值乘上逆旋转矩阵，回到原始坐标系，再映射回百分制：x_final = 100×(x_recon+1)/2。误差来自量化丢掉的信息：[1,1,3,2,1,2,0,0]，平均仅 1.25 分。" }
+  ];
+  var stepIdx = 0;
+  var pillBox = document.getElementById("stepPills");
+  var panel = document.getElementById("stepPanel");
+  var traceBox = document.getElementById("stepTrace");
+  var prevBtn = document.getElementById("prevStep");
+  var nextBtn = document.getElementById("nextStep");
+
+  steps.forEach(function(s, i){
+    var p = document.createElement("span");
+    p.className = "step-pill"; p.textContent = s.pill;
+    p.addEventListener("click", function(){ stepIdx = i; renderStep(); });
+    pillBox.appendChild(p);
+  });
+
+  function esc(v){ return String(v); }
+  function renderStep(){
+    var s = steps[stepIdx];
+    var pills = pillBox.children;
+    for(var i=0;i<pills.length;i++){
+      pills[i].className = "step-pill" + (i<stepIdx ? " done" : (i===stepIdx ? " cur" : ""));
+    }
+    panel.innerHTML = "<h4>" + s.title + "</h4>" +
+      "<div class='formula' style='margin:8px 0;'>" + s.formula + "</div>" +
+      "<p class='why'>" + s.why + "</p>";
+    /* 累计轨迹表 */
+    var html = "<table><tr><th style='text-align:left;'>阶段</th>";
+    var headRef = steps[stepIdx].rows[steps[stepIdx].rows.length-1].head;
+    for(var c=0;c<8;c++){ html += "<th>·</th>"; }
+    html += "</tr>";
+    for(var k=0;k<=stepIdx;k++){
+      steps[k].rows.forEach(function(r){
+        html += "<tr" + (k===stepIdx ? " class='new'" : "") + "><th style='text-align:left; white-space:nowrap;'>" + r.label + "</th>";
+        r.vals.forEach(function(v, ci){
+          html += "<td class='num' title='" + r.head[ci] + "'>" + esc(v) + "</td>";
+        });
+        html += "</tr>";
+      });
+    }
+    html += "</table><p style='font-size:12.5px; color:var(--muted); margin:6px 0 0;'>提示：把鼠标放到数字上可看到该列对应的科目/维度。</p>";
+    traceBox.innerHTML = html;
+    prevBtn.disabled = stepIdx === 0;
+    nextBtn.disabled = stepIdx === steps.length - 1;
+    nextBtn.textContent = stepIdx === steps.length - 1 ? "已完成" : "下一步";
+  }
+  prevBtn.addEventListener("click", function(){ if(stepIdx>0){ stepIdx--; renderStep(); } });
+  nextBtn.addEventListener("click", function(){ if(stepIdx<steps.length-1){ stepIdx++; renderStep(); } });
+  renderStep();
+
+  /* ---------- L3 Lloyd-Max 数轴 ---------- */
+  var lmVals = [0.65, 0.72, -0.15, 0.45, 0.23, -0.08, 0.31, 0.12];
+  var lmBar = document.getElementById("lmBar");
+  var lmInfo = document.getElementById("lmInfo");
+  var zoneNames = ["等级 0 (00)","等级 1 (01)","等级 2 (10)","等级 3 (11)"];
+  var zoneRanges = ["[-1.0, -0.5)","[-0.5, 0.0)","[0.0, 0.5)","[0.5, 1.0]"];
+  var zoneReps = ["-0.75","-0.25","+0.25","+0.75"];
+  lmVals.forEach(function(v, i){
+    var d = document.createElement("span");
+    d.className = "lm-dot";
+    d.textContent = "d" + (i+1);
+    d.style.left = ((v + 1) / 2 * 100) + "%";
+    d.addEventListener("click", function(){
+      lmBar.querySelectorAll(".lm-dot").forEach(function(x){ x.classList.remove("sel"); });
+      d.classList.add("sel");
+      var z = v < -0.5 ? 0 : (v < 0 ? 1 : (v < 0.5 ? 2 : 3));
+      lmInfo.innerHTML = "<b>d" + (i+1) + "</b>：旋转值 <code>" + v.toFixed(2) + "</code> 落在区间 <code>" + zoneRanges[z] + "</code> → 归入 <b>" + zoneNames[z] + "</b> → 存储的 2-bit 等级号是 <code>" + z + "</code>，还原时统一用代表值 <code>" + zoneReps[z] + "</code>。";
+    });
+    lmBar.appendChild(d);
+  });
+
+  /* ---------- L5 公式拆解 ---------- */
+  var fxMap = {
+    base: {t:"⟨q, k⟩_base — 基础内积", d:"用重建后的值直接算的点积（例子里的 52,847）。这是粗略估计，因为重建值带着量化误差，所以有系统性偏差——后面三项就是来补这个偏差的。"},
+    coef: {t:"√(π/2) / m — 数学修正系数", d:"√(π/2) ≈ 1.253，来自高斯分布：只用符号（丢掉量级）会让估计整体缩水 √(2/π) 倍，乘回倒数才能保证无偏。m 是投影维度（例子里 m=8），除以它相当于对 m 个独立估计取平均。整项 ≈ 0.157。"},
+    norm: {t:"‖k‖₂ — 能量尺度（范数）", d:"小红成绩的「总分水平」（归一化后 0.92）。符号内积只反映方向相似度，必须乘上向量长度才能恢复真实数值规模。类比：只知道两人「都偏科」（方向），不知道偏科多严重（范数），就定不出实际分差。"},
+    sign: {t:"⟨Sq, sign(Sk)⟩ — 符号内积（核心创新）", d:"Sq 是小明残差投影后的向量，sign(Sk) 是小红残差投影后的符号。内积 =（符号相同数 − 不同数）/ 总数。若两人残差「高低模式」相似（经常同时偏高/偏低），此项为正 → 说明基础内积被低估 → 加上修正量。往下滚动可以亲手对比一次。"}
+  };
+  var fxInfo = document.getElementById("fxInfo");
+  document.querySelectorAll("#fxBar .t").forEach(function(t){
+    t.addEventListener("click", function(){
+      document.querySelectorAll("#fxBar .t").forEach(function(x){ x.classList.remove("on"); });
+      t.classList.add("on");
+      var m = fxMap[t.getAttribute("data-k")];
+      fxInfo.innerHTML = "<h5>" + m.t + "</h5>" + m.d;
+    });
+  });
+
+  /* ---------- L5 符号对比 ---------- */
+  var qs = ["+","-","+","+","-","+","-","-"];
+  var ks = ["+","+","-","+","-","-","+","-"];
+  var resCells = document.querySelectorAll(".sg.res");
+  var qCells = document.querySelectorAll('.sg[data-r="q"]');
+  var kCells = document.querySelectorAll('.sg[data-r="k"]');
+  var cmpTimer = [];
+  function resetCmp(){
+    cmpTimer.forEach(clearTimeout); cmpTimer = [];
+    resCells.forEach(function(c){ c.textContent = "?"; c.className = "sg res"; });
+    qCells.forEach(function(c){ c.className = "sg"; c.setAttribute("data-r","q"); });
+    kCells.forEach(function(c){ c.className = "sg"; c.setAttribute("data-r","k"); });
+    document.getElementById("signResult").textContent = "";
+  }
+  document.getElementById("cmpReset").addEventListener("click", resetCmp);
+  document.getElementById("cmpBtn").addEventListener("click", function(){
+    resetCmp();
+    var same = 0;
+    for(var i=0;i<8;i++){
+      (function(i){
+        cmpTimer.push(setTimeout(function(){
+          var hit = qs[i] === ks[i];
+          if(hit) same++;
+          resCells[i].textContent = hit ? "✓" : "✗";
+          resCells[i].classList.add(hit ? "hit" : "miss", "mark");
+          qCells[i].classList.add(hit ? "hit" : "miss");
+          kCells[i].classList.add(hit ? "hit" : "miss");
+          if(i === 7){
+            var diff = 8 - same;
+            document.getElementById("signResult").innerHTML =
+              "相同 " + same + " 位 − 不同 " + diff + " 位 → 符号内积 = (" + same + "−" + diff + ")/8 = <b>" +
+              ((same - diff) / 8).toFixed(2) + "</b>　（文档随后以 0.6 作为示例值继续演算，见下方辨析）";
+          }
+        }, 220 * i));
+      })(i);
+    }
+  });
+
+  /* ---------- L8 条形图入场动画 ---------- */
+  var barsDone = false;
+  var barsEl = document.getElementById("storeBars");
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting && !barsDone){
+        barsDone = true;
+        barsEl.querySelectorAll(".bar-fill").forEach(function(b){
+          setTimeout(function(){ b.style.width = b.getAttribute("data-w") + "%"; }, 100);
+        });
+      }
+    });
+  }, {threshold:.3});
+  io.observe(barsEl);
+
+  /* ---------- L8 翻转卡 ---------- */
+  document.querySelectorAll(".flip").forEach(function(f){
+    f.addEventListener("click", function(){ f.classList.toggle("flipped"); });
+  });
+
+  /* ---------- L9 自测 ---------- */
+  var quiz = [
+    { q:"1. TurboQuant 在量化前先做「随机旋转」，最主要的目的是？",
+      opts:["给数据加密，防止参数泄露","打散维度间相关性，让数据服从已知的 Beta 分布，从而能用预先算好的最优边界量化","减少数据的维度，直接降低存储量","把所有数值都变成正数，方便取整"],
+      ans:1, expl:"旋转不丢信息也不降维（正交变换），它的价值是把「因数据而异的分布」变成「固定已知的 Beta 分布」，让 Lloyd-Max 的最优边界可以离线算好。见第 3 层「深入一层」。" },
+    { q:"2. PolarQuant 每组向量除了 2-bit 量化索引，还必须额外存什么？",
+      opts:["每个元素的量化误差","整组共享一个的向量范数（FP16，16 bit）","旋转矩阵 R 本身","什么都不用，索引就够了"],
+      ans:1, expl:"量化前向量被归一化，量级信息全在范数里，还原时要乘回去。注意是整组共享（per-vector）而非每元素一份——这是文档的关键修正点 1。旋转矩阵是全模型统一的，不用随数据存。" },
+    { q:"3. QJL 残差纠错实际存储的内容是？",
+      opts:["残差的精确浮点值","残差随机投影后的正负号（1 bit/元素）＋残差范数（FP16）","残差的平方和","原始数据的完整备份"],
+      ans:1, expl:"QJL 的精髓就是「只记方向不记量级」：sign(S·δ) 每维 1 bit，加一个 16 bit 的残差范数。量级靠范数和 √(π/2) 系数在计算时恢复。见第 4 层。" },
+    { q:"4. 修正公式里 √(π/2) ≈ 1.253 这个系数的作用是？",
+      opts:["把弧度换算成角度","补偿「只用符号、丢掉量级」造成的系统性缩水，保证内积估计无偏","控制压缩比恰好为 4 倍","纯经验值，没有数学含义"],
+      ans:1, expl:"对高斯变量 g，E[g·sign(g)] = √(2/π) ≈ 0.798，符号化让估计整体缩水；乘上倒数 √(π/2) 拉回原量级，实现无偏估计。见第 5 层「深入一层」。" },
+    { q:"5. 量化能同时改善 TTFT 和 TPS 的根本原因是？",
+      opts:["量化提高了 GPU 的运行频率","大模型推理是内存带宽受限：权重变小 → 读取快 8 倍、更容易常驻缓存，数据搬运大幅减少","量化减少了模型层数","量化让网络传输更快"],
+      ans:1, expl:"瓶颈不在「算」而在「搬」。2-bit 相比 FP16 读取量降为 1/8，且 70B 模型从 140GB 缩到约 18GB 后可常驻显存。prefill（TTFT）和 decode（TPS）都吃这个红利。见第 7 层。" },
+    { q:"6. 逆旋转重建为什么成本可以做到很低？",
+      opts:["正交矩阵 R⁻¹=Rᵀ 免去求逆，且 Hadamard 矩阵元素只有 ±1，逆旋转只需加减法（还可 O(n log n) 快速变换）","因为逆旋转这一步可以完全省略","GPU 有专门的逆旋转硬件指令","把矩阵乘法换成了查表"],
+      ans:0, expl:"两个性质叠加：正交 → 逆=转置；Hadamard → 全是 ±1，无需乘法。再配合「延迟反量化」（直接在量化空间算内积），成本进一步压低。见第 3、6 层。" }
+  ];
+  var quizBox = document.getElementById("quizBox");
+  var answered = 0, correct = 0;
+  quiz.forEach(function(item){
+    var div = document.createElement("div");
+    div.className = "quiz";
+    var h = "<div class='q'>" + item.q + "</div>";
+    item.opts.forEach(function(o, oi){
+      h += "<button class='opt' data-i='" + oi + "'>" + "ABCD".charAt(oi) + ". " + o + "</button>";
+    });
+    h += "<div class='expl'>" + item.expl + "</div>";
+    div.innerHTML = h;
+    div.querySelectorAll(".opt").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        if(div.classList.contains("answered")) return;
+        div.classList.add("answered");
+        var pick = parseInt(btn.getAttribute("data-i"), 10);
+        div.querySelectorAll(".opt").forEach(function(b, bi){
+          if(bi === item.ans) b.classList.add("right");
+          else if(bi === pick) b.classList.add("wrong");
+        });
+        answered++;
+        if(pick === item.ans) correct++;
+        if(answered === quiz.length){
+          var msg = correct === quiz.length ? "全对！这个故事你已经吃透了。" :
+                    (correct >= 4 ? "掌握得不错，回看错题对应章节再巩固一下。" : "建议按错题提示回到对应层重读一遍。");
+          document.getElementById("quizScore").textContent = "得分：" + correct + " / " + quiz.length + " —— " + msg;
+        }
+      });
+    });
+    quizBox.appendChild(div);
+  });
+
+  /* ---------- 滚动入场动效 ---------- */
+  if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    var rvEls = [];
+    document.querySelectorAll("main > section").forEach(function(sec){
+      Array.prototype.forEach.call(sec.children, function(ch){ ch.classList.add("rv"); rvEls.push(ch); });
+    });
+    var rio = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add("in"); rio.unobserve(e.target); }
+      });
+    }, {threshold:.06, rootMargin:"0px 0px -5% 0px"});
+    rvEls.forEach(function(el){ rio.observe(el); });
+  }
+
+
+  /* ============ 数学示意图 ============ */
+  var NS = "http://www.w3.org/2000/svg";
+  var RM = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var MUTED = "#75705f", ACC = "#4f46b8", ACC2 = "#7c6cf0", TEAL = "#0f766e",
+      WARN = "#b45309", BAD = "#b91c1c";
+
+  function E(t, a, p) {
+    var e = document.createElementNS(NS, t);
+    for (var k in a) { if (a[k] !== null && a[k] !== undefined) e.setAttribute(k, a[k]); }
+    if (p) p.appendChild(e);
+    return e;
+  }
+  function T(p, x, y, s, a) {
+    a = a || {};
+    var e = E("text", {x:x, y:y, "font-size": a.fs || 11, fill: a.fill || MUTED,
+      "text-anchor": a.anchor || "start", "font-weight": a.fw || 400,
+      "font-family": a.mono ? "ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" : "inherit"}, p);
+    e.textContent = s;
+    return e;
+  }
+  function clear(n) { while (n.firstChild) n.removeChild(n.firstChild); }
+  function fx(v, n) { n = (n == null ? 2 : n); if (Math.abs(v) < 5e-4) v = 0; return Number(v).toFixed(n); }
+  function chipGroup(root, attr, cb) {
+    if (!root) return;
+    var list = root.querySelectorAll(".chip[" + attr + "]");
+    Array.prototype.forEach.call(list, function (c) {
+      c.addEventListener("click", function () {
+        var v = c.getAttribute(attr);
+        if (v !== "-1") {
+          Array.prototype.forEach.call(list, function (o) {
+            if (o.getAttribute(attr) !== "-1") o.classList.remove("on");
+          });
+          c.classList.add("on");
+        }
+        cb(v, c);
+      });
+    });
+  }
+  function ptOf(svg, ev) {
+    var r = svg.getBoundingClientRect(), vb = svg.viewBox.baseVal;
+    return { x: (ev.clientX - r.left) / r.width * vb.width,
+             y: (ev.clientY - r.top) / r.height * vb.height };
+  }
+  function dragify(svg, onDown, onMove) {
+    var live = false;
+    svg.addEventListener("pointerdown", function (e) {
+      var p = ptOf(svg, e);
+      if (onDown && onDown(p) === false) return;
+      live = true;
+      try { svg.setPointerCapture(e.pointerId); } catch (x) {}
+      onMove(p); e.preventDefault();
+    });
+    svg.addEventListener("pointermove", function (e) {
+      if (live) { onMove(ptOf(svg, e)); e.preventDefault(); }
+    });
+    ["pointerup", "pointercancel"].forEach(function (t) {
+      svg.addEventListener(t, function (e) {
+        live = false;
+        try { svg.releasePointerCapture(e.pointerId); } catch (x) {}
+      });
+    });
+  }
+  function tween(from, to, dur, step, done) {
+    if (RM) { step(to.slice()); if (done) done(); return; }
+    var t0 = performance.now();
+    requestAnimationFrame(function fr(now) {
+      var k = Math.min(1, (now - t0) / dur);
+      var e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+      step(from.map(function (v, i) { return v + (to[i] - v) * e; }));
+      if (k < 1) requestAnimationFrame(fr); else if (done) done();
+    });
+  }
+  function setRd(id, val, cls) {
+    var n = document.getElementById(id);
+    if (!n) return;
+    var isBox = n.classList.contains("rd");
+    var box = isBox ? n : n.closest(".rd");
+    var v = isBox ? n.querySelector(".v") : n;
+    if (v) v.innerHTML = val;
+    if (box) box.className = "rd" + (cls ? " " + cls : "");
+  }
+  function setK(id, txt) {
+    var n = document.getElementById(id);
+    if (!n) return;
+    var box = n.classList.contains("rd") ? n : n.closest(".rd");
+    if (box) { var k = box.querySelector(".k"); if (k) k.textContent = txt; }
+  }
+
+  /* ---------- 图 0-1 比特与档位 ---------- */
+  (function () {
+    var svg = document.getElementById("svgBit");
+    if (!svg) return;
+    var X0 = 56, X1 = 396, Y0 = 206, Y1 = 32, bits = 2, t = .62;
+    function px(v) { return X0 + v * (X1 - X0); }
+    function py(v) { return Y0 + v * (Y1 - Y0); }
+    function draw() {
+      clear(svg);
+      var L = Math.pow(2, bits), i;
+      E("rect", {x:X0, y:Y1, width:X1 - X0, height:Y0 - Y1, fill:"#fff",
+        stroke:"rgba(40,33,15,.10)", rx:8}, svg);
+      for (i = 1; i < L; i++) {
+        E("line", {x1:px(i / L), y1:Y1, x2:px(i / L), y2:Y0, stroke:"rgba(40,33,15,.08)"}, svg);
+      }
+      E("line", {x1:px(0), y1:py(0), x2:px(1), y2:py(1), stroke:ACC2,
+        "stroke-width":2, "stroke-dasharray":"6 4"}, svg);
+      var d = "";
+      for (i = 0; i < L; i++) {
+        var rp = (i + .5) / L;
+        d += "M" + px(i / L) + " " + py(rp) + "L" + px((i + 1) / L) + " " + py(rp);
+      }
+      E("path", {d:d, fill:"none", stroke:TEAL, "stroke-width":3.4, "stroke-linecap":"round"}, svg);
+      var idx = Math.min(L - 1, Math.floor(t * L)), q = (idx + .5) / L;
+      E("line", {x1:px(t), y1:Y0, x2:px(t), y2:py(Math.max(t, q)),
+        stroke:"rgba(40,33,15,.20)", "stroke-dasharray":"3 3"}, svg);
+      E("line", {x1:px(t), y1:py(t), x2:px(t), y2:py(q), stroke:BAD,
+        "stroke-width":4.5, "stroke-linecap":"round"}, svg);
+      E("circle", {cx:px(t), cy:py(t), r:4.5, fill:ACC2}, svg);
+      E("circle", {cx:px(t), cy:py(q), r:6.5, fill:TEAL, stroke:"#fff",
+        "stroke-width":2.4, "class":"hd"}, svg);
+      T(svg, X0, Y0 + 18, "0", {anchor:"middle"});
+      T(svg, (X0 + X1) / 2, Y0 + 18, "0.5", {anchor:"middle"});
+      T(svg, X1, Y0 + 18, "1.0", {anchor:"middle"});
+      T(svg, (X0 + X1) / 2, Y0 + 35, "真实值（连续）", {anchor:"middle", fs:11.5, fw:600});
+      T(svg, X1 - 6, Y1 + 17, "斜线：真实值", {anchor:"end", fill:ACC2, fs:11.5, fw:700});
+      T(svg, X0 + 7, Y1 + 17, "台阶：" + L + " 个可用档位", {fill:TEAL, fs:11.5, fw:700});
+      if (Math.abs(py(t) - py(q)) > 15) {
+        T(svg, px(t) + 12, py((t + q) / 2) + 4, "误差", {fill:BAD, fs:11, fw:700});
+      }
+      var ymid = (Y0 + Y1) / 2;
+      var yl = E("text", {x:20, y:ymid, "text-anchor":"middle", "font-size":11.5,
+        "font-weight":600, fill:MUTED, transform:"rotate(-90 20 " + ymid + ")"}, svg);
+      yl.appendChild(document.createTextNode("存下来的值（台阶）"));
+    }
+    function upd() {
+      var L = Math.pow(2, bits), idx = Math.min(L - 1, Math.floor(t * L)), q = (idx + .5) / L;
+      draw();
+      setRd("bitTrue", fx(t, 3));
+      setRd("bitQ", fx(q, 3));
+      setRd("bitErr", fx(Math.abs(t - q), 3), "hi");
+      setRd("bitMax", "± " + fx(.5 / L, 3));
+    }
+    chipGroup(document.getElementById("figBit"), "data-bit", function (v) { bits = +v; upd(); });
+    dragify(svg, null, function (p) {
+      t = Math.max(0, Math.min(.9999, (p.x - X0) / (X1 - X0))); upd();
+    });
+    upd();
+  })();
+
+  /* ---------- 图 0-2 向量与内积 ---------- */
+  (function () {
+    var svg = document.getElementById("svgDot");
+    if (!svg) return;
+    var OX = 140, OY = 212, S = 56, grab = null;
+    var a = {x:2.2, y:.6}, b = {x:.9, y:1.9};
+    function X(v) { return OX + v * S; }
+    function Y(v) { return OY - v * S; }
+    function arrow(v, color, w) {
+      var x = X(v.x), y = Y(v.y), L = Math.hypot(x - OX, y - OY);
+      if (L < 2) return;
+      var ux = (x - OX) / L, uy = (y - OY) / L, hx = x - ux * 12, hy = y - uy * 12;
+      E("line", {x1:OX, y1:OY, x2:hx, y2:hy, stroke:color, "stroke-width":w, "stroke-linecap":"round"}, svg);
+      E("polygon", {points:[x, y, hx - uy * 6.5, hy + ux * 6.5, hx + uy * 6.5, hy - ux * 6.5].join(" "),
+        fill:color}, svg);
+    }
+    function draw() {
+      clear(svg);
+      var i;
+      for (i = -2; i <= 5; i++) {
+        E("line", {x1:X(i), y1:0, x2:X(i), y2:262, stroke:"rgba(40,33,15,.05)"}, svg);
+        E("line", {x1:0, y1:Y(i), x2:420, y2:Y(i), stroke:"rgba(40,33,15,.05)"}, svg);
+      }
+      E("line", {x1:0, y1:OY, x2:420, y2:OY, stroke:"rgba(40,33,15,.20)", "stroke-width":1.2}, svg);
+      E("line", {x1:OX, y1:0, x2:OX, y2:262, stroke:"rgba(40,33,15,.20)", "stroke-width":1.2}, svg);
+
+      var dot = a.x * b.x + a.y * b.y, na = Math.hypot(a.x, a.y);
+      var k = dot / (na * na), p = {x:a.x * k, y:a.y * k};
+
+      E("line", {x1:OX, y1:OY, x2:X(p.x), y2:Y(p.y), stroke:WARN, "stroke-width":9,
+        "stroke-linecap":"round", opacity:.30}, svg);
+      E("line", {x1:X(b.x), y1:Y(b.y), x2:X(p.x), y2:Y(p.y), stroke:MUTED,
+        "stroke-width":1.3, "stroke-dasharray":"4 4"}, svg);
+
+      var aa = Math.atan2(a.y, a.x), ab = Math.atan2(b.y, b.x), df = ab - aa;
+      while (df > Math.PI) df -= 2 * Math.PI;
+      while (df < -Math.PI) df += 2 * Math.PI;
+      var R = 34;
+      E("path", {d:"M" + (OX + R * Math.cos(aa)) + " " + (OY - R * Math.sin(aa)) +
+        "A" + R + " " + R + " 0 0 " + (df > 0 ? 0 : 1) + " " +
+        (OX + R * Math.cos(ab)) + " " + (OY - R * Math.sin(ab)),
+        fill:"none", stroke:WARN, "stroke-width":1.6}, svg);
+      var mid = aa + df / 2;
+      T(svg, OX + (R + 16) * Math.cos(mid), OY - (R + 16) * Math.sin(mid) + 4,
+        Math.round(Math.abs(df) * 180 / Math.PI) + "°", {anchor:"middle", fill:WARN, fs:12, fw:700});
+
+      arrow(a, ACC, 3.4);
+      arrow(b, TEAL, 3.4);
+      E("circle", {cx:X(a.x), cy:Y(a.y), r:8, fill:ACC, stroke:"#fff", "stroke-width":2.4, "class":"hd"}, svg);
+      E("circle", {cx:X(b.x), cy:Y(b.y), r:8, fill:TEAL, stroke:"#fff", "stroke-width":2.4, "class":"hd"}, svg);
+      T(svg, X(a.x) + 13, Y(a.y) + 5, "a", {fill:ACC, fs:15, fw:800});
+      T(svg, X(b.x) + (Math.abs(df) < .25 ? 0 : 13), Y(b.y) + (Math.abs(df) < .25 ? -14 : 5), "b",
+        {anchor:(Math.abs(df) < .25 ? "middle" : "start"), fill:TEAL, fs:15, fw:800});
+      var sgn = (a.x * b.y - a.y * b.x) >= 0 ? -1 : 1;
+      var pxu = -a.y / na, pyu = a.x / na;
+      T(svg, X(p.x / 2 + sgn * pxu * .36), Y(p.y / 2 + sgn * pyu * .36) + 4, "影子",
+        {anchor:"middle", fill:WARN, fs:11.5, fw:700});
+      T(svg, 412, 20, "拖动 a / b 上的圆点", {anchor:"end", fs:11.5, fw:600});
+    }
+    function upd() {
+      draw();
+      var dot = a.x * b.x + a.y * b.y, na = Math.hypot(a.x, a.y), nb = Math.hypot(b.x, b.y);
+      var cs = dot / (na * nb), th = Math.acos(Math.max(-1, Math.min(1, cs))) * 180 / Math.PI;
+      setRd("dotLen", fx(na) + " × " + fx(nb));
+      setRd("dotAng", fx(th, 1) + "°");
+      setRd("dotProj", fx(nb * cs));
+      setRd("dotVal", (dot >= 0 ? "+" : "") + fx(dot), dot > .05 ? "ok" : (dot < -.05 ? "bad" : "hi"));
+      var eq = document.getElementById("dotEq");
+      if (eq) {
+        eq.innerHTML =
+          "逐位相乘再求和　⟨a,b⟩ = (" + fx(a.x) + ")×(" + fx(b.x) + ") + (" + fx(a.y) +
+          ")×(" + fx(b.y) + ") = " + fx(dot) + "<br>" +
+          "长度×长度×cosθ　⟨a,b⟩ = " + fx(na) + " × " + fx(nb) + " × " + fx(cs, 3) + " = " + fx(dot);
+      }
+    }
+    dragify(svg, function (p) {
+      var da = Math.hypot(p.x - X(a.x), p.y - Y(a.y)), db = Math.hypot(p.x - X(b.x), p.y - Y(b.y));
+      if (Math.min(da, db) > 60) return false;
+      grab = (da < db) ? a : b;
+      Array.prototype.forEach.call(
+        document.getElementById("figDot").querySelectorAll(".chip[data-ang]"),
+        function (c) { c.classList.remove("on"); });
+      return true;
+    }, function (p) {
+      if (!grab) return;
+      var vx = (p.x - OX) / S, vy = (OY - p.y) / S;
+      vx = Math.max(-2.3, Math.min(4.8, vx));
+      vy = Math.max(-0.68, Math.min(3.5, vy));
+      var L = Math.hypot(vx, vy) || 1;
+      if (L < .45) { vx *= .45 / L; vy *= .45 / L; }
+      grab.x = vx; grab.y = vy; upd();
+    });
+    chipGroup(document.getElementById("figDot"), "data-ang", function (v) {
+      var deg = +v * Math.PI / 180, base = Math.atan2(a.y, a.x), nb = Math.hypot(b.x, b.y);
+      b.x = nb * Math.cos(base + deg); b.y = nb * Math.sin(base + deg);
+      upd();
+    });
+    upd();
+  })();
+
+  /* ---------- 图 0-3 正交矩阵 = 纯旋转 ---------- */
+  (function () {
+    var svg = document.getElementById("svgRot");
+    if (!svg) return;
+    var OX = 210, OY = 158, S = 40, mode = "rot", th = 35;
+    var u0 = {x:2.0, y:.35}, v0 = {x:.5, y:1.75};
+    function X(v) { return OX + v * S; }
+    function Y(v) { return OY - v * S; }
+    function mat() {
+      var r = th * Math.PI / 180, c = Math.cos(r), s = Math.sin(r);
+      if (mode === "rot") return [c, -s, s, c];
+      return [1.45 * c, -1.45 * s, .6 * s, .6 * c];
+    }
+    function ap(M, w) { return {x:M[0] * w.x + M[1] * w.y, y:M[2] * w.x + M[3] * w.y}; }
+    function poly(p1, p2, fill, stroke, dash, w) {
+      E("polygon", {points:[X(0), Y(0), X(p1.x), Y(p1.y),
+        X(p1.x + p2.x), Y(p1.y + p2.y), X(p2.x), Y(p2.y)].join(" "),
+        fill:fill, stroke:stroke, "stroke-width":w || 1.6,
+        "stroke-dasharray":dash || null, "stroke-linejoin":"round"}, svg);
+    }
+    function arrow(v, color, w) {
+      var x = X(v.x), y = Y(v.y), L = Math.hypot(x - OX, y - OY);
+      if (L < 2) return;
+      var ux = (x - OX) / L, uy = (y - OY) / L, hx = x - ux * 11, hy = y - uy * 11;
+      E("line", {x1:OX, y1:OY, x2:hx, y2:hy, stroke:color, "stroke-width":w, "stroke-linecap":"round"}, svg);
+      E("polygon", {points:[x, y, hx - uy * 6, hy + ux * 6, hx + uy * 6, hy - ux * 6].join(" "), fill:color}, svg);
+    }
+    function draw() {
+      clear(svg);
+      var i;
+      for (i = -5; i <= 5; i++) {
+        E("line", {x1:X(i), y1:0, x2:X(i), y2:300, stroke:"rgba(40,33,15,.05)"}, svg);
+        E("line", {x1:0, y1:Y(i), x2:420, y2:Y(i), stroke:"rgba(40,33,15,.05)"}, svg);
+      }
+      E("line", {x1:0, y1:OY, x2:420, y2:OY, stroke:"rgba(40,33,15,.18)"}, svg);
+      E("line", {x1:OX, y1:0, x2:OX, y2:300, stroke:"rgba(40,33,15,.18)"}, svg);
+      var M = mat(), u = ap(M, u0), v = ap(M, v0);
+      poly(u0, v0, "rgba(40,33,15,.04)", "rgba(40,33,15,.30)", "5 4", 1.4);
+      arrow(u0, "rgba(40,33,15,.26)", 2);
+      arrow(v0, "rgba(40,33,15,.26)", 2);
+      poly(u, v, mode === "rot" ? "rgba(79,70,184,.13)" : "rgba(185,28,28,.11)",
+        mode === "rot" ? "rgba(79,70,184,.45)" : "rgba(185,28,28,.42)", null, 1.8);
+      arrow(u, ACC, 3.4);
+      arrow(v, TEAL, 3.4);
+      T(svg, X(u.x) + 11, Y(u.y) + 5, "u", {fill:ACC, fs:14.5, fw:800});
+      T(svg, X(v.x) + 11, Y(v.y) + 5, "v", {fill:TEAL, fs:14.5, fw:800});
+      T(svg, 12, 21, "浅灰虚线 = 变换前的原图形", {fs:11.5, fw:600});
+      T(svg, 410, 21, mode === "rot" ? "正交矩阵：只转不捏" : "非正交矩阵：形状被捏扁",
+        {anchor:"end", fs:12.5, fw:700, fill: mode === "rot" ? ACC : BAD});
+      return {M:M, u:u, v:v};
+    }
+    function setMtx(id, m, cls) {
+      var n = document.getElementById(id);
+      if (!n) return;
+      n.className = "mtx" + (cls ? " " + cls : "");
+      var its = n.querySelectorAll(".g i");
+      for (var i = 0; i < 4; i++) its[i].textContent = fx(m[i]);
+    }
+    function pair(id, before, after, unit) {
+      var same = Math.abs(before - after) < 5e-3;
+      setRd(id, fx(before) + (unit || "") + " → " + fx(after) + (unit || "") +
+        "　" + (same ? "✓" : "✗"), same ? "ok" : "bad");
+    }
+    function upd() {
+      var st = draw(), M = st.M, u = st.u, v = st.v;
+      setMtx("mtxM", M, mode === "rot" ? "" : "warn");
+      setMtx("mtxI", [M[0] * M[0] + M[2] * M[2], M[0] * M[1] + M[2] * M[3],
+        M[1] * M[0] + M[3] * M[2], M[1] * M[1] + M[3] * M[3]], mode === "rot" ? "idt" : "warn");
+      var nu0 = Math.hypot(u0.x, u0.y), nu = Math.hypot(u.x, u.y);
+      var nv0 = Math.hypot(v0.x, v0.y), nv = Math.hypot(v.x, v.y);
+      var d0 = u0.x * v0.x + u0.y * v0.y, d1 = u.x * v.x + u.y * v.y;
+      pair("rdLenU", nu0, nu);
+      pair("rdAng", Math.acos(d0 / (nu0 * nv0)) * 180 / Math.PI,
+        Math.acos(d1 / (nu * nv)) * 180 / Math.PI, "°");
+      pair("rdDot", d0, d1);
+      pair("rdArea", Math.abs(u0.x * v0.y - u0.y * v0.x), Math.abs(u.x * v.y - u.y * v.x));
+      var note = document.getElementById("rotNote");
+      if (note) {
+        note.innerHTML = mode === "rot"
+          ? "M 的两列互相垂直、长度都是 1，所以 <b>MᵀM = I</b>（右边那个单位矩阵就是证据）。它只是把整个空间「转了个方向」——<b>长度、夹角、内积、面积一个都没变，信息一点不丢</b>。而且逆变换就是转置 Mᵀ，想转回去几乎不花钱。"
+          : "这个 M 的两列不再互相垂直等长，<b>MᵀM ≠ I</b>。图形被捏扁了：长度变了、夹角变了、内积变了、面积也缩水了。<b>如果压缩之前先用这种矩阵，等于在量化之前就把数据搞坏了一遍</b>——所以 PolarQuant 只敢用正交矩阵去转。";
+      }
+    }
+    chipGroup(document.getElementById("figRot"), "data-mode", function (v) { mode = v; upd(); });
+    var sl = document.getElementById("rotSlider");
+    if (sl) sl.addEventListener("input", function () {
+      th = +sl.value;
+      var d = document.getElementById("rotDeg");
+      if (d) d.textContent = th + "°";
+      upd();
+    });
+    upd();
+  })();
+
+  /* ---------- 图 3-1 Hadamard 能量摊匀 ---------- */
+  (function () {
+    var svg = document.getElementById("svgHad");
+    if (!svg) return;
+    var x0 = [.98, .06, -.03, .09, .02, -.05, .04, -.02];
+    function had(v) {
+      var out = [], i, j, s, p, c;
+      for (i = 0; i < 8; i++) {
+        s = 0;
+        for (j = 0; j < 8; j++) {
+          p = i & j; c = 0;
+          while (p) { c ^= p & 1; p >>= 1; }
+          s += (c ? -1 : 1) * v[j];
+        }
+        out.push(s / Math.sqrt(8));
+      }
+      return out;
+    }
+    function q2(v) { return v < -.5 ? -.75 : (v < 0 ? -.25 : (v < .5 ? .25 : .75)); }
+    function nrm(v) { return Math.sqrt(v.reduce(function (s, t) { return s + t * t; }, 0)); }
+    function dif(p, q) { return Math.sqrt(p.reduce(function (s, t, i) { return s + (t - q[i]) * (t - q[i]); }, 0)); }
+    var y = had(x0), back = had(y), states = [x0, y, back];
+    var cur = x0.slice(), idx = 0;
+    var BX = 50, BW = 32, GAP = 12, ZY = 140, SC = 104;
+    var CAP = ["① 原始向量 x：第 1 维一家独大",
+               "② 旋转后 y = Hx/√8：能量被摊匀",
+               "③ 再乘一次 H/√8：精确回到 x"];
+    function draw(vals) {
+      clear(svg);
+      [1, .5, -.5].forEach(function (lv) {
+        E("line", {x1:BX - 12, y1:ZY - lv * SC, x2:400, y2:ZY - lv * SC,
+          stroke:"rgba(40,33,15,.10)", "stroke-dasharray":"4 4"}, svg);
+        T(svg, BX - 18, ZY - lv * SC + 4, (lv > 0 ? "+" : "") + lv.toFixed(1), {anchor:"end", fs:10.5});
+      });
+      [.75, .25, -.25].forEach(function (rp) {
+        E("line", {x1:BX - 12, y1:ZY - rp * SC, x2:400, y2:ZY - rp * SC,
+          stroke:"rgba(15,118,110,.42)", "stroke-dasharray":"3 4"}, svg);
+      });
+      E("line", {x1:BX - 12, y1:ZY, x2:400, y2:ZY, stroke:"rgba(40,33,15,.35)", "stroke-width":1.3}, svg);
+      T(svg, BX - 18, ZY + 4, "0", {anchor:"end", fs:10.5});
+      T(svg, 400, 245, "细虚线 = 2-bit 的 4 个代表值", {anchor:"end", fs:10.5, fill:TEAL, fw:600});
+      vals.forEach(function (v, i) {
+        var x = BX + i * (BW + GAP), h = Math.abs(v) * SC;
+        E("rect", {x:x, y: v >= 0 ? ZY - h : ZY, width:BW, height:Math.max(1.5, h),
+          rx:4, fill: v >= 0 ? ACC : WARN, opacity:.88}, svg);
+        T(svg, x + BW / 2, v >= 0 ? ZY - h - 6 : ZY + h + 13, fx(v, 2),
+          {anchor:"middle", fs:10.5, fw:700, fill: v >= 0 ? ACC : WARN, mono:1});
+        T(svg, x + BW / 2, 218, "d" + (i + 1), {anchor:"middle", fs:11, fw:600});
+      });
+      T(svg, BX - 12, 245, CAP[idx], {fs:12.5, fw:700, fill:ACC});
+    }
+    function stats(v, i) {
+      var ab = v.map(Math.abs);
+      var mx = Math.max.apply(null, ab), mn = Math.min.apply(null, ab);
+      var qe = dif(v, v.map(q2)), base = dif(x0, x0.map(q2));
+      setRd("hadNorm", fx(nrm(v), 4), "ok");
+      setRd("hadRange", fx(mx / mn, 1) + " ×");
+      if (i === 2) {
+        setK("hadErr", "逆旋转后与原始 x 的偏差");
+        setRd("hadErr", "0.0000000", "ok");
+        setK("hadDiff", "结论");
+        setRd("hadDiff", "完全还原");
+      } else {
+        setK("hadErr", "2-bit 量化的重建误差");
+        setRd("hadErr", fx(qe, 3), "hi");
+        setK("hadDiff", "相比直接量化");
+        setRd("hadDiff", i === 0 ? "基准" : "↓ " + Math.round((1 - qe / base) * 100) + "%",
+          i === 0 ? "" : "ok");
+      }
+      var n = document.getElementById("hadNote");
+      if (n) n.innerHTML = [
+        "这是一个「有离群值」的典型向量：第 1 维几乎占了全部能量，其余 7 维紧贴着 0。用固定的 4 档去切，<b>那些小值被强行拉到 ±0.25，误差比它们本身还大</b>——档位全浪费在了没人用的区间上。",
+        "乘上 Hadamard 矩阵之后，能量被均匀摊到 8 个维度，幅值全部落在 0.24～0.40 之间，<b>动态范围从 49 倍压到不足 2 倍，同样的 4 档，重建误差直接腰斩</b>。再看左边第一格：<b>向量长度一个小数点都没变</b>，这就是正交矩阵「只转不捏」的直接证据。摊匀之后每个维度的分布还变得可预测（数学上服从 Beta 分布），Lloyd-Max 的最优边界才能提前算好、全模型通用。",
+        "H/√8 既正交又对称，于是 <b>Rᵀ = R</b>——再乘一次就精确回到原点，偏差是 0。加上它的元素只有 ±1，整个变换只需要加减法、O(n log n) 就能算完。<b>「转过去很划算，转回来几乎免费」，这就是 Hadamard 当选的全部理由。</b>"
+      ][i];
+    }
+    chipGroup(document.getElementById("figHad"), "data-had", function (v) {
+      var i = +v, to = states[i];
+      idx = i;
+      tween(cur.slice(), to, 620, function (arr) { cur = arr; draw(arr); },
+        function () { cur = to.slice(); draw(cur); });
+      stats(to, i);
+    });
+    draw(cur);
+    stats(x0, 0);
+  })();
+
+  /* ---------- 图 4-1 随机超平面与符号量化 ---------- */
+  (function () {
+    var svg = document.getElementById("svgSign2");
+    if (!svg) return;
+    var OX = 150, OY = 152, R = 116, m = 1, ang = .9, phis = [];
+    function reseed() {
+      phis = [];
+      for (var i = 0; i < 8; i++) phis.push(Math.random() * Math.PI);
+    }
+    reseed();
+    function signs() {
+      var s = [], i;
+      for (i = 0; i < m; i++) s.push(Math.cos(ang - phis[i]) >= 0 ? 1 : -1);
+      return s;
+    }
+    function wedge(sg) {
+      var step = Math.PI / 720, lo = ang, hi = ang, i;
+      function fits(al) {
+        for (var j = 0; j < m; j++) {
+          if ((Math.cos(al - phis[j]) >= 0 ? 1 : -1) !== sg[j]) return false;
+        }
+        return true;
+      }
+      for (i = 0; i < 1440; i++) { if (fits(lo - step)) lo -= step; else break; }
+      for (i = 0; i < 1440; i++) { if (fits(hi + step)) hi += step; else break; }
+      return [lo, hi];
+    }
+    function draw() {
+      clear(svg);
+      var sg = signs(), w = wedge(sg), i, span = w[1] - w[0];
+      E("path", {d:"M" + OX + " " + OY +
+        "L" + (OX + R * Math.cos(w[0])) + " " + (OY - R * Math.sin(w[0])) +
+        "A" + R + " " + R + " 0 " + (span > Math.PI ? 1 : 0) + " 0 " +
+        (OX + R * Math.cos(w[1])) + " " + (OY - R * Math.sin(w[1])) + "Z",
+        fill:"rgba(124,108,240,.20)", stroke:"rgba(124,108,240,.55)", "stroke-width":1.4}, svg);
+      E("circle", {cx:OX, cy:OY, r:R, fill:"none", stroke:"rgba(40,33,15,.18)", "stroke-width":1.4}, svg);
+      var kx = OX + R * Math.cos(ang), ky = OY - R * Math.sin(ang);
+      var kdx = Math.cos(ang) >= 0 ? 14 : -14;
+      var placed = [[kx, ky], [kx + kdx, ky], [kx + kdx * 1.6, ky]];
+      for (i = 0; i < m; i++) {
+        var dx = -Math.sin(phis[i]), dy = Math.cos(phis[i]);
+        E("line", {x1:OX - dx * R, y1:OY + dy * R, x2:OX + dx * R, y2:OY - dy * R,
+          stroke:"rgba(40,33,15,.42)", "stroke-width":1.5}, svg);
+        var cand = [], sgn2, k, z;
+        for (k = 0; k < 3; k++) {
+          for (sgn2 = 1; sgn2 >= -1; sgn2 -= 2) {
+            var rr = R + 11 + k * 12;
+            cand.push([OX + sgn2 * rr * dx, OY - sgn2 * rr * dy]);
+          }
+        }
+        var pick = cand[0];
+        for (k = 0; k < cand.length; k++) {
+          var cx2 = cand[k][0], cy2 = cand[k][1];
+          if (cx2 < 12 || cx2 > 408 || cy2 < 12 || cy2 > 288) continue;
+          if (cx2 > 278 && cy2 < 248) continue;
+          var ok2 = true;
+          for (z = 0; z < placed.length; z++) {
+            if (Math.hypot(cx2 - placed[z][0], cy2 - placed[z][1]) < 15) { ok2 = false; break; }
+          }
+          if (ok2) { pick = cand[k]; break; }
+        }
+        placed.push(pick);
+        T(svg, pick[0], pick[1] + 3, String(i + 1), {anchor:"middle", fs:10, fw:700});
+      }
+      E("line", {x1:OX, y1:OY, x2:kx, y2:ky, stroke:TEAL, "stroke-width":3, "stroke-linecap":"round"}, svg);
+      E("circle", {cx:OX, cy:OY, r:3.5, fill:"rgba(40,33,15,.5)"}, svg);
+      E("circle", {cx:kx, cy:ky, r:8.5, fill:TEAL, stroke:"#fff", "stroke-width":2.5, "class":"hd"}, svg);
+      T(svg, kx + kdx, ky + 5, "k",
+        {anchor: Math.cos(ang) >= 0 ? "start" : "end", fill:TEAL, fs:15, fw:800});
+      T(svg, 292, 26, "存下来的符号", {fs:12.5, fw:700, fill:"#211f1a"});
+      for (i = 0; i < m; i++) {
+        var yy = 50 + i * 25;
+        E("rect", {x:292, y:yy - 14, width:114, height:21, rx:6,
+          fill: sg[i] > 0 ? "rgba(79,70,184,.13)" : "rgba(180,83,9,.13)"}, svg);
+        T(svg, 299, yy + 1, "线 " + (i + 1), {fs:11, fw:600});
+        T(svg, 400, yy + 1, sg[i] > 0 ? "＋ 这边" : "－ 那边",
+          {anchor:"end", fs:11, fw:800, fill: sg[i] > 0 ? ACC : WARN});
+      }
+      T(svg, 412, 288, "紫色扇形 = 仍然可能的方向", {anchor:"end", fs:10.5, fill:ACC2, fw:600});
+      setRd("sgBits", sg.map(function (s) { return s > 0 ? "+" : "−"; }).join(" "));
+      setRd("sgCost", m + " bit");
+      setRd("sgArc", fx(span * 180 / Math.PI, 1) + "°", "hi");
+      setRd("sgRes", fx(180 / m, 1) + "°");
+    }
+    dragify(svg, function (p) { return Math.hypot(p.x - OX, p.y - OY) < R + 30; },
+      function (p) { ang = Math.atan2(OY - p.y, p.x - OX); draw(); });
+    chipGroup(document.getElementById("figSign2"), "data-m", function (v) {
+      if (v === "-1") reseed(); else m = +v;
+      draw();
+    });
+    draw();
+  })();
+
+  /* ---------- 图 5-1 √(π/2) 的来源 ---------- */
+  (function () {
+    var svg = document.getElementById("svgPi");
+    if (!svg) return;
+    var X0 = 40, X1 = 384, BY = 182, H = 124, TOP = .8, st = 0;
+    function px(x) { return X0 + (x + 3.5) / 7 * (X1 - X0); }
+    function py(v) { return BY - v / TOP * H; }
+    function pdf(x) { return Math.exp(-x * x / 2) / Math.sqrt(2 * Math.PI); }
+    function path(from, to, mul, close) {
+      var d = "M" + px(from) + " " + (close ? BY : py(pdf(from) * mul)), x;
+      for (x = from; x <= to + 1e-9; x += .05) d += "L" + px(x) + " " + py(pdf(x) * mul);
+      return close ? d + "L" + px(to) + " " + BY + "Z" : d;
+    }
+    function draw() {
+      clear(svg);
+      E("line", {x1:X0 - 6, y1:BY, x2:X1 + 10, y2:BY, stroke:"rgba(40,33,15,.30)", "stroke-width":1.3}, svg);
+      [-3, -2, -1, 0, 1, 2, 3].forEach(function (t) {
+        E("line", {x1:px(t), y1:BY, x2:px(t), y2:BY + 5, stroke:"rgba(40,33,15,.30)"}, svg);
+        T(svg, px(t), BY + 18, String(t), {anchor:"middle", fs:10.5});
+      });
+      if (st === 0) {
+        E("path", {d:path(-3.5, 3.5, 1, 1), fill:"rgba(79,70,184,.16)", stroke:ACC, "stroke-width":2}, svg);
+        T(svg, X0, 24, "① 标准高斯 g ～ N(0, 1)：正负各占一半，平均值是 0",
+          {fs:12.5, fw:700, fill:ACC});
+        T(svg, px(-1.6), BY - 20, "负的一半", {anchor:"middle", fs:11, fw:700, fill:WARN});
+        T(svg, px(1.6), BY - 20, "正的一半", {anchor:"middle", fs:11, fw:700, fill:ACC});
+      } else {
+        E("path", {d:path(-3.5, 3.5, 1, 0), fill:"none", stroke:"rgba(40,33,15,.28)",
+          "stroke-width":1.4, "stroke-dasharray":"5 4"}, svg);
+        E("path", {d:path(0, 3.5, 2, 1), fill:"rgba(79,70,184,.16)", stroke:ACC, "stroke-width":2}, svg);
+        T(svg, X0, 24, st === 2
+          ? "③ 折过来这条曲线的重心，就落在 0.798——不是 1，所以估计值系统性偏小"
+          : "② 乘上 sign(g) 就等于取绝对值：负半边整个翻到右边，高度翻倍",
+          {fs:12.5, fw:700, fill: st === 2 ? BAD : WARN});
+        T(svg, px(-2.4), BY - 34, "虚线 = 原来的高斯", {anchor:"middle", fs:10.5, fw:600});
+      }
+      if (st === 2) {
+        var mu = Math.sqrt(2 / Math.PI);
+        E("line", {x1:px(mu), y1:BY, x2:px(mu), y2:py(.66), stroke:BAD,
+          "stroke-width":2, "stroke-dasharray":"5 3"}, svg);
+        E("circle", {cx:px(mu), cy:BY, r:5, fill:BAD}, svg);
+        T(svg, px(mu) + 9, py(.66) - 5, "平均值 = √(2/π) ≈ 0.798", {fs:12.5, fw:800, fill:BAD});
+      }
+      T(svg, X1 + 12, BY + 18, "g", {anchor:"end", fs:11, fw:700});
+    }
+    chipGroup(document.getElementById("figPi"), "data-pi", function (v) { st = +v; draw(); });
+    draw();
+  })();
+
+
+  /* ---------- 终章 复述卡 ---------- */
+  var rtList = document.getElementById("rtList");
+  if (rtList) {
+    var rtBtns = document.querySelectorAll(".rt-modes .chip");
+    Array.prototype.forEach.call(rtBtns, function(b){
+      b.addEventListener("click", function(){
+        Array.prototype.forEach.call(rtBtns, function(x){ x.classList.remove("on"); });
+        b.classList.add("on");
+        if (b.getAttribute("data-rt") === "hint") {
+          rtList.classList.add("hint");
+          Array.prototype.forEach.call(rtList.querySelectorAll(".rl"), function(r){ r.classList.remove("show"); });
+        } else {
+          rtList.classList.remove("hint");
+        }
+      });
+    });
+    Array.prototype.forEach.call(rtList.querySelectorAll(".rl"), function(r){
+      r.addEventListener("click", function(e){
+        var t = e.target;
+        while (t && t !== r) { if (t.tagName === "A") return; t = t.parentNode; }
+        if (rtList.classList.contains("hint")) r.classList.toggle("show");
+      });
+    });
+  }
+
+})();
+</script>
+</body>
+</html>
