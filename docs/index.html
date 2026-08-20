@@ -1,173 +1,340 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>aihw-starter · AI 硬件商业化最佳实践案例库</title>
 <meta name="description" content="AI 硬件行业热门品类的商业化最佳实践案例库 — 客观中立，从生意可行性、架构、算账三个角度沉淀。">
+<meta name="google" content="notranslate">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0b0d12;
-    --bg-2: #131722;
-    --fg: #e8ecf3;
-    --fg-2: #98a2b3;
-    --accent: #4f8cff;
-    --accent-2: #7aa9ff;
-    --border: #2a3142;
-    --tag-ok: #1f7a3a;
-    --tag-wait: #7a5a1f;
-    --tag-future: #56607a;
-    --max-w: 1080px;
+    --bg:        #0a0a0f;
+    --surface:   #101018;
+    --surface-2: #14141d;
+    --line:      rgba(255,255,255,0.09);
+    --line-2:    rgba(255,255,255,0.16);
+    --fg:        #f2f4f8;
+    --fg-2:      #9aa3b2;
+    --fg-3:      #6b7280;
+    --accent:    #4D6BFE;
+    --accent-fg: #ffffff;
+    --accent-dim: rgba(77,107,254,0.12);
+    --ok:        #34d399;
+    --wait:      #fbbf24;
+    --future:    #6b7280;
+    --display: "Space Grotesk", -apple-system, "PingFang SC", sans-serif;
+    --sans: "DM Sans", -apple-system, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --max: 1140px;
+    --gut: 32px;
   }
+
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 76px; }
   body {
-    margin: 0; padding: 0;
+    margin: 0;
     background: var(--bg);
     color: var(--fg);
-    font-family: -apple-system, "PingFang SC", "Helvetica Neue", "Segoe UI", "Microsoft YaHei", sans-serif;
-    line-height: 1.65;
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.7;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  a { color: var(--accent-2); text-decoration: none; }
-  a:hover { color: var(--accent); text-decoration: underline; }
-  .wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+  a { color: inherit; text-decoration: none; }
+  code, kbd { font-family: var(--mono); font-size: 0.875em; }
 
-  /* Hero */
-  .hero {
-    padding: 72px 0 56px;
-    border-bottom: 1px solid var(--border);
-    background: radial-gradient(1200px 600px at 50% -100px, rgba(79,140,255,0.18), transparent 60%);
-  }
-  .hero h1 {
-    margin: 0 0 12px;
-    font-size: 40px;
-    letter-spacing: -0.5px;
-  }
-  .hero .tagline {
-    color: var(--fg-2);
-    font-size: 18px;
-    margin: 0 0 24px;
-    max-width: 720px;
-  }
-  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-  .btn {
-    display: inline-block;
-    padding: 10px 18px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    color: var(--fg);
-    font-size: 14px;
-  }
-  .btn-primary { background: var(--accent); border-color: var(--accent); }
-  .btn-primary:hover { background: var(--accent-2); text-decoration: none; }
-  .btn:hover { text-decoration: none; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gut); }
 
-  /* Sections */
-  section { padding: 56px 0; border-bottom: 1px solid var(--border); }
-  section h2 { font-size: 26px; margin: 0 0 8px; letter-spacing: -0.3px; }
-  section .sub { color: var(--fg-2); margin: 0 0 28px; }
-
-  /* Stance card */
-  .stance {
-    padding: 20px 24px;
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    border-radius: 6px;
-    color: var(--fg-2);
-    font-size: 15px;
-  }
-  .stance strong { color: var(--fg); }
-
-  /* Categories grid */
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-  .card {
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px 22px;
-    transition: border-color 0.15s;
-  }
-  .card:hover { border-color: var(--accent); }
-  .card h3 {
-    margin: 0 0 8px;
-    font-size: 18px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .card h3 a { color: var(--fg); }
-  .card h3 a:hover { color: var(--accent); text-decoration: none; }
-  .tag {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
+  /* ---------- eyebrow ---------- */
+  .eyebrow {
+    font-family: var(--display);
     font-size: 11px;
     font-weight: 500;
-    color: #fff;
-    line-height: 1.5;
-    flex-shrink: 0;
-  }
-  .tag-ok { background: var(--tag-ok); }
-  .tag-wait { background: var(--tag-wait); }
-  .tag-future { background: var(--tag-future); }
-  .card p { color: var(--fg-2); font-size: 14px; margin: 0 0 12px; }
-  .card .links { font-size: 13px; }
-  .card .links a { margin-right: 12px; }
-
-  /* Sub-section grid (2 cols) */
-  .grid-2 { grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); }
-
-  /* How-to */
-  .howto {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 16px;
-    margin-top: 8px;
-  }
-  .howto .step {
-    padding: 18px 20px;
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-  }
-  .howto .step .label {
-    font-size: 12px;
-    color: var(--accent-2);
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
-    margin-bottom: 6px;
+    color: var(--accent);
+    margin: 0 0 14px;
   }
-  .howto .step h4 { margin: 0 0 8px; font-size: 16px; }
-  .howto .step p { color: var(--fg-2); font-size: 13px; margin: 0; }
-  .howto .step a { font-size: 13px; }
+  .eyebrow.muted { color: var(--fg-3); }
 
-  /* Footer */
-  footer {
-    padding: 36px 0 56px;
-    color: var(--fg-2);
-    font-size: 13px;
-    text-align: center;
+  /* ---------- top nav ---------- */
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(10,10,15,0.82);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--line);
   }
-  footer a { color: var(--fg-2); }
-  footer .links { margin-top: 12px; }
-  footer .links a { margin: 0 8px; }
+  .nav-in {
+    max-width: var(--max); margin: 0 auto; padding: 0 var(--gut);
+    height: 60px; display: flex; align-items: center; gap: 28px;
+  }
+  .brand {
+    font-family: var(--display);
+    font-weight: 700; font-size: 17px; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 9px;
+  }
+  .brand .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0;
+  }
+  .nav-links { margin-left: auto; display: flex; gap: 24px; font-size: 14px; color: var(--fg-2); }
+  .nav-links a { transition: color .15s; }
+  .nav-links a:hover { color: var(--fg); }
+  @media (max-width: 820px) { .nav-links a.opt { display: none; } }
 
-  @media (max-width: 600px) {
-    .hero { padding: 48px 0 36px; }
-    .hero h1 { font-size: 30px; }
-    .hero .tagline { font-size: 16px; }
-    section { padding: 40px 0; }
-    section h2 { font-size: 22px; }
+  /* ---------- hero ---------- */
+  .hero { padding: 108px 0 88px; border-bottom: 1px solid var(--line); }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 5px 13px 5px 10px;
+    border: 1px solid var(--line-2); border-radius: 100px;
+    font-size: 12.5px; color: var(--fg-2);
+    margin-bottom: 28px;
+  }
+  .badge .pulse {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--ok);
+    box-shadow: 0 0 0 3px rgba(52,211,153,0.16);
+  }
+  .hero h1 {
+    font-family: var(--display);
+    font-size: clamp(40px, 6.4vw, 68px);
+    font-weight: 700;
+    line-height: 1.06;
+    letter-spacing: -0.032em;
+    margin: 0 0 26px;
+    max-width: 15em;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero .lede {
+    font-size: 18px; color: var(--fg-2);
+    max-width: 63ch; margin: 0 0 14px;
+  }
+  .hero .lede strong { color: var(--fg); font-weight: 500; }
+  .hero .anti {
+    font-size: 15px; color: var(--fg-3);
+    max-width: 63ch; margin: 0 0 36px;
+  }
+  .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 20px; border-radius: 8px;
+    font-size: 14.5px; font-weight: 500;
+    border: 1px solid var(--line-2); color: var(--fg);
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  .btn:hover { border-color: var(--fg-3); background: var(--surface); }
+  .btn-primary {
+    background: var(--accent); border-color: var(--accent); color: var(--accent-fg);
+  }
+  .btn-primary:hover { background: #3f5bef; border-color: #3f5bef; color: #fff; }
+  .btn .arw { transition: transform .18s; }
+  .btn:hover .arw { transform: translateX(3px); }
+
+  /* ---------- stats strip ---------- */
+  .stats {
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .stats-in {
+    max-width: var(--max); margin: 0 auto; padding: 0 var(--gut);
+    display: grid; grid-template-columns: repeat(4, 1fr);
+  }
+  .stat { padding: 30px 0; }
+  .stat + .stat { border-left: 1px solid var(--line); padding-left: 28px; }
+  .stat .n {
+    font-family: var(--display);
+    font-size: 30px; font-weight: 600; letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  .stat .l { font-size: 13px; color: var(--fg-3); margin-top: 2px; }
+  @media (max-width: 720px) {
+    .stats-in { grid-template-columns: repeat(2, 1fr); }
+    .stat { padding: 22px 0; }
+    .stat + .stat { border-left: none; padding-left: 0; }
+    .stat:nth-child(even) { border-left: 1px solid var(--line); padding-left: 24px; }
+    .stat:nth-child(n+3) { border-top: 1px solid var(--line); }
+  }
+
+  /* ---------- section shell ---------- */
+  section { padding: 92px 0; border-bottom: 1px solid var(--line); }
+  .sec-head { margin-bottom: 44px; max-width: 70ch; }
+  .sec-head h2 {
+    font-family: var(--display);
+    font-size: clamp(26px, 3.2vw, 36px);
+    font-weight: 600; letter-spacing: -0.025em; line-height: 1.2;
+    margin: 0 0 12px;
+  }
+  .sec-head p:not(.eyebrow) { color: var(--fg-2); font-size: 16px; margin: 0; }
+
+  /* ---------- stance ---------- */
+  .stance {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    background: var(--line); border: 1px solid var(--line);
+  }
+  .stance .col { background: var(--bg); padding: 26px 26px 28px; }
+  .stance .col h4 {
+    font-family: var(--display);
+    font-size: 16px; font-weight: 600; margin: 0 0 8px; letter-spacing: -0.01em;
+  }
+  .stance .col p { color: var(--fg-2); font-size: 14px; margin: 0; }
+  @media (max-width: 800px) { .stance { grid-template-columns: 1fr; } }
+
+  /* ---------- cards ---------- */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 16px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); gap: 16px; }
+  .card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px 24px 22px;
+    display: flex; flex-direction: column;
+    transition: border-color .18s, background .18s, transform .18s;
+  }
+  .card:hover { border-color: var(--line-2); background: var(--surface-2); transform: translateY(-2px); }
+  .card .idx {
+    font-family: var(--mono);
+    font-size: 11.5px; color: var(--fg-3); letter-spacing: 0.06em;
+    margin-bottom: 12px;
+  }
+  .card h3 {
+    font-family: var(--display);
+    font-size: 17.5px; font-weight: 600; letter-spacing: -0.012em;
+    margin: 0 0 10px; line-height: 1.35;
+  }
+  .card h3 a { transition: color .15s; }
+  .card:hover h3 a { color: var(--accent); }
+  .card p { color: var(--fg-2); font-size: 14px; margin: 0 0 16px; flex: 1; }
+  .card p strong { color: var(--fg); font-weight: 500; }
+  .card .links {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    font-size: 13px; color: var(--fg-2);
+    padding-top: 14px; border-top: 1px solid var(--line);
+  }
+  .card .links a { transition: color .15s; }
+  .card .links a:hover { color: var(--accent); }
+
+  .pill {
+    position: absolute; top: 22px; right: 22px;
+    font-family: var(--mono);
+    font-size: 10.5px; letter-spacing: 0.05em;
+    padding: 3px 9px; border-radius: 100px;
+    border: 1px solid var(--line-2); color: var(--fg-3);
+  }
+  .pill-ok    { color: var(--ok);    border-color: rgba(52,211,153,0.32);  background: rgba(52,211,153,0.07); }
+  .pill-wait  { color: var(--wait);  border-color: rgba(251,191,36,0.30);  background: rgba(251,191,36,0.07); }
+  .pill-future{ color: var(--future);border-color: var(--line-2); }
+
+  /* feature card (深度方案) */
+  .feature {
+    border: 1px solid var(--line); border-radius: 14px;
+    background:
+      linear-gradient(180deg, rgba(77,107,254,0.13), rgba(77,107,254,0) 58%),
+      var(--surface);
+    padding: 34px 34px 30px;
+  }
+  .feature h3 {
+    font-family: var(--display);
+    font-size: clamp(21px, 2.5vw, 27px); font-weight: 600;
+    letter-spacing: -0.022em; margin: 0 0 14px; line-height: 1.25;
+  }
+  .feature > p { color: var(--fg-2); font-size: 15.5px; margin: 0 0 24px; max-width: 74ch; }
+  .kv { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-bottom: 26px; }
+  .kv div { background: var(--bg); padding: 16px 18px; }
+  .kv .k { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-3); }
+  .kv .v { font-family: var(--display); font-size: 19px; font-weight: 600; letter-spacing: -0.015em; margin-top: 3px; }
+  .kv .v small { font-size: 12px; font-weight: 400; color: var(--fg-3); font-family: var(--sans); letter-spacing: 0; }
+
+  /* ---------- roles ---------- */
+  .roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(245px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .role { background: var(--surface); padding: 26px 24px 24px; transition: background .18s; }
+  .role:hover { background: var(--surface-2); }
+  .role .eyebrow { margin-bottom: 10px; }
+  .role h4 { font-family: var(--display); font-size: 16px; font-weight: 600; margin: 0 0 9px; letter-spacing: -0.01em; }
+  .role p:not(.eyebrow) { color: var(--fg-2); font-size: 13.5px; margin: 0; }
+  .role p code { color: var(--fg); background: rgba(255,255,255,0.05); padding: 1px 5px; border-radius: 4px; }
+
+  /* ---------- terminal ---------- */
+  .term {
+    border: 1px solid var(--line); border-radius: 12px;
+    background: var(--surface); overflow: hidden;
+    font-family: var(--mono); font-size: 13px;
+  }
+  .term-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 11px 16px; border-bottom: 1px solid var(--line);
+    color: var(--fg-3); font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .term-bar .lamp { width: 9px; height: 9px; border-radius: 50%; background: var(--line-2); }
+  .term-body { padding: 18px 20px; line-height: 1.95; overflow-x: auto; }
+  .term-body .ln { white-space: pre; color: var(--fg-2); }
+  .term-body .pr { color: var(--accent); user-select: none; }
+  .term-body .cm { color: var(--fg-3); }
+  .term-body .hl { color: var(--fg); }
+  .copy {
+    margin-left: auto; font-family: var(--sans); font-size: 12px;
+    color: var(--fg-2); background: none; border: 1px solid var(--line-2);
+    border-radius: 6px; padding: 4px 11px; cursor: pointer;
+    letter-spacing: 0; text-transform: none; transition: color .15s, border-color .15s;
+  }
+  .copy:hover { color: var(--fg); border-color: var(--fg-3); }
+
+  /* ---------- cta ---------- */
+  .cta { padding: 96px 0; text-align: center; border-bottom: 1px solid var(--line); }
+  .cta h2 {
+    font-family: var(--display);
+    font-size: clamp(27px, 3.6vw, 40px); font-weight: 600;
+    letter-spacing: -0.028em; margin: 0 0 14px; line-height: 1.18;
+  }
+  .cta p:not(.eyebrow) { color: var(--fg-2); margin: 0 auto 32px; max-width: 56ch; }
+  .cta .actions { justify-content: center; }
+
+  /* ---------- footer ---------- */
+  footer { padding: 44px 0 60px; color: var(--fg-3); font-size: 13.5px; }
+  .foot-in { display: flex; flex-wrap: wrap; gap: 14px 26px; align-items: center; }
+  .foot-in .sep { color: var(--line-2); }
+  footer a { transition: color .15s; }
+  footer a:hover { color: var(--fg); }
+  .foot-links { margin-left: auto; display: flex; gap: 22px; flex-wrap: wrap; }
+  @media (max-width: 700px) { .foot-links { margin-left: 0; } }
+
+  @media (max-width: 640px) {
+    :root { --gut: 20px; }
+    .hero { padding: 64px 0 56px; }
+    section, .cta { padding: 60px 0; }
+    .sec-head { margin-bottom: 32px; }
+    .feature { padding: 24px 22px; }
   }
 </style>
 </head>
 <body>
 
-<header class="hero">
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="#top"><span class="dot"></span>aihw-starter</a>
+    <div class="nav-links">
+      <a href="#categories">品类</a>
+      <a href="#deep">深度方案</a>
+      <a class="opt" href="#howto">怎么用</a>
+      <a class="opt" href="#awesome">生态索引</a>
+      <a href="https://github.com/smile-xuc/aihw-starter">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
   <div class="wrap">
-    <h1>aihw-starter</h1>
-    <p class="tagline">AI 硬件行业热门品类的<strong>商业化最佳实践案例库</strong> — 不是 API 镜像，不是开源导航，而是从「这门生意能不能做、怎么搭、怎么算账」出发的工程化案例集。</p>
-    <div class="hero-actions">
-      <a class="btn btn-primary" href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-category">按品类浏览</a>
+    <div class="badge"><span class="pulse"></span>6 个品类已收录 · 持续更新</div>
+    <h1>AI 硬件的生意，<em>能不能做</em>、怎么搭、怎么算账</h1>
+    <p class="lede">AI 硬件行业热门品类的<strong>商业化最佳实践案例库</strong>。每个品类都按同一套结构拆开：商业可行性、技术方案、成本模型、真实案例、常见问题、可跑 demo。</p>
+    <p class="anti">不是 API 文档镜像，不是开源项目导航，不绑定单一方案商 —— 结论以公开信息与工程实测为准，跑不通的地方直说跑不通。</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="#categories">按品类浏览 <span class="arw">→</span></a>
       <a class="btn" href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-solution">按方案浏览</a>
       <a class="btn" href="https://github.com/smile-xuc/aihw-starter">GitHub 仓库</a>
       <a class="btn" href="https://github.com/smile-xuc/aihw-starter/blob/master/faq.md">通用 FAQ</a>
@@ -175,15 +342,53 @@
   </div>
 </header>
 
-<section>
+<div class="stats">
+  <div class="stats-in">
+    <div class="stat"><div class="n">6</div><div class="l">已收录品类</div></div>
+    <div class="stat"><div class="n">3</div><div class="l">完整版拆解</div></div>
+    <div class="stat"><div class="n">6</div><div class="l">文档维度 / 品类</div></div>
+    <div class="stat"><div class="n">2</div><div class="l">生态索引全集</div></div>
+  </div>
+</div>
+
+<section id="stance">
   <div class="wrap">
-    <h2>热门品类</h2>
-    <p class="sub">6 个已收录品类 + 若干计划中方向。完整版 = README + 商业 + 方案 + 算账 + 案例 + FAQ + demo；占位版结构齐备，内容持续补充。</p>
+    <div class="sec-head">
+      <p class="eyebrow">Editorial stance</p>
+      <h2>这个仓库的立场</h2>
+      <p>案例库的价值取决于结论可信。以下三条是写每一页时的硬约束。</p>
+    </div>
+    <div class="stance">
+      <div class="col">
+        <h4>客观中立</h4>
+        <p>不绑定单一方案商，欢迎补充豆包 / Kimi / 智谱 / DeepSeek / OpenAI 等主流方案的接入方式与成本对照。</p>
+      </div>
+      <div class="col">
+        <h4>算账优先</h4>
+        <p>每个品类都单独给 <code>03-cost.md</code>，把 BOM、云端调用、订阅定价放在一起算，而不是只讲能力清单。</p>
+      </div>
+      <div class="col">
+        <h4>跑不通就说跑不通</h4>
+        <p>订阅制在哪些品类已有公开样板、哪些仍在免费送阶段，按现状标注，不做乐观外推。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="categories">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Categories</p>
+      <h2>热门品类</h2>
+      <p>完整版 = README + 商业 + 方案 + 算账 + 案例 + FAQ + demo；占位版结构齐备，内容持续补充。</p>
+    </div>
     <div class="grid">
 
       <div class="card">
-        <h3><a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-category/01-ipc">01 · IPC / AI 视觉</a> <span class="tag tag-ok">完整版</span></h3>
-        <p>视频以文搜图 + 摘要订阅；唯一 <strong>已知跑通</strong> 的 AI 硬件订阅样板间，转化路径清晰。</p>
+        <span class="pill pill-ok">完整版</span>
+        <div class="idx">01</div>
+        <h3><a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-category/01-ipc">IPC / AI 视觉</a></h3>
+        <p>视频以文搜图 + 摘要订阅；唯一<strong>已知跑通</strong>的 AI 硬件订阅样板间，转化路径清晰。</p>
         <div class="links">
           <a href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-category/01-ipc/01-business.md">商业</a>
           <a href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-category/01-ipc/03-cost.md">算账</a>
@@ -192,7 +397,9 @@
       </div>
 
       <div class="card">
-        <h3><a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-category/02-ai-glasses">02 · AI 眼镜</a> <span class="tag tag-wait">占位版</span></h3>
+        <span class="pill pill-wait">占位版</span>
+        <div class="idx">02</div>
+        <h3><a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-category/02-ai-glasses">AI 眼镜</a></h3>
         <p>多模态交互套件，端到端打包；Ray-Ban Meta 后整个赛道被加速点燃，国内品牌密集入场。</p>
         <div class="links">
           <a href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-category/02-ai-glasses/01-business.md">商业</a>
@@ -202,8 +409,10 @@
       </div>
 
       <div class="card">
-        <h3><a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-category/03-toys-companion">03 · AI 玩具 / 陪伴 / 儿童伴学</a> <span class="tag tag-ok">完整版</span></h3>
-        <p>自定义对话角色 + 声音克隆，IP 与儿童陪伴双线推进；订阅制目前 <strong>未跑通</strong>，多数处于第一年免费送阶段。</p>
+        <span class="pill pill-ok">完整版</span>
+        <div class="idx">03</div>
+        <h3><a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-category/03-toys-companion">AI 玩具 / 陪伴 / 儿童伴学</a></h3>
+        <p>自定义对话角色 + 声音克隆，IP 与儿童陪伴双线推进；订阅制目前<strong>未跑通</strong>，多数处于第一年免费送阶段。</p>
         <div class="links">
           <a href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-category/03-toys-companion/01-business.md">商业</a>
           <a href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-category/03-toys-companion/03-cost.md">算账</a>
@@ -212,12 +421,9 @@
       </div>
 
       <div class="card">
-        <h3><a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-category">Agent 硬件（如桌面盒子）</a> <span class="tag tag-future">计划中</span></h3>
-        <p>多 Agent 协同 + 端云模型协同。桌面级 AI 终端，形态以盒子 / 屏 / 小机箱为主，多设备协同与本地化记忆为关键差异化。</p>
-      </div>
-
-      <div class="card">
-        <h3><a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-category/05-desktop-pet">05 · 桌宠</a> <span class="tag tag-wait">占位版</span></h3>
+        <span class="pill pill-ok">完整版</span>
+        <div class="idx">05</div>
+        <h3><a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-category/05-desktop-pet">桌宠</a></h3>
         <p>动作 / 情绪标签 + 情感 TTS，三路同步驱动表情、动作、语音；当前以「AI 卖点 + 硬件溢价」模式为主。</p>
         <div class="links">
           <a href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-category/05-desktop-pet/01-business.md">商业</a>
@@ -227,7 +433,9 @@
       </div>
 
       <div class="card">
-        <h3><a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-category/06-ai-earphone">06 · AI 耳机</a> <span class="tag tag-wait">占位版</span></h3>
+        <span class="pill pill-wait">占位版</span>
+        <div class="idx">06</div>
+        <h3><a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-category/06-ai-earphone">AI 耳机</a></h3>
         <p>实时翻译 / 对话 / 听记多用途；白牌 AI 化已成卖点，<strong>真实激活率约 50%</strong>，订阅化极度受限。</p>
         <div class="links">
           <a href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-category/06-ai-earphone/01-business.md">商业</a>
@@ -237,7 +445,9 @@
       </div>
 
       <div class="card">
-        <h3><a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-category/07-recorder">07 · 录音卡 / 会议盒子</a> <span class="tag tag-wait">占位版</span></h3>
+        <span class="pill pill-wait">占位版</span>
+        <div class="idx">07</div>
+        <h3><a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-category/07-recorder">录音卡 / 会议盒子</a></h3>
         <p>ASR + 纪要 Agent，2–5 分钟出结构化纪要；订阅化在专业用户群中已有公开样板。</p>
         <div class="links">
           <a href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-category/07-recorder/01-business.md">商业</a>
@@ -247,12 +457,23 @@
       </div>
 
       <div class="card">
-        <h3>智能手表 / 健康可穿戴 <span class="tag tag-future">计划中</span></h3>
+        <span class="pill pill-future">计划中</span>
+        <div class="idx">—</div>
+        <h3><a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-category">Agent 硬件 / 桌面盒子</a></h3>
+        <p>多 Agent 协同 + 端云模型协同。形态以盒子 / 屏 / 小机箱为主，多设备协同与本地化记忆为关键差异化。</p>
+      </div>
+
+      <div class="card">
+        <span class="pill pill-future">计划中</span>
+        <div class="idx">—</div>
+        <h3>智能手表 / 健康可穿戴</h3>
         <p>市场量级亿级以上，但 AI 深度与订阅商业化仍处早期。Whoop / Oura 提供海外健康订阅样板。</p>
       </div>
 
       <div class="card">
-        <h3>具身智能（机械臂 / 四足 / 人形） <span class="tag tag-future">计划中</span></h3>
+        <span class="pill pill-future">计划中</span>
+        <div class="idx">—</div>
+        <h3>具身智能 / 机械臂 / 四足 / 人形</h3>
         <p>Qwen-Robot Suite 三模型矩阵：操作（RobotManip）+ 导航（RobotNav）+ 世界模型（RobotWorld），跨 20+ 本体形态的通用底座。</p>
       </div>
 
@@ -260,61 +481,91 @@
   </div>
 </section>
 
-<section>
+<section id="deep">
   <div class="wrap">
-    <h2>深度方案</h2>
-    <p class="sub">单个方案的工程化拆解，含可视化架构页与可运行骨架</p>
-    <div class="grid">
-      <div class="card">
-        <h3><a href="omni-runtime-host.html">Omni 实时端到端 · Runtime Host 中间层</a> <span class="tag tag-ok">交互页</span></h3>
-        <p>Qwen-Omni-Realtime 做端到端实时语音，配一层自建宿主接到硬件上。首包时延数百毫秒、支持语义打断，适合桌面 / 伴随机器人。六类职责 + 三条落地路径 + 三个执行语义 + <code>session.update</code> 硬约束。</p>
-        <div class="links">
-          <a href="omni-runtime-host.html">可视化架构页</a>
-          <a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-solution/01-qwen/omni-realtime">方案全文</a>
-          <a href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-solution/01-qwen/omni-realtime/harness_skeleton.py">Python 骨架</a>
-        </div>
+    <div class="sec-head">
+      <p class="eyebrow">Deep dive</p>
+      <h2>深度方案</h2>
+      <p>单个方案的工程化拆解，含可视化架构页与可运行骨架。</p>
+    </div>
+    <div class="feature">
+      <p class="eyebrow muted">Qwen-Omni-Realtime + Runtime Host</p>
+      <h3>端到端实时语音：模型直连硬件，中间只留一层宿主</h3>
+      <p>用 Qwen-Omni-Realtime 做端到端实时语音，配一层自建宿主（Runtime Host）把模型接到硬件上。首包时延数百毫秒、支持语义打断，适合桌面 / 伴随机器人等对拟人度要求高的高价值单品。</p>
+      <div class="kv">
+        <div><div class="k">First packet</div><div class="v">347 ms <small>实测参考</small></div></div>
+        <div><div class="k">vs 三段式阻塞</div><div class="v">↓ 94% <small>5502 → 347 ms</small></div></div>
+        <div><div class="k">Host 职责</div><div class="v">6 类 <small>装配 / 路由 / 状态机…</small></div></div>
+        <div><div class="k">落地路径</div><div class="v">3 条 <small>按工具名前缀分流</small></div></div>
+      </div>
+      <div class="links" style="display:flex;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--fg-2);padding-top:0;border:0;">
+        <a class="btn btn-primary" href="omni-runtime-host.html">可视化架构页 <span class="arw">→</span></a>
+        <a class="btn" href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-solution/01-qwen/omni-realtime">方案全文</a>
+        <a class="btn" href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-solution/01-qwen/omni-realtime/harness_skeleton.py">Python 骨架</a>
       </div>
     </div>
   </div>
 </section>
 
-<section>
+<section id="howto">
   <div class="wrap">
-    <h2>怎么用这个仓库</h2>
-    <p class="sub">不同角色的最快入口</p>
-    <div class="howto">
-      <div class="step">
-        <div class="label">方案商</div>
+    <div class="sec-head">
+      <p class="eyebrow">Get started</p>
+      <h2>怎么用这个仓库</h2>
+      <p>四类读者，四条最短路径。</p>
+    </div>
+    <div class="roles">
+      <div class="role">
+        <p class="eyebrow">Solution vendor</p>
         <h4>判断 → 搭建 → 算账</h4>
-        <p>先读品类 <code>01-business.md</code> 判断要不要做，再读 <code>02-solution.md</code> 看架构，最后读 <code>03-cost.md</code> 算账。</p>
+        <p>先读 <code>01-business.md</code> 判断要不要做，再读 <code>02-solution.md</code> 看架构，最后 <code>03-cost.md</code> 算账。</p>
       </div>
-      <div class="step">
-        <div class="label">品牌商</div>
+      <div class="role">
+        <p class="eyebrow">Brand owner</p>
         <h4>看全景 → 选方向</h4>
-        <p>先看本页全品类总览，锁定方向后进入对应 solution 的 <code>01-business.md</code>。</p>
+        <p>先看本页全品类总览，锁定方向后进入对应品类的 <code>01-business.md</code>。</p>
       </div>
-      <div class="step">
-        <div class="label">开发者</div>
+      <div class="role">
+        <p class="eyebrow">Developer</p>
         <h4>跑 demo → 改造</h4>
-        <p>进入 <code>solutions/0X-xxx/demo/</code> 跑通示例 → 改造成自家产品。</p>
+        <p>进入 <code>demo/</code> 跑通示例，再改造成自家产品；实时语音直接看 Runtime Host 骨架。</p>
       </div>
-      <div class="step">
-        <div class="label">研究者</div>
+      <div class="role">
+        <p class="eyebrow">Researcher</p>
         <h4>看生态全集</h4>
-        <p>开源项目去 <a href="https://github.com/smile-xuc/aihw-starter/tree/master/awesome/open-source">awesome/open-source/</a>，在售产品去 <a href="https://github.com/smile-xuc/aihw-starter/tree/master/awesome/commercial-products">awesome/commercial-products/</a>。</p>
+        <p>开源项目去 <code>awesome/open-source/</code>，在售产品去 <code>awesome/commercial-products/</code>。</p>
+      </div>
+    </div>
+
+    <div class="term" style="margin-top:24px;">
+      <div class="term-bar">
+        <span class="lamp"></span> clone &amp; browse
+        <button class="copy" id="copyBtn" type="button">复制</button>
+      </div>
+      <div class="term-body">
+<div class="ln"><span class="pr">$</span> git clone https://github.com/smile-xuc/aihw-starter.git</div>
+<div class="ln"><span class="pr">$</span> cd aihw-starter</div>
+<div class="ln"><span class="cm"># 按品类看：商业 → 方案 → 算账</span></div>
+<div class="ln"><span class="pr">$</span> open <span class="hl">solutions/by-category/01-ipc/</span></div>
+<div class="ln"><span class="cm"># 按方案看：千问方案与其 Omni 实时子形态</span></div>
+<div class="ln"><span class="pr">$</span> open <span class="hl">solutions/by-solution/01-qwen/omni-realtime/</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<section>
+<section id="awesome">
   <div class="wrap">
-    <h2>生态资源索引</h2>
-    <p class="sub">solutions/by-category/0X-xxx/04-cases.md（精选样板） + awesome/（全集索引）的层级关系</p>
-    <div class="grid grid-2">
+    <div class="sec-head">
+      <p class="eyebrow">Ecosystem index</p>
+      <h2>生态资源索引</h2>
+      <p>品类页里的 <code>04-cases.md</code> 收精选样板，<code>awesome/</code> 收全集索引，两者是精选与全量的关系。</p>
+    </div>
+    <div class="grid-2">
       <div class="card">
+        <div class="idx">OPEN SOURCE</div>
         <h3><a href="https://github.com/smile-xuc/aihw-starter/tree/master/awesome/open-source">awesome / open-source</a></h3>
-        <p>开源项目索引（含 GitHub 项目库），覆盖 ESP-IDF / Arduino / RPi / RTOS 多种栈，按 6 大品类分类。</p>
+        <p>开源项目索引，覆盖 ESP-IDF / Arduino / RPi / RTOS 多种栈，按 6 大品类分类。</p>
         <div class="links">
           <a href="https://github.com/smile-xuc/aihw-starter/blob/master/awesome/open-source/by-category/03-toys-companion.md">玩具陪伴</a>
           <a href="https://github.com/smile-xuc/aihw-starter/blob/master/awesome/open-source/by-category/01-ipc.md">IPC</a>
@@ -322,6 +573,7 @@
         </div>
       </div>
       <div class="card">
+        <div class="idx">COMMERCIAL</div>
         <h3><a href="https://github.com/smile-xuc/aihw-starter/tree/master/awesome/commercial-products">awesome / commercial-products</a></h3>
         <p>在售商业化产品案例索引，含官网 / 形态 / 定价 / 目标市场 / AI 能力 / 公开数据 / 商业模式等结构化字段。</p>
         <div class="links">
@@ -334,13 +586,29 @@
   </div>
 </section>
 
-<footer>
+<div class="cta">
   <div class="wrap">
-    <div>本仓库内容采用 <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> 协议；代码采用 MIT 协议。</div>
-    <div class="links">
-      <a href="https://github.com/smile-xuc/aihw-starter">GitHub</a> ·
-      <a href="https://github.com/smile-xuc/aihw-starter/blob/master/CONTRIBUTING.md">贡献指南</a> ·
+    <p class="eyebrow">Contribute</p>
+    <h2>缺哪个品类，就补哪个品类</h2>
+    <p>方案、成本模型、真实案例、踩坑记录都欢迎 PR。补充其他主流模型方案的接入方式与成本对照，同样属于仓库范围。</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="https://github.com/smile-xuc/aihw-starter/blob/master/CONTRIBUTING.md">贡献指南 <span class="arw">→</span></a>
+      <a class="btn" href="https://github.com/smile-xuc/aihw-starter/issues">提 Issue</a>
+      <a class="btn" href="https://github.com/smile-xuc/aihw-starter">Star 仓库</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap foot-in">
+    <span>内容 CC BY 4.0</span>
+    <span class="sep">·</span>
+    <span>代码 MIT</span>
+    <div class="foot-links">
+      <a href="https://github.com/smile-xuc/aihw-starter">GitHub</a>
+      <a href="https://github.com/smile-xuc/aihw-starter/blob/master/CONTRIBUTING.md">贡献指南</a>
       <a href="https://github.com/smile-xuc/aihw-starter/blob/master/faq.md">通用 FAQ</a>
+      <a href="https://github.com/smile-xuc/aihw-starter/blob/master/CHANGELOG.md">变更记录</a>
     </div>
   </div>
 </footer>
@@ -353,6 +621,27 @@
       a.setAttribute('rel', 'noopener noreferrer');
     }
   });
+
+  // 终端块一键复制
+  (function () {
+    var btn = document.getElementById('copyBtn');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var cmd = 'git clone https://github.com/smile-xuc/aihw-starter.git\ncd aihw-starter';
+      var done = function () {
+        btn.textContent = '已复制';
+        setTimeout(function () { btn.textContent = '复制'; }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(cmd).then(done, done);
+      } else {
+        var t = document.createElement('textarea');
+        t.value = cmd; document.body.appendChild(t); t.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(t); done();
+      }
+    });
+  })();
 </script>
 
 </body>

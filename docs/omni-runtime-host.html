@@ -1,189 +1,268 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Omni Realtime · Runtime Host 中间层架构</title>
 <meta name="description" content="Qwen-Omni-Realtime 端到端实时语音的自建宿主（Runtime Host）架构：六类职责、三条落地路径、三个执行语义、session.update 时机与硬约束。已脱敏。">
+<meta name="google" content="notranslate">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0b0d12;
-    --bg-2: #131722;
-    --bg-3: #1a2030;
-    --fg: #e8ecf3;
-    --fg-2: #98a2b3;
-    --accent: #4f8cff;
-    --accent-2: #7aa9ff;
-    --border: #2a3142;
-    --tag-arch: #2d5a8c;
-    --tag-dispatch: #1f7a3a;
-    --tag-semantic: #7a5a1f;
-    --tag-proto: #6a3a7a;
-    --tag-cost: #8c4a2d;
-    --code-bg: #0d1017;
-    --max-w: 1080px;
+    --bg:        #0a0a0f;
+    --surface:   #101018;
+    --surface-2: #14141d;
+    --line:      rgba(255,255,255,0.09);
+    --line-2:    rgba(255,255,255,0.16);
+    --fg:        #f2f4f8;
+    --fg-2:      #9aa3b2;
+    --fg-3:      #6b7280;
+    --accent:    #4D6BFE;
+    --accent-dim: rgba(77,107,254,0.12);
+    --code-bg:   #0c0c13;
+    --c-arch:     #7aa2ff;
+    --c-dispatch: #34d399;
+    --c-semantic: #fbbf24;
+    --c-proto:    #c084fc;
+    --c-cost:     #fb923c;
+    --display: "Space Grotesk", -apple-system, "PingFang SC", sans-serif;
+    --sans: "DM Sans", -apple-system, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --max: 1140px;
+    --gut: 32px;
   }
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 132px; }
   body {
     margin: 0; padding: 0;
     background: var(--bg);
     color: var(--fg);
-    font-family: -apple-system, "PingFang SC", "Helvetica Neue", "Segoe UI", "Microsoft YaHei", sans-serif;
-    line-height: 1.65;
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.7;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  a { color: var(--accent-2); text-decoration: none; }
-  a:hover { color: var(--accent); text-decoration: underline; }
-  .wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gut); }
+
+  .eyebrow {
+    font-family: var(--display);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent); margin: 0 0 14px;
+  }
+
   code {
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
+    background: rgba(255,255,255,0.055);
+    border: 1px solid var(--line);
+    border-radius: 5px;
     padding: 1px 6px;
-    font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
-    font-size: 0.88em;
-    color: #cdd6e6;
+    font-family: var(--mono);
+    font-size: 0.85em;
+    color: #d7deec;
   }
   pre {
     background: var(--code-bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px;
     overflow-x: auto;
-    font-family: "SF Mono", "JetBrains Mono", Consolas, monospace;
+    font-family: var(--mono);
     font-size: 12.5px;
-    line-height: 1.55;
-    color: #cdd6e6;
+    line-height: 1.65;
+    color: #c9d2e3;
   }
   pre code { background: none; border: none; padding: 0; font-size: inherit; }
 
-  /* Hero */
-  .hero {
-    padding: 64px 0 40px;
-    border-bottom: 1px solid var(--border);
-    background: radial-gradient(1200px 600px at 50% -100px, rgba(79,140,255,0.18), transparent 60%);
+  /* ---------- nav ---------- */
+  .nav {
+    position: sticky; top: 0; z-index: 60;
+    background: rgba(10,10,15,0.82);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--line);
   }
-  .hero .crumb { font-size: 13px; color: var(--fg-2); margin: 0 0 16px; }
-  .hero h1 { margin: 0 0 12px; font-size: 36px; letter-spacing: -0.5px; }
-  .hero .tagline { color: var(--fg-2); font-size: 17px; margin: 0 0 24px; max-width: 760px; }
+  .nav-in {
+    max-width: var(--max); margin: 0 auto; padding: 0 var(--gut);
+    height: 60px; display: flex; align-items: center; gap: 28px;
+  }
+  .brand {
+    font-family: var(--display);
+    font-weight: 700; font-size: 17px; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 9px;
+  }
+  .brand .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  .nav-links { margin-left: auto; display: flex; gap: 24px; font-size: 14px; color: var(--fg-2); }
+  .nav-links a { transition: color .15s; }
+  .nav-links a:hover { color: var(--fg); }
+  @media (max-width: 820px) { .nav-links a.opt { display: none; } }
+
+  /* ---------- hero ---------- */
+  .hero { padding: 76px 0 60px; border-bottom: 1px solid var(--line); }
+  .hero h1 {
+    font-family: var(--display);
+    margin: 0 0 22px;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 700; line-height: 1.1; letter-spacing: -0.03em;
+    max-width: 20em;
+  }
+  .hero .tagline { color: var(--fg-2); font-size: 17px; margin: 0 0 34px; max-width: 74ch; }
   .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
   .btn {
-    display: inline-block; padding: 9px 16px; border-radius: 8px;
-    border: 1px solid var(--border); color: var(--fg); font-size: 14px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 20px; border-radius: 8px;
+    font-size: 14.5px; font-weight: 500;
+    border: 1px solid var(--line-2); color: var(--fg);
+    transition: background .15s, border-color .15s, color .15s;
   }
-  .btn-primary { background: var(--accent); border-color: var(--accent); }
-  .btn-primary:hover { background: var(--accent-2); text-decoration: none; }
-  .btn:hover { text-decoration: none; border-color: var(--accent); }
+  .btn:hover { border-color: var(--fg-3); background: var(--surface); }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #3f5bef; border-color: #3f5bef; color: #fff; }
+  .btn .arw { transition: transform .18s; }
+  .btn:hover .arw { transform: translateX(3px); }
 
-  /* Controls */
+  /* ---------- controls ---------- */
   .controls {
-    position: sticky; top: 0; z-index: 20;
-    background: rgba(11,13,18,0.92);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--border);
+    position: sticky; top: 60px; z-index: 50;
+    background: rgba(10,10,15,0.9);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--line);
     padding: 14px 0;
   }
   .controls .wrap { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
   #search {
     flex: 1 1 260px; min-width: 200px;
-    background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px;
-    color: var(--fg); font-size: 14px; padding: 9px 14px; outline: none;
+    background: var(--surface); border: 1px solid var(--line-2); border-radius: 8px;
+    color: var(--fg); font-family: var(--sans); font-size: 14px;
+    padding: 10px 14px; outline: none; transition: border-color .15s;
   }
-  #search:focus { border-color: var(--accent); }
+  #search::placeholder { color: var(--fg-3); }
+  #search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
   .filters { display: flex; gap: 8px; flex-wrap: wrap; }
   .chip {
     cursor: pointer; user-select: none;
-    padding: 5px 12px; border-radius: 999px;
-    border: 1px solid var(--border); background: var(--bg-2);
-    color: var(--fg-2); font-size: 12.5px; transition: all 0.15s;
+    padding: 6px 13px; border-radius: 999px;
+    border: 1px solid var(--line-2); background: transparent;
+    color: var(--fg-2); font-size: 12.5px; transition: all .15s;
   }
-  .chip:hover { color: var(--fg); border-color: var(--accent); }
-  .chip.active { color: #fff; border-color: transparent; }
-  .chip[data-cat="all"].active { background: var(--accent); }
-  .chip[data-cat="arch"].active { background: var(--tag-arch); }
-  .chip[data-cat="dispatch"].active { background: var(--tag-dispatch); }
-  .chip[data-cat="semantic"].active { background: var(--tag-semantic); }
-  .chip[data-cat="proto"].active { background: var(--tag-proto); }
-  .chip[data-cat="cost"].active { background: var(--tag-cost); }
+  .chip:hover { color: var(--fg); border-color: var(--fg-3); }
+  .chip.active { color: var(--fg); border-color: var(--accent); background: var(--accent-dim); }
 
-  /* Sections */
-  main { padding: 24px 0 40px; }
+  /* ---------- blocks ---------- */
+  main { padding: 32px 0 56px; }
   .block {
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
     margin: 14px 0;
-    background: var(--bg-2);
+    background: var(--surface);
     overflow: hidden;
+    transition: border-color .18s;
   }
+  .block:hover { border-color: var(--line-2); }
   .block > summary {
     cursor: pointer; list-style: none;
-    padding: 18px 22px;
-    display: flex; align-items: center; gap: 12px;
-    font-size: 18px; font-weight: 600;
+    padding: 19px 22px;
+    display: flex; align-items: center; gap: 13px;
+    font-family: var(--display);
+    font-size: 17.5px; font-weight: 600; letter-spacing: -0.015em;
+    transition: background .15s;
   }
   .block > summary::-webkit-details-marker { display: none; }
   .block > summary::after {
-    content: "▸"; margin-left: auto; color: var(--fg-2);
-    transition: transform 0.15s; font-size: 14px;
+    content: ""; margin-left: auto; flex-shrink: 0;
+    width: 8px; height: 8px;
+    border-right: 1.5px solid var(--fg-3); border-bottom: 1.5px solid var(--fg-3);
+    transform: rotate(-45deg); transition: transform .18s;
   }
-  .block[open] > summary::after { transform: rotate(90deg); }
-  .block > summary:hover { background: var(--bg-3); }
+  .block[open] > summary::after { transform: rotate(45deg); }
+  .block[open] > summary { border-bottom: 1px solid var(--line); }
+  .block > summary:hover { background: var(--surface-2); }
   .cat-tag {
-    display: inline-block; padding: 2px 9px; border-radius: 4px;
-    font-size: 11px; font-weight: 500; color: #fff; flex-shrink: 0;
+    display: inline-block; padding: 3px 10px; border-radius: 999px;
+    font-family: var(--mono);
+    font-size: 10.5px; font-weight: 500; letter-spacing: 0.05em;
+    flex-shrink: 0; border: 1px solid currentColor;
   }
-  .cat-arch { background: var(--tag-arch); }
-  .cat-dispatch { background: var(--tag-dispatch); }
-  .cat-semantic { background: var(--tag-semantic); }
-  .cat-proto { background: var(--tag-proto); }
-  .cat-cost { background: var(--tag-cost); }
-  .block .body { padding: 4px 22px 22px; color: var(--fg); }
+  .cat-arch     { color: var(--c-arch);     background: rgba(122,162,255,0.08); }
+  .cat-dispatch { color: var(--c-dispatch); background: rgba(52,211,153,0.08); }
+  .cat-semantic { color: var(--c-semantic); background: rgba(251,191,36,0.08); }
+  .cat-proto    { color: var(--c-proto);    background: rgba(192,132,252,0.08); }
+  .cat-cost     { color: var(--c-cost);     background: rgba(251,146,60,0.08); }
+  .block .body { padding: 20px 22px 24px; color: var(--fg); }
+  .block .body > p:first-child { margin-top: 0; }
   .block .body p { color: var(--fg); font-size: 14.5px; }
   .block .body .muted { color: var(--fg-2); font-size: 13.5px; }
 
-  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13.5px; }
-  th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; vertical-align: top; }
-  th { background: var(--bg-3); color: var(--fg); font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  th, td { border: 1px solid var(--line); padding: 10px 13px; text-align: left; vertical-align: top; }
+  th {
+    background: var(--surface-2); color: var(--fg);
+    font-family: var(--display); font-weight: 600;
+    font-size: 12.5px; letter-spacing: 0.02em;
+  }
   td { color: var(--fg-2); }
-  td strong, th strong { color: var(--fg); }
+  td strong, th strong { color: var(--fg); font-weight: 500; }
+  tr:hover td { background: rgba(255,255,255,0.018); }
 
   .callout {
-    border-left: 3px solid var(--accent);
-    background: var(--bg-3);
-    border-radius: 6px;
-    padding: 12px 16px; margin: 14px 0;
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--accent);
+    background: linear-gradient(90deg, rgba(77,107,254,0.12), rgba(77,107,254,0) 60%);
+    border-radius: 8px;
+    padding: 14px 17px; margin: 16px 0;
     font-size: 13.5px; color: var(--fg-2);
   }
-  .callout strong { color: var(--fg); }
-  .callout.warn { border-left-color: #c9852b; }
+  .callout strong { color: var(--fg); font-weight: 500; }
+  .callout.warn {
+    border-left-color: var(--c-semantic);
+    background: linear-gradient(90deg, rgba(251,191,36,0.10), rgba(251,191,36,0) 60%);
+  }
 
-  .no-result { text-align: center; color: var(--fg-2); padding: 40px 0; display: none; }
+  .no-result { text-align: center; color: var(--fg-2); padding: 56px 0; display: none; }
 
   footer {
-    padding: 32px 0 56px; color: var(--fg-2); font-size: 13px;
-    text-align: center; border-top: 1px solid var(--border);
+    padding: 40px 0 60px; color: var(--fg-3); font-size: 13.5px;
+    border-top: 1px solid var(--line);
   }
-  footer a { color: var(--fg-2); }
-  footer .links { margin-top: 10px; }
-  footer .links a { margin: 0 8px; }
+  footer .note { max-width: 90ch; margin: 0 auto 18px; text-align: center; }
+  footer .links { text-align: center; display: flex; gap: 22px; justify-content: center; flex-wrap: wrap; }
+  footer a { transition: color .15s; }
+  footer a:hover { color: var(--fg); }
 
-  @media (max-width: 600px) {
-    .hero { padding: 44px 0 32px; }
-    .hero h1 { font-size: 28px; }
-    .block > summary { font-size: 16px; padding: 15px 16px; }
-    .block .body { padding: 4px 16px 18px; }
+  @media (max-width: 640px) {
+    :root { --gut: 20px; }
+    .hero { padding: 52px 0 40px; }
+    .block > summary { font-size: 15.5px; padding: 16px 17px; }
+    .block .body { padding: 16px 17px 20px; }
+    .controls { position: static; }
   }
 </style>
 </head>
 <body>
 
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="./"><span class="dot"></span>aihw-starter</a>
+    <div class="nav-links">
+      <a href="./#categories">品类</a>
+      <a href="./#deep">深度方案</a>
+      <a class="opt" href="https://help.aliyun.com/zh/model-studio/realtime">官方文档</a>
+      <a href="https://github.com/smile-xuc/aihw-starter">GitHub</a>
+    </div>
+  </div>
+</nav>
+
 <header class="hero">
   <div class="wrap">
-    <p class="crumb">aihw-starter / 千问方案 / Omni 实时端到端 · Runtime Host</p>
-    <h1>Runtime Host 中间层架构</h1>
+    <p class="eyebrow">Qwen-Omni-Realtime · Runtime Host</p>
+    <h1>模型只会输出三样东西，其余靠中间层补齐</h1>
     <p class="tagline">一个 Qwen-Omni-Realtime 模型只会输出文本、音频、<code>function_call</code> 三样东西。把它变成一台能动、能看、有记忆、有时间感的设备，靠的是模型与硬件之间那一层自建宿主。本页是同名方案文档的可视化版本，内容已脱敏。</p>
     <div class="hero-actions">
-      <a class="btn btn-primary" href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-solution/01-qwen/omni-realtime">方案全文</a>
+      <a class="btn btn-primary" href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-solution/01-qwen/omni-realtime">方案全文 <span class="arw">→</span></a>
       <a class="btn" href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-solution/01-qwen/omni-realtime/session.update.template.json">session 模板</a>
       <a class="btn" href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-solution/01-qwen/omni-realtime/harness_skeleton.py">Python 骨架</a>
       <a class="btn" href="https://help.aliyun.com/zh/model-studio/realtime">官方文档</a>
@@ -395,10 +474,10 @@
 
 <footer>
   <div class="wrap">
-    <div>内容来源说明：本页结论基于两份真实项目的 <code>session</code> 配置快照做架构反推，已移除全部客户标识、人设名称、音色 ID 与业务话术；能力清单为通用形态，不代表任何具体产品的功能范围。</div>
+    <div class="note">内容来源说明：本页结论基于两份真实项目的 <code>session</code> 配置快照做架构反推，已移除全部客户标识、人设名称、音色 ID 与业务话术；能力清单为通用形态，不代表任何具体产品的功能范围。</div>
     <div class="links">
-      <a href="https://github.com/smile-xuc/aihw-starter">GitHub</a> ·
-      <a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-solution/01-qwen/omni-realtime">方案全文</a> ·
+      <a href="https://github.com/smile-xuc/aihw-starter">GitHub</a>
+      <a href="https://github.com/smile-xuc/aihw-starter/tree/master/solutions/by-solution/01-qwen/omni-realtime">方案全文</a>
       <a href="https://help.aliyun.com/zh/model-studio/realtime">官方实时文档</a>
     </div>
   </div>

@@ -3,6 +3,26 @@
 本仓库的所有重要变更记录于此。
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [2.1.1] - 2026-08-20
+
+### 变更
+
+#### `docs/` 门面页与架构页视觉改版
+
+两页统一到一套设计系统，去掉此前偏模板化的观感（径向光晕背景、标题 emoji、高饱和标签底色、纯系统字体）。
+
+- 配色：近黑画布 `#0a0a0f` + 靛蓝强调色 `#4D6BFE`，层级由 1px 低透明度描边和抬升面色区分，不使用阴影与渐变装饰
+- 字体：标题 Space Grotesk、正文 DM Sans、代码与数据 JetBrains Mono，经 Google Fonts 引入
+- 版式：新增全大写宽字距英文 eyebrow 小标签与中文标题配对；分隔改用 `·` 中点而非粗分割线
+- `docs/index.html` 结构重排为 导航 → 首屏 → 数据条 → 仓库立场 → 热门品类 → 深度方案 → 怎么用 → 生态索引 → 贡献 → 页脚；「怎么用」新增可一键复制的终端命令块
+- `docs/omni-runtime-host.html` 沿用同一套 token；分类标签改为描边式，折叠箭头改用 CSS 三角，筛选栏在导航下方吸顶
+
+### 修复
+
+- 卡片与 callout 的渐变收尾由 `transparent` 关键字改为同色 alpha 0，消除 sRGB 插值经过透明黑导致的可见色带
+- `html` 增加 `scroll-padding-top`，锚点跳转不再被吸顶导航遮挡标题
+- 修正 `.sec-head p`、`.cta p`、`.role p` 后代选择器压过 `.eyebrow` 的优先级问题，eyebrow 标签恢复强调色
+
 ## [2.1.0] - 2026-08-19
 
 ### 新增
