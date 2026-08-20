@@ -8,7 +8,7 @@
 
 | # | 方案 | 状态 | 主要能力 | 在哪些品类中已示例 |
 |---|---|:-:|---|---|
-| 01 | [🤖 千问大模型方案（Qwen / 百炼）](./01-qwen/README.md) | ✅ 主示例 | Qwen-Max / Qwen-VL / Qwen-Omni / Qwen-TTS / ASR / Function Calling | 全部 6 个品类 |
+| 01 | [🤖 千问大模型方案（Qwen / 百炼）](./01-qwen/README.md) | ✅ 主示例 | Qwen-Max / Qwen-VL / Qwen-Omni / Qwen-Audio-3.0（Realtime / TTS）/ ASR / Function Calling | 全部 6 个品类 |
 | 02 | [💡 小智（XiaoZhi）开源方案](./02-xiaozhi.md) | 🚧 占位 | 端侧 Wake / 对话编排 / 开源生态 | AI 玩具 / 桌宠 / AI 耳机 |
 | 03 | 豆包 / Kimi / 智谱 / DeepSeek / OpenAI | 📌 计划中 | 各家主流大模型方案 | 欢迎 PR 贡献 |
 | 04 | [🔊 Talk-to-Fengge（开源案例）](./04-talk-to-fengge.md) | 📖 架构启发 | WebRTC 实时语音 + 声音克隆 + 人格注入 | 玩具陪伴 / 桌宠 / 耳机 |

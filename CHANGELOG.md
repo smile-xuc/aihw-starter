@@ -3,6 +3,31 @@
 本仓库的所有重要变更记录于此。
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [2.2.0] - 2026-08-20
+
+### 变更
+
+#### 模型代际更新（2026-08）
+
+按新一代千问模型公开资料同步仓库模型信息：
+
+- `solutions/by-solution/01-qwen/README.md`：能力地图补 Qwen3.8-Max、Qwen-Audio-3.0-Realtime / -TTS；1.3 节补 Realtime 协议两条模型线（Omni 全模态 / Audio-3.0 音频专用）与三档轮次控制；新增「模型代际速览」节与第三方评测速览（AA Speech-to-Speech Index、Speech Arena、Omni 对比，均标注以官方公布为准）
+- `solutions/by-solution/01-qwen/omni-realtime/README.md`：第 7 节补音频专用 Qwen-Audio-3.0-Realtime 模型线说明（smart_turn / push-to-talk）
+- `solutions/by-solution/README.md`：方案总览千问行补 Qwen-Audio-3.0
+- `solutions/benchmark/README.md`：待补清单加入 Qwen-Audio-3.0-Realtime 实测项
+- `faq.md`：Q5 实时对话方案补 Audio-3.0-Realtime；Q6 补 qwen3.8-max；Q8 TTS 补 Qwen-Audio-3.0-TTS 新一代能力
+- `primer/01-open-weights.md`：补「旗舰级权重首次开放」动向（Qwen3.8-Max）
+- `primer/02-model-size-chips.md`：规格档位表补 0.8B / 2B（穿戴与入门边缘）与 397B-A17B（云端 MoE，标注超出端侧范围）
+
+### 修复
+
+- `faq.md` 头部两个失效品类链接：桌宠 `04→05-desktop-pet`、AI 耳机 `05→06-ai-earphone`
+
+### 案例
+
+- `solutions/by-category/05-desktop-pet/04-cases.md`：Looi 大模型方案更新为千问实时多模态（同时使用 qwen3.5-omni-plus-realtime 与 qwen-audio-3.0-realtime-flash）
+- `solutions/by-category/03-toys-companion/04-cases.md`：新增公开案例 Mooni M1（听力熊 Teeni.AI × 阿里云通义联名随身 AI 对话智能体，信源为极客公园等公开报道）
+
 ## [2.1.1] - 2026-08-20
 
 ### 变更

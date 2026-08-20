@@ -5,9 +5,9 @@
 > [IPC](./solutions/by-category/01-ipc/05-faq.md) ·
 > [AI 眼镜](./solutions/by-category/02-ai-glasses/05-faq.md) ·
 > [玩具陪伴](./solutions/by-category/03-toys-companion/05-faq.md) ·
-> [桌宠](./solutions/by-category/04-desktop-pet/05-faq.md) ·
-> [AI 耳机](./solutions/by-category/05-ai-earphone/05-faq.md) ·
-> [录音卡](./solutions/by-category/06-recorder/05-faq.md)
+> [桌宠](./solutions/by-category/05-desktop-pet/05-faq.md) ·
+> [AI 耳机](./solutions/by-category/06-ai-earphone/05-faq.md) ·
+> [录音卡](./solutions/by-category/07-recorder/05-faq.md)
 
 ## A. 商业模式与订阅（通用）
 
@@ -35,11 +35,12 @@ A：先决定"收不收订阅费"——
 ## B. 模型选型与性能（通用）
 
 **Q5：实时对话有哪几种方案？**
-A：四档方案——
+A：五档方案——
 
 | 方案 | 特点 | TTFT | 适用 |
 |---|---|---|---|
 | 端到端 S2S（fun-real-time-audio-chat） | 类豆包 S2S | 600–800ms | 高端体验 |
+| Qwen-Audio-3.0-Realtime（Plus / Flash） | 音频专用端到端 S2S，三档轮次控制（声学 VAD / 语义轮次 / 按键） | 官方口径首包 ~200ms（Flash） | 纯语音实时交互，成本优于 Omni 线 |
 | Qwen-Omni-Realtime | 端到端全模态（含视觉） | <1s | 含视觉的旗舰品 |
 | 多段拼接（ASR+LLM+TTS） | 综合成本最低 | 1.2–1.5s | 主流 80% 客户用这个 |
 | 裸模型直调 | 自己拼链路 | 自己控 | 头部品牌深度自研 |
@@ -48,6 +49,7 @@ A：四档方案——
 A：
 - **儿童闲聊/陪伴**：中档（qwen-plus 级）+ 好的提示词约束
 - **数学题/拍照解题**：旗舰（qwen3.7-plus 或 max）
+- **旗舰推理 / 长程 Agent**：qwen3.8-max（reasoning_effort 三档调节，1M 上下文，Max 级首次开源权重）
 - **预算敏感**：qwen-flash
 - **qwen3.7-max 慎用**：一次按 8 倍计费，TTFT 多 300ms
 
@@ -55,7 +57,7 @@ A：
 A：主推 **fun-asr** 和 **qwen3-asr**，另有轻量版（性能接近、价格更低）。儿童场景全向麦克风容易误打断，建议开**全双工模式**。
 
 **Q8：TTS 和声音克隆怎么选？**
-A：主推 **cosyvoice V3 / V3-Flash**。声音克隆（音色复刻）**只能跟随对应 TTS 模型**——用 V3-Flash 复刻的音色必须用 V3-Flash 来播。系统已自带多种音色可选。
+A：现有生产主力仍是 **cosyvoice V3 / V3.5**。新一代 **Qwen-Audio-3.0-TTS**（fun-cosyvoice 升级线）已发布：16 语种 + 20 种中文方言，free-style 自然语言指令与 [gasp]/[giggles] 类细粒度标签控制情绪语气，复刻流程注入语音增强、高噪环境更稳，新产品选型建议对比后确定。声音克隆（音色复刻）**只能跟随对应 TTS 模型**——用 V3-Flash 复刻的音色必须用 V3-Flash 来播。系统已自带多种音色可选。
 
 **Q9：端侧能不能直接跑大模型？**
 A：玩具/陪伴/小型 AIoT **不推荐**——存储价格高、设备成本飙升、性能换来的提升有限，调云端 API 性价比更高。**例外**：高价值终端（电脑、苹果设备）+ 100B 级别端侧模型有机会。
@@ -145,5 +147,5 @@ A：① 不写死在端侧固件里；② 通过客户服务端首次激活换�
 ---
 
 **版本**：千问大模型方案
-**更新日期**：2026-06
+**更新日期**：2026-08
 **贡献欢迎**：补充其他模型/平台的 FAQ，请提 PR，详见 [`CONTRIBUTING.md`](./CONTRIBUTING.md)

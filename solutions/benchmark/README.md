@@ -189,6 +189,7 @@ solutions/benchmark/
 
 ## 待补充
 
+- [ ] 方案 3c · Qwen-Audio-3.0-Realtime（Plus / Flash，音频专用 S2S）延迟实测
 - [ ] 方案 4：百炼多模态交互开发套件（全双工套件）
 - [ ] 方案 2 的 CLI 版（流式在 shell 里较难拆解，暂用 SDK 演示）
 - [ ] 加入并发压测（当前只测单会话延迟）

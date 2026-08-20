@@ -118,6 +118,8 @@ npm i -g @alibaba/bailian-cli
 | 三段式流式 | 2473 / 2846 / 2980 ms | 不支持 |
 | Omni Realtime（WebSocket 双工） | **347 / 375 / 433 ms** | 支持 |
 
+Realtime WebSocket 协议下目前有两条模型线：**Qwen3.5-Omni-Realtime**（全模态，可进图像）与 **Qwen-Audio-3.0-Realtime**（Plus / Flash 两档，音频专用端到端 S2S）。纯语音产品优先评估后者，成本更优；需要看图才选 Omni 线。Audio-3.0-Realtime 的轮次控制有三档：声学 VAD（`server_vad`）、语义轮次（`smart_turn`）、按键说话（push-to-talk），并原生带 Function Calling、音色复刻与说话人增强。
+
 一个 Realtime 模型只输出三样东西：文本、音频、`function_call`。要把它变成一台能动、能看、有记忆、有时间感的设备，靠的是模型与硬件之间那一层自建宿主，本方案统称 **Runtime Host**。它承担六类职责：装配器（建会话时拼 instructions / tools / voice）、路由器（按工具名前缀三路分发 + 参数校验兜底）、状态机（模式位 / 计时器 / 生命周期）、注入器（异步事件转对话轮次）、设备桥（动作 ID 转指令帧，两级回包语义）、记忆管道（离线，不在实时链路上）。
 
 三条落地路径按工具名前缀区分：`client_*` 打包成设备指令走下行、`runtime_*` 只改宿主状态机不下发设备、`server_*` 宿主带外发 HTTP 请求。三个最容易踩的执行语义：工具返回的是派发收据不是完成回执；设备端是队列 + 插队两级，要真停必须显式清队；感知类能力是两段异步，触发与结果解耦。
@@ -134,10 +136,11 @@ npm i -g @alibaba/bailian-cli
 
 | 能力 | 模型 / 接口 | 适用场景 | 接入方式 |
 |---|---|---|---|
-| **文本对话 / 推理** | Qwen-Max / Qwen-Plus / Qwen-Turbo | 角色对话、摘要、规划 | DashScope Chat API / `bl` CLI |
+| **文本对话 / 推理** | Qwen3.8-Max / Qwen-Max / Qwen-Plus / Qwen-Turbo | 角色对话、摘要、规划、长程 Agent | DashScope Chat API / `bl` CLI |
 | **视觉理解** | Qwen-VL（图像）/ Qwen-VL-Video（视频） | IPC 摘要 / 以文搜图 / 户外告警 | DashScope 多模态接口 |
-| **全模态对话** | Qwen-Omni / Qwen-Omni-Realtime | 实时语音对话、端到端低时延 | 多模态交互套件 / `bl omni` / [Realtime + Runtime Host](./omni-realtime/) |
-| **TTS / 情感语音** | Qwen-TTS / CosyVoice | 角色音色、声音克隆、情感合成 | DashScope 语音接口 / `bl speech synthesize` |
+| **全模态对话** | Qwen-Omni / Qwen-Omni-Realtime（Qwen3.5-Omni：113 种语言方言输入、36 种音色） | 实时语音对话、端到端低时延 | 多模态交互套件 / `bl omni` / [Realtime + Runtime Host](./omni-realtime/) |
+| **实时语音对话（S2S）** | Qwen-Audio-3.0-Realtime（Plus / Flash） | 纯语音实时交互、陪伴对话、语音客服 | Realtime WebSocket（三档轮次控制：声学 VAD / 语义轮次 / 按键） |
+| **TTS / 情感语音** | Qwen-Audio-3.0-TTS（新一代）/ CosyVoice | 角色音色、声音克隆、情感合成、方言播报 | DashScope 语音接口 / `bl speech synthesize` |
 | **ASR / 语音识别** | Paraformer 系列 | 录音卡纪要、AI 耳机听写 | DashScope ASR / `bl speech recognize` |
 | **Function Calling** | Qwen Chat + tools | Agent 调度（设备控制 / 检索 / 翻译） | DashScope 通用工具调用 |
 | **内容感知（OSS）** | 阿里云 OSS AI 媒资处理 | IPC 云存量数据上 AI 不动现有架构 | OSS 内容感知开关 |
@@ -174,7 +177,24 @@ npm i -g @alibaba/bailian-cli
    安装 bl CLI → 快速验证各能力 → DashScope SDK 生产集成 → 各品类 demo/ 改造
 ```
 
-## 6. 替代 / 互补方案
+## 6. 模型代际速览（2026-08）
+
+| 方向 | 新一代模型 | 要点 |
+|---|---|---|
+| 旗舰文本 / Agent | Qwen3.8-Max | 总参数 2.4 万亿、激活 95B，1M 上下文；Max 级别首次开放权重（LLM 思考部分）；reasoning_effort 三档调节；兼容 OpenAI / Anthropic 标准协议，可对接 Claude Code / Qwen Code |
+| 全模态 | Qwen3.5-Omni（Plus / Flash） | 端到端看图 + 听声 + 说话；113 种语言与方言输入、36 种拟人音色；单次可理解长视频与长音频；Flash 实时首包进入数百毫秒量级 |
+| 实时语音 S2S | Qwen-Audio-3.0-Realtime（Plus / Flash） | 音频专用端到端实时对话；三档轮次控制（声学 VAD / 语义轮次 smart_turn / 按键 push-to-talk）；原生 Function Calling、音色复刻、说话人增强 |
+| TTS | Qwen-Audio-3.0-TTS（Plus / Flash） | fun-cosyvoice 升级线；16 语种 + 20 种中文方言；free-style 自然语言指令与 [gasp]/[giggles] 类细粒度标签；复刻流程注入语音增强、高噪环境更稳；48kHz 高保真（即将） |
+
+**第三方评测速览**（2026-07 公开榜单，以官方最新公布为准）：
+
+- Qwen-Audio-3.0-Realtime-Plus：Artificial Analysis Speech-to-Speech Index 总榜 84.1% 登顶；对话推理 99.2%、双工节奏 98.4% 分项第一
+- Qwen-Audio-3.0-TTS-Plus：Artificial Analysis Speech Arena（Provider Voices）生成质量 Elo 1239 第一；中文语音生成 WER 低至 0.99
+- Qwen3.5-Omni-Plus：DailyOmni 84.6、MMAU 82.2、VoiceBench 93.1，在与主流全模态模型的同场对比中领先
+
+> 端侧档位（0.8B / 2B / 4B / 35B-A3B 等开放权重）与芯片载体的对应关系，见 [primer/02 · 模型规格与芯片载体](../../../primer/02-model-size-chips.md)。
+
+## 7. 替代 / 互补方案
 
 | 场景 | 替代或补充方案 |
 |---|---|

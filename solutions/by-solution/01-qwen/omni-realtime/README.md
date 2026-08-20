@@ -245,6 +245,8 @@ input_audio_buffer.append …                (持续送 base64 音频)
 
 超出后自动丢弃更早历史。宿主要在逼近上限前主动开新会话、重发全量 `session.update`、用「上轮会话」槽位续上，不要等服务端踢。同一会话长期不关会让上下文无限累积。
 
+> 模型线补充：音频专用的 **Qwen-Audio-3.0-Realtime（Plus / Flash）** 走同一套 Realtime WebSocket 协议，纯语音产品可优先评估——没有视觉负担，成本优于 Omni 线。轮次控制在其上多出语义轮次（`smart_turn`）与按键说话（push-to-talk）两档，并原生支持音色复刻与说话人增强。上下文上限以官方文档为准。
+
 ### 人设热切换的两条路
 
 音色 `voice` 和 `instructions`（里面写着当前人设）都在 session 级，不在对话级。外设切换人设只有两条路：
