@@ -193,21 +193,6 @@
   }
   .sec-head p:not(.eyebrow) { color: var(--fg-2); font-size: 16px; margin: 0; }
 
-  /* ---------- stance ---------- */
-  .stance {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
-    background: var(--line); border: 1px solid var(--line);
-    border-radius: 14px; overflow: hidden;
-    box-shadow: var(--shadow-s);
-  }
-  .stance .col { background: var(--surface); padding: 26px 26px 28px; }
-  .stance .col h4 {
-    font-family: var(--display);
-    font-size: 16px; font-weight: 700; margin: 0 0 8px; letter-spacing: -0.01em;
-  }
-  .stance .col p { color: var(--fg-2); font-size: 14px; margin: 0; }
-  @media (max-width: 800px) { .stance { grid-template-columns: 1fr; } }
-
   /* ---------- cards ---------- */
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 16px; }
   .grid-2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); gap: 16px; }
@@ -390,30 +375,6 @@
     <div class="stat"><div class="n">2</div><div class="l">生态索引全集</div></div>
   </div>
 </div>
-
-<section id="stance">
-  <div class="wrap">
-    <div class="sec-head">
-      <p class="eyebrow">Editorial stance</p>
-      <h2>这个仓库的立场</h2>
-      <p>案例库的价值取决于结论可信。以下三条是写每一页时的硬约束。</p>
-    </div>
-    <div class="stance">
-      <div class="col">
-        <h4>客观中立</h4>
-        <p>不绑定单一方案商，欢迎补充豆包 / Kimi / 智谱 / DeepSeek / OpenAI 等主流方案的接入方式与成本对照。</p>
-      </div>
-      <div class="col">
-        <h4>算账优先</h4>
-        <p>每个品类都单独给 <code>03-cost.md</code>，把 BOM、云端调用、订阅定价放在一起算，而不是只讲能力清单。</p>
-      </div>
-      <div class="col">
-        <h4>跑不通就说跑不通</h4>
-        <p>订阅制在哪些品类已有公开样板、哪些仍在免费送阶段，按现状标注，不做乐观外推。</p>
-      </div>
-    </div>
-  </div>
-</section>
 
 <section id="categories">
   <div class="wrap">
@@ -719,7 +680,7 @@
   (function () {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     if (!('IntersectionObserver' in window)) return;
-    var els = document.querySelectorAll('.sec-head, .stance, .grid, .grid-2, .feature, .roles, .term');
+    var els = document.querySelectorAll('.sec-head, .grid, .grid-2, .feature, .roles, .term');
     els.forEach(function (el) { el.classList.add('rv'); });
     var io = new IntersectionObserver(function (es) {
       es.forEach(function (e) {
