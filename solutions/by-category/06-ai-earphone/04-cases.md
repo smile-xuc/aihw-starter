@@ -56,7 +56,7 @@
 
 ## 3. 录音耳机
 
-部分录音耳机品牌见 [`06-recorder/04-cases.md`](../06-recorder/04-cases.md)。
+部分录音耳机品牌见 [`07-recorder/04-cases.md`](../07-recorder/04-cases.md)。
 
 ## 4. 待补充清单
 

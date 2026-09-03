@@ -155,9 +155,12 @@ Realtime WebSocket 协议下目前有两条模型线：**Qwen3.5-Omni-Realtime**
 | 📷 [IPC / AI 视觉](../../by-category/01-ipc/02-solution.md) | 双版本：百炼物理世界感知 Agent / OSS AI 内容感知 | 原子能力（Qwen-VL + OSS） |
 | 👓 [AI 眼镜](../../by-category/02-ai-glasses/02-solution.md) | 多模态交互套件端到端打包 | **成套产品**（开发套件直接对接） |
 | 🧸 [AI 玩具 / 陪伴](../../by-category/03-toys-companion/02-solution.md) | 角色对话 + 声音克隆 | 成套产品 或 原子能力均可 |
+| 🤖 [Agent 硬件](../../by-category/04-agent-hardware/02-solution.md) | 端侧调度 + 云端旗舰推理 | 原子能力（Function Calling） |
 | 🪴 [桌宠](../../by-category/05-desktop-pet/02-solution.md) | 动作 / 情绪标签 + 情感 TTS 三路同步 | 原子能力（精细控制动作同步） |
 | 🎧 [AI 耳机](../../by-category/06-ai-earphone/02-solution.md) | 实时翻译 / 听记 / 对话多用途 | 成套产品（低延迟全双工） |
 | 🎙️ [录音卡 / 会议盒子](../../by-category/07-recorder/02-solution.md) | ASR + 纪要 Agent | 原子能力（`bl speech recognize`） |
+| ⌚ [智能手表](../../by-category/08-smart-watch/02-solution.md) | 健康指标解读 + 报告 | 原子能力（文本 + RAG） |
+| 🦾 [具身智能](../../by-category/09-embodied/02-solution.md) | VLA 端云协同 | 见 [Qwen-Robot Suite](../05-qwen-robot.md) |
 
 ## 4. 典型 BOM 与计费量级
 

@@ -36,7 +36,7 @@ A：当前架构都需要联网，无网络时无法 AI 对话。可以做"离�
 
 ## C. 录音耳机
 
-参考 [`06-recorder/05-faq.md`](../06-recorder/05-faq.md)。
+参考 [`07-recorder/05-faq.md`](../07-recorder/05-faq.md)。
 
 ## D. 通用
 

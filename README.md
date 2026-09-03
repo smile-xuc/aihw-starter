@@ -137,7 +137,7 @@ solutions/by-category/0X-xxxx/
 ### 🏭 方案商 / 品牌商
 
 1. 看 [solutions/by-category/](./solutions/by-category/) — 品类总览（IPC / 玩具陪伴 / 耳机 / 录音卡 …）
-2. 进入感兴趣的品类目录（如 [`solutions/01-ipc/`](./solutions/by-category/01-ipc/)）
+2. 进入感兴趣的品类目录（如 [`solutions/by-category/01-ipc/`](./solutions/by-category/01-ipc/)）
 3. 读 [01-business.md](./solutions/by-category/01-ipc/01-business.md) 判断值不值得投入
 4. 读 [02-solution.md](./solutions/by-category/01-ipc/02-solution.md) 看技术方案
 5. 读 [03-cost.md](./solutions/by-category/01-ipc/03-cost.md) 算清楚账
@@ -158,7 +158,7 @@ solutions/by-category/0X-xxxx/
 ### 🔍 了解生态
 
 - [primer/](./primer/) — AI 通识：开放权重与授权、模型规格与芯片载体
-- [awesome/open-source/](./awesome/open-source/) — 136 个 GitHub 开源项目，15 品类
+- [awesome/open-source/](./awesome/open-source/) — 137+ 个 GitHub 开源项目，15 品类
 - [awesome/commercial-products/](./awesome/commercial-products/) — 在售商业产品
 - [docs/ 门面页](https://smile-xuc.github.io/aihw-starter/) — GitHub Pages 总览
 
@@ -187,7 +187,7 @@ aihw-starter/
 │   │   └── 09-embodied/       # 具身智能
 │   └── by-solution/           # 方案总览（开发者视角：千问 / 小智 …）
 ├── awesome/
-│   ├── open-source/           # 开源项目索引（136 项目，15 品类）
+│   ├── open-source/           # 开源项目索引（137+ 项目，15 品类）
 │   └── commercial-products/   # 在售商业化产品案例
 ├── primer/                    # AI 通识（开放权重与授权 / 模型规格与芯片载体 …）
 ├── docs/                      # GitHub Pages 门面页

@@ -64,6 +64,11 @@
 | [04-cases.md](./04-cases.md) | 公开案例 |
 | [05-faq.md](./05-faq.md) | 高频问答 |
 
+---
+
+**版本**：千问大模型方案（占位）
+**说明**：本品类当前为占位版本。结构已按 6 文件补齐，商业 / 案例 / FAQ / demo 仍为简版。参考 [CONTRIBUTING.md](../../../CONTRIBUTING.md) 第三章。
+
 <!-- FOOTER:START -->
 
 ---

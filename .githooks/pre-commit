@@ -52,23 +52,23 @@ for f in "${FILES[@]}"; do
   esac
 
   # 规则 1：内部黑话第一/第二人称
-  # 注：项目内部文档（CONTRIBUTING / docs/README）允许"你/我们"，故此规则仅对 solutions/、awesome/、future/ 与根 README 生效
+  # 注：项目内部文档（CONTRIBUTING / docs/README）允许"你/我们"，故此规则仅对 solutions/、awesome/ 与根 README 生效
   case "$f" in
-    solutions/*|awesome/*|future/*|README.md)
+    solutions/*|awesome/*|README.md)
       check_pattern "内部黑话(我们/你/咱们)" '(^|[^A-Za-z0-9])(我们|你|咱们|咱)([^A-Za-z0-9]|$)' "$f"
       ;;
   esac
 
   # 规则 2：内部销售用词（仅 solutions / awesome / future / 根 README）
   case "$f" in
-    solutions/*|awesome/*|future/*|README.md)
+    solutions/*|awesome/*|README.md)
       check_pattern "内部销售口径(转化率/留存率具体数字)" '(转化率|留存率|续费率|复购率)[^。\n]{0,20}[0-9]+(\.[0-9]+)?%' "$f"
       ;;
   esac
 
   # 规则 3：金额（万/亿元 + 具体数字），公开仓库不放营收/合同金额
   case "$f" in
-    solutions/*|awesome/*|future/*|README.md)
+    solutions/*|awesome/*|README.md)
       check_pattern "敏感金额(具体万/亿元数字)" '[0-9]+(\.[0-9]+)?\s*(万元|亿元|万人民币|亿人民币)' "$f"
       ;;
   esac

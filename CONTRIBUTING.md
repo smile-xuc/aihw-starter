@@ -87,8 +87,8 @@ awesome/commercial-products/by-category/01-ipc.md
 
 ### 流程
 
-1. **先在 `future/README.md` 路线图中开 Issue 认领**——避免重复劳动。
-2. 在 `solutions/by-category/` 下新建目录 `solutions/by-category/0X-{slug}/`，目录命名采用 kebab-case 全小写英文（如 `07-ai-nas`、`08-learning-machine`）。
+1. **先在 GitHub Issues 认领**——标题建议 `[category] 新增 0X-slug`，避免重复劳动。
+2. 在 `solutions/by-category/` 下新建目录 `solutions/by-category/0X-{slug}/`，目录命名采用 kebab-case 全小写英文（如 `10-ai-nas`、`11-learning-machine`）。当前已占用 `01`–`09`，见 [`solutions/by-category/README.md`](./solutions/by-category/README.md)。
 3. 提交一份**完整 6 文件 + demo 占位**：
 
 ```
@@ -146,7 +146,7 @@ awesome/open-source/by-category/01-ipc.md
 ...
 ```
 
-如果该项目所属品类不在已有 6 个里面，先在 `awesome/open-source/by-category/_others.md` 暂存，等到对应品类纳入后再迁移。
+如果该项目所属品类不在已有 9 个里面，先在 `awesome/open-source/by-category/_others.md` 暂存，等到对应品类纳入后再迁移。文件名编号与 `solutions/by-category/` 对齐（`04` = Agent 硬件，`05` = 桌宠，以此类推）。
 
 ### 项目条目最小信息
 

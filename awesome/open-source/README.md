@@ -9,16 +9,20 @@
 
 可在浏览器打开 HTML 进行搜索、分类筛选、Star 数排序。
 
-## 2. 按品类细分（占位）
+## 2. 按品类细分
 
-详细按品类的项目列表见 [`by-category/`](./by-category/)，覆盖：
+文件名编号与 [`solutions/by-category/`](../../solutions/by-category/) **对齐**（`04` = Agent 硬件，`05` = 桌宠，以此类推）。详细列表见 [`by-category/`](./by-category/)：
 
 - [`01-ipc.md`](./by-category/01-ipc.md) — IPC/视觉方向开源项目
 - [`02-ai-glasses.md`](./by-category/02-ai-glasses.md) — AI 眼镜方向开源项目
 - [`03-toys-companion.md`](./by-category/03-toys-companion.md) — 玩具/陪伴方向开源项目
-- [`04-desktop-pet.md`](./by-category/04-desktop-pet.md) — 桌宠方向开源项目
-- [`05-ai-earphone.md`](./by-category/05-ai-earphone.md) — AI 耳机方向开源项目
-- [`06-recorder.md`](./by-category/06-recorder.md) — 录音/纪要方向开源项目
+- [`04-agent-hardware.md`](./by-category/04-agent-hardware.md) — Agent 硬件方向开源项目
+- [`05-desktop-pet.md`](./by-category/05-desktop-pet.md) — 桌宠方向开源项目
+- [`06-ai-earphone.md`](./by-category/06-ai-earphone.md) — AI 耳机方向开源项目
+- [`07-recorder.md`](./by-category/07-recorder.md) — 录音/纪要方向开源项目
+- [`08-smart-watch.md`](./by-category/08-smart-watch.md) — 智能手表 / 健康可穿戴方向开源项目
+- [`09-embodied.md`](./by-category/09-embodied.md) — 具身智能方向开源项目
+- [`_others.md`](./by-category/_others.md) — 尚未归入上述品类的暂存
 
 ## 3. 收录原则
 

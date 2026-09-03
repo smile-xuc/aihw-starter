@@ -19,20 +19,27 @@ solutions/
 │   ├── 01-ipc/            ← IPC / AI 视觉（完整版）
 │   ├── 02-ai-glasses/     ← AI 眼镜（完整版）
 │   ├── 03-toys-companion/ ← AI 玩具 / 陪伴（完整版）
-│   ├── 04-desktop-pet/    ← 桌宠（占位版）
-│   ├── 05-ai-earphone/    ← AI 耳机（完整版）
-│   └── 06-recorder/       ← 录音卡 / 会议盒子（完整版）
-└── by-solution/           ← 方案维度（开发者视角）
-    ├── README.md          ← 方案总览表格
-    ├── 01-qwen/           ← 千问大模型方案（主示例）
-    │   ├── README.md      ← 千问方案总览
-    │   └── omni-realtime/ ← 子形态：Omni 实时端到端 · Runtime Host 中间层
-    ├── 02-xiaozhi.md      ← 小智开源方案（占位）
-    └── 04-talk-to-fengge.md ← Talk-to-Fengge 开源案例（架构启发）
+│   ├── 04-agent-hardware/ ← Agent 硬件（占位版）
+│   ├── 05-desktop-pet/    ← 桌宠（占位版）
+│   ├── 06-ai-earphone/    ← AI 耳机（占位版）
+│   ├── 07-recorder/       ← 录音卡 / 会议盒子（占位版）
+│   ├── 08-smart-watch/    ← 智能手表 / 健康可穿戴（占位版）
+│   └── 09-embodied/       ← 具身智能（占位版）
+├── by-solution/           ← 方案维度（开发者视角）
+│   ├── README.md          ← 方案总览表格
+│   ├── 01-qwen/           ← 千问大模型方案（主示例）
+│   │   ├── README.md      ← 千问方案总览
+│   │   └── omni-realtime/ ← 子形态：Omni 实时端到端 · Runtime Host 中间层
+│   ├── 02-xiaozhi.md      ← 小智开源方案（占位）
+│   ├── 04-talk-to-fengge.md ← Talk-to-Fengge 开源案例（架构启发）
+│   └── 05-qwen-robot.md   ← 千问具身智能方案（架构参考）
+└── benchmark/             ← 方案延迟横评实测
 ```
+
+完整版 = README + 商业 + 方案 + 算账 + 案例 + FAQ + 可跑 demo。占位版结构齐备，商业 / 案例 / FAQ / demo 仍在补。
 
 ## 怎么开始
 
 - **品牌商 / 方案商**：进入 [`by-category/`](./by-category/) 浏览全品类总览，再选感兴趣的赛道。
 - **开发者 / 架构师**：进入 [`by-solution/`](./by-solution/) 选定模型 / 框架方案，再看跨品类的接入差异。
-- **不确定从哪开始**：直接看根 [`README.md`](../README.md) 的"热门品类"表格速览。
+- **不确定从哪开始**：直接看根 [`README.md`](../README.md) 的「热门品类」表格速览。

@@ -17,8 +17,8 @@
 | 品类 | 适配度 | 备注 |
 |---|:-:|---|
 | 🧸 [AI 玩具 / 陪伴](../by-category/03-toys-companion/) | ⭐⭐⭐⭐⭐ | 开源生态最活跃的方向 |
-| 🪴 [桌宠](../by-category/04-desktop-pet/) | ⭐⭐⭐⭐ | ESP32 + 屏幕 / 舵机典型组合 |
-| 🎧 [AI 耳机](../by-category/05-ai-earphone/) | ⭐⭐⭐ | 需要低功耗优化 |
+| 🪴 [桌宠](../by-category/05-desktop-pet/) | ⭐⭐⭐⭐ | ESP32 + 屏幕 / 舵机典型组合 |
+| 🎧 [AI 耳机](../by-category/06-ai-earphone/) | ⭐⭐⭐ | 需要低功耗优化 |
 
 ## 3. 与千问方案的关系
 

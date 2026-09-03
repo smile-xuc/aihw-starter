@@ -1,0 +1,17 @@
+# 开源项目 · 智能手表 / 健康可穿戴（占位版）
+
+> 本页收录智能手表 / 健康可穿戴方向的开源 AI 硬件项目。
+> 完整索引见 [`../ai-hardware-projects.html`](../ai-hardware-projects.html)。
+> 文件名编号与 [`solutions/by-category/`](../../../solutions/by-category/) 对齐。
+
+## 推荐参考项目
+
+待补充项目卡片。
+
+## 项目卡片格式
+
+参考 [`../README.md`](../README.md) 中的项目卡片规范。
+
+## 贡献指引
+
+详见根目录 [`CONTRIBUTING.md`](../../../CONTRIBUTING.md)。

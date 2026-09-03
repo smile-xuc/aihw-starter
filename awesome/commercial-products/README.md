@@ -12,14 +12,17 @@
 
 ## 2. 按品类细分
 
-详细按品类的产品列表见 [`by-category/`](./by-category/)：
+文件名编号与 [`solutions/by-category/`](../../solutions/by-category/) **对齐**。详细产品列表见 [`by-category/`](./by-category/)：
 
 - [`01-ipc.md`](./by-category/01-ipc.md) — IPC/视觉方向商业产品
 - [`02-ai-glasses.md`](./by-category/02-ai-glasses.md) — AI 眼镜方向商业产品
 - [`03-toys-companion.md`](./by-category/03-toys-companion.md) — 玩具/陪伴方向商业产品
-- [`04-desktop-pet.md`](./by-category/04-desktop-pet.md) — 桌宠方向商业产品
-- [`05-ai-earphone.md`](./by-category/05-ai-earphone.md) — AI 耳机方向商业产品
-- [`06-recorder.md`](./by-category/06-recorder.md) — 录音/纪要方向商业产品
+- [`04-agent-hardware.md`](./by-category/04-agent-hardware.md) — Agent 硬件方向商业产品
+- [`05-desktop-pet.md`](./by-category/05-desktop-pet.md) — 桌宠方向商业产品
+- [`06-ai-earphone.md`](./by-category/06-ai-earphone.md) — AI 耳机方向商业产品
+- [`07-recorder.md`](./by-category/07-recorder.md) — 录音/纪要方向商业产品
+- [`08-smart-watch.md`](./by-category/08-smart-watch.md) — 智能手表 / 健康可穿戴方向商业产品
+- [`09-embodied.md`](./by-category/09-embodied.md) — 具身智能方向商业产品
 
 ## 3. 产品卡片格式
 
@@ -51,8 +54,8 @@
 
 ## 5. 与 solutions/ 案例的关系
 
-- `solutions/0X/04-cases.md`：单品类的代表性案例（精选 3–5 个）
-- `awesome/commercial-products/by-category/0X.md`：本目录是**完整产品集**（10+ 个）
+- [`solutions/by-category/0X-xxx/04-cases.md`](../../solutions/by-category/)：单品类的代表性案例（精选 3–5 个）
+- `awesome/commercial-products/by-category/0X.md`：本目录是**完整产品集**（目标 10+ 个）
 
 两者形成"精选 + 全集"的层级关系。
 

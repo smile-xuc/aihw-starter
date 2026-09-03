@@ -20,7 +20,7 @@ git config core.hooksPath .githooks
 
 | 规则 | 适用范围 | 拦截目标 |
 |---|---|---|
-| 内部黑话 | `solutions/` `awesome/` `future/` 根 `README.md` | "我们 / 你 / 咱们 / 咱" 等第一/第二人称 |
+| 内部黑话 | `solutions/` `awesome/` 根 `README.md` | "我们 / 你 / 咱们 / 咱" 等第一/第二人称 |
 | 内部销售口径 | 同上 | "转化率/留存率/续费率/复购率" 后紧跟具体百分比 |
 | 敏感金额 | 同上 | "数字 + 万元 / 亿元 / 万人民币 / 亿人民币" |
 | 疑似密钥 | 全仓库 | `sk-…` / `AKID…` / `Bearer …` |

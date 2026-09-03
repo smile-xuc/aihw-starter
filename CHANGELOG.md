@@ -3,6 +3,36 @@
 本仓库的所有重要变更记录于此。
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [2.3.0] - 2026-09-03
+
+### 修复
+
+九品类编号升格后，入口页、方案树、生态索引与若干交叉链接仍停在六品类旧编号，状态标签也和目录不一致。本版只做对齐，不改方案结论。
+
+- 根 `README.md`、`solutions/README.md`、`docs/index.html`：品类数改为 9；AI 眼镜改回完整版、桌宠改回占位版；Agent 硬件 / 手表 / 具身从「计划中」改为已收录的占位版并补入口
+- `solutions/by-solution/`：千问品类适配表补 04 / 08 / 09；小智方案页失效路径 `04-desktop-pet` / `05-ai-earphone` 改为 `05` / `06`
+- `solutions/by-category/06-ai-earphone/`：录音卡交叉链接 `06-recorder` → `07-recorder`
+- `awesome/`：Markdown 分册编号与 `solutions/by-category/` 对齐（桌宠 `04→05`、耳机 `05→06`、录音卡 `06→07`），并补 04 / 08 / 09 占位页与 `_others.md`
+- `CONTRIBUTING.md`：删除已下线的 `future/README.md` 认领路径；新增品类编号示例改为 `10-` 起
+- `faq.md`：补 Agent 硬件 / 手表 / 具身 FAQ 入口
+- `solutions/benchmark/README.md`：已覆盖清单补上 Omni Realtime 与套件 push2talk 实测；待补项不再把已完成的方案 4 写成未做
+- 04 / 08 / 09 品类补齐占位文件（`01-business` / `04-cases` / `05-faq` / `demo/README`），消除 README 死链
+
+### 变更
+
+- GitHub 仓库描述改为与 v2 定位一致（商业化案例库，不再写 starter kit）
+
+## [2.2.1] - 2026-08-20
+
+### 新增
+
+- `primer/03-kv-cache-quantization.md`：KV Cache 量化通识篇
+- `docs/kv-cache-quantization.html`：配套交互式学习页
+
+### 变更
+
+- `docs/index.html` 与 `docs/omni-runtime-host.html`：由暗色靛蓝改为暖纸浅色画布
+
 ## [2.2.0] - 2026-08-20
 
 ### 变更

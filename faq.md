@@ -5,9 +5,12 @@
 > [IPC](./solutions/by-category/01-ipc/05-faq.md) ·
 > [AI 眼镜](./solutions/by-category/02-ai-glasses/05-faq.md) ·
 > [玩具陪伴](./solutions/by-category/03-toys-companion/05-faq.md) ·
+> [Agent 硬件](./solutions/by-category/04-agent-hardware/05-faq.md) ·
 > [桌宠](./solutions/by-category/05-desktop-pet/05-faq.md) ·
 > [AI 耳机](./solutions/by-category/06-ai-earphone/05-faq.md) ·
-> [录音卡](./solutions/by-category/07-recorder/05-faq.md)
+> [录音卡](./solutions/by-category/07-recorder/05-faq.md) ·
+> [智能手表](./solutions/by-category/08-smart-watch/05-faq.md) ·
+> [具身智能](./solutions/by-category/09-embodied/05-faq.md)
 
 ## A. 商业模式与订阅（通用）
 

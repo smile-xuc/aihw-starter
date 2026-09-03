@@ -43,7 +43,7 @@
 
 ## 3. 录音耳机成本
 
-参考 [`06-recorder/03-cost.md`](../06-recorder/03-cost.md)，1 小时端到端约 ¥1–4。
+参考 [`07-recorder/03-cost.md`](../07-recorder/03-cost.md)，1 小时端到端约 ¥1–4。
 
 ## 4. 待补充
 

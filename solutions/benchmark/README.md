@@ -10,19 +10,22 @@
 |---|---|---|
 | 方案 1 · 千问大模型串接（阻塞式） | [scripts/method1_blocking_sdk.py](./scripts/method1_blocking_sdk.py) / [scripts/method1_blocking_cli.sh](./scripts/method1_blocking_cli.sh) | ASR → LLM → TTS，每步等前一步完成 |
 | 方案 2 · 千问大模型串接（流式） | [scripts/method2_streaming_sdk.py](./scripts/method2_streaming_sdk.py) | ASR + LLM 流式 + TTS 流式输入 |
-| 方案 3 · Qwen-Omni 端到端 | [scripts/method3_omni_sdk.py](./scripts/method3_omni_sdk.py) / [scripts/method3_omni_cli.sh](./scripts/method3_omni_cli.sh) | 一个模型同时吞音频吐音频 |
+| 方案 3 · Qwen-Omni 端到端（HTTP 流式） | [scripts/method3_omni_sdk.py](./scripts/method3_omni_sdk.py) / [scripts/method3_omni_cli.sh](./scripts/method3_omni_cli.sh) | 一个模型同时吞音频吐音频 |
+| 方案 3b · Qwen-Omni Realtime（WebSocket 双工） | [scripts/method3_omni_realtime_sdk.py](./scripts/method3_omni_realtime_sdk.py) | `qwen3.5-omni-flash-realtime`，体感延迟约 350ms |
+| 方案 4 · 百炼多模态交互开发套件（push2talk） | [scripts/method4_duplex_sdk.py](./scripts/method4_duplex_sdk.py) | WebSocket 接入 multimodal-dialog，从 StopSpeech 到首帧 TTS |
 
-> 待补：百炼多模态交互开发套件（全双工套件方案）、端云协同方案。
+> 待补：Qwen-Audio-3.0-Realtime 实测、端云协同方案、套件全双工（非 push2talk）对照。
 
 ## 测试样本
 
-三段短句，覆盖轻/中/复杂三档，位于 [samples/](./samples/)：
+四段短句，覆盖轻 / 中 / 复杂 / 搜索四档，位于 [samples/](./samples/)：
 
 | ID | 文本 | 级别 |
 |---|---|---|
 | q1_light | 今天天气怎么样 | 轻度 |
-| q2_medium | 帮我讲一个关于恐龙的小故事 | 中度 |
+| q2_medium | 帮我讲一个关于恐龙的小故事 | 中度（脚本默认样本集未纳入，文件保留） |
 | q3_complex | 如果我在河边发现了一只受伤的小鸟应该怎么办我需要考虑哪些方面 | 复杂 |
+| q4_search | 杭州今天天气怎么样，气温多少度 | 搜索（需联网） |
 
 样本用 CosyVoice `longwan_v2` 音色合成，采样率 22050 Hz，单声道 WAV。如需重新生成或换其他声音，跑一次方案 3 CLI 即可产出对应文件。
 
@@ -184,13 +187,15 @@ solutions/benchmark/
 └── results/                         # 实测数据（json）
     ├── method1_blocking.json
     ├── method2_streaming.json
-    └── method3_omni.json
+    ├── method3_omni.json
+    ├── method3_omni_realtime.json
+    └── method4_duplex.json
 ```
 
 ## 待补充
 
 - [ ] 方案 3c · Qwen-Audio-3.0-Realtime（Plus / Flash，音频专用 S2S）延迟实测
-- [ ] 方案 4：百炼多模态交互开发套件（全双工套件）
+- [ ] 方案 4 全双工（非 push2talk）对照
 - [ ] 方案 2 的 CLI 版（流式在 shell 里较难拆解，暂用 SDK 演示）
 - [ ] 加入并发压测（当前只测单会话延迟）
 - [ ] 加入 asyncio 版本，对比同步/异步差异
