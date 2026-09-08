@@ -80,8 +80,8 @@
 <tr>
 <td align="center">05</td>
 <td><a href="./solutions/by-category/05-desktop-pet/"><b>桌宠</b></a></td>
-<td align="center" nowrap>🚧 占位版</td>
-<td>动作情绪标签 + 情感 TTS</td>
+<td align="center" nowrap>✅ 完整版</td>
+<td>动作情绪标签三路同步 + 记忆日记 + BLE 降级</td>
 </tr>
 <tr>
 <td align="center">06</td>

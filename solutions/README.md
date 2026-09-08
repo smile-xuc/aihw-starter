@@ -20,7 +20,7 @@ solutions/
 │   ├── 02-ai-glasses/     ← AI 眼镜（完整版）
 │   ├── 03-toys-companion/ ← AI 玩具 / 陪伴（完整版）
 │   ├── 04-agent-hardware/ ← Agent 硬件（占位版）
-│   ├── 05-desktop-pet/    ← 桌宠（占位版）
+│   ├── 05-desktop-pet/    ← 桌宠（完整版）
 │   ├── 06-ai-earphone/    ← AI 耳机（占位版）
 │   ├── 07-recorder/       ← 录音卡 / 会议盒子（占位版）
 │   ├── 08-smart-watch/    ← 智能手表 / 健康可穿戴（占位版）

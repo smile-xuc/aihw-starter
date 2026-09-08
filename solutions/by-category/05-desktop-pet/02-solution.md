@@ -427,38 +427,31 @@ neutral / happy / surprised / fearful / angry / sad / disgusted
 
 ### 10.3 流式标签解析（Python，可移植到嵌入式）
 
+> 完整可跑版本（含跨 token 缓冲与去标签校验）：[`demo/stream-tag-parser/`](./demo/stream-tag-parser/)。
+> 下面是逻辑摘要——**未闭合的标签残片必须留在缓冲里**，不能每 token 清空。
+
 ```python
 import re
 
-PAT = re.compile(r'\[(emoji|action)-(\d{2})\]')
+TAG_PAT = re.compile(r'\[(emoji|action)-(\d{2})\]')
 EMOTION_PAT = re.compile(r'<M>(\w+)</M>')
 
-def stream_handler(token_stream, screen, motor, tts):
-    buf = ""
-    emotion = "neutral"
-    emotion_set = False
-
-    for token in token_stream:
-        buf += token
-
-        if not emotion_set:
-            m = EMOTION_PAT.search(buf)
-            if m:
-                emotion = m.group(1)
-                emotion_set = True
-                tts.set_emotion(emotion)
-                buf = EMOTION_PAT.sub('', buf)
-
-        for m in PAT.finditer(buf):
-            kind, code = m.group(1), m.group(2)
-            if kind == "emoji":
-                screen.play(f"emoji_{code}")
-            else:
-                motor.enqueue(f"action_{code}")
-
-        clean = PAT.sub('', buf)
-        tts.feed(clean)
-        buf = ""
+def feed(buf, token, on_emotion, on_tag, on_speech):
+    buf += token
+    m = EMOTION_PAT.match(buf)  # 协议：情绪标在最前
+    if m:
+        on_emotion(m.group(1))
+        buf = buf[m.end():]
+    while True:
+        m = TAG_PAT.search(buf)
+        if not m:
+            break
+        if m.start():
+            on_speech(buf[:m.start()])
+        on_tag(m.group(1), m.group(2))
+        buf = buf[m.end():]
+    # 仅冲洗确定不会是「半截 [action-」的前缀；半截留下等下一 token
+    return buf
 ```
 
 ### 10.4 情感 TTS 调用

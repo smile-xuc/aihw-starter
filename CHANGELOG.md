@@ -3,6 +3,23 @@
 本仓库的所有重要变更记录于此。
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [2.4.0] - 2026-09-08
+
+### 新增
+
+#### `solutions/by-category/05-desktop-pet/` 升为完整版
+
+- `01-business.md`：利润逻辑、四形态、客户画像、订阅未跑通、决策树、与玩具品类边界
+- `03-cost.md`：BOM、三段式 / Realtime 云端量级、记忆日记增量、售价规模效应与空白模板
+- `04-cases.md`：Looi / EMO / Vector / Eilik / 小智横评与可借鉴点
+- `05-faq.md`：商业、链路选型、三路同步、记忆、拟人化互动合规
+- `demo/stream-tag-parser/`：离线可跑的流式标签解析器（跨 token 缓冲、去标签、超限 WARN）
+
+### 变更
+
+- 根 `README.md`、`solutions/README.md`、`solutions/by-category/README.md`、`docs/index.html`：完整版计数 3 → 4，桌宠状态改为完整版
+- `02-solution.md` 10.3 节：修正「每 token 清空缓冲」的错误示例，改为指向可跑 demo
+
 ## [2.3.0] - 2026-09-03
 
 ### 修复
