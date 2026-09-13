@@ -12,17 +12,20 @@
 ---
 <!-- HERO:END -->
 
-> 本目录用于存放 AI 耳机品类的可运行示例代码。
-> 当前为占位版，欢迎社区贡献最小可运行 demo。
+> 本目录存放 AI 耳机品类可运行示例。
 
-## 计划包含的 demo
+## 已提供
 
-- [ ] **`livetranslate-ws/`** — Qwen3.5-Livetranslate WebSocket 同传 demo
-- [ ] **`bidirectional/`** — 双向翻译对讲伪代码 + 工程实现
-- [ ] **`omni-realtime/`** — Qwen-Omni-Realtime 全双工对话 demo
-- [ ] **`ble-bridge/`** — 蓝牙音频桥接到云端 ASR/翻译的中间层
-- [ ] **`subtitle-renderer/`** — AR 眼镜实时字幕渲染示例
-- [ ] **`vad-wakeup/`** — 端侧 VAD + 唤醒词 + 按需联网
+| Demo | 说明 | 依赖 |
+|---|---|---|
+| [`livetranslate-ws/`](./livetranslate-ws/) | Livetranslate 同传回调节奏；默认 **mock 离线可跑**，可选 live | mock：标准库；live：dashscope + API Key |
+
+## 计划中（欢迎 PR）
+
+- [ ] **`bidirectional/`** — 双向翻译对讲工程实现
+- [ ] **`omni-realtime/`** — 全双工对话（可复用眼镜 demo 经验）
+- [ ] **`ble-bridge/`** — 蓝牙音频桥接到云端
+- [ ] **`vad-wakeup/`** — 端侧 VAD + 按需联网
 
 ## 贡献指引
 
