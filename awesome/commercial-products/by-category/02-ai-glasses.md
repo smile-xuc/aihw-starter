@@ -23,33 +23,63 @@
 
 ---
 
+### Ray-Ban Meta（Gen 2）
+
+- **官网**：<https://www.meta.com/ai-glasses/> · 博客 <https://www.meta.com/blog/ray-ban-meta-gen-2-now-available-ai-glasses-extended-battery-life-3k-video/>
+- **形态**：雷朋经典镜框 + 开放式扬声器 + 12MP 超广角相机；Gen 2 宣称最长约 8 小时续航、3K 视频
+- **定价（美区公开）**：Gen 2 **自 $379 起**（镜片/镜框配置可至 $459+）；Gen 1 仍有约 $299 起售信息
+- **目标市场**：全球时尚消费 + Meta AI 生态用户
+- **AI 能力**：Meta AI 语音助手、实景问答（Live AI）、实时翻译、通话/消息、免提拍照录像
+- **关键差异化**：① 销量心智与雷朋渠道；② 相机+音频一体，非纯显示眼镜；③ 软件持续 OTA（对话聚焦、离线翻译包等）
+- **商业模式**：硬件销售 + Meta 账号生态（订阅策略以当地披露为准）
+
+> 来源：[Meta Quest Blog · Gen 2](https://www.meta.com/blog/ray-ban-meta-gen-2-now-available-ai-glasses-extended-battery-life-3k-video/) · [产品页示例](https://www.meta.com/ai-glasses/ray-ban-meta-skyler-shiny-black-clear-gen-2/)
+
+---
+
+### Rokid AI Glasses Style
+
+- **官网**：<https://rokid.com/>（以官网/Amazon 当前 listing 为准）
+- **形态**：**无显示** AI 音频/摄像眼镜；公开规格约 38.5g、约 12 小时续航、12MP 相机
+- **定价（2026 公开）**：上市促销约 **$299**，MSRP 报道约 **$349**
+- **目标市场**：希望多模型可选、非 Meta 生态绑定的日常佩戴用户
+- **AI 能力**：公开材料称可选 ChatGPT / Gemini / Qwen / DeepSeek 等；翻译与语音助手
+- **关键差异化**：① 开放模型选择；② 长续航轻量；③ 与 Rokid 显示类 AR 产品线区隔（Style = 助手向）
+- **商业模式**：硬件为主；可选订阅报道约 $19.99/月量级（以官网为准）
+
+> 来源：2026 公开评测与路线文（如 [idevice Rokid Style](https://idevice.com/smart-glasses/rokid-ai-glasses-style/roadmap)）
+
+---
+
+### RayNeo iO / GT 系列（雷鸟）
+
+- **官网**：<https://www.rayneo.com/>
+- **形态**：iO = AI 助手眼镜；GT / GT Max = 显示向 AR 眼镜；另有 Pocket TV 等配件
+- **定价（2026-09 公开新闻稿）**：iO **$449**（充电盒套装 $499）；GT **$299**；GT Max **$399**
+- **目标市场**：全球消费级 AI/AR 眼镜
+- **AI 能力**：iO 侧重语音助手与日常信息；GT 系列侧重虚屏影音办公
+- **关键差异化**：① AI 镜与显示镜分产品线；② 自 $299 切入显示档；③ 处方与 HSA/FSA 等区域政策（以当地为准）
+- **商业模式**：硬件销售
+
+> 来源：[ABNewswire · RayNeo 2026 Q3 产品线](https://www.abnewswire.com/pressreleases/rayneo-launches-new-smart-glasses-lineup-io-ai-glasses-and-gt-series-ar-glasses-now-available-from-299_834453.html)
+
+---
+
 ## 待补充清单
 
 ### 海外标杆
 
-- [ ] **Ray-Ban Meta**（Meta × EssilorLuxottica）：销量与生态参考
 - [ ] **Frame**（Brilliant Labs）：开源开发者向
-- [ ] **Solos AirGo**：早期 AI 音频眼镜
-- [ ] **Humane AI Pin**（非眼镜形态，但同生态对标）：可作对比项
+- [ ] **Oakley Meta HSTN**：运动向 Meta AI 眼镜
 
 ### 国内品牌
 
-- [ ] **Rokid**：AR/AI 眼镜消费版本与开发者版本
-- [ ] **Xreal**（曾用名 Nreal）：AR 显示眼镜
-- [ ] **雷鸟创新**：消费级 AR/AI 眼镜
-- [ ] **小度 / 字节 / 华为 等大厂 AI 眼镜 SKU**：待补充
-- [ ] **百度小度 AI 眼镜 / 小米 AI 眼镜**：上市动态待跟踪
-- [ ] **韶音 / 1MORE 等音频眼镜延展**：AI 化路径
+- [ ] **Xreal** 显示向 One / 1S 系列
+- [ ] **小米 / 华为 / 百度** 大厂 AI 眼镜 SKU 动态
 
 ### 垂直场景
 
-- [ ] **OrCam**：盲人/视障辅助
-- [ ] **Vuzix / Magic Leap**：企业向 AR
-- [ ] **Envision Glasses**：基于 Google Glass 的视障辅助
-
-## 卡片格式
-
-参考 [`../README.md`](../README.md) 中的产品卡片规范。
+- [ ] **OrCam / Envision**：视障辅助
 
 ## 贡献指引
 
