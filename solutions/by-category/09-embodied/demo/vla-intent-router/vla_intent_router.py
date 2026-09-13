@@ -108,13 +108,19 @@ def parse_utterance(text: str) -> Plan:
             notes.append("high_force_requested")
         skills.append(Skill("grasp", {"object": obj, "max_force_n": force}))
         skills.append(Skill("place", {"target": dst}))
-    elif re.search(r"抓|拿起|夹取", t):
+    elif re.search(r"抓住|抓取|抓|拿起|夹取", t):
         obj = "object"
-        m = re.search(r"(?:抓|拿起|夹取)(.+?)(?:，|,|然后|$)", t)
+        # 先匹配「抓住/抓取」，避免「抓」把「住」吃进宾语
+        m = re.search(r"(?:抓住|抓取|拿起|夹取|抓)(.+?)(?:，|,|然后|$)", t)
         if m:
             obj = m.group(1).strip()
+        force = 12.0
+        if re.search(r"用力|大力|死劲", t):
+            force = 35.0
+            risk = "high"
+            notes.append("high_force_requested")
         skills.append(Skill("locate", {"object": obj}))
-        skills.append(Skill("grasp", {"object": obj, "max_force_n": 12.0}))
+        skills.append(Skill("grasp", {"object": obj, "max_force_n": force}))
 
     if re.search(r"检查|巡检|看看", t):
         skills.append(Skill("inspect", {"mode": "visual"}))
