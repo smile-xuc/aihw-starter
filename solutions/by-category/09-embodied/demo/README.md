@@ -12,12 +12,21 @@
 ---
 <!-- HERO:END -->
 
-> 本目录用于存放本品类的可运行示例代码。当前为占位版。
+可运行示例（完整版）：
 
-## 计划包含的 demo
+## [`vla-intent-router/`](./vla-intent-router/)
 
-- [ ] **`vla-prompt/ — 语言指令到动作描述示例`**
-- [ ] **`safety-gate/ — 运控安全门骨架`**
+语言指令 → 结构化技能计划 + Safety Gate（离线、无 API Key）。
+
+```bash
+cd vla-intent-router
+python3 vla_intent_router.py
+```
+
+## 后续可贡献
+
+- [ ] `safety-gate/` 与真实臂 SDK 的力矩限位对接骨架
+- [ ] 接千问 Function Calling 的规划器（需 `.env.example`）
 
 ## 贡献指引
 
