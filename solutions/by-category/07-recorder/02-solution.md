@@ -148,10 +148,14 @@ recognition.send_audio_frame(audio_chunk)
 
 ### 3.3 纪要 Agent 编排
 
-将转写结果按主题切分后，走 Map-Reduce：
+将转写结果按主题 / 长度切分后，走 Map-Reduce：
 
-- **Map**：每段抽取决策、待办、风险、关键数据
+- **Map**：每段抽取议程要点、决策、待办、风险、关键数据
 - **Reduce**：去重 + 全局汇总 → 结构化 JSON → Markdown 渲染
+
+可运行最小 demo（离线 mock 优先，可选 `DASHSCOPE_API_KEY`）：
+
+> 🧪 [`demo/map-reduce-summary/`](./demo/map-reduce-summary/)
 
 ## 四、示例与模板
 
@@ -217,7 +221,13 @@ recognition.send_audio_frame(audio_chunk)
 - 录音纪要 Agent 实践：https://help.aliyun.com/zh/model-studio/recording-summary-agent-tutorial
 - Paraformer-v2 文件转写：https://help.aliyun.com/zh/model-studio/paraformer
 - bailian-cli（本地 mp3 直传）：https://bailian.aliyun.com/cli/install.md
-- 计费页面：https://bailian.console.aliyun.com/?productCode=p_efm#/billing
+- Model Studio 计费总览：https://help.aliyun.com/zh/model-studio/billing-of-model-studio
+- 控制台计费入口：https://bailian.console.aliyun.com/?productCode=p_efm#/billing
+
+---
+
+**版本**：千问大模型方案
+**更新日期**：2026-09
 
 <!-- FOOTER:START -->
 
