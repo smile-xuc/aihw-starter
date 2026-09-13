@@ -12,13 +12,28 @@
 ---
 <!-- HERO:END -->
 
-> 本目录用于存放本品类的可运行示例代码。当前为占位版。
+> 本目录存放 Agent 硬件可运行示例。对应技术方案：[`02-solution.md`](../02-solution.md) 意图路由。
 
-## 计划包含的 demo
+## 已提供
 
-- [ ] **`intent-router/ — 端侧意图分发示例`**
-- [ ] **`tool-agent/ — Function Calling 调度骨架`**
-- [ ] **`offline-fallback/ — 离线降级话术`**
+### [`intent-router/`](./intent-router/) — 端侧意图分发（离线可跑）
+
+把用户话术分成 `local` / `cloud` / `hybrid`，并演示断网降级话术。
+
+```bash
+cd intent-router
+python3 intent_router.py
+python3 intent_router.py --offline
+python3 intent_router.py --text "把客厅灯关掉"
+```
+
+无需 API Key。
+
+## 计划中（欢迎 PR）
+
+- [ ] **`tool-agent/`** — Function Calling 调度骨架
+- [ ] **`offline-fallback/`** — 更完整的离线话术与本地日历
+- [ ] **`audit-log/`** — 工具调用审计日志示例
 
 ## 贡献指引
 
