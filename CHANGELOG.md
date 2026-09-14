@@ -3,6 +3,24 @@
 本仓库的所有重要变更记录于此。
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [2.5.0] - 2026-09-13
+
+### 新增
+
+#### 九品类完整版补齐（合并 #1 / #2 / #3）
+
+- `04-agent-hardware`：商业 / 方案 / 算账 / 案例 / FAQ + `demo/intent-router`（mock 可跑）
+- `06-ai-earphone`：完整文档 + `demo/livetranslate-ws`（`--mode mock`）
+- `07-recorder`：完整文档 + `demo/map-reduce-summary`（mock 可跑）
+- `08-smart-watch`：完整文档 + `demo/metrics-prompt`（mock 可跑）
+- `09-embodied`：完整文档 + `demo/vla-intent-router`（mock 可跑）
+- 对应 `awesome/commercial-products/by-category/` 产品卡补齐（含 01/02/03/05/09 与 04/06/07/08）
+
+### 变更
+
+- 根 `README.md`、`solutions/README.md`、`solutions/by-category/README.md`、`docs/index.html`：完整版计数 **4 → 9**（九品类均为完整版）
+- 入口状态标签：04 / 06 / 07 / 08 / 09 由「占位版」改为「完整版」
+
 ## [2.4.0] - 2026-09-08
 
 ### 新增

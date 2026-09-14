@@ -74,7 +74,7 @@
 <tr>
 <td align="center">04</td>
 <td><a href="./solutions/by-category/04-agent-hardware/"><b>Agent 硬件（如桌面盒子）</b></a></td>
-<td align="center" nowrap>🚧 占位版</td>
+<td align="center" nowrap>✅ 完整版</td>
 <td>多 Agent 协同 + 端云模型协同</td>
 </tr>
 <tr>
@@ -86,25 +86,25 @@
 <tr>
 <td align="center">06</td>
 <td><a href="./solutions/by-category/06-ai-earphone/"><b>AI 耳机</b></a></td>
-<td align="center" nowrap>🚧 占位版</td>
+<td align="center" nowrap>✅ 完整版</td>
 <td>实时翻译 / 对话 / 听记多用途</td>
 </tr>
 <tr>
 <td align="center">07</td>
 <td><a href="./solutions/by-category/07-recorder/"><b>录音卡 / 会议盒子</b></a></td>
-<td align="center" nowrap>🚧 占位版</td>
+<td align="center" nowrap>✅ 完整版</td>
 <td>ASR + 纪要 Agent，结构化纪要</td>
 </tr>
 <tr>
 <td align="center">08</td>
 <td><a href="./solutions/by-category/08-smart-watch/"><b>智能手表 / 健康可穿戴</b></a></td>
-<td align="center" nowrap>🚧 占位版</td>
+<td align="center" nowrap>✅ 完整版</td>
 <td>健康指标解读 + 订阅商业化</td>
 </tr>
 <tr>
 <td align="center">09</td>
 <td><a href="./solutions/by-category/09-embodied/"><b>具身智能</b></a></td>
-<td align="center" nowrap>🚧 占位版</td>
+<td align="center" nowrap>✅ 完整版</td>
 <td>VLA 端云协同 + 多本体形态适配</td>
 </tr>
 </table>

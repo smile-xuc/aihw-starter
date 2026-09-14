@@ -19,12 +19,12 @@ solutions/
 │   ├── 01-ipc/            ← IPC / AI 视觉（完整版）
 │   ├── 02-ai-glasses/     ← AI 眼镜（完整版）
 │   ├── 03-toys-companion/ ← AI 玩具 / 陪伴（完整版）
-│   ├── 04-agent-hardware/ ← Agent 硬件（占位版）
+│   ├── 04-agent-hardware/ ← Agent 硬件（完整版）
 │   ├── 05-desktop-pet/    ← 桌宠（完整版）
-│   ├── 06-ai-earphone/    ← AI 耳机（占位版）
-│   ├── 07-recorder/       ← 录音卡 / 会议盒子（占位版）
-│   ├── 08-smart-watch/    ← 智能手表 / 健康可穿戴（占位版）
-│   └── 09-embodied/       ← 具身智能（占位版）
+│   ├── 06-ai-earphone/    ← AI 耳机（完整版）
+│   ├── 07-recorder/       ← 录音卡 / 会议盒子（完整版）
+│   ├── 08-smart-watch/    ← 智能手表 / 健康可穿戴（完整版）
+│   └── 09-embodied/       ← 具身智能（完整版）
 ├── by-solution/           ← 方案维度（开发者视角）
 │   ├── README.md          ← 方案总览表格
 │   ├── 01-qwen/           ← 千问大模型方案（主示例）
@@ -36,7 +36,7 @@ solutions/
 └── benchmark/             ← 方案延迟横评实测
 ```
 
-完整版 = README + 商业 + 方案 + 算账 + 案例 + FAQ + 可跑 demo。占位版结构齐备，商业 / 案例 / FAQ / demo 仍在补。
+完整版 = README + 商业 + 方案 + 算账 + 案例 + FAQ + 可跑 demo。九品类现均为完整版（9/9）。
 
 ## 怎么开始
 

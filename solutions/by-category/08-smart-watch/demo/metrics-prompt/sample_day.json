@@ -1,0 +1,13 @@
+{
+  "gender": "女",
+  "age": 32,
+  "bmi": 21.5,
+  "rhr": 72,
+  "rhr_avg7": 62,
+  "spo2": 97.0,
+  "spo2_min": 93.0,
+  "deep_sleep_min": 48,
+  "total_sleep_min": 340,
+  "steps": 4200,
+  "cal": 1600
+}
