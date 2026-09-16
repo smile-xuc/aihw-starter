@@ -1,0 +1,31 @@
+name: link-check
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  lychee:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Link check (relative + selected paths)
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # First-week strategy: surface report without failing the PR on flaky outbound links.
+          # Relative path 404s still appear in the job log for maintainers.
+          fail: false
+          args: >-
+            --verbose
+            --no-progress
+            --exclude-mail
+            --max-concurrency 4
+            --accept 200,204,206,429
+            README.md CONTRIBUTING.md faq.md CHANGELOG.md
+            awesome/**/*.md
+            awesome/open-source/*.html
+            solutions/**/*.md
+            primer/**/*.md
+            docs/*.html

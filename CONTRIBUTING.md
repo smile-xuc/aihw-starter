@@ -185,12 +185,13 @@ awesome/open-source/by-category/01-ipc.md
    - `feat(03-toys-companion): add doubao solution`
    - `docs(01-ipc): update cost section with 2026 pricing`
    - `feat(awesome/commercial-products): add new IPC product entry`
-4. **PR 模板**会要求你填写：
+4. 打开 PR 时请按 [`.github/PULL_REQUEST_TEMPLATE.md`](./.github/PULL_REQUEST_TEMPLATE.md) 填写：
    - 这次贡献属于上面哪一类（一/二/三/四/五）
    - 涉及哪些品类
    - 数据来源（如有）
    - 是否包含客户敏感信息（应为「否」）
-5. 我们会在 7 天内给出 review 反馈。如有讨论，我们会在 PR 评论里推进。
+5. 新增开源项目时：写入 `awesome/open-source/by-category/` **主品类**；建议同步更新 HTML 大盘 `projects` 数组。
+6. 我们会在 7 天内给出 review 反馈。如有讨论，我们会在 PR 评论里推进。
 
 ---
 
