@@ -30,9 +30,11 @@ solutions/
 │   ├── 01-qwen/           ← 千问大模型方案（主示例）
 │   │   ├── README.md      ← 千问方案总览
 │   │   └── omni-realtime/ ← 子形态：Omni 实时端到端 · Runtime Host 中间层
-│   ├── 02-xiaozhi.md      ← 小智开源方案（占位）
+│   ├── 02-xiaozhi.md      ← 小智开源方案（可用导读）
+│   ├── 03-mainstream-llms.md ← 豆包 / Kimi / 智谱 / DeepSeek / OpenAI 对照
 │   ├── 04-talk-to-fengge.md ← Talk-to-Fengge 开源案例（架构启发）
-│   └── 05-qwen-robot.md   ← 千问具身智能方案（架构参考）
+│   ├── 05-qwen-robot.md   ← 千问具身智能方案（架构参考）
+│   └── 06-edge-hybrid.md  ← 端侧 / 混合（端云协同）
 └── benchmark/             ← 方案延迟横评实测
 ```
 

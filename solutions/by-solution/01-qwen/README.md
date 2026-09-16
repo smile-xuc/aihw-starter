@@ -202,8 +202,9 @@ Realtime WebSocket 协议下目前有两条模型线：**Qwen3.5-Omni-Realtime**
 | 场景 | 替代或补充方案 |
 |---|---|
 | 端侧离线唤醒 | 见 [小智开源方案](../02-xiaozhi.md) |
-| 海外模型成本对比 | OpenAI / Gemini / Claude（欢迎 PR） |
-| 端侧推理 | Qwen 开源系列 + Hugging Face / Ollama |
+| 端侧 / 混合架构 | 见 [端侧 / 混合方案](../06-edge-hybrid.md) |
+| 海外 / 多云对照 | 见 [主流大模型对照](../03-mainstream-llms.md) |
+| 端侧推理 | Qwen 开源系列 + Hugging Face / Ollama；规格见 [primer/02](../../../primer/02-model-size-chips.md) |
 | 开源全栈参考 | 见 [Talk-to-Fengge 架构启发](../04-talk-to-fengge.md) |
 
 ---
