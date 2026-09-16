@@ -3,6 +3,19 @@
 本仓库的所有重要变更记录于此。
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [Unreleased]
+
+### 新增
+
+- `awesome/open-source/by-category/`：从 HTML 大盘挑真实仓库填充分册卡片（去空壳占位；01–09 + `_others`）
+- `.github/PULL_REQUEST_TEMPLATE.md`：对齐 CONTRIBUTING §七字段
+- `.github/workflows/link-check.yml`：lychee 链接检查（push/PR；首周 `fail: false`）
+
+### 变更
+
+- `awesome/open-source/README.md`：写清 HTML 大盘 vs MD 品类入口双轨与主品类映射
+- 根 `README.md`：Discussions 未开启时入口改为 Issue，消除空转承诺
+
 ## [2.5.0] - 2026-09-13
 
 ### 新增
