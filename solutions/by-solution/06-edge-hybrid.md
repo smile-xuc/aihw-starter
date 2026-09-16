@@ -2,7 +2,7 @@
 
 > AI 硬件很少「纯云」或「纯端」一刀切。量产常见形态是：**端侧负责唤醒、前端音频、低功耗常听与本地快指令；云端（或家庭 NAS）负责 ASR/LLM/TTS 与重推理**。
 >
-> 本页给出横切架构与选型清单；芯片与参数量直觉见 [primer/02 · 模型规格与芯片载体](../../primer/02-model-size-chips.md)。开源落地可参考 [小智](./02-xiaozhi.md) 与乐鑫 [LLM 方案](https://www.espressif.com/zh-hans/ecosystem/largelanguagemodel)。
+> 切分原则通识见 [primer/06 · 端云协同基础](../../primer/06-edge-cloud.md)；芯片与参数量直觉见 [primer/02 · 模型规格与芯片载体](../../primer/02-model-size-chips.md)。开源落地可参考 [小智](./02-xiaozhi.md) 与乐鑫 [LLM 方案](https://www.espressif.com/zh-hans/ecosystem/largelanguagemodel)。
 
 ## 1. 能力地图：端做什么、云做什么
 
@@ -99,6 +99,8 @@
 | 小智开源方案（薄终端 + 云） | [02-xiaozhi.md](./02-xiaozhi.md) |
 | 千问 Omni + Runtime Host | [01-qwen/omni-realtime/](./01-qwen/omni-realtime/) |
 | 模型规格 × 芯片 | [primer/02](../../primer/02-model-size-chips.md) |
+| 端云切分原则 | [primer/06 · 端云协同基础](../../primer/06-edge-cloud.md) |
+| 端侧小模型 / 蒸馏边界 | [primer/05 · 蒸馏](../../primer/05-distillation.md) |
 
 > 欢迎补充各品类实测的「本地命令命中率 / 上云占比 / 断网体验」数据。
 

@@ -181,6 +181,8 @@
 | OSS API 请求计费 | [API 请求费用](https://help.aliyun.com/zh/oss/api-operation-calling-fees) |
 | OSS 产品定价（汇总） | [产品定价页](https://www.aliyun.com/price/product#/oss/detail/oss) |
 
+> Token / 输入输出 / 缓存的通识口径见 [primer/04 · Token 与计费](../../../primer/04-token-billing.md)。
+
 ---
 
 **版本**：千问大模型方案
