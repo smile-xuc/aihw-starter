@@ -131,7 +131,7 @@ KV Cache ≈ 2（K 和 V 各一份） × 层数 × KV 头数 × 每头维度
 </td>
 <td align="right" width="33%">
 
-<sub>（末篇）</sub>
+<a href="./04-token-billing.md">04 Token 与计费 →</a>
 
 </td>
 </tr>

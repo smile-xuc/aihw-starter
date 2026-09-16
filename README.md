@@ -157,7 +157,7 @@ solutions/by-category/0X-xxxx/
 
 ### 🔍 了解生态
 
-- [primer/](./primer/) — AI 通识：开放权重与授权、模型规格与芯片载体
+- [primer/](./primer/) — AI 通识：开放权重、规格与芯片、KV 量化、Token 计费、蒸馏、端云、记忆
 - [awesome/open-source/](./awesome/open-source/) — 137+ 个 GitHub 开源项目，15 品类
 - [awesome/commercial-products/](./awesome/commercial-products/) — 在售商业产品
 - [docs/ 门面页](https://smile-xuc.github.io/aihw-starter/) — GitHub Pages 总览
@@ -189,7 +189,7 @@ aihw-starter/
 ├── awesome/
 │   ├── open-source/           # 开源项目索引（137+ 项目，15 品类）
 │   └── commercial-products/   # 在售商业化产品案例
-├── primer/                    # AI 通识（开放权重与授权 / 模型规格与芯片载体 …）
+├── primer/                    # AI 通识（01–07：授权 / 规格 / KV / Token / 蒸馏 / 端云 / 记忆）
 ├── docs/                      # GitHub Pages 门面页
 ├── faq.md                     # 跨品类通用 FAQ
 └── CONTRIBUTING.md            # 贡献指南

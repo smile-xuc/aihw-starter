@@ -133,6 +133,8 @@ Qwen-Omni-Realtime / Qwen-Audio-3.0-Realtime 按音频时长计费，单位时�
 
 **结论**：桌宠毛利敏感点在渠道与开模，不在 token。技术侧把单轮成本压在 flash / plus 档、限制标签数量、记忆用 flash 离线跑，即可把云端占比压到个位数百分点。
 
+> Token 估算通识见 [primer/04](../../../primer/04-token-billing.md)；分层记忆见 [primer/07](../../../primer/07-context-memory.md)。
+
 ---
 
 **版本**：千问大模型方案
