@@ -33,6 +33,7 @@
 | **Plaud Note Pro** | Plaud | 卡片旗舰 | 同上 + 更强硬件规格（以官网为准） | 同生态，更高硬件档 | [$189](https://www.plaud.ai/products/plaud-note-pro) |
 | **Notta Memo** | Notta | 口袋卡片 + 磁吸 | Notta App AI 转写 / 摘要 / 翻译 | 4 MEMS + 骨传导，58 语种 | [$149](https://shop.notta.ai/en-us/products/notta-memo) |
 | **讯飞 SR502 星火版** | 科大讯飞 | 带屏录音笔 | 讯飞星火 / 听见转写 | 离线转写、OCR、会议向 | [¥2499 官网标价](https://www.iflytekrecord.com/Goods_parms/1/511.html) |
+| **HiDock H1 Lite** | HiDock | USB-C 桌面扬声器电话 | HiNotes；产品页列 GPT-5.4 / Claude 4.6 / Gemini 3.1 Pro | BlueCatch 双端录音，无会议 bot；Call / Room | [官网 $189](https://www.hidock.com/products/hidock-h1-lite)；[Amazon $189.99](https://www.amazon.com/HiDock-Conference-Speakerphone-Noise-Canceling-Transcription/dp/B0GZ3GZ3DT) |
 | **Limitless Pendant** | Limitless（Meta 收购后公开停售） | 挂件可穿戴 | 云端转写 + 日记式检索 | 持续录音、隐私声明 | 历史公开约 $99；[官网说明停售](https://www.limitless.ai/) |
 | **通义听悟** | 阿里云 | 纯 SaaS | Paraformer + 纪要 Agent | 开箱转写 / 纪要 | 按听悟套餐（非硬件） |
 | **钉钉 AI 听记** | 钉钉 | 会议软件内嵌 | 钉钉 / 通义能力（公开表述） | 会中字幕与纪要 | 随钉钉商业化 |
@@ -83,7 +84,12 @@
 - **亮点**：挂件持续录音、日记式检索；公开信息称 Meta 收购后停止向新客户销售 Pendant
 - **可借鉴点**：全天候录音的产品想象力强，但隐私、区域合规与告知义务成本高——创业团队需谨慎
 
-### 3.5 通义听悟 / 钉钉听记 — 软件参考
+### 3.5 HiDock H1 Lite — 桌面扬声器电话，基础转写随设备
+
+- **公开信息源**：[产品页](https://www.hidock.com/products/hidock-h1-lite) · [发布博客](https://www.hidock.com/blogs/new-release/hidock-h1-lite-the-ai-audio-companion-for-mac-mini-and-modern-desktops) · [Newswire 2026-06-02](https://www.newswire.com/news/hidock-launches-h1-lite-solving-bluetooth-earphone-recording-for-ai-meeting) · [Amazon](https://www.amazon.com/HiDock-Conference-Speakerphone-Noise-Canceling-Transcription/dp/B0GZ3GZ3DT) · [HiNotes 套餐](https://www.hidock.com/pages/hinotes)
+- **公开事实**：HiDock H1 Lite 是 USB-C 桌面 AI 扬声器电话兼会议录音机，面向 Mac mini 与其它固定工位。BlueCatch 让用户继续戴蓝牙耳机开会，同时录下通话双方，不向 Zoom、Teams 等会议加入 bot。耳机与设备配对时进入 Call Mode，未连接耳机时进入 Room Mode，产品材料称两种模式自动切换。录音经 USB-C 同步到配套 HiNotes，由云端做转写与摘要；厂商称支持 75 种以上语言，基础转写与摘要随购机提供、不按月分钟计费，说话人识别与更多模板则为可选 Pro。对照 Plaud、Notta 的卡片机：它们以硬件加会员分钟包为主；H1 Lite 把采集放在桌面，并把基础转写记在约 $189 的购机价内。2026-06-02 发布，首发促销约 $169，其后零售约 $189。
+
+### 3.6 通义听悟 / 钉钉听记 — 软件参考
 
 - **听悟**：https://tingwu.aliyun.com/ — 可作为录音硬件的「开箱后端」
 - **钉钉听记**：会议软件直接提供纪要，代表「软件能力上移、硬件需证明独立采集价值」

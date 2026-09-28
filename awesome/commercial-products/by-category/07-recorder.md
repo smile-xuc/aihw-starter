@@ -71,9 +71,27 @@
 
 ---
 
+### HiDock H1 Lite
+
+- **官网/渠道**：<https://www.hidock.com/products/hidock-h1-lite>；Amazon <https://www.amazon.com/HiDock-Conference-Speakerphone-Noise-Canceling-Transcription/dp/B0GZ3GZ3DT>（HiDock Official Store）
+- **形态**：USB-C 桌面 AI 扬声器电话 + 会议录音机；面向 Mac mini 与现代 USB-C 桌面（产品页亦列 MacBook、iMac、Windows 笔电与台式机）。蓝牙耳机配对到本机时为 Call Mode，未连接耳机时为 Room Mode（[发布博客](https://www.hidock.com/blogs/new-release/hidock-h1-lite-the-ai-audio-companion-for-mac-mini-and-modern-desktops)与[设置指南](https://www.hidock.com/blogs/user-guide/hidock-com-blog-hidock-h1-lite-setup-guide)称自动切换）
+- **定价**：官网标价 **$189** USD（2026-09 产品页）；Amazon 在售 **$189.99**（2026-09-28 页面）。2026-06-02 发布稿写限时首发 **$169**，促销结束后零售 **$189**
+- **目标市场**：固定工位上的线上会议与当面访谈；强调用户佩戴蓝牙耳机时仍录通话双方
+- **AI 能力**：配套 HiNotes（网页 / iOS / Android）做转写、摘要与检索。厂商称 75+ 语种。购机含 Member 档基础能力（设置指南：不限转写分钟、约 8 套摘要模板、VoiceMark）；说话人识别、更多模板及 Notion 等导出为可选 Pro
+- **大模型方案**：产品页列出 GPT-5.4、Claude 4.6、Gemini 3.1 Pro；[HiNotes 套餐页](https://www.hidock.com/pages/hinotes)另写 GPT-5 等（**非千问默认绑定**，以套餐页当前列表为准）
+- **公开数据**：2026-06-02 公开发布，未见独立销量。规格页写本地存储 8GB、蓝牙 5.3、5W 扬声器、约 362 g、178×72.4×93.5 mm（高×宽×深；同页英制 5.0×1.5×0.6 in 与毫米不完全对应）。同站说明另写本地约 170 小时。录音可先存本地，转写需联网同步 HiNotes
+- **关键差异化**：① BlueCatch：蓝牙耳机通话时录双方，且不向会议加入 bot；② 桌面扬声器电话，区别于 Plaud / Notta 卡片机；③ 厂商称基础转写与摘要含在购机中，不按月分钟包计基础能力（进阶功能另有 Pro）
+- **商业模式**：硬件销售；基础 HiNotes 转写 / 摘要随设备（厂商表述，以当前条款为准）。可选 Pro（套餐页公开 $12.99 / 1200 min 与 $99.99 / 12000 min）及 Unlimited（$199/年）；同页各档转写分钟均标 Limitless，设置指南把说话人识别、更多模板与第三方导出列为 Pro 增量
+
+> 来源：[H1 Lite 产品页](https://www.hidock.com/products/hidock-h1-lite) · [发布博客](https://www.hidock.com/blogs/new-release/hidock-h1-lite-the-ai-audio-companion-for-mac-mini-and-modern-desktops) · [Newswire 发布稿（2026-06-02）](https://www.newswire.com/news/hidock-launches-h1-lite-solving-bluetooth-earphone-recording-for-ai-meeting) · [Amazon](https://www.amazon.com/HiDock-Conference-Speakerphone-Noise-Canceling-Transcription/dp/B0GZ3GZ3DT) · [HiNotes 套餐](https://www.hidock.com/pages/hinotes) · [设置指南](https://www.hidock.com/blogs/user-guide/hidock-com-blog-hidock-h1-lite-setup-guide)
+
+---
+
 ## 待补充清单
 
 ### 海外 / 可穿戴
+
+> 桌面扬声器电话 HiDock H1 Lite 已收入上方卡片，不属于下面的卡片机 / 可穿戴待办。
 
 - [ ] **Limitless Pendant**：历史公开约 $99；Meta 收购后官网称停止向新客户销售——可作隐私与停售案例，补卡片时请附 [limitless.ai](https://www.limitless.ai/) 说明
 - [ ] **Bee** 等其它可穿戴笔记设备：须附官网定价
