@@ -57,6 +57,14 @@
 - **技术路线**：Meta AI（Llama 系列）语音助手 + 12MP 拍摄 + 开放式音频；与传统眼镜巨头联合设计渠道共享
 - **可借鉴点**：品类的市场教育者——「时尚单品 + AI」路线证明眼镜首先要是好眼镜；传统眼镜渠道（镜片验配）是被低估的分销资产
 
+### 案例：Oakley Meta HSTN（Meta × Oakley，运动向）
+
+- **公开信息源**：[Meta Quest Blog](https://www.meta.com/blog/oakley-meta-ai-glasses-sports-wearables-hstn/) · [Oakley 新闻稿](https://oakley-media-hub.prezly.com/introducing-oakley-meta-glasses-amplifying-human-potential) · [Oakley Meta](https://www.oakley.com/en-us/l/oakley-meta)
+- **形态**：无显示拍照音频眼镜，HSTN 运动镜框，IPX4；可选 PRIZM、Transitions 与处方镜片。美区起价 399 美元，限量版 499 美元，2025-08-26 开售
+- **公开数据**：官方称典型使用最长约 8 小时（续航较此前约长 40%）、待机约 19 小时，约 20 分钟可充至 50%，充电盒再约 48 小时；视频为 3K，高于 1080p
+- **技术路线**：内置 Meta AI，经 Meta AI app 与手机配对。官方示例包括询问当天风力，以及语音录像后发布到 Stories；也可通话与发消息
+- **可借鉴点**：运动镜框、耐汗溅水与运动镜片，把同一套 Meta AI 拍摄和语音能力放到高尔夫、滑板等场景，与雷朋时尚款共用应用、分开场景
+
 ### 案例：雷鸟 V4（雷鸟创新）
 
 - **公开信息源**：IT 之家、财联社、量子位等报道
@@ -104,7 +112,7 @@
 ---
 
 **版本**：千问大模型方案
-**更新日期**：2026-08
+**更新日期**：2026-09
 
 <!-- FOOTER:START -->
 
