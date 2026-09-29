@@ -23,6 +23,20 @@
 
 ---
 
+### Halliday G2
+
+- **官网**：<https://www.hallidayglobal.com/> · 订购页 <https://www.hallidayglobal.com/purchase> · 设计页 <https://www.hallidayglobal.com/design>
+- **形态**：无摄像头的双目光波导显示眼镜。官网规格表（首页与订购页一致，查证 2026-09-29）：双 MicroLED 光机，显示颜色绿色，单眼 600×300，视场角 25.2°，峰值亮度最高 1,600 nits，镜片透光率 98%；整机 49g；开放式扬声器；四麦阵列（设计页写 2 米拾音，并可识别佩戴者人声）；电池 210 mAh，常规使用 12 小时，磁吸充电；IP54。处方范围规格表为 SPH -9.00 D 至 +2.00 D、CYL -3.00 D 至 3.00 D。设计页文案写「from -9.00 to +3.00 SPH」，与规格表的正球镜上限不一致，卡片以规格表为准
+- **定价（美区公开，查证 2026-09-29）**：订购页标价 **USD $599**。同页可见 Launch Special：处方镜片优惠，结账码 **LAUNCH50 再减 $50**。官网称 $199 镜片折扣可覆盖 1.60 / 1.67 折射率，1.74 需另付 $100。2026-07-21 The Verge 与 Android Authority 报道的预售口径是可退 $10 定金换 $100 券、零售价 $599；订购页 meta 仍残留该句，当前可见活动是 LAUNCH50 的 $50 优惠，以订购页为准。官网 FAQ 称非处方 Batch 1 自 9 月 15 日起发货，处方订单预计 10 月起、下单后约 4–6 周（页面未写年份）
+- **目标市场**：职场会议与全天商务佩戴。官网将无摄像头写成隐私设计（不拍摄周围的人）。The Verge、Android Authority（2026-07-21）将其描述为面向工作会议的无相机工具
+- **AI 能力**：官网功能表含 Halliday AI、实时翻译、Cheatsheet（配图 alt 为 Teleprompter，文案为讲稿留在视线内并自动滚动）、通知、Dashboard、通话与音乐。Meeting Flow 列出 Thread Tracker、Decision Confirmation、Commitment Check、Open-Item Tracker、字幕与翻译、Quick Summary、Quick Research、Idea Tracking、会后摘要。FAQ 称翻译与 Meeting Flow 支持 45 种以上语言；眼镜系统与 App 当前版本只支持英文。FAQ 称同时接入多家大模型，未点名供应商。会后转写见于 The Verge 与 Android Authority；官网写的是会后摘要，以及整理后的笔记、待办和可检索记录，页面未出现 transcript。Android Authority 称可用「Hey Halliday」唤醒，官网页面未核到该唤醒词
+- **关键差异化**：① 无摄像头，双目绿色光波导把信息放在视线里；② Meeting Flow 覆盖会中线索、决定、承诺与会后摘要；③ 日常 AI、翻译和 Daily Functions 不限次，Meeting Flow 按 Membership credits 计时
+- **商业模式**：硬件销售 + Halliday Membership credits（官网首页会员区，查证 2026-09-29）。Starter 免费，200 credits/月。Basic 标价 **$9.9/月**（页面划线，显示为 Free，并标 12 MONTHS INCLUDED），400 credits/月；官网称经 Launch Special 购买的 G2 含一年 Basic。Pro **$19.9/月**，1,000 credits/月。Max **$99/月**，6,000 credits/月。不限次项为 Halliday AI、Live Translation，以及 Daily Functions（Cheatsheet、Dashboard、通话、音乐、通知）。Meeting Flow 按 credits 计。官网给出的约当时长（并注明实际消耗随语速和对话密度变化；credits 按月清零、不结转）：完整 Meeting Flow（会中功能带自动会后摘要，按一次会话计，摘要不再另扣）约 120 / 240 / 600 / 3,600 分钟，对应 Starter / Basic / Pro / Max；仅会后摘要（官网称将由后续 OTA 单独开放、费率更低）约 300 / 600 / 1,500 / 9,000 分钟。订购页 FAQ 另写 Launch Pack 可升级为「一整年 Pro $19.90 或 Max $99」。这句和会员卡上的「/ month」不是同一表述，两处按官网原文并列，不把 $19.90 / $99 改写成月费
+
+> 来源：[Halliday G2 官网](https://www.hallidayglobal.com/) · [订购页](https://www.hallidayglobal.com/purchase) · [设计页](https://www.hallidayglobal.com/design)（均查证 2026-09-29）· [The Verge 2026-07-21](https://www.theverge.com/tech/968255/halliday-gen-2-smart-glasses-hands-on-ai-wearables) · [Android Authority 2026-07-21](https://www.androidauthority.com/halliday-g2-smart-glasses-launch-3689649/)
+
+---
+
 ### Ray-Ban Meta（Gen 2）
 
 - **官网**：<https://www.meta.com/ai-glasses/> · 博客 <https://www.meta.com/blog/ray-ban-meta-gen-2-now-available-ai-glasses-extended-battery-life-3k-video/>
