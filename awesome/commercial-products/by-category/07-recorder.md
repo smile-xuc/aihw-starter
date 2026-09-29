@@ -87,14 +87,31 @@
 
 ---
 
+### Bee Pioneer（Bee / Amazon）
+
+- **官网/渠道**：<https://bee.computer/>；Pioneer 产品页 <https://bee.computer/bee-pioneer>
+- **形态**：腕带 / 夹扣模块化可穿戴。官网写设备可从随附腕带取下，并以多种方式佩戴；盒内另有夹扣，可夹在口袋或腰带。产品 FAQ 写盒内为黄、黑两条可换腕带加夹扣。双麦，背面 USB-C。官网与 About Amazon 均写单按按键启停采集，采集时绿灯亮、停止时灯灭。产品页在可自定义动作按钮处另写 "Hold and speak to talk to Bee or leave a note for later"，以及 "Double-press to process or bookmark a conversation"。FAQ 将短按标为 Mute/unmute、长按标为 walk-and-talk，与首页的单按启停一并列出。Pioneer 硬件当前仅支持 iOS（首页原文 "Bee Pioneer currently supports iOS only"）。首页同时写可通过 Pioneer、iOS 或 Android App、Apple Watch 与 Bee 对话；FAQ 称可与 Apple Watch 协同。Android 为 Play Store 早期版本（摘要、建议 to-do、聊天助手），官方称目前未在积极维护
+- **定价**：官网与 Pioneer 页标价 **$49.99** USD。Premium 订阅：**待定**（产品 FAQ 称未来上线，原文 "Details will be forthcoming"，页面未给出金额）
+- **目标市场**：目前仅向美国发货（首页 "Bee currently ships only to the United States"）。About Amazon 称客户最初多用于会议、课堂与对话记录，后来也用于工作之外的日常
+- **AI 能力**：实时转写后不保存音频。产品 FAQ："We never store audio recordings." About Amazon："Bee processes conversations in real-time and no audio is ever stored." 摘要与要点、建议 to-do、Daily Insights、Voice Notes；Actions 连接邮件与日历（About Amazon：提到要发邮件或约会议时，可起草邮件并创建邀请）。产品 FAQ 列出的集成是 Gmail、Google Calendar、Google Contacts。语言：首页与产品页 "up to 40 different languages"，FAQ 写 "supports 40 languages"。续航：首页 "Up to 7 days" / "up to 160 hours"；产品页要点 "7 days of battery life per charge"；FAQ "7-day battery life (160+ hours)"。FAQ 另写：未按键停止时，默认在一段静音后停止，可选 5 分钟至 24 小时
+- **大模型方案**：官网与 About Amazon 未公开具体基座模型名称（**非千问默认绑定**）
+- **公开数据**：未见独立销量。加入 Amazon 后仍在售：About Amazon 原文："After joining Amazon last year, Bee shipped several major features, including Voice Notes, which lets you capture any thought in an instant."（[2026-01-05](https://www.aboutamazon.com/news/devices/bee-amazon-wearable-ai-device-new-features)）。官网当前仍写 "New orders ship in 1-2 business days"，标价 $49.99。Bee Private Compute（[2026-09-23](https://www.aboutamazon.com/news/devices/bee-private-compute-data-protection)）原文："Only you hold the keys to your information. Amazon has no master key that can unlock your content." 同文："The transcripts and insights generated from that conversation are encrypted using keys that only your device creates and controls." The Verge 2025-03 评测将售价记为约 $50，并写作者使用中续航约 3–7 天（随静音习惯变化；此为评测观察，与规格页分开记录）
+- **关键差异化**：① 低客单腕带 / 夹扣，对照 Plaud / Notta 卡片机加转写分钟包，以及 HiDock 桌面扬声器电话；② 按键启停采集，实时转写后不存音频，公开隐私叙事是客户设备持有密钥的 Bee Private Compute；③ 对照 Limitless Pendant 在收购后停止向新客户销售，Bee 加入 Amazon 后官网仍接受新订单，填「可穿戴仍在售」这一档
+- **商业模式**：硬件销售（$49.99）。Premium 订阅价格**待定**（官方称未来上线，未公布金额）
+
+> 来源：[Bee 首页](https://bee.computer/) · [Bee Pioneer](https://bee.computer/bee-pioneer) · [About Amazon：加入 Amazon 后的功能（2026-01-05）](https://www.aboutamazon.com/news/devices/bee-amazon-wearable-ai-device-new-features) · [About Amazon：Bee Private Compute（2026-09-23）](https://www.aboutamazon.com/news/devices/bee-private-compute-data-protection) · [The Verge 评测（2025-03-12）](https://www.theverge.com/reviews/627056/bee-review-ai-wearable)
+
+---
+
 ## 待补充清单
 
 ### 海外 / 可穿戴
 
-> 桌面扬声器电话 HiDock H1 Lite 已收入上方卡片，不属于下面的卡片机 / 可穿戴待办。
+> 桌面扬声器电话 HiDock H1 Lite、可穿戴 Bee Pioneer 已收入上方卡片，不属于下面的待办。
 
 - [ ] **Limitless Pendant**：历史公开约 $99；Meta 收购后官网称停止向新客户销售——可作隐私与停售案例，补卡片时请附 [limitless.ai](https://www.limitless.ai/) 说明
-- [ ] **Bee** 等其它可穿戴笔记设备：须附官网定价
+- [x] ~~**Bee**~~：Pioneer 已收入上方卡片（官网 $49.99）
+- [ ] 其它可穿戴笔记设备：须附官网定价
 
 ### 软件参考（非硬件，但对标订阅）
 
