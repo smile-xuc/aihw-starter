@@ -47,6 +47,13 @@
 - **公开数据**：上市后供不应求，零部件订单两度上修（供应链公开报道）；带动 2026 年全球显示类眼镜出货预期约 95 万台
 - **可借鉴点**：全彩显示是比单绿更高端的路线，验证了「显示 + 眼镜」的消费需求；腕带肌电交互提示了「无手机操控」的方向；799 美元定价说明全彩方案的成本尚未到大众化区间，与单绿路线形成高低两档并存的格局
 
+### 案例：Halliday G2（无摄像头光波导显示）
+
+- **公开信息源**：[Halliday 官网](https://www.hallidayglobal.com/) · [订购页](https://www.hallidayglobal.com/purchase) · [设计页](https://www.hallidayglobal.com/design)（查证 2026-09-29）· [The Verge 2026-07-21](https://www.theverge.com/tech/968255/halliday-gen-2-smart-glasses-hands-on-ai-wearables) · [Android Authority 2026-07-21](https://www.androidauthority.com/halliday-g2-smart-glasses-launch-3689649/)
+- **形态**：无摄像头双目光波导。官网规格表：双 MicroLED、绿色、单眼 600×300、峰值最高 1,600 nits、49g、常规使用 12 小时、四麦阵列；处方 SPH -9.00 D 至 +2.00 D（设计页文案写到 +3.00 SPH，与规格表不一致，此处取规格表）。美区订购页标价 599 美元；可见优惠为 LAUNCH50 减 50 美元
+- **亮点**：Meeting Flow 在会中提供 Thread Tracker、Decision Confirmation、Commitment Check，并带会后摘要；翻译与 Meeting Flow 支持 45 种以上语言；另有 Cheatsheet 提词、通知与 Dashboard。日常 AI、翻译和 Daily Functions 不限次，Meeting Flow 按 credits 计。官网会员卡（2026-09-29）：Basic 标价 9.9 美元/月（Launch Special 含一年，页面显示为 Free，400 credits），Pro 19.9 美元/月（1,000 credits），Max 99 美元/月（6,000 credits）；另有免费 Starter（200 credits）。完整 Meeting Flow 约 240 / 600 / 3,600 分钟（Basic / Pro / Max）。订购页另有「一整年 Pro 19.90 美元或 Max 99 美元」的升级句，与月费卡片并列，未并成同一个数。无摄像头是公开定位的一部分，用来降低会议室里的拍摄顾虑
+- **可借鉴点**：相对 Ray-Ban Meta、Oakley Meta HSTN 的拍照音频路线，以及国内带屏眼镜，公开信息呈现的是无相机、屏显会议 Agent、订阅 credits 这一组合。可与同为无相机显示的 Even Realities 对照：硬件价同在 599 美元一档，Even 的 AI 服务暂未公开订阅费，Halliday 则把会议时长做成 credits。与已收录的 HSTN 场景分开，一个是运动拍摄，一个是会议室里的显示助手
+
 ## 三、拍照眼镜（无显示）
 
 ### 案例：Ray-Ban Meta（Meta × EssilorLuxottica）
@@ -106,7 +113,7 @@
 
 - [ ] 小度 AI 眼镜（百度）的公开技术路线
 - [ ] 星纪魅族、影目 INMO、李未可等品牌的最新产品线
-- [ ] 海外：Solos AirGo、Even Realities、Halliday 的 AI 能力描述
+- [ ] 海外：Solos AirGo、Even Realities 的 AI 能力描述
 - [ ] 行业款（巡检/物流拣选）的公开落地案例
 
 ---
