@@ -87,7 +87,8 @@
 ### 3.5 HiDock H1 Lite — 桌面扬声器电话，基础转写随设备
 
 - **公开信息源**：[产品页](https://www.hidock.com/products/hidock-h1-lite) · [发布博客](https://www.hidock.com/blogs/new-release/hidock-h1-lite-the-ai-audio-companion-for-mac-mini-and-modern-desktops) · [Newswire 2026-06-02](https://www.newswire.com/news/hidock-launches-h1-lite-solving-bluetooth-earphone-recording-for-ai-meeting) · [Amazon](https://www.amazon.com/HiDock-Conference-Speakerphone-Noise-Canceling-Transcription/dp/B0GZ3GZ3DT) · [HiNotes 套餐](https://www.hidock.com/pages/hinotes)
-- **公开事实**：HiDock H1 Lite 是 USB-C 桌面 AI 扬声器电话兼会议录音机，面向 Mac mini 与其它固定工位。BlueCatch 让用户继续戴蓝牙耳机开会，同时录下通话双方，不向 Zoom、Teams 等会议加入 bot。耳机与设备配对时进入 Call Mode，未连接耳机时进入 Room Mode，产品材料称两种模式自动切换。录音经 USB-C 同步到配套 HiNotes，由云端做转写与摘要；厂商称支持 75 种以上语言，基础转写与摘要随购机提供、不按月分钟计费，说话人识别与更多模板则为可选 Pro。对照 Plaud、Notta 的卡片机：它们以硬件加会员分钟包为主；H1 Lite 把采集放在桌面，并把基础转写记在约 $189 的购机价内。2026-06-02 发布，首发促销约 $169，其后零售约 $189。
+- **亮点**：USB-C 桌面扬声器电话；BlueCatch 戴蓝牙耳机仍录通话双方，不向 Zoom / Teams 加 bot；Call / Room 按是否连接耳机切换（材料称自动）；HiNotes 厂商称 75+ 语种，基础转写 / 摘要随购机；零售约 $189（2026-06-02 首发约 $169）
+- **可借鉴点**：相对 Plaud / Notta「卡片机 + 会员分钟包」，H1 Lite 把采集放在桌面，并把基础转写记进购机价；说话人识别、更多模板与导出走可选 Pro，基础能力不另按分钟购买
 
 ### 3.6 通义听悟 / 钉钉听记 — 软件参考
 
