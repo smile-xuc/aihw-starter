@@ -9,7 +9,7 @@
 
 - **官网/渠道**：<https://www.evenrealities.com>；全球 40+ 国家销售，300+ 欧洲光学门店
 - **形态**：日常佩戴型 AI 显示眼镜，无摄像头、无扬声器；G1 为双目绿色 microLED + 光波导（640×200）；支持处方镜片；G2 增加 HAO™ 显示技术升级
-- **定价**：$599（G1，约 ¥4,300）
+- **定价**：G1 首发价 **US$599**（2024-06）；现官网已售罄（查证 2026-09-30）
 - **目标市场**：全球商务/日常佩戴人群，强调隐私（无摄像头）和"看起来像普通眼镜"
 - **AI 能力**：自研 Even LLM（长期记忆 + 主动式 AI 提示）+ ChatGPT / Perplexity 联网检索；支持多轮对话、实时翻译（22+ 语言）、日程提醒、语音唤醒（"Hey Even"）
 - **大模型方案**：自研 Even LLM + OpenAI ChatGPT / Perplexity（**国内大模型方案未确认**）
@@ -19,7 +19,7 @@
 - **配件生态**：Even R1 智能指环（隐蔽控制、滚动导航）
 - **创始团队**：CEO 王骁逸（前 Apple Watch / Anker / OPPO / 坚果投影）、CTO 欧阳剑（前多代 iPhone 主摄设计）、首席设计师胡丹（前飞利浦 / Shokz 前五代产品设计）；另聘 LINDBERG 前 CMO 及 MYKITA / ic! berlin 联合创始人
 
-> 来源：[Even Realities 官网](https://www.evenrealities.com/zh-Hans-HK/ai-glasses) · [MicroLED-Info · G1 双目 JBD microLED](https://www.microled-info.com/even-realities-launch-new-ar-smart-glasses-powered-jbd-monochrome-microled) · [逸文科技为何受资本争抢](https://jishuzhan.baijing.cn/article/2610) · [FINDIT 百镜大战](https://findit.org.tw/tw/Res/2459)
+> 来源：[Even Realities 官网](https://www.evenrealities.com/zh-Hans-HK/ai-glasses) · [官网 Store](https://www.evenrealities.com/store)（查证 2026-09-30）· [PR Newswire · G1 2024-06](https://www.prnewswire.com/news-releases/even-realities-unveils-g1-digital-glasses-seamlessly-blending-beautiful-aesthetics-with-everyday-functionality-302182962.html) · [MicroLED-Info · G1 双目 JBD microLED](https://www.microled-info.com/even-realities-launch-new-ar-smart-glasses-powered-jbd-monochrome-microled) · [逸文科技为何受资本争抢](https://jishuzhan.baijing.cn/article/2610) · [FINDIT 百镜大战](https://findit.org.tw/tw/Res/2459)
 
 ---
 
@@ -69,13 +69,13 @@
 
 - **官网**：<https://global.rokid.com/>（以官网/Amazon 当前 listing 为准）
 - **形态**：**无显示** AI 音频/摄像眼镜；公开规格约 38.5g、约 12 小时续航、12MP 相机
-- **定价（2026 公开）**：上市促销约 **$299**，MSRP 报道约 **$349**
+- **定价（查证 2026-09-30）**：首发价 **US$299**（2026-01-19 全球开售）；现价 **US$299**；官网划线价（Regular）**US$399**
 - **目标市场**：希望多模型可选、非 Meta 生态绑定的日常佩戴用户
 - **AI 能力**：公开材料称可选 ChatGPT / Gemini / Qwen / DeepSeek 等；翻译与语音助手
 - **关键差异化**：① 开放模型选择；② 长续航轻量；③ 与 Rokid 显示类 AR 产品线区隔（Style = 助手向）
-- **商业模式**：硬件为主；可选订阅报道约 $19.99/月量级（以官网为准）
+- **商业模式**：硬件为主。官方 FAQ：AI 订阅费预计 2027 年 4 月起；基于 GPT / Gemini 的基础 AI 对话承诺永久免费；翻译、导航、会议转写等进阶功能届时定价，目前未公布具体价格
 
-> 来源：2026 公开评测与路线文（如 [idevice Rokid Style](https://idevice.com/smart-glasses/rokid-ai-glasses-style/roadmap)）
+> 来源：[PR Newswire 2026-01-19](https://www.prnewswire.com/news-releases/rokid-ai-glasses-style-now-available-globally-302664994.html) · [美区产品页](https://global.rokid.com/products/rokid-ai-glasses-style) · [FAQ](https://de.rokid.com/en-de/pages/faqs)（查证 2026-09-30）
 
 ---
 
@@ -83,13 +83,13 @@
 
 - **官网**：<https://www.rayneo.com/>
 - **形态**：iO = AI 助手眼镜；GT / GT Max = 显示向 AR 眼镜；另有 Pocket TV 等配件
-- **定价（2026-09 公开新闻稿）**：iO **$449**（充电盒套装 $499）；GT **$299**；GT Max **$399**
+- **定价（查证 2026-09-30）**：MSRP iO **US$499**（套装 **US$549**）/ GT Max **US$429** / GT **US$329**；2026-09-04 开售首发优惠 −US$30。现价：iO **US$449**（套装 **US$499**）/ GT Max **US$429** / GT **US$299**。官方稿的 −US$30 与官网 iO 现价（较 MSRP 低 US$50）不一致，现价以官网为准
 - **目标市场**：全球消费级 AI/AR 眼镜
 - **AI 能力**：iO 侧重语音助手与日常信息；GT 系列侧重虚屏影音办公
-- **关键差异化**：① AI 镜与显示镜分产品线；② 自 $299 切入显示档；③ 处方与 HSA/FSA 等区域政策（以当地为准）
-- **商业模式**：硬件销售
+- **关键差异化**：① AI 镜与显示镜分产品线；② 自现价 US$299 的 GT 切入显示档；③ 处方与 HSA/FSA 等区域政策（以当地为准）
+- **商业模式**：硬件销售；官网博客另有 iO VIP 订阅 US$9.99/月
 
-> 来源：[ABNewswire · RayNeo 2026 Q3 产品线](https://www.abnewswire.com/pressreleases/rayneo-launches-new-smart-glasses-lineup-io-ai-glasses-and-gt-series-ar-glasses-now-available-from-299_834453.html)
+> 来源：[PR Newswire · IFA 2026](https://www.prnewswire.com/news-releases/rayneo-showcases-next-generation-cinematic-ar-and-ai-smart-glasses-at-ifa-2026-with-dolby-and-bang--olufsen-302870052.html) · [RayNeo 官网博客](https://www.rayneo.com/blogs/news/latest-smart-glasses-2026-rayneo-io-gt) · [iO](https://www.rayneo.com/products/rayneo-io-ai-glasses) · [GT Max](https://www.rayneo.com/products/rayneo-gt-max-ar-glasses) · [GT](https://www.rayneo.com/products/rayneo-gt-ar-glasses)（查证 2026-09-30）
 
 ---
 

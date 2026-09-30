@@ -52,13 +52,13 @@
 
 - **官网**：<https://www.eufy.com/>
 - **形态**：家用相机 / 门铃，强调本地存储（HomeBase / 机内）
-- **定价**：硬件买断为主；**核心录像可不订阅**；可选云备份公开报道约 **$2.99/月** 量级起
+- **定价**：硬件买断为主；**核心录像可不订阅**；可选云存储 Basic 单机 **$3.99/月、$39.99/年**（2025-04-01 起，查证 2026-09-30）
 - **目标市场**：厌恶强制云订阅的家用用户
 - **AI 能力**：端侧 / 基站侧人车宠物检测（机型差异大）
 - **关键差异化**：① 「本地优先」对抗云订阅疲劳；② Anker 渠道与供应链；③ 可选云仅为备份
 - **商业模式**：硬件为主 + 可选云
 
-> 来源：eufy 产品公开说明与 2026 订阅横评（[Subrupt](https://subrupt.com/best/smart-home) 等）
+> 来源：[eufy · Introducing Cloud Storage](https://service.eufy.com/article-description/Introducing-Cloud-Storage?urlName=Introducing-Cloud-Storage)（查证 2026-09-30）
 
 ---
 

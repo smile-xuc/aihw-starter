@@ -24,13 +24,13 @@
 
 - **官网**：<https://www.unitree.com/g1/>
 - **形态**：约 35kg 级人形；23–43 关节自由度（配置相关）；深度相机 + 3D LiDAR 等
-- **定价（官网公开，未含税运）**：**US $13.5K 起**；G1 EDU 联系销售（二次开发 / 高算力选配）
+- **定价（官网公开，未含税运，查证 2026-09-30）**：首发价 **US$16K**（2024-05）→ 现价 **US$13,500**（G1，当前 backordered）；G1 Pro 现价 **US$21,500**。运费 US$300–US$1,200，关税由买家承担。商店说明基础版不支持二次开发，二次开发需选 EDU 版（联系销售）
 - **目标市场**：科研、演示、算法平台；官网亦提示行业早期与安全距离
 - **AI 能力**：模仿/强化学习运动；UnifoLM 等大模型叙事；DEX 力控灵巧手选配
 - **关键差异化**：① 可下单的人形价格锚点；② EDU 二次开发路径；③ 与 Go2 形成腿足产品矩阵
 - **商业模式**：硬件；EDU 报价 + 配件
 
-> 来源：[Unitree G1](https://www.unitree.com/g1/)
+> 来源：[Unitree G1](https://www.unitree.com/g1/) · [官方商店](https://shop.unitree.com/products/unitree-g1) · [PR Newswire 2024-05-15](https://www.prnewswire.com/news-releases/unitree-robotics-introduces-g1-humanoid-agent-ai-avatar-302146198.html)（查证 2026-09-30）
 
 ---
 
