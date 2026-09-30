@@ -16,6 +16,7 @@
 - `awesome/open-source/README.md`：写清 HTML 大盘 vs MD 品类入口双轨与主品类映射
 - 根 `README.md`：Discussions 未开启时入口改为 Issue，消除空转承诺
 - 第 3 批：内容模板规范 v1 写入 `CONTRIBUTING.md`（商业产品卡、04-cases 条目、开源卡、内容格式通则）。公开标价保留，并区分首发价 / 现价 / MSRP；品类内其他模型改写入现有 `02-solution.md` 的小节
+- 第 4 批：商业产品卡、公开案例与开源卡按同一套模板整理结构与字段；不新增价格或来源链接
 
 ## [2.5.0] - 2026-09-13
 
