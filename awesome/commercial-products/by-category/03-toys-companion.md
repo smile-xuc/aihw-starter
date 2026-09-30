@@ -7,8 +7,8 @@
 
 ### 萌小译 PettiChat（杭州萌小译）
 
-- **上市状态**：预售（启动预售的日期见官网/渠道；是否已开售待核实）
-- **官网/渠道**：2026 年 5 月发布，2026-05-24 启动预售（公开报道）（**待补链接**）
+- **上市状态**：预售（2026-05-24 启动预售，是否已开售待核实；[新浪财经](https://finance.sina.com.cn/tech/discovery/2026-05-17/doc-inhyerim1837213.shtml)）
+- **官网/渠道**：2026 年 5 月发布（公开报道）（**待补链接**）
 - **形态**：宠物项圈穿戴设备，约 27 克；多模态采集声音 / 姿态 / 运动轨迹 / 面部微表情
 - **定价**：
   - 首发价：待核实
@@ -21,7 +21,7 @@
 - **关键差异化**：① 将大模型从"人-机对话"扩展到"宠物-人翻译"场景；② 多模态融合（声纹 + 行为 + 微表情）；③ 具备针对个体宠物的自学习适应能力
 - **商业模式**：硬件销售（手机 App 配套，订阅模式暂未公开披露）
 
-> 来源：[ZOL 中关村在线](https://ai.zol.com.cn/1185/11854843.html) · [新浪财经](https://finance.sina.com.cn/tech/discovery/2026-05-17/doc-inhyerim1837213.shtml) · [36氪/APPSO 深度测评](https://mp.weixin.qq.com/s/E_v86-XhNKq9qTdBYE4zwA) · 厂商微信公众号
+> 来源：[ZOL 中关村在线](https://ai.zol.com.cn/1185/11854843.html) · [36氪/APPSO 深度测评](https://mp.weixin.qq.com/s/E_v86-XhNKq9qTdBYE4zwA) · 厂商微信公众号
 
 ---
 
@@ -68,7 +68,7 @@
 
 ### Moxie（Embodied）〔已停售·已断服〕
 
-- **上市状态**：已关闭服务（Embodied 宣布倒闭，核心功能依赖云端，服务停止后设备无法正常使用；日期与出处见商业模式和来源行）
+- **上市状态**：已关闭服务（2024-12 Embodied 宣布倒闭，核心功能依赖云端，服务停止后设备无法正常使用；[Ars Technica 2024-12-20](https://arstechnica.com/gadgets/2024/12/800-kids-robot-due-for-bricking-sees-potential-open-source-second-life/)）
 - **官网/渠道**：产品已停售；见来源行报道
 - **形态**：儿童社交情绪陪伴机器人（约 5–10 岁定位）
 - **定价**：
@@ -81,10 +81,10 @@
 - **大模型方案**：待核实
 - **公开数据**：待核实
 - **关键差异化（教训）**：① 教育/心理目标导向，而非纯娱乐聊天；② 内容护栏与家长控制；③ 实体机器人形态
-- **商业模式**：硬件 + 云服务。2024-12 Embodied 宣布倒闭，并称核心功能依赖云端，服务停止后设备无法正常使用
-- **风险事件**：公司关闭、云服务停止（日期见商业模式）。收录为「断服变砖」教训样本（与 04 Agent 硬件的 Humane AI Pin 同类），不是在售采购对象。本地续命见 [OpenMoxie](https://github.com/jbeghtol/openmoxie)：在原厂云停止后用本地服务恢复部分功能，仓库说明部分较新模块不在支持范围内
+- **商业模式**：硬件 + 云服务。Embodied 宣布倒闭，并称核心功能依赖云端，服务停止后设备无法正常使用
+- **风险事件**：公司关闭、云服务停止（日期见上市状态）。收录为「断服变砖」教训样本（与 04 Agent 硬件的 Humane AI Pin 同类），不是在售采购对象。本地续命见 [OpenMoxie](https://github.com/jbeghtol/openmoxie)：在原厂云停止后用本地服务恢复部分功能，仓库说明部分较新模块不在支持范围内
 
-> 来源：[Ars Technica 2024-12-20](https://arstechnica.com/gadgets/2024/12/800-kids-robot-due-for-bricking-sees-potential-open-source-second-life/) · [OpenMoxie](https://github.com/jbeghtol/openmoxie) · [Fox Business · Moxie](https://www.foxbusiness.com/technology/embodieds-ai-robot-moxie-designed-for-kids-with-limits)
+> 来源：[OpenMoxie](https://github.com/jbeghtol/openmoxie) · [Fox Business · Moxie](https://www.foxbusiness.com/technology/embodieds-ai-robot-moxie-designed-for-kids-with-limits)
 
 ---
 
