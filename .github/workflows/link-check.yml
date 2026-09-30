@@ -21,14 +21,17 @@ jobs:
           # markdown report (Total / Successful / Errors / Excluded) to the log.
           fail: true
           format: markdown
+          # Globs must be single-quoted. The action eval's args in bash, and
+          # bash does not enable globstar, so an unquoted ** only matches one
+          # directory level. Quoted patterns are expanded by lychee itself.
           args: >-
             --verbose
             --no-progress
             --max-concurrency 4
             --accept 200,204,206,429
             README.md CONTRIBUTING.md faq.md CHANGELOG.md
-            awesome/**/*.md
-            awesome/open-source/*.html
-            solutions/**/*.md
-            primer/**/*.md
-            docs/*.html
+            'awesome/**/*.md'
+            'awesome/open-source/*.html'
+            'solutions/**/*.md'
+            'primer/**/*.md'
+            'docs/*.html'
