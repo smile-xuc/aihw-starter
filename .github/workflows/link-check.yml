@@ -14,13 +14,16 @@ jobs:
       - name: Link check (relative + selected paths)
         uses: lycheeverse/lychee-action@v2
         with:
-          # First-week strategy: surface report without failing the PR on flaky outbound links.
-          # Relative path 404s still appear in the job log for maintainers.
-          fail: false
+          # lychee-action@v2 defaults to lychee 0.24.2, which errors on
+          # --exclude-mail (unexpected argument). Mailto is unchecked unless
+          # --include-mail is passed, so the flag is omitted.
+          # Broken links must fail the job. The action prints lychee's
+          # markdown report (Total / Successful / Errors / Excluded) to the log.
+          fail: true
+          format: markdown
           args: >-
             --verbose
             --no-progress
-            --exclude-mail
             --max-concurrency 4
             --accept 200,204,206,429
             README.md CONTRIBUTING.md faq.md CHANGELOG.md
