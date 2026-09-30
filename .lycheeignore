@@ -1,3 +1,13 @@
-# 只排除这一条完整 URL。知乎对 lychee 固定返回 403，页面本身可打开。
-# 不要写成域名通配。
+# 精确匹配完整 URL。点已转义。不要写成域名通配，也不要排除整个域名。
+
+# 知乎：CI 固定 403，浏览器可打开。
 ^https://zhuanlan\.zhihu\.com/p/2050195778107450150$
+
+# Kickstarter LOOI：CI 403，浏览器可打开。
+^https://www\.kickstarter\.com/projects/tangiblefuture/looi-robot-turn-your-smartphone-into-a-desktop-robot$
+
+# WHOOP membership：CI 403，浏览器可打开。保留结尾斜杠。
+^https://www\.whoop\.com/us/en/membership/$
+
+# GlobeNewswire eufy：CI 报 HTTP/2 协议错误，浏览器可打开。
+^https://www\.globenewswire\.com/news-release/2025/09/04/3144218/0/en/eufy-unveils-ai-core-eufycam-s4-and-permanent-outdoor-lights-s4-at-ifa-2025-expanding-its-ai-powered-smart-home-lineup\.html$
