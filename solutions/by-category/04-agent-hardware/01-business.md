@@ -98,7 +98,7 @@ Agent 硬件的购买心智是：**少掏手机、少切 App、把重复任务�
 
 已知尝试与观察：
 
-1. **Humane AI Pin**：高定价加订阅没卖动；2025-02 停售，资产以约 $116M 售予 HP，设备云服务关闭（[Reuters](https://www.reuters.com/markets/deals/ai-startup-humane-wind-down-wearable-pin-business-sell-assets-hp-2025-02-19/) / [The Verge 停售](https://www.theverge.com/news/614883/humane-ai-hp-acquisition-pin-shutdown)，查证 2026-09-30）。另见 [Humane 主卡][pin]
+1. **Humane AI Pin**：高定价加订阅没卖动；2025-02 停售，资产以约 $116M 售予 HP，设备云服务关闭（[The Verge 停售](https://www.theverge.com/news/614883/humane-ai-hp-acquisition-pin-shutdown)，查证 2026-09-30）。另见 [Humane 主卡][pin]
 2. **Rabbit R1**：公开坚持 **$199 / 无订阅**；部分进阶能力改为用户自带 API Key
 3. **Limitless Pendant**：曾硬件 + 订阅；2025-12 Meta 收购后**停售新客**，存量免费 Unlimited（[TechCrunch](https://techcrunch.com/2025/12/05/meta-acquires-ai-device-startup-limitless/)）
 4. **国内桌面盒**：多见硬件买断 + 本地模型「零 Token」叙事，云端按需自配 Key

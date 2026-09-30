@@ -24,7 +24,7 @@
 - **配件生态**：Even R1 智能指环（隐蔽控制、滚动导航）
 - **创始团队**：CEO 王骁逸（前 Apple Watch / Anker / OPPO / 坚果投影）、CTO 欧阳剑（前多代 iPhone 主摄设计）、首席设计师胡丹（前飞利浦 / Shokz 前五代产品设计）；另聘 LINDBERG 前 CMO 及 MYKITA / ic! berlin 联合创始人
 
-> 来源：[Even Realities 官网](https://www.evenrealities.com/zh-Hans-HK/ai-glasses) · [官网 Store](https://www.evenrealities.com/store)（查证 2026-09-30）· [PR Newswire · G1 2024-06](https://www.prnewswire.com/news-releases/even-realities-unveils-g1-digital-glasses-seamlessly-blending-beautiful-aesthetics-with-everyday-functionality-302182962.html) · [MicroLED-Info · G1 双目 JBD microLED](https://www.microled-info.com/even-realities-launch-new-ar-smart-glasses-powered-jbd-monochrome-microled) · [逸文科技为何受资本争抢](https://jishuzhan.baijing.cn/article/2610) · [FINDIT 百镜大战](https://findit.org.tw/tw/Res/2459)
+> 来源：[Even Realities 官网](https://www.evenrealities.com/zh-Hans-HK/ai-glasses) · [官网 Store](https://www.evenrealities.com/store)（查证 2026-09-30）· [PR Newswire · G1 2024-06](https://www.prnewswire.com/news-releases/even-realities-unveils-g1-digital-glasses-seamlessly-blending-beautiful-aesthetics-with-everyday-functionality-302182962.html) · [MicroLED-Info · G1 双目 JBD microLED](https://www.microled-info.com/even-realities-launch-new-ar-smart-glasses-powered-jbd-monochrome-microled) · [逸文科技为何受资本争抢](https://jishuzhan.baijing.cn/article/2610) · [FINDIT 百镜大战](https://findit.sme.gov.tw/tw/Res/2459)（查证 2026-09-30）
 
 ---
 
