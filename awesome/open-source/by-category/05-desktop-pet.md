@@ -8,7 +8,7 @@
 
 ### AIRI（赛博伴侣）
 
-- **仓库**：https://github.com/moeru-ai/airi
+- **仓库**：<https://github.com/moeru-ai/airi>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：PC / 桌面
@@ -19,7 +19,7 @@
 
 ### ElectronBot（稚晖君）
 
-- **仓库**：https://github.com/peng-zhihui/ElectronBot
+- **仓库**：<https://github.com/peng-zhihui/ElectronBot>
 - **Star**：以 HTML 大盘为准
 - **License**：GPL-3.0
 - **框架**：STM32 + USB 屏
@@ -30,9 +30,9 @@
 
 ### Dummy-Robot（稚晖君）
 
-- **仓库**：https://github.com/peng-zhihui/Dummy-Robot
+- **仓库**：<https://github.com/peng-zhihui/Dummy-Robot>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **框架**：自研驱动板
 - **状态**：维护中
 - **简介**：超迷你机械臂；桌面展示向，也可作具身入门（另见 09）。
@@ -42,7 +42,7 @@
 
 ### MagicMirror
 
-- **仓库**：https://github.com/MagicMirrorOrg/MagicMirror
+- **仓库**：<https://github.com/MagicMirrorOrg/MagicMirror>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：Raspberry Pi / Node.js
@@ -53,9 +53,9 @@
 
 ### Claude Desktop Buddy
 
-- **仓库**：https://github.com/anthropics/claude-desktop-buddy
+- **仓库**：<https://github.com/anthropics/claude-desktop-buddy>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **框架**：Arduino + 显示/舵机类桌面配件
 - **状态**：活跃
 - **简介**：桌面陪伴机器人示例，轻量交互与表情/动作结合。
@@ -64,7 +64,7 @@
 
 ### HoloCubic（稚晖君）
 
-- **仓库**：https://github.com/peng-zhihui/HoloCubic
+- **仓库**：<https://github.com/peng-zhihui/HoloCubic>
 - **Star**：以 HTML 大盘为准
 - **License**：GPL-3.0
 - **框架**：ESP32-PICO-D4
@@ -75,9 +75,9 @@
 
 ### Momy-Desk-Robot
 
-- **仓库**：https://github.com/momysnow/Momy-Desk-Robot
+- **仓库**：<https://github.com/momysnow/Momy-Desk-Robot>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **框架**：ESP32-S3
 - **状态**：活跃
 - **简介**：智能桌面机器人，语音交互 + AI 表情。
