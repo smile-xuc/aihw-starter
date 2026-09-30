@@ -32,7 +32,7 @@
 | **HUAWEI WATCH 6 Pro** | 旗舰表 | AI 健康洞察 / 小艺 | ¥3,499 CNY 起（查证 2026-09-30） | 活力人生连续包月 ¥15 CNY、年卡 ¥208 CNY |
 | **Apple Watch Ultra 3/4** | 旗舰运动表 | Workout Buddy；Health Age 在 iPhone「健康」App | $799 起（查证 2026-09-30） | Fitness+ $9.99/月或 $79.99/年 |
 | **Pixel Watch 5** | 圆形表，41 mm / 45 mm | Gemini；Health Guardian | 博客 41 mm $399 / 45 mm $429；商店 From $399.99（查证 2026-09-30） | Google Health Premium From $9.99/月；商店页写附 3 个月 |
-| **Galaxy Watch9** | 圆形表，40 mm / 44 mm | Gemini；Raise to Talk | 美国 40 mm 蓝牙 $379.99、44 mm 蓝牙 $409.99（SammyGuru）；加拿大 44 mm 蓝牙 $559.99 CAD（Aubaine）（查证 2026-09-30） | 未见公开订阅价 |
+| **Galaxy Watch9** | 40 mm / 44 mm，圆形表盘 | Gemini；raise to talk | 美国 40 mm 蓝牙 $379.99、44 mm 蓝牙 $409.99（SammyGuru）；加拿大 44 mm 蓝牙 $559.99 CAD（Aubaine）（查证 2026-09-30） | 未见公开订阅价 |
 | **Amazfit Balance 2** | 运动健康手表 | Zepp Flow；Zepp Coach | $299.99（查证 2026-09-30） | 未见公开订阅价 |
 
 ## 三、关键案例速览
@@ -71,14 +71,14 @@
 - **可借鉴点**：健康教练放在订阅里，购机页单独写赠送月数
 - **另见**：[Pixel Watch 5 商业产品卡][watch]
 
-### 案例：Galaxy Watch9（Samsung）— 抬腕唤起 Gemini
+### 案例：Galaxy Watch9（Samsung）— 不说唤醒词即可 raise to talk
 
-- **公开信息源**：[全球新闻室（Galaxy Unpacked July 2026）](https://news.samsung.com/global/galaxy-unpacked-july-2026-a-first-look-at-galaxy-watch-ultra2-and-galaxy-watch9) · [加拿大新闻室](https://news.samsung.com/ca/what-can-you-do-with-gemini-on-galaxy-watch-ultra2-and-galaxy-watch9) · [美国 40 mm 购买页](https://www.samsung.com/us/watches/galaxy-watch9/buy/galaxy-watch9-40mm-cream-bluetooth-sku-sm-l340nzeaxaa/) · [美国 44 mm 购买页](https://www.samsung.com/us/watches/galaxy-watch9/buy/galaxy-watch9-44mm-graphite-bluetooth-sku-sm-l350nzkaxaa/) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · [Aubaine](https://aubaine.ca/en/blog/apple-watch-vs-galaxy-watch-which-smartwatch-should-you-buy-in-2026)（查证 2026-09-30）
-- **形态**：圆形表盘，40 mm / 44 mm。全球新闻室写 Snapdragon Wear Elite，电池 390 mAh
-- **技术路线**：加拿大新闻室写 Gemini。Raise to Talk 为抬腕对向嘴部唤起，不必按键或说唤醒词
-- **亮点**：可发消息、摘要邮件、往日历加事件。睡眠呼吸暂停检测用 AI 算法分三级。Heart Health Score、Fitness Index、Daily Cardio Load 写在全球新闻室
-- **公开数据**：SammyGuru 写美国 40 mm 蓝牙 $379.99 USD、44 mm 蓝牙 $409.99 USD。Aubaine 写加拿大 44 mm 蓝牙 $559.99 CAD。LTE 款待核实。首发价、MSRP 与开售日待核实（查证 2026-09-30）
-- **可借鉴点**：抬腕唤起和健康指标分开：Raise to Talk 负责叫出 Gemini，睡眠呼吸暂停按每小时中断次数分三级
+- **公开信息源**：[The Verge（2026-07-22）](https://www.theverge.com/tech/968728/samsung-galaxy-watch-9-ultra-2-hands-on-wearables-smartwatches) · [9to5Google（2026-07-22）](https://9to5google.com/2026/07/22/galaxy-watch-9-watch-ultra-2-are-official-as-samsung-makes-the-jump-to-snapdragon/) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · [Aubaine](https://aubaine.ca/en/blog/apple-watch-vs-galaxy-watch-which-smartwatch-should-you-buy-in-2026)（查证 2026-09-30）
+- **形态**：SammyGuru 写圆形表盘。The Verge 写 40 mm / 44 mm，较小尺寸电池 390 mAh，较大尺寸 445 mAh，芯片为 Snapdragon Wear Elite
+- **技术路线**：The Verge 写 Gemini。不说唤醒词即可 raise to talk；同文写抬腕看时间不会误触发
+- **亮点**：Heart Health Score、Daily Cardio Load、Fitness Index 均写在 The Verge。9to5Google 也列出这三项名称
+- **公开数据**：SammyGuru 写美国 40 mm 蓝牙 $379.99 USD、44 mm 蓝牙 $409.99 USD，并写 2026-08-07 起在售。Aubaine 写加拿大 44 mm 蓝牙 $559.99 CAD。The Verge 写 2026-07-22 起可预购，预计 2026-08-07 发货。LTE 款、首发价、MSRP 与开售日待核实（查证 2026-09-30）
+- **可借鉴点**：唤起方式和健康指标分开：raise to talk 负责叫出 Gemini，Heart Health Score 与 Daily Cardio Load 分别记每日分数和训练负荷
 - **另见**：[Galaxy Watch9 商业产品卡][watch]
 
 ### 案例：Amazfit Balance 2（Zepp Health / 华米）— 语音控制与训练计划

@@ -114,9 +114,9 @@
 
 ### Galaxy Watch9（Samsung）
 
-- **上市状态**：在售（加拿大新闻室写 currently available for purchase，查证 2026-09-30）
-- **官网/渠道**：<https://www.samsung.com/us/watches/galaxy-watch9/buy/galaxy-watch9-40mm-cream-bluetooth-sku-sm-l340nzeaxaa/>；加拿大 <https://www.samsung.com/ca/watches/galaxy-watch/galaxy-watch9-44mm-graphite-bluetooth-sm-l350nzkaxac/>；新闻室 <https://news.samsung.com/global/galaxy-unpacked-july-2026-a-first-look-at-galaxy-watch-ultra2-and-galaxy-watch9>
-- **形态**：圆形表盘，40 mm / 44 mm。全球新闻室写搭载 Snapdragon Wear Elite，电池 390 mAh
+- **上市状态**：待核实（查证 2026-09-30）
+- **官网/渠道**：[The Verge 动手体验（2026-07-22）](https://www.theverge.com/tech/968728/samsung-galaxy-watch-9-ultra-2-hands-on-wearables-smartwatches) · [9to5Google（2026-07-22）](https://9to5google.com/2026/07/22/galaxy-watch-9-watch-ultra-2-are-official-as-samsung-makes-the-jump-to-snapdragon/) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/)
+- **形态**：SammyGuru 写圆形表盘。The Verge 写 40 mm / 44 mm；较小尺寸电池约增 20% 至 390 mAh，较大尺寸由 435 mAh 增至 445 mAh；芯片由 Exynos 换为 Snapdragon Wear Elite
 - **定价**：
   - 首发价：待核实
   - 现价：$379.99 USD · 美国 · 40 mm 蓝牙 · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · 查证 2026-09-30
@@ -124,15 +124,15 @@
   - 现价：$559.99 CAD · 加拿大 · 44 mm 蓝牙 · [Aubaine](https://aubaine.ca/en/blog/apple-watch-vs-galaxy-watch-which-smartwatch-should-you-buy-in-2026) · 查证 2026-09-30
   - MSRP：待核实
   - LTE 款：待核实
-- **目标市场**：Galaxy 生态的日常健康管理。加拿大新闻室写 Gemini 也可在更早的受支持 Galaxy Watch 上使用
-- **AI 能力**：加拿大新闻室写 Raise to Talk：抬腕对向嘴部即可唤起 Gemini，不必按键或说唤醒词。同页写可发消息、摘要邮件、打电话，以及建提醒、管任务、往日历加事件。全球新闻室写睡眠呼吸暂停检测用 AI 算法按每小时呼吸中断次数分三级；Heart Health Score 综合活动、睡眠、体成分和压力趋势；Fitness Index 用体成分和运动史判断运动量；Daily Cardio Load 用于看训练量和恢复时间
-- **大模型方案**：加拿大新闻室写 Gemini（非千问默认绑定）
-- **公开数据**：未见公开销量。全球新闻室标题为 Galaxy Unpacked July 2026。开售日待核实
-- **关键差异化**：① Raise to Talk 抬腕唤起 Gemini；② 睡眠呼吸暂停检测按 AI 算法分三级；③ Heart Health Score、Fitness Index、Daily Cardio Load 把活动和恢复收成可读指标
-- **商业模式**：硬件销售
+- **目标市场**：待核实（查证 2026-09-30）
+- **AI 能力**：The Verge 写 Wear OS 7 可以不说 Gemini 唤醒词就 raise to talk，并写抬腕看时间不会误触发。同文写 Heart Health Score：按约 8 天睡眠均值、中高强度活动、BMI 和血管负荷，每天给出 100 分制分数。Daily Cardio Load 按训练强度、最大训练负荷和实时心率，用来看训练与恢复是否平衡。Fitness Index 用雷达图比较力量、柔韧性、耐力、心肺和体成分
+- **大模型方案**：The Verge 写 Gemini（非千问默认绑定）
+- **公开数据**：未见公开销量。The Verge（2026-07-22）写当天开始预购，预计 2026-08-07 起发货。9to5Google 写 2026-08-07 起在店面上架。SammyGuru 写 2026-08-07 起在售。开售日待核实（查证 2026-09-30）
+- **关键差异化**：① 不说 Gemini 唤醒词即可 raise to talk；② Heart Health Score 把睡眠、活动和体成分收成每日分数；③ Fitness Index 与 Daily Cardio Load 分别看相对水平和训练负荷
+- **商业模式**：硬件销售。未见公开订阅价
 - **另见**：[公开案例](../../../solutions/by-category/08-smart-watch/04-cases.md)
 
-> 来源：[美国 40 mm 购买页](https://www.samsung.com/us/watches/galaxy-watch9/buy/galaxy-watch9-40mm-cream-bluetooth-sku-sm-l340nzeaxaa/) · [美国 44 mm 购买页](https://www.samsung.com/us/watches/galaxy-watch9/buy/galaxy-watch9-44mm-graphite-bluetooth-sku-sm-l350nzkaxaa/) · [加拿大商品页](https://www.samsung.com/ca/watches/galaxy-watch/galaxy-watch9-44mm-graphite-bluetooth-sm-l350nzkaxac/) · [全球新闻室（Galaxy Unpacked July 2026）](https://news.samsung.com/global/galaxy-unpacked-july-2026-a-first-look-at-galaxy-watch-ultra2-and-galaxy-watch9) · [加拿大新闻室](https://news.samsung.com/ca/what-can-you-do-with-gemini-on-galaxy-watch-ultra2-and-galaxy-watch9) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · [Aubaine](https://aubaine.ca/en/blog/apple-watch-vs-galaxy-watch-which-smartwatch-should-you-buy-in-2026)（均查证 2026-09-30）
+> 来源：[The Verge（2026-07-22）](https://www.theverge.com/tech/968728/samsung-galaxy-watch-9-ultra-2-hands-on-wearables-smartwatches) · [9to5Google（2026-07-22）](https://9to5google.com/2026/07/22/galaxy-watch-9-watch-ultra-2-are-official-as-samsung-makes-the-jump-to-snapdragon/) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · [Aubaine](https://aubaine.ca/en/blog/apple-watch-vs-galaxy-watch-which-smartwatch-should-you-buy-in-2026)（均查证 2026-09-30）
 
 ---
 
