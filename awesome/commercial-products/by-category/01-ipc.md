@@ -34,17 +34,17 @@
 
 ---
 
-### Google Nest Cam / Nest Aware
+### Google Nest Cam / Google Home Premium
 
-- **官网**：<https://store.google.com/> · Aware 说明见 Google Store / Nest 帮助文档
+- **官网**：<https://store.google.com/us/product/google_home_premium>
 - **形态**：Nest 室内外相机 / 门铃，深度接入 Google Home
-- **定价（公开汇总量级）**：Nest Aware 约 **$8/月（$80/年）**；Aware Plus 约 **$12–$15/月** 档（更长历史 / 连续录像能力因代际而异）
+- **定价（美区公开，查证 2026-09-30）**：订阅已由 Nest Aware 改为 **Google Home Premium**。Standard **$10/月或 $100/年**；Advanced **$20/月或 $200/年**。已迁到 Google 账号的 Nest Aware 用户沿用更名后的方案；未迁移的 Nest Aware（1st gen）仍按相机单独订阅，Google 帮助页未给出统一标价
 - **目标市场**：Google 生态家用用户
-- **AI 能力**：熟悉人脸、包裹、动物、异常声响等事件智能（随 Aware 档位）
+- **AI 能力**：熟悉人脸、包裹、动物、异常声响等事件智能（随 Google Home Premium 档位）
 - **关键差异化**：① 账户级覆盖多机；② 与手机 / 音箱生态一体；③ AI 事件质量口碑向
-- **商业模式**：硬件 + Nest Aware 订阅
+- **商业模式**：硬件 + Google Home Premium 订阅
 
-> 来源：公开订阅横评汇总（如 [WhatSmartHome 2026 对比](https://whatsmarthome.com/compatibility/video-doorbell-subscription-comparison/)）；下单以 Google 官方页为准
+> 来源：[Google Store · Google Home Premium](https://store.google.com/us/product/google_home_premium) · [Google 博客 2025-10-01](https://blog.google/products-and-platforms/devices/google-nest/googe-home-premium-google-ai-pro-subscription/) · [Nest Aware 已更名为 Google Home Premium](https://support.google.com/googlehome/answer/13315909) · [1st gen 与现价说明](https://support.google.com/googlehome/answer/13856600?hl=en)
 
 ---
 

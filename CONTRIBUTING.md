@@ -99,7 +99,7 @@ solutions/by-category/0X-{slug}/
 ├── 03-cost.md            ← BOM 拆分 + Token 测算 + 报价口径
 ├── 04-cases.md           ← 公开案例 / 脱敏案例
 ├── 05-faq.md             ← 该品类客户高频问答
-└── demo/                 ← 可运行 demo（Python 或 Go）
+└── demo/                 ← 可运行 demo（Python）
     └── README.md
 ```
 

@@ -231,7 +231,7 @@ image_tokens ≈ width × height ÷ 32 ÷ 32
 - **中文场景差异化**：Ring / Nest 主要面向英语市场，AI 摘要对中文语义理解偏弱
 - **本地化事件类型**：欧美关注"陌生人 / 包裹 / 车辆"，东南亚 / 中东场景需求不同
 - **合规差异化**：欧美 GDPR 严格，边缘 AI 架构（如 Eufy 路线）在中高端市场吃香
-- **性价比差异化**：欧美 IPC AI 订阅月费 $3.99~$8，国内厂商可用更强的性价比切入中端
+- **性价比差异化**：欧美家用 IPC 订阅，Ring Protect 最低档 Ring Solo 为 $4.99/月（[ring.com/plans](https://ring.com/plans)，查证 2026-09-30），Google Home Premium Standard 为 $10/月（[Google Store](https://store.google.com/us/product/google_home_premium)，查证 2026-09-30）；国内厂商可用更强的性价比切入中端
 
 ---
 

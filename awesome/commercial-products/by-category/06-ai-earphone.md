@@ -38,7 +38,7 @@
 
 ### 科大讯飞 AI 翻译耳机（AIH-2541）
 
-- **官网/渠道**：<https://www.xunfei.cn/>（商城商品页）；京东等渠道预售报道
+- **官网/渠道**：<https://www.xunfei.cn/goods?goodsId=2381>；京东等渠道预售报道
 - **形态**：开放式耳挂；骨导 + 气导拾音（发布会 / 媒体公开表述）
 - **定价**：公开预售 / 官网标价约 **¥2499**（经销商促销价可能浮动）
 - **目标市场**：商务通话、面对面、旁听同传、专业场景
@@ -47,7 +47,7 @@
 - **关键差异化**：通话同传 + 专业词库；开放式长佩戴
 - **商业模式**：硬件买断为主（时长政策以官网当期为准）
 
-> 来源：[IT之家 / 新浪转载预售报道](https://finance.sina.com.cn/tech/digi/2025-11-19/doc-infxxwtt3492426.shtml) · [量子位发布会报道](https://www.qbitai.com/2025/10/341663.html) · [讯飞商城](https://www.xunfei.cn/)
+> 来源：[IT之家 / 新浪转载预售报道](https://finance.sina.com.cn/tech/digi/2025-11-19/doc-infxxwtt3492426.shtml) · [量子位发布会报道](https://www.qbitai.com/2025/10/341663.html) · [讯飞商城 · AI 翻译耳机](https://www.xunfei.cn/goods?goodsId=2381)
 
 ---
 

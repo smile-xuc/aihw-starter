@@ -44,8 +44,8 @@
 
 ### 1.4 海外品牌参考
 
-- **Ring**（亚马逊）：Ring Protect 订阅含 AI 事件检测，月费 $3.99 起
-- **Nest**（谷歌）：Nest Aware 订阅含智能事件类型识别，月费 $8 起
+- **Ring**（亚马逊）：Ring Protect 订阅含 AI 事件检测；最低档 Ring Solo 为 $4.99/月或 $49.99/年（[Ring Protect Plans](https://ring.com/plans)，查证 2026-09-30）
+- **Google Nest**（谷歌）：Nest Aware 已更名为 Google Home Premium。美区新购 Standard $10/月（$100/年）、Advanced $20/月（$200/年）（[Google Store](https://store.google.com/us/product/google_home_premium)，查证 2026-09-30）。未迁移的 Nest Aware 1st gen 仍按相机单独订阅，官方帮助页未公布统一标价
 - **Arlo**：Arlo Secure 含 AI 物体检测、活动区域、车牌识别，月费 $7.99 起
 
 ---
@@ -76,7 +76,7 @@
 
 ### 2.2 广州九安 Juan（Juancloud）
 
-公开渠道：[Juancloud 官网](https://trade.juancloud.com/zh-cn/)
+公开渠道：[Juancloud 官网](https://trade.juancloud.com/)
 
 - **规模**：1999 年成立，600+ 员工规模；**2025 深交所创业板 IPO 已受理**（招股书披露财务数据保持增长）
 - **AI 能力**：基础 AI（人形侦测、全景拼接）+ **AI 大模型**——"事件摘要 / 自然语言检索"已搭载**千问大模型**在部分产品中上线

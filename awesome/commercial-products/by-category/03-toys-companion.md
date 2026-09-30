@@ -48,24 +48,24 @@
 
 ---
 
-### Moxie（Embodied）
+### Moxie（Embodied）〔已停售 / 断服〕
 
 - **形态**：儿童社交情绪陪伴机器人（约 5–10 岁定位）
 - **定价（历史公开）**：约 **$799** 硬件档
 - **目标市场**：北美家庭儿童 SEL（社交情绪学习）场景
 - **AI 能力**：多模态感知 + 引导式游戏与对话；厂商强调使用时长限制以防过度依恋
 - **关键差异化**：① 教育/心理目标导向，而非纯娱乐聊天；② 内容护栏与家长控制；③ 实体机器人形态
-- **商业模式**：硬件 + 云服务（世代政策以厂商为准；需注意服务存续风险）
-- **备注**：收录为海外陪伴机器人对照样板；采购前请核实当前销售与云服务状态
+- **商业模式**：硬件 + 云服务。2024-12 Embodied 宣布倒闭，并称核心功能依赖云端，服务停止后设备无法正常使用
+- **备注**：收录为「断服变砖」教训样本（与 04 Agent 硬件的 Humane AI Pin 同类），不是在售采购对象。本地续命见 [OpenMoxie](https://github.com/jbeghtol/openmoxie)：在原厂云停止后用本地服务恢复部分功能，仓库说明部分较新模块不在支持范围内
 
-> 来源：[Fox Business · Moxie](https://www.foxbusiness.com/technology/embodieds-ai-robot-moxie-designed-for-kids-with-limits)
+> 来源：[Ars Technica 2024-12-20](https://arstechnica.com/gadgets/2024/12/800-kids-robot-due-for-bricking-sees-potential-open-source-second-life/) · [OpenMoxie](https://github.com/jbeghtol/openmoxie) · [Fox Business · Moxie](https://www.foxbusiness.com/technology/embodieds-ai-robot-moxie-designed-for-kids-with-limits)
 
 ---
 
 ## 待补充清单
 
 - [ ] **方直方小阳仔**（方直集团）
-- [ ] **林宇宙小方机** / **银石拍学** 融合形态
+- [ ] **灵宇宙小方机** / **银石拍学** 融合形态
 - [ ] **学而思 / 网易有道** 教育大厂硬件
 
 ## 贡献指引

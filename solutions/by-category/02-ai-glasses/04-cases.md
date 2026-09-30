@@ -58,8 +58,8 @@
 
 ### 案例：Ray-Ban Meta（Meta × EssilorLuxottica）
 
-- **公开信息源**：Meta 官方、IDC、公开财经报道
-- **形态**：拍照音频眼镜，约 299 美元
+- **公开信息源**：Meta 官方、IDC、公开财经报道。价格见 [Meta Quest Blog · Ray-Ban Meta Gen 2](https://www.meta.com/blog/ray-ban-meta-gen-2-now-available-ai-glasses-extended-battery-life-3k-video/)：Gen 2 自 379 美元，Gen 1 自 299 美元
+- **形态**：拍照音频眼镜。Gen 1 约 299 美元 / Gen 2 自 379 美元
 - **公开数据**：2025 年销量超 700 万副（约为前两年总和的三倍），全品类全球第一
 - **技术路线**：Meta AI（Llama 系列）语音助手 + 12MP 拍摄 + 开放式音频；与传统眼镜巨头联合设计渠道共享
 - **可借鉴点**：品类的市场教育者——「时尚单品 + AI」路线证明眼镜首先要是好眼镜；传统眼镜渠道（镜片验配）是被低估的分销资产

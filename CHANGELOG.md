@@ -318,7 +318,7 @@ Runtime Host 架构的可视化版本，含搜索、分类标签过滤、折叠�
 - 文档：`docs/llm-integration-guide.md`、`docs/supply-chain-guide.md`
 - MIT License、中英双语 README
 
-[2.0.0]: https://github.com/smile-xuc/aihw-starter/compare/v1.1.0...v2.0.0
+[2.0.0]: https://github.com/smile-xuc/aihw-starter/compare/68ed1e2...v2.0.0
 [1.1.0]: https://github.com/smile-xuc/aihw-starter/compare/5c8583a...cf399ee
 [1.0.2]: https://github.com/smile-xuc/aihw-starter/compare/e8279cc...5c8583a
 [1.0.1]: https://github.com/smile-xuc/aihw-starter/compare/762d811...e8279cc
