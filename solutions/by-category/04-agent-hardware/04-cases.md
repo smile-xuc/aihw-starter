@@ -33,7 +33,7 @@
 | **Rabbit R1** | rabbit inc. | 口袋助手 | rabbitOS / LAM + 第三方 Agent | 语音 + 触屏 + 推送说话 | **$199 / 无订阅** | 在售（官网） |
 | **Humane AI Pin** | Humane | 胸针可穿戴 | CosmOS + 云端 AI | 投影 + 语音 | 首发价 US$699（2024-04）→ 2024-10 降至 US$499（Eclipse）+ US$24/月 | **2025-02 停售** |
 | **Limitless Pendant** | Limitless（Meta 收购） | 记忆挂件 | 云端转录 / 记忆 | 常开麦 | 硬件加订阅，另见 [Limitless 主卡][pendant] | **2025-12 停售新客** |
-| **铠盒 AIBOX-A1** | 铠盒智能 | 桌面 Agent 盒 | 本地轻量 + 云端千问等 | 常开盒子 / OpenClaw | 约 **¥999** | 公开在售页 |
+| **铠盒 AIBOX-A1** | 铠盒智能 | 桌面 Agent 盒 | 本地轻量 + 云端千问等 | 常开盒子 / OpenClaw | **¥1,199 CNY** · [产品页](https://agentaibox.com/products/a1) · 查证 2026-09-30 | 公开在售页 |
 
 ### 形态路线图
 
@@ -71,8 +71,8 @@
 
 ### 案例：铠盒 AIBOX-A1（铠盒智能）— 国内桌面盒公开 SKU
 
-- **公开信息源**：[agentaibox.com/products/a1](https://agentaibox.com/products/a1)
-- **亮点**：RK3576、约 6 TOPS、4GB/64GB、宣传零售 ¥999；本地轻量模型 + 云端大模型；常开低功耗
+- **公开信息源**：[产品页](https://agentaibox.com/products/a1)（查证 2026-09-30）
+- **亮点**：RK3576、约 6 TOPS、4GB/64GB、零售 ¥1,199 CNY（[产品页](https://agentaibox.com/products/a1)，查证 2026-09-30）；本地轻量模型 + 云端大模型；常开低功耗
 - **可借鉴点**：桌面中枢叙事（7×24、隐私、开箱即用）比「替代手机」更容易落地
 - **另见**：[铠盒商业产品卡][hw]
 
