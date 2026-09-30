@@ -19,9 +19,10 @@
 
 ## 一、收录原则
 
-- **只写公开信息**：官网 / 博客 / 媒体已披露
-- **客观陈述**：不写「全球首款」「业界领先」
-- **品类横评 vs 商业卡**：本页精选；全集见 [`awesome/commercial-products/by-category/09-embodied.md`](../../../awesome/commercial-products/by-category/09-embodied.md)
+- **只写公开信息**：产品与客户名仅在官网 / 官方商店 / 官方公众号 / 媒体报道已披露时出现
+- **客观陈述**：不评价优劣，只记形态、技术路线、可观察事实；不写「首个 / 最强 / 唯一」
+- **数字有出处**：价格、销量等用公开口径，附链接与查证日期；查不到标「待核实」；不写转化率 / ARPU / 私下报价
+- **与 awesome 的关系**：有商业产品卡的案例用「另见」互链；提交规范见 [CONTRIBUTING.md](../../../CONTRIBUTING.md)
 
 ---
 
@@ -53,25 +54,28 @@
 
 ## 三、关键案例速览
 
-### 3.1 宇树 Go2 × Qwen-RobotNav
+### 案例：宇树 Go2 × Qwen-RobotNav（宇树）
 
-- **公开信息源**：Unitree 产品页；Qwen-Robot 官方解读 / 博客
+- **公开信息源**：Unitree 产品页；Qwen-Robot 官方解读 / 博客（**待补链接**）
 - **亮点**：公开材料称零样本部署 Nav，单低分辨率相机完成寻物导航
 - **可借鉴点**：移动场景先打通「语言 → 导航技能」，载荷与站点运维另算
+- **另见**：[宇树四足商业产品卡][emb]
 
-### 3.2 宇树 G1
+### 案例：宇树 G1（宇树）
 
-- **公开信息源**：https://www.unitree.com/g1/
+- **公开信息源**：[Unitree 产品页](https://www.unitree.com/g1/)
 - **亮点**：可购消费/科研人形入口；商店说明基础版不支持二次开发，二次开发需选 EDU 版；首发价 US$16K（2024-05）→ 现价 US$13,500（查证 2026-09-30，未含税运）。来源：[Unitree G1](https://www.unitree.com/g1/) · [官方商店](https://shop.unitree.com/products/unitree-g1) · [PR Newswire 2024-05-15](https://www.prnewswire.com/news-releases/unitree-robotics-introduces-g1-humanoid-agent-ai-avatar-302146198.html)
 - **可借鉴点**：人形适合演示与算法平台，不宜默认当作已跑通的家庭管家 SKU
+- **另见**：[宇树人形商业产品卡][emb]
 
-### 3.3 协作臂语言抓取（UR / 遨博路线）
+### 案例：协作臂语言抓取（Universal Robots / 遨博）
 
-- **公开信息源**：厂商产品页与集成商公开案例
+- **公开信息源**：厂商产品页与集成商公开案例（**待补链接**）
 - **亮点**：ISO 协作约束清晰；第三方视觉 / VLA 可插拔
 - **可借鉴点**：商业上仍是「臂 + 集成」；大模型卖的是换型效率，不是替代 PLC
+- **另见**：[协作臂商业产品卡][emb] · [遨博协作臂商业产品卡][emb]
 
-### 3.4 Qwen-RobotManip 公开基准
+### 案例：Qwen-RobotManip（阿里通义）— 公开基准
 
 - **公开信息源**：[`05-qwen-robot.md`](../../by-solution/05-qwen-robot.md)
 - **亮点**：公开材料称 RoboChallenge Table30 等任务赛道成绩靠前（拧龙头、插网线等）
@@ -83,9 +87,9 @@
 
 | 项目 | 特点 | 链接 |
 |---|---|---|
-| LeRobot | HF 机器人学习框架 | https://github.com/huggingface/lerobot |
-| SO-ARM100 | 低成本开源臂 | https://github.com/TheRobotStudio/SO-ARM100 |
-| OpenCat | 开源四足 | https://github.com/PetoiCamp/OpenCat-Quadruped-Robot |
+| LeRobot | HF 机器人学习框架 | [LeRobot](https://github.com/huggingface/lerobot) |
+| SO-ARM100 | 低成本开源臂 | [开源臂仓库](https://github.com/TheRobotStudio/SO-ARM100) |
+| OpenCat | 开源四足 | [OpenCat](https://github.com/PetoiCamp/OpenCat-Quadruped-Robot) |
 
 开源适合 2–6 周验证「语言 → 技能」；量产前须补：安全认证、运控限位、数据闭环与维保。
 
@@ -98,6 +102,10 @@
 - [ ] 开源臂 + 千问实机抓取复现报告
 
 ---
+
+商业产品全集见 [awesome/commercial-products/by-category/09-embodied.md][emb]。
+
+[emb]: ../../../awesome/commercial-products/by-category/09-embodied.md
 
 **版本**：千问大模型方案
 **更新日期**：2026-09
