@@ -18,7 +18,7 @@
 >
 > **核心能力**：动作情绪标签三路同步 + 每日记忆日记 + BLE 降级对话 + Agent 后台热配置
 >
-> 本文档基于千问（Qwen）大模型生态。其他厂商方案欢迎通过 PR 补充为 `02-solution-{model}.md`，参考 [CONTRIBUTING.md](../../../CONTRIBUTING.md) 第一章。
+> 本文档基于千问（Qwen）大模型生态。其他模型写进本文件「其他模型方案」小节，每个模型一个 `### {模型名}`。跨品类通用内容写到 [solutions/by-solution/](../../by-solution/)。
 
 ---
 
