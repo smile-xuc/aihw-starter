@@ -8,12 +8,12 @@
 
 ### Unitree Go2（宇树四足）
 
-- **上市状态**：在售（原卡按官网公开价收录，查证日期待核实）
-- **官网/渠道**：<https://www.unitree.com/go2>；英文站 <http://unitree.com/en/go2/>
+- **上市状态**：在售（官网与官方商店有现价，查证 2026-09-30）
+- **官网/渠道**：<https://www.unitree.com/go2>；商店 <https://shop.unitree.com/>
 - **形态**：消费/科研向四足机器人；多档 Air / Pro / X（及 EDU/行业配置）
 - **定价**：
   - 首发价：待核实
-  - 现价：约 $1,600 USD / $2,800 USD / $4,500 USD 起（Air / Pro / X；官网公开，未含税运）
+  - 现价：官网写 from $1,600 USD。商店：Air $1,600 USD（不带遥控）/ $1,850 USD（带遥控）；Pro $2,800 USD / $3,050 USD；X $4,500 USD（带遥控）· [products.json](https://shop.unitree.com/products.json) · 查证 2026-09-30。未含税运
   - MSRP：待核实
 - **目标市场**：教育科研、演示、轻巡检验证、极客消费
 - **AI 能力**：本体运动控制成熟；可叠加语言导航等 VLA（公开有 Qwen-RobotNav 零样本部署叙述）
@@ -22,13 +22,13 @@
 - **关键差异化**：① 价格带打开四足普及；② 档位清晰；③ 与人形产品线协同品牌
 - **商业模式**：硬件销售；EDU/行业报价制
 
-> 来源：[Unitree Go2](https://www.unitree.com/go2) · 价格核对参考 [RoboZaps 2026](https://blog.robozaps.com/b/unitree-go2-review)
+> 来源：[Unitree Go2](https://www.unitree.com/go2) · [官方商店 products.json](https://shop.unitree.com/products.json)（查证 2026-09-30）
 
 ---
 
 ### Unitree G1（宇树人形）
 
-- **上市状态**：在售（当前 backordered，查证日期见定价）
+- **上市状态**：在售（当前 backordered，查证 2026-09-30）
 - **官网/渠道**：<https://www.unitree.com/g1/>
 - **形态**：约 35kg 级人形；23–43 关节自由度（配置相关）；深度相机 + 3D LiDAR 等
 - **定价**：
@@ -48,14 +48,14 @@
 
 ### Universal Robots e-Series（Universal Robots）
 
-- **上市状态**：在售（厂商不公开统一标价，查证日期待核实）
-- **官网/渠道**：<https://www.universal-robots.com/>
-- **形态**：六轴协作臂；2026 线刷新后中负载常见对标为 UR7e（公开资料称接替 UR5e，载荷约 7.5kg）
+- **上市状态**：在售（官方 FAQ 称价格咨询当地经销商，查证 2026-09-30）
+- **官网/渠道**：<https://www.universal-robots.com/>；<https://www.universal-robots.com/products/ur7e-920/>
+- **形态**：六轴协作臂。新闻稿写 UR5e 负载增加 2.5 kg 并更名为 UR7e，日期 2025-05-12。产品页 UR7e-920 写 7.5 kg / 920 mm
 - **定价**：
   - 首发价：待核实
-  - 现价：待核实
+  - 现价：待核实（官方不公开统一标价，查证 2026-09-30）
   - MSRP：待核实
-  - 经销商价：美区经销商公开汇总约 $38,363 USD–$48,000 USD（臂+控制器量级）；整单元含末端/集成更高
+  - 经销商价：美区经销商公开汇总约 $38,363 USD–$48,000 USD（臂+控制器量级，第三方，本批未在官方页核对具体数字）；整单元含末端/集成更高
 - **目标市场**：全球制造业、教育、轻组装
 - **AI 能力**：原生偏示教与 UR+ 生态；语言/VLA 多由第三方视觉与软件集成
 - **大模型方案**：待核实
@@ -63,20 +63,20 @@
 - **关键差异化**：① 协作臂事实标准生态；② 认证与经销网络；③ 二手/残值市场深
 - **商业模式**：硬件 + 经销/集成商项目交付
 
-> 来源：公开经销商报价汇总如 [RobotSourced UR7e](https://robotsourced.com/robots/cobots/ur7e/)
+> 来源：[UR 新闻稿（2025-05-12）](https://www.universal-robots.com/news-and-media/news-center/universal-robots-introduces-its-fastest-ever-cobot-to-enable-unprecedented-performance-in-collaborative-automation/) · [FAQ](https://www.universal-robots.com/insights/faq/) · [UR7e-920](https://www.universal-robots.com/products/ur7e-920/) · 经销商价见 [RobotSourced UR7e](https://robotsourced.com/robots/cobots/ur7e/)（查证 2026-09-30）
 
 ---
 
 ### AUBO-i5（遨博协作臂）
 
-- **上市状态**：在售（原卡按公开估算收录，查证日期待核实）
-- **官网/渠道**：遨博机器人官网（以区域站点为准）（**待补链接**）
-- **形态**：约 5kg 载荷、约 924mm 臂展级协作臂（规格以官方手册为准）
+- **上市状态**：在售（官网规格页可打开，查证 2026-09-30）
+- **官网/渠道**：<https://www.aubo-cobot.com/public/iproduct3>
+- **形态**：AUBO-i5 官方规格页写负载 5 kg、自重 24 kg、臂展 886.5 mm（查证 2026-09-30）
 - **定价**：
   - 首发价：待核实
-  - 现价：待核实
+  - 现价：待核实（官网规格页没有公开标价）
   - MSRP：待核实
-  - 估算：约 $6,000 USD–$10,000 USD 量级（区域与配置差异大；原卡「公开估算」）
+  - 估算：约 $6,000 USD–$10,000 USD 量级（第三方估算，区域与配置差异大；官方没有公开价格）
 - **目标市场**：对成本敏感的产线升级、教育与集成商
 - **AI 能力**：同样以集成视觉 / 语言抓取方案为主
 - **大模型方案**：待核实
@@ -84,7 +84,7 @@
 - **关键差异化**：① 相对 UR 的价格带；② 国内供应链与交付；③ 适合作为「语言抓取」试点臂
 - **商业模式**：硬件 + 集成
 
-> 来源：公开对比如 [AUBO-i5 vs UR7e](https://robotsourced.com/compare/aubo-i5-vs-ur7e/)
+> 来源：[AUBO-i5 规格页](https://www.aubo-cobot.com/public/iproduct3) · 估算价见 [AUBO-i5 vs UR7e](https://robotsourced.com/compare/aubo-i5-vs-ur7e/)（查证 2026-09-30）
 
 ---
 

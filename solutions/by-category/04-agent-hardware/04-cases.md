@@ -50,7 +50,7 @@
 
 ### 案例：Rabbit R1（rabbit inc.）— 无订阅口袋助手
 
-- **公开信息源**：[rabbit.tech](https://www.rabbit.tech/)；第三方评测（2026）仍报 $199 / no subscription
+- **公开信息源**：[Rabbit R1](https://www.rabbit.tech/rabbit-r1) · [2024 Q1 更新](https://www.rabbit.tech/newsroom/quarterly-update-2024-q1)（查证 2026-09-30）。产品页写 $199、no subscription。Q1 更新写售出超过 10 万台，不是众筹订单口径
 - **亮点**：Teenage Engineering 工业设计；语音入口；后续加入第三方 Agent / DLAM 等能力
 - **可借鉴点**：「硬件买断 + 无聊天月费」是本品类少数仍在公开售卖的清晰叙事；进阶能力可 BYOK
 - **另见**：[Rabbit 商业产品卡][hw]

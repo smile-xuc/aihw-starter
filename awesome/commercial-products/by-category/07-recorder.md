@@ -7,15 +7,15 @@
 
 ### Plaud Note（Plaud）
 
-- **上市状态**：在售（原卡按在售产品收录，查证日期待核实）
+- **上市状态**：在售（产品页有标价，查证 2026-09-30）
 
 - **官网/渠道**：<https://www.plaud.ai/products/plaud-note-ai-voice-recorder>
 - **形态**：超薄卡片式 AI 录音卡（约 0.12″ 厚）；手机通话 / 现场双模式；本地最高约 64 GB 音频缓存（官网规格）
 - **定价**：
   - 首发价：待核实
-  - 现价：$159 USD
+  - 现价：$159 USD · [产品页](https://www.plaud.ai/products/plaud-note-ai-voice-recorder) · 查证 2026-09-30
   - MSRP：待核实
-  - 订阅：设备含 Starter **300 min/mo** AI 转写
+  - 订阅：设备含 Starter **300 min/mo**。Pro $99.99 USD/年（约 $8.33 USD/月，1200 min）、Unlimited $239.99 USD/年 · [产品页](https://www.plaud.ai/products/plaud-note-ai-voice-recorder) · [套餐页](https://www.plaud.ai/pages/plaud-ai-plan-pricing) · 查证 2026-09-30
 - **目标市场**：商务会议、访谈、通话纪要；全球零售（以官网销售区域为准）
 - **AI 能力**：112+ 语种转写、说话人标注、多维摘要与大量专业模板、Ask Plaud、桌面端会议录音工作流（官网表述）
 - **大模型方案**：官网套餐页列出多模型（如 GPT / Gemini / Claude 等系列，随版本更新）；**国内大模型方案未作为默认公开绑定**
@@ -23,13 +23,13 @@
 - **关键差异化**：① 卡片形态 + 磁吸配件降低携带摩擦；② 开箱即送转写分钟降低试用门槛；③ 摘要模板与工作流（日历 / Zapier / MCP 等）做续费锚点
 - **商业模式**：硬件销售 + Starter 附赠时长；升级 Pro / Unlimited / Team 订阅。**Plaud 订阅公开价（年付折月，官网）**：Pro **~$8.33/mo**（$99.99/yr，1200 min/mo）；Unlimited **~$19.99/mo**（$239.99/yr，至 24h/天）；Team 另有席位价。详见 [plaud-ai-plan-pricing](https://www.plaud.ai/pages/plaud-ai-plan-pricing)。
 
-> 来源：[Plaud Note 产品页](https://www.plaud.ai/products/plaud-note-ai-voice-recorder) · [Plaud AI Plan Pricing](https://www.plaud.ai/pages/plaud-ai-plan-pricing)
+> 来源：[Plaud Note 产品页](https://www.plaud.ai/products/plaud-note-ai-voice-recorder) · [Plaud AI Plan Pricing](https://www.plaud.ai/pages/plaud-ai-plan-pricing)（查证 2026-09-30）
 
 ---
 
 ### Plaud Note Pro（Plaud）
 
-- **上市状态**：在售（查证日期见定价）
+- **上市状态**：在售（查证 2026-09-30）
 
 - **官网/渠道**：<https://www.plaud.ai/products/plaud-note-pro>
 - **形态**：Plaud 卡片生态旗舰硬件（同属 Note 产品线，规格以官网为准）
@@ -51,15 +51,15 @@
 
 ### Notta Memo（Notta）
 
-- **上市状态**：在售（原卡按商店标价收录，查证日期待核实）
+- **上市状态**：在售（商店套装有标价，查证 2026-09-30）
 
 - **官网/渠道**：<https://www.notta.ai/en/hardware/memo>；商店 <https://shop.notta.ai/en-us/products/notta-memo>
 - **形态**：口袋卡片录音机 + 磁吸保护壳；4 MEMS + 1 骨传导麦；通话 / 现场拨杆切换
 - **定价**：
   - 首发价：待核实
-  - 现价：$149 USD（商店标价）
+  - 现价：$152.39 USD（商店当前为 Memo + 磁吸皮套套装，没有单独 $149 USD 的 SKU）· [商店商品数据](https://shop.notta.ai/en-us/products/notta-memo.js) · 查证 2026-09-30
   - MSRP：待核实
-  - 订阅：公开表述含 Starter 计划（如 300 min/mo 转写量级，以购买页为准）
+  - 订阅：产品页写 Starter 300 分钟 · [Notta Memo](https://www.notta.ai/en/hardware/memo) · 查证 2026-09-30
 - **目标市场**：会议、通话、访谈、课堂；强调「一键录 → App 转写摘要」
 - **AI 能力**：转写 / 翻译（公开称 58 语种）、AI 摘要模板、AI Chat、说话人识别、与 Slack / Notion 等集成（官网 / 商店表述）
 - **大模型方案**：Notta 云端 AI（具体基座模型组合以产品更新为准）
@@ -67,35 +67,35 @@
 - **关键差异化**：① 五麦阵列强调通话与现场音质；② 与 Notta SaaS 账号体系打通；③ 价位带直接对标 Plaud 卡片机
 - **商业模式**：硬件 + Notta 订阅时长 / 会员
 
-> 来源：[Notta Memo](https://www.notta.ai/en/hardware/memo) · [Notta 商店](https://shop.notta.ai/en-us/products/notta-memo) · [TechRadar 评测价](https://www.techradar.com/pro/notta-memo-ai-voice-recorder-review)
+> 来源：[Notta Memo](https://www.notta.ai/en/hardware/memo) · [Notta 商店](https://shop.notta.ai/en-us/products/notta-memo)（查证 2026-09-30） · [TechRadar 评测价](https://www.techradar.com/pro/notta-memo-ai-voice-recorder-review)
 
 ---
 
 ### 讯飞 SR502 星火版（科大讯飞）
 
-- **上市状态**：在售（原卡按官网标价收录，查证日期待核实）
+- **上市状态**：在售（参数页有标价与上市日期，查证 2026-09-30）
 
 - **官网/渠道**：<https://www.iflytekrecord.com/>；参数页 <https://www.iflytekrecord.com/Goods_parms/1/511.html>
 - **形态**：3.5″ 触控屏智能录音笔；拍照 / OCR；偏专业会议与出差携带
 - **定价**：
   - 首发价：待核实
-  - 现价：官网参数页标价 **¥2499** CNY
+  - 现价：官网参数页标价 **¥2,499 CNY** · [参数页](https://www.iflytekrecord.com/Goods_parms/1/511.html) · 查证 2026-09-30
   - MSRP：待核实
   - 促销价：电商促销常见浮动，下单以实时页为准
 - **目标市场**：国内商务、媒体、教育等需要「笔形态 + 转写」的用户
 - **AI 能力**：录音转写、离线转写能力（产品页宣传）、与讯飞听见 / 星火生态联动的纪要与导出
 - **大模型方案**：讯飞星火 + 听见转写体系（**非千问默认绑定**）
-- **公开数据**：上市信息见官网参数（如 2023/11 发布字段）；转写时长与会员规则以听见 / App 当前协议为准
+- **公开数据**：参数页写上市日期 2023-11-01、售价 ¥2,499 CNY（查证 2026-09-30）。转写时长与会员规则以听见 / App 当前协议为准
 - **关键差异化**：① 国内渠道与品牌认知；② 带屏 + 离线向能力适合弱网；③ 客单显著高于海外卡片机，硬件溢价空间更大
 - **商业模式**：硬件销售 + 转写时长 / 会员增值
 
-> 来源：[讯飞录音笔官网参数](https://www.iflytekrecord.com/Goods_parms/1/511.html) · [讯飞听见](https://www.iflyrec.com/)
+> 来源：[讯飞录音笔官网参数](https://www.iflytekrecord.com/Goods_parms/1/511.html)（查证 2026-09-30） · [讯飞听见](https://www.iflyrec.com/)
 
 ---
 
 ### HiDock H1 Lite（HiDock）
 
-- **上市状态**：在售（Amazon 页面在售，查证日期见定价）
+- **上市状态**：在售（Amazon 页面在售，查证 2026-09-28）
 
 - **官网/渠道**：<https://www.hidock.com/products/hidock-h1-lite>；Amazon <https://www.amazon.com/HiDock-Conference-Speakerphone-Noise-Canceling-Transcription/dp/B0GZ3GZ3DT>（HiDock Official Store）
 - **形态**：USB-C 桌面 AI 扬声器电话 + 会议录音机；面向 Mac mini 与现代 USB-C 桌面（产品页亦列 MacBook、iMac、Windows 笔电与台式机）。蓝牙耳机配对到本机时为 Call Mode，未连接耳机时为 Room Mode（[发布博客](https://www.hidock.com/blogs/new-release/hidock-h1-lite-the-ai-audio-companion-for-mac-mini-and-modern-desktops)与[设置指南](https://www.hidock.com/blogs/user-guide/hidock-com-blog-hidock-h1-lite-setup-guide)称自动切换）

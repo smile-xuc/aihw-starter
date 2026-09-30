@@ -8,21 +8,21 @@
 
 ### Rabbit R1（rabbit inc.）
 
-- **上市状态**：在售（仍在官网售卖，年份见公开数据与来源行；查证日期未精确到日，待核实）
-- **官网/渠道**：<https://www.rabbit.tech/>
+- **上市状态**：在售（产品页有标价，查证 2026-09-30）
+- **官网/渠道**：<https://www.rabbit.tech/rabbit-r1>
 - **形态**：口袋 AI 助手（2.88″ 屏 + 推送说话 + 滚轮），非手机替代叙事
 - **定价**：
   - 首发价：待核实
-  - 现价：$199 USD；官网公开 no subscription
+  - 现价：$199 USD · 页面写 no subscription、powered by rabbit OS3 · [产品页](https://www.rabbit.tech/rabbit-r1) · 查证 2026-09-30
   - MSRP：待核实
 - **目标市场**：全球早期采用者 / Agent 爱好者
-- **AI 能力**：rabbitOS；语音助手；第三方 Agent（Hermes / Claude Code / OpenClaw 等，需用户自建）；DLAM 控电脑（公开报道存在 BYOK）
+- **AI 能力**：rabbitOS；语音助手；第三方 Agent（Hermes / Claude Code / OpenClaw 等，需自建）；DLAM 控电脑（公开报道存在 BYOK）
 - **大模型方案**：自研栈 + 可接第三方；国内大模型方案未作为默认卖点披露
-- **公开数据**：2024 众筹/预售阶段曾披露约 10 万+ 量级订单口径（以当时公开报道为准）；2026 仍在官网售卖
+- **公开数据**：官方 2024 Q1 更新写 sold more than 100,000 units（售出，不是众筹订单）· [Q1 更新](https://www.rabbit.tech/newsroom/quarterly-update-2024-q1) · 查证 2026-09-30。Forbes 报道本次 HTTP 403，未写入
 - **关键差异化**：① 无强制聊天月费；② 工业设计辨识度高；③ 向 Agent 平台持续 OTA
 - **商业模式**：硬件买断（进阶能力可 BYOK）
 
-> 来源：[rabbit.tech](https://www.rabbit.tech/) · 公开评测汇总（2026）
+> 来源：[Rabbit R1](https://www.rabbit.tech/rabbit-r1) · [2024 Q1 更新](https://www.rabbit.tech/newsroom/quarterly-update-2024-q1)（查证 2026-09-30）
 
 ---
 

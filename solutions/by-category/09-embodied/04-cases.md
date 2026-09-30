@@ -30,10 +30,10 @@
 
 | 名称 | 厂商 / 方 | 形态 | 大模型（公开） | 核心能力 | 参考价（公开） |
 |---|---|---|---|---|---|
-| **Go2** | 宇树 | 四足 | 可部署 Qwen-RobotNav（公开演示） | 运动控制 + 寻物导航 | $1,600–$4,500 档起 |
+| **Go2** | 宇树 | 四足 | 可部署 Qwen-RobotNav（公开演示） | 运动控制 + 寻物导航 | 官网 from $1,600；商店 Air $1,600 / $1,850，Pro $2,800 / $3,050，X $4,500（查证 2026-09-30） |
 | **G1** | 宇树 | 人形 | UnifoLM 等公开表述 | 仿生运动 / 科研二次开发 | 首发价 US$16K（2024-05）→ 现价 US$13,500（查证 2026-09-30）；基础版不支持二次开发，EDU 询价 |
-| **UR e-Series** | Universal Robots | 协作臂 | 多为第三方视觉 / VLA 集成 | 产线抓取装配生态 | UR7e 经销商约 $38k+ |
-| **AUBO-i5 级** | 遨博 | 协作臂 | 方案商集成 | 性价比协作抓取 | 公开估算约 $6k–$10k |
+| **UR e-Series** | Universal Robots | 协作臂 | 多为第三方视觉 / VLA 集成 | 产线抓取装配生态 | 2025-05-12 更名 UR7e；经销商约 $38k+（第三方，官方不公开统一标价） |
+| **AUBO-i5 级** | 遨博 | 协作臂 | 方案商集成 | 性价比协作抓取 | 臂展 886.5 mm；价格为估算约 $6k–$10k |
 | **Qwen-Robot Suite** | 阿里通义 | 模型套件 | RobotNav / Manip / World | 语言优先工具接口 | 以官方发布为准 |
 
 ### 形态路线图
@@ -56,7 +56,7 @@
 
 ### 案例：宇树 Go2 × Qwen-RobotNav（宇树）
 
-- **公开信息源**：Unitree 产品页；Qwen-Robot 官方解读 / 博客（**待补链接**）
+- **公开信息源**：[Unitree Go2](https://www.unitree.com/go2/) · [Qwen-RobotNav 博客](https://www.alibabacloud.com/blog/qwen-robotnav-a-scalable-navigation-model-designed-for-an-agentic-navigation-system_603266)（查证 2026-09-30）
 - **亮点**：公开材料称零样本部署 Nav，单低分辨率相机完成寻物导航
 - **可借鉴点**：移动场景先打通「语言 → 导航技能」，载荷与站点运维另算
 - **另见**：[宇树四足商业产品卡][emb]
@@ -70,15 +70,15 @@
 
 ### 案例：协作臂语言抓取（Universal Robots / 遨博）
 
-- **公开信息源**：厂商产品页与集成商公开案例（**待补链接**）
+- **公开信息源**：[UR 新闻稿（2025-05-12）](https://www.universal-robots.com/news-and-media/news-center/universal-robots-introduces-its-fastest-ever-cobot-to-enable-unprecedented-performance-in-collaborative-automation/) · [UR7e-920](https://www.universal-robots.com/products/ur7e-920/) · [AUBO-i5 规格页](https://www.aubo-cobot.com/public/iproduct3)（查证 2026-09-30）。集成商公开案例没有打开的来源，待核实
 - **亮点**：ISO 协作约束清晰；第三方视觉 / VLA 可插拔
 - **可借鉴点**：商业上仍是「臂 + 集成」；大模型卖的是换型效率，不是替代 PLC
 - **另见**：[协作臂商业产品卡][emb] · [遨博协作臂商业产品卡][emb]
 
 ### 案例：Qwen-RobotManip（阿里通义）— 公开基准
 
-- **公开信息源**：[`05-qwen-robot.md`](../../by-solution/05-qwen-robot.md)
-- **亮点**：公开材料称 RoboChallenge Table30 等任务赛道成绩靠前（拧龙头、插网线等）
+- **公开信息源**：[Qwen-RobotManip 博客](https://www.alibabacloud.com/blog/qwen-robotmanip-alignment-unlocks-scale-for-robotic-manipulation-foundation-models_603267) · [Qwen-Robot Suite](https://www.alibabacloud.com/blog/qwen-robot-suite-a-foundation-model-suite-for-physical-world-intelligence_603262) · [品类解读](../../by-solution/05-qwen-robot.md)（查证 2026-09-30）
+- **亮点**：博客写 RoboChallenge Table30 v1 成功率 45%，排名第一。水龙头、插网线等具体任务在打开的来源里没有，已删除
 - **可借鉴点**：用公开基准选模型，仍要用自有工位回归；Safety Gate 不可省
 
 ---
