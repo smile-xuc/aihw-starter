@@ -10,7 +10,7 @@
 
 ### InfiniTime
 
-- **仓库**：https://github.com/InfiniTimeOrg/InfiniTime
+- **仓库**：<https://github.com/InfiniTimeOrg/InfiniTime>
 - **Star**：以仓库为准（2026-09 核验；HTML 大盘未收录）
 - **License**：GPL-3.0
 - **框架**：PineTime（nRF52）
@@ -21,7 +21,7 @@
 
 ### Open-Smartwatch OS
 
-- **仓库**：https://github.com/Open-Smartwatch/open-smartwatch-os
+- **仓库**：<https://github.com/Open-Smartwatch/open-smartwatch-os>
 - **Star**：以仓库为准（2026-09 核验）
 - **License**：GPL-3.0
 - **框架**：ESP32 智能手表硬件
@@ -32,7 +32,7 @@
 
 ### AsteroidOS
 
-- **仓库**：https://github.com/AsteroidOS/asteroid
+- **仓库**：<https://github.com/AsteroidOS/asteroid>
 - **Star**：以仓库为准（2026-09 核验）
 - **License**：GPL-2.0
 - **框架**：多款智能手表（Linux）
@@ -43,7 +43,7 @@
 
 ### wasp-os
 
-- **仓库**：https://github.com/wasp-os/wasp-os
+- **仓库**：<https://github.com/wasp-os/wasp-os>
 - **Star**：以仓库为准（2026-09 核验）
 - **License**：GPL-3.0
 - **框架**：PineTime 等（MicroPython）
@@ -54,9 +54,9 @@
 
 ### Open Ring
 
-- **仓库**：https://github.com/stawiski/open-ring
+- **仓库**：<https://github.com/stawiski/open-ring>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **框架**：nRF52 BLE SoC
 - **状态**：活跃
 - **简介**：开源智能戒指（非手表整机），健康/手势可穿戴旁路参考。
