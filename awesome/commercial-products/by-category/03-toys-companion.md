@@ -41,7 +41,7 @@
 - **公开数据**：待核实
 - **关键差异化**：① 硬件低价 + 明确会员；② 可自托管服务端开源生态（FoloToy Server）；③ 毛绒形态降低 AI 硬件门槛
 - **商业模式**：硬件 + 月度会员
-- **风险事件**：CNN 2025-11-19 报道 Kumma 暂停销售，页内写售价 $99、接入 GPT-4o（[CNN](https://www.cnn.com/2025/11/19/tech/folotoy-kumma-ai-bear-scli-intl)）。再上架没有打开的来源，未写入
+- **风险事件**：CNN 2025-11-19 报道 Kumma 暂停销售，页内写售价 $99、接入 GPT-4o（[CNN](https://www.cnn.com/2025/11/19/tech/folotoy-kumma-ai-bear-scli-intl)）
 
 > 来源：[FoloToy 乐乐](https://folotoy.com/zh/products/teddy/) · [Fofo](https://folotoy.com/zh/products/fofo/) · [CNN（2025-11-19）](https://www.cnn.com/2025/11/19/tech/folotoy-kumma-ai-bear-scli-intl) · [Maker Faire 访谈](https://www.shenzhenmakerfaire.com/2025/08/29/gen-z-makers-vol-5-folotoy-nurturing-childhood-with-ai-powered-toys/)（查证 2026-09-30）
 
@@ -50,11 +50,11 @@
 ### 听力熊 × 通义 Mooni M1（听力熊 / 通义）
 
 - **上市状态**：在售（官方价待核实，查证 2026-09-30）
-- **官网/渠道**：未见可打开的官方商城页（查证 2026-09-30）
+- **官网/渠道**：待核实
 - **形态**：儿童向便携 AI 对话伙伴硬件
 - **定价**：
   - 首发价：待核实
-  - 现价：待核实（官方商城页没有打开）。媒体：[52audio](https://www.52audio.com/archives/265984.html) 写补贴后预估到手 ¥312.8 CNY 起；[ZOL](https://dcdv.zol.com.cn/1158/11582820.html) 写原价 ¥518.00 CNY、活动到手 ¥298.35 CNY。未采作官方标价。查证 2026-09-30
+  - 现价：待核实。媒体：[52audio](https://www.52audio.com/archives/265984.html) 写补贴后预估到手 ¥312.8 CNY 起；[ZOL](https://dcdv.zol.com.cn/1158/11582820.html) 写原价 ¥518.00 CNY、活动到手 ¥298.35 CNY。查证 2026-09-30
   - MSRP：待核实
 - **目标市场**：国内儿童陪伴 / 情绪与语言成长场景
 - **AI 能力**：基于通义千问深度定制；儿童语气理解、情绪回应、内容安全过滤；整合通话 / 定位等陪伴能力（报道口径）
@@ -63,7 +63,7 @@
 - **关键差异化**：① 云厂商模型 + 儿童硬件品牌联合；② 安全与内容护栏前置；③ 从「功能问答」转向「情感伙伴」叙事
 - **商业模式**：硬件销售（订阅未在首发稿明确）
 
-> 来源：[我爱音频网](https://www.52audio.com/archives/265984.html) · [ZOL](https://dcdv.zol.com.cn/1158/11582820.html) · [AIBase 报道](https://news.aibase.com/tw/news/24465)（查证 2026-09-30）。官方商城页没有打开
+> 来源：[我爱音频网](https://www.52audio.com/archives/265984.html) · [ZOL](https://dcdv.zol.com.cn/1158/11582820.html) · [AIBase 报道](https://news.aibase.com/tw/news/24465)（查证 2026-09-30）
 
 ---
 

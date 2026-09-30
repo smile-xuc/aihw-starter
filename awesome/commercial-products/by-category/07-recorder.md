@@ -57,7 +57,7 @@
 - **形态**：口袋卡片录音机 + 磁吸保护壳；4 MEMS + 1 骨传导麦；通话 / 现场拨杆切换
 - **定价**：
   - 首发价：待核实
-  - 现价：$152.39 USD（商店当前为 Memo + 磁吸皮套套装，没有单独 $149 USD 的 SKU）· [商店商品数据](https://shop.notta.ai/en-us/products/notta-memo.js) · 查证 2026-09-30
+  - 现价：$152.39 USD（商店当前为 Memo + 磁吸皮套套装）· [Notta 商店](https://shop.notta.ai/en-us/products/notta-memo) · 查证 2026-09-30
   - MSRP：待核实
   - 订阅：产品页写 Starter 300 分钟 · [Notta Memo](https://www.notta.ai/en/hardware/memo) · 查证 2026-09-30
 - **目标市场**：会议、通话、访谈、课堂；强调「一键录 → App 转写摘要」
@@ -116,13 +116,13 @@
 
 ### Bee Pioneer（Bee / Amazon）
 
-- **上市状态**：在售（官网仍标价；查证日期待核实）
+- **上市状态**：在售（官网与 Pioneer 页标价 $49.99 USD，查证 2026-09-30）
 
 - **官网/渠道**：<https://bee.computer/>；Pioneer 产品页 <https://bee.computer/bee-pioneer>
 - **形态**：腕带 / 夹扣模块化可穿戴。官网写设备可从随附腕带取下，并以多种方式佩戴；盒内另有夹扣，可夹在口袋或腰带。产品 FAQ 写盒内为黄、黑两条可换腕带加夹扣。双麦，背面 USB-C。官网与 About Amazon 均写单按按键启停采集，采集时绿灯亮、停止时灯灭。产品页在可自定义动作按钮处另写 "Hold and speak to talk to Bee or leave a note for later"，以及 "Double-press to process or bookmark a conversation"。FAQ 将短按标为 Mute/unmute、长按标为 walk-and-talk，与首页的单按启停一并列出。Pioneer 硬件当前仅支持 iOS（首页原文 "Bee Pioneer currently supports iOS only"）。首页同时写可通过 Pioneer、iOS 或 Android App、Apple Watch 与 Bee 对话；FAQ 称可与 Apple Watch 协同。Android 为 Play Store 早期版本（摘要、建议 to-do、聊天助手），官方称目前未在积极维护
 - **定价**：
   - 首发价：待核实
-  - 现价：官网与 Pioneer 页标价 **$49.99** USD
+  - 现价：$49.99 USD · [Bee Pioneer](https://bee.computer/bee-pioneer) · 查证 2026-09-30
   - MSRP：待核实
   - 订阅：Premium 订阅：**待定**（产品 FAQ 称未来上线，原文 "Details will be forthcoming"，页面未给出金额）
 - **目标市场**：目前仅向美国发货（首页 "Bee currently ships only to the United States"）。About Amazon 称客户最初多用于会议、课堂与对话记录，后来也用于工作之外的日常

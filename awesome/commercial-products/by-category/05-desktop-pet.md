@@ -13,7 +13,7 @@
 - **形态**：充电头/底座机器人，复用手机屏幕与算力作表情与视觉
 - **定价**：
   - 首发价：众筹早鸟 $119 USD
-  - 现价：LOOI Solo $239 USD（划线价 $259 USD）；LOOI Twins $468 USD（划线价 $518 USD）· [商店 products.json](https://looirobot.com/products.json) · 查证 2026-09-30。国内价与日本 Makuake 价待核实
+  - 现价：LOOI Solo $239 USD（划线价 $259 USD）；LOOI Twins $468 USD（划线价 $518 USD）· [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-09-30。国内价与日本 Makuake 价待核实
   - MSRP：待核实
 - **目标市场**：工位 / 桌面潮玩；轻硬件软件定义体验
 - **AI 能力**：App 集成 LLM / GPT 向对话；2026 更新提到 Live Agent 更低延迟多模态表达
@@ -33,7 +33,7 @@
 - **形态**：桌面双足情感宠物；表情屏 + 滑板充电等配件
 - **定价**：
   - 首发价：待核实
-  - 现价：标准套装 $279 USD · [产品页](https://living.ai/product/emo/)；EMO White $289 USD · [EMO White](https://living.ai/product/emo-white/)；Go Home $369 USD · [Go Home](https://living.ai/product/emo-go-home/)。White 款 $379 USD 沿用原卡，本批打开的 Go Home 页未见该数字。查证 2026-09-30
+  - 现价：标准套装 $279 USD · [产品页](https://living.ai/product/emo/)；EMO White $289 USD · [EMO White](https://living.ai/product/emo-white/)；Go Home $369 USD · [Go Home](https://living.ai/product/emo-go-home/)。Go Home White 价格待核实。查证 2026-09-30
   - MSRP：待核实
 - **目标市场**：桌面情感陪伴、潮玩收藏
 - **AI 能力**：端侧神经网络表情/行为 + 云端对话（公开评测常提及 GPT 系）；大量动画表情与自主行为
@@ -53,9 +53,9 @@
 - **形态**：履带桌面机器人，多传感自主探索
 - **定价**：
   - 首发价：待核实
-  - 现价：$249.99 USD–$269.99 USD（Black / Pink，Pink 缺货；Open Box $209.99 USD）· [anki.bot 商品数据](https://anki.bot/products/vector-robot.js) · 查证 2026-09-30
+  - 现价：$249.99 USD–$269.99 USD（Black / Pink，Pink 缺货；Open Box $209.99 USD）· [anki.bot 商品页](https://anki.bot/products/vector-robot) · 查证 2026-09-30
   - MSRP：待核实
-  - 订阅：待核实（商品 JSON 没有订阅价格，查证 2026-09-30）
+  - 订阅：待核实
 - **目标市场**：收藏向桌面机器人、Anki 老用户
 - **AI 能力**：云端语音指令；公开材料提及 ChatGPT / Alexa 等集成世代
 - **大模型方案**：待核实

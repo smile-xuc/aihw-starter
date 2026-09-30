@@ -67,7 +67,7 @@
 
 ### 案例：科大讯飞 AI 翻译耳机（科大讯飞）— 国内旗舰开放式
 
-- **公开信息源**：[证券时报](https://stcn.com/article/detail/3381881.html)（60 种语言、骨导 + 气导、声音复刻；正文没有 2499 / 2999，查证 2026-09-30）。国内官方价待核实。下列旧链接未在本批打开核对价格：
+- **公开信息源**：[证券时报](https://stcn.com/article/detail/3381881.html)（60 种语言、骨导 + 气导、声音复刻，查证 2026-09-30）。国内官方价待核实
   - [新浪转载预售报道](https://finance.sina.com.cn/tech/digi/2025-11-19/doc-infxxwtt3492426.shtml)
   - [量子位发布会报道](https://www.qbitai.com/2025/10/341663.html)
   - [讯飞商城 · AI 翻译耳机](https://www.xunfei.cn/goods?goodsId=2381)

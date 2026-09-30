@@ -53,9 +53,9 @@
 
 ## 二、市场现状（公开信息观察）
 
-- **全球**：2025 年 Ray-Ban Meta 与 Oakley Meta 合计超过 700 万副（业绩稿链接待核实）。「全品类全球第一」没有打开的来源，已不写。Ray-Ban Display 起价 $799 USD（含 Meta Neural Band，[Meta 新闻稿](https://about.fb.com/news/2025/09/meta-ray-ban-display-ai-glasses-emg-wristband/)）。[TrendForce 2026-01-30](https://www.trendforce.com/presscenter/news/20260130-12908.html) 称其零部件订单两度上修，并预计 2026 年全球 AR 眼镜出货 95 万台
+- **全球**：2025 年 Ray-Ban Meta 与 Oakley Meta 合计超过 700 万副（业绩稿链接待核实）。Ray-Ban Display 起价 $799 USD（含 Meta Neural Band，[Meta 新闻稿](https://about.fb.com/news/2025/09/meta-ray-ban-display-ai-glasses-emg-wristband/)）。[TrendForce 2026-01-30](https://www.trendforce.com/presscenter/news/20260130-12908.html) 称其零部件订单两度上修，并预计 2026 年全球 AR 眼镜出货 95 万台
 - **中国**：IDC 预测 2026 年智能眼镜出货 450.8 万台（同比 +77.7%），其中音频/拍照档 343.4 万台；2026 年 Q1 零售约 40 万台（公开市场调研报道）
-- **单品标杆**：Rokid Glasses 约 49 g、Micro LED + 衍射光波导（[FAQ](https://global.rokid.com/pages/faq)）。[证券时报 2025-07-27](https://www.stcn.com/article/detail/2763556.html) 引述祝铭明称销量已达 30 万台。该页写的是「销量」，没有「订单」字样
+- **单品标杆**：Rokid Glasses 约 49 g、Micro LED + 衍射光波导（[FAQ](https://global.rokid.com/pages/faq)）。[证券时报 2025-07-27](https://www.stcn.com/article/detail/2763556.html) 引述祝铭明称销量已达 30 万台
 - **大厂全部入场**：阿里（千问 AI 眼镜）、小米、华为、百度（小度）、理想（Livis）等——AI 眼镜被视为「AI 时代的随身入口」，入口卡位逻辑强于短期盈利逻辑
 
 ## 三、客户画像

@@ -18,7 +18,7 @@
 - **目标市场**：全球早期采用者 / Agent 爱好者
 - **AI 能力**：rabbitOS；语音助手；第三方 Agent（Hermes / Claude Code / OpenClaw 等，需自建）；DLAM 控电脑（公开报道存在 BYOK）
 - **大模型方案**：自研栈 + 可接第三方；国内大模型方案未作为默认卖点披露
-- **公开数据**：官方 2024 Q1 更新写 sold more than 100,000 units（售出，不是众筹订单）· [Q1 更新](https://www.rabbit.tech/newsroom/quarterly-update-2024-q1) · 查证 2026-09-30。Forbes 报道本次 HTTP 403，未写入
+- **公开数据**：官方 2024 Q1 更新写售出超过 10 万台 · [Q1 更新](https://www.rabbit.tech/newsroom/quarterly-update-2024-q1) · 查证 2026-09-30
 - **关键差异化**：① 无强制聊天月费；② 工业设计辨识度高；③ 向 Agent 平台持续 OTA
 - **商业模式**：硬件买断（进阶能力可 BYOK）
 

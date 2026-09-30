@@ -70,7 +70,7 @@
 
 ### 案例：协作臂语言抓取（Universal Robots / 遨博）
 
-- **公开信息源**：[UR 新闻稿（2025-05-12）](https://www.universal-robots.com/news-and-media/news-center/universal-robots-introduces-its-fastest-ever-cobot-to-enable-unprecedented-performance-in-collaborative-automation/) · [UR7e-920](https://www.universal-robots.com/products/ur7e-920/) · [AUBO-i5 规格页](https://www.aubo-cobot.com/public/iproduct3)（查证 2026-09-30）。集成商公开案例没有打开的来源，待核实
+- **公开信息源**：[UR 新闻稿（2025-05-12）](https://www.universal-robots.com/news-and-media/news-center/universal-robots-introduces-its-fastest-ever-cobot-to-enable-unprecedented-performance-in-collaborative-automation/) · [UR7e-920](https://www.universal-robots.com/products/ur7e-920/) · [AUBO-i5 规格页](https://www.aubo-cobot.com/public/iproduct3)（查证 2026-09-30）。集成商公开案例待核实
 - **亮点**：ISO 协作约束清晰；第三方视觉 / VLA 可插拔
 - **可借鉴点**：商业上仍是「臂 + 集成」；大模型卖的是换型效率，不是替代 PLC
 - **另见**：[协作臂商业产品卡][emb] · [遨博协作臂商业产品卡][emb]
@@ -78,7 +78,7 @@
 ### 案例：Qwen-RobotManip（阿里通义）— 公开基准
 
 - **公开信息源**：[Qwen-RobotManip 博客](https://www.alibabacloud.com/blog/qwen-robotmanip-alignment-unlocks-scale-for-robotic-manipulation-foundation-models_603267) · [Qwen-Robot Suite](https://www.alibabacloud.com/blog/qwen-robot-suite-a-foundation-model-suite-for-physical-world-intelligence_603262) · [品类解读](../../by-solution/05-qwen-robot.md)（查证 2026-09-30）
-- **亮点**：博客写 RoboChallenge Table30 v1 成功率 45%，排名第一。水龙头、插网线等具体任务在打开的来源里没有，已删除
+- **亮点**：博客写 RoboChallenge Table30 v1 成功率 45%，排名第一
 - **可借鉴点**：用公开基准选模型，仍要用自有工位回归；Safety Gate 不可省
 
 ---

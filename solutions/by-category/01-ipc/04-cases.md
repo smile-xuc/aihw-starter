@@ -32,7 +32,7 @@
 - **亮点**：待核实
 
 - 旗下 IPC 陆续上线云存增值；公开介绍包括人形识别、宠物识别、事件智能摘要等
-- 「基础版 / AI 版 / AI Pro 版」三档名在打开的官方页没有找到，待核实
+- 「基础版 / AI 版 / AI Pro 版」三档名待核实
 - 海外 CloudPlay：单机 7 天 $3.99/月（$39.99/年）、30 天 $6.99/月（$69.99/年）；双机 7 天 $5.99/月、30 天 $10.99/月
 - 国内开放平台写的是企业开发者云存储：7 天循环 ¥12 CNY/月、¥120 CNY/年；30 天循环 ¥28 CNY/月、¥300 CNY/年。这不是 C 端 AI 套餐
 - **可借鉴点**：待核实
@@ -43,7 +43,7 @@
 - **公开信息源**：[TP-LINK 官网](https://www.tp-link.com.cn/)（查证 2026-09-30）
 - **亮点**：待核实
 
-- 云存套餐与 AI 升级路径待核实。首页可打开，页面由 JS 渲染，没有抓到套餐正文
+- 云存套餐与 AI 升级路径待核实
 - 重点场景：户外门铃、家用 IPC
 - **可借鉴点**：待核实
 
@@ -53,7 +53,7 @@
 - **亮点**：待核实
 
 - 米家 IPC 系列、米兔系列多个品牌共享米家云存与 AI 能力
-- 打开的官方说明页只介绍云存事件录制，没有「米家会员」这一名称和价格。该说法待核实
+- 官方说明页介绍的是云存事件录制。「米家会员」待核实
 - **可借鉴点**：待核实
 
 ### 案例：海外品牌（Ring / Google Nest / Arlo）
@@ -131,9 +131,9 @@
 
 ## 五、AI 视觉（可穿戴 / 户外拍摄 / 生活记录）
 
-### 案例：Looki L1（Looki）— 首个多模态 AI 穿戴式相机
+### 案例：Looki L1（Looki）— 多模态 AI 穿戴式相机
 
-- **公开信息源**：[looki.ai](https://www.looki.ai/) · [Looki L1 商店](https://www.looki.ai/products/looki-l1) · [Google Play](https://play.google.com/store/apps/details?id=ai.looki.lifelog) · [52audio（2026-09-30 打开）](https://www.52audio.com/archives/251405.html)。标题里的「首个多模态 AI 穿戴式相机」出自该文标题原文「首个多模态AI穿戴式相机」。官网商店页没有「首个」
+- **公开信息源**：[looki.ai](https://www.looki.ai/) · [Looki L1 商店](https://www.looki.ai/products/looki-l1) · [Google Play](https://play.google.com/store/apps/details?id=ai.looki.lifelog)
 - **形态**：30 克磁吸式穿戴，六角恐龙外形，可固定于衣物或背包，实现"无感佩戴"
 - **亮点**：待核实
 - **硬件**：4K 拍照 / 1080p 30fps 录像 / 3 麦克风阵列 + 语音降噪 / 6 轴陀螺仪 / 触控板 AI 对话 / 32GB 存储 / 12 小时续航
@@ -149,21 +149,21 @@
 
 ### 案例：Insta360（影石创新）
 
-- **公开信息源**：官方博客本次 curl 返回 HTTP 403（Cloudflare），链接未写入（查证 2026-09-30）
+- **公开信息源**：[Insta360 GO 博客（2019-11-01）](https://www.insta360.com/blog/news/insta360-go.html)（查证 2026-09-30）
 - **亮点**：待核实
 
-- 全景相机厂商。AI 自动剪辑（FlashCut）的起始年份按本批结论记为 2019 年起；支撑该句的官方博客没有打开，年份链接待核实
+- 全景相机厂商。博客写 AI-powered FlashCut auto editing，AI 自动剪辑自 2019 年起
 - AI 能力主要在 App 端，云端推理为主
 - 代表"拍摄设备 + AI 自动剪辑"的方向
 - **可借鉴点**：待核实
 
 ### 案例：GoPro / DJI
 
-- **公开信息源**：[DJI Mimo](https://www.dji.com/mimo)（查证 2026-09-30）。GoPro 订阅页本次没有打开
+- **公开信息源**：[DJI Mimo](https://www.dji.com/mimo)（查证 2026-09-30）
 - **亮点**：待核实
 - 海外/国内运动相机龙头
-- DJI Mimo 页写 editing tools and intelligent shooting modes，支撑 App 端剪辑与智能拍摄模式
-- 「暂未明确云端 AI 订阅模式」没有打开的来源，待核实
+- DJI Mimo 页写 editing tools and intelligent shooting modes
+- 云端 AI 订阅模式待核实
 - **可借鉴点**：待核实
 
 ---
@@ -183,7 +183,7 @@
 |---|---|
 | HomeBase 3 (S380) | BionicMind 自学习人脸/体貌识别，本地存储可扩至 16TB |
 | HomeBase Professional S1 | 更强本地算力 |
-| **AI Core**（IFA 2025 发布） | "全球首个本地 AI Agent"，兼容 PoE NVR / Expert Secure / HomeBase S380 |
+| **AI Core**（IFA 2025 发布） | "本地 AI Agent"，兼容 PoE NVR / Expert Secure / HomeBase S380 |
 
 **AI 能力**：
 

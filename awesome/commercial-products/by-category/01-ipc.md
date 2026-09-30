@@ -15,7 +15,7 @@
   - 首发价：待核实
   - 现价：待核实
   - MSRP：待核实
-  - 订阅：CloudPlay 单机 7 天 $3.99 USD/月（$39.99 USD/年）、30 天 $6.99 USD/月（$69.99 USD/年）；双机 7 天 $5.99 USD/月、30 天 $10.99 USD/月 · [CloudPlay](https://www.ezviz.com/cloudplay) · 查证 2026-09-30。AI Edition 标价在 App 内，本页未核对
+  - 订阅：CloudPlay 单机 7 天 $3.99 USD/月（$39.99 USD/年）、30 天 $6.99 USD/月（$69.99 USD/年）；双机 7 天 $5.99 USD/月、30 天 $10.99 USD/月 · [CloudPlay](https://www.ezviz.com/cloudplay) · 查证 2026-09-30。AI Edition 标价待核实
 - **目标市场**：全球家用安防；国内亦有萤石云体系
 - **AI 能力**：人形/车辆等检测 + 云存；CloudPlay AI 向自然语言检索与关键事件摘要演进
 - **大模型方案**：待核实
