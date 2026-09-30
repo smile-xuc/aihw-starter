@@ -185,6 +185,32 @@
 | [`03-cost.md`](./03-cost.md) | BOM / 云端 / ROI |
 | [`demo/vla-intent-router/`](./demo/vla-intent-router/) | 离线路由 + 安全门最小实现 |
 
+## 十、接入步骤
+
+本仓可跑的是离线规则路由加安全门，不调用 Qwen-Robot。文件：[`demo/vla-intent-router/`](./demo/vla-intent-router/)。协议与第五节的 JSON 字段一致。
+
+1. 运行 `python3 vla_intent_router.py`，或用 `--text` 传入一句指令。标准库即可，不需要 API Key。
+2. 解析结果落到 `skills[]`。demo 白名单为 `locate`、`grasp`、`place`、`navigate`、`search`、`inspect`、`wait_confirm`。
+3. 安全门三种结果，与 demo README 一致：抓取放置类为 `gate=allow`；用力超过代码里的力矩上限为 `gate=rewrite`，并插入 `wait_confirm`；撞人、扔、解除急停一类为 `gate=reject`，`skills` 为空。
+4. 接到 Qwen-RobotNav / Qwen-RobotManip 的在线调用步骤：待核实。官方仓库写明目前没有发布这两款模型权重的计划（查证 2026-09-30）。
+
+## 十一、能力边界
+
+- **能做（本仓 demo）**：自然语言收成技能列表；禁动作拒绝；超力矩改写
+- **不能做（本仓 demo）**：真实 VLA 推理与实机下发
+- **官方仓库已写明**：Qwen-RobotManip、Qwen-RobotNav 目前没有发布模型权重的计划。见 [Manip 仓库](https://github.com/QwenLM/Qwen-RobotManip) 与 [Nav 仓库](https://github.com/QwenLM/Qwen-RobotNav)（查证 2026-09-30）
+- **待核实**：百炼或其他公有云上是否提供可调用 API。`QwenLM/Qwen-RobotWorld` 于查证日不是有效仓库页，公开代码仓库地址待核实
+
+## 十二、官方文档与 SDK 链接
+
+- [Qwen 站点博客条目 qwen-robotsuite](https://qwen.ai/blog?id=qwen-robotsuite)（查证 2026-09-30）
+- [阿里云社区：Qwen-Robot Suite（2026-06-17）](https://www.alibabacloud.com/blog/qwen-robot-suite-a-foundation-model-suite-for-physical-world-intelligence_603262)（查证 2026-09-30）
+- [Qwen-RobotManip 仓库](https://github.com/QwenLM/Qwen-RobotManip)（查证 2026-09-30）
+- [Qwen-RobotNav 仓库](https://github.com/QwenLM/Qwen-RobotNav)（查证 2026-09-30）
+- [Qwen-RobotManip 技术报告](https://arxiv.org/abs/2606.17846)（查证 2026-09-30）
+- Qwen-RobotWorld 公开代码仓库：待核实
+- 可调用的云 API / SDK：待核实
+
 ---
 
 **版本**：千问大模型方案

@@ -509,7 +509,9 @@ OSS AI 内容感知按以下三个维度独立计费：
 
 两者可组合使用：实时由 Qwen-VL 触发告警，事后由 OSS 检索回查。
 
-### 接入步骤
+## 三、接入步骤
+
+本节是第二节 OSS AI 内容感知的步骤。百炼物理世界感知 Agent 的控制台配置与 HTTP 接入写在第一节。
 
 #### 控制台路径（最快验证）
 
@@ -606,7 +608,7 @@ response = client.chat.completions.create(
 
 存量 Bucket 可直接开启 AI 内容感知，**无需迁移数据**。
 
-### 能力边界
+## 四、能力边界
 
 - **能做**：存量 Bucket 零迁移升级、自然语言搜视频/图、事件实时分析、告警二次确认
 - **不能做（当前）**：本地化/私有化部署（OSS 原生服务）、秒级实时索引（增量自动触发，无 SLA 保证）
@@ -623,11 +625,11 @@ response = client.chat.completions.create(
 
 具体单价见 [OSS 计费页面](https://www.aliyun.com/price/product#/oss/detail) 与千问大模型计费页面。
 
-### 官方文档与 SDK 链接
+## 五、官方文档与 SDK 链接
 
-- OSS AI 内容感知：https://help.aliyun.com/zh/oss/user-guide/ai-content-awareness
-- Qwen-VL 视觉模型：https://help.aliyun.com/zh/model-studio/vision
-- DoMetaQuery API 参考：https://help.aliyun.com/zh/oss/developer-reference/dometaquery
+- [OSS AI 内容感知](https://help.aliyun.com/zh/oss/user-guide/ai-content-awareness)（查证 2026-09-30）
+- [视觉理解](https://help.aliyun.com/zh/model-studio/vision)（查证 2026-09-30）
+- [DoMetaQuery](https://help.aliyun.com/zh/oss/developer-reference/dometaquery)（查证 2026-09-30）
 
 <!-- FOOTER:START -->
 

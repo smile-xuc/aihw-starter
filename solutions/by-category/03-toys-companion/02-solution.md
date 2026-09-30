@@ -411,7 +411,18 @@ response = client.chat.completions.create(
 - **约束**：功耗（电池类玩具难做真 always-on）、成本（不能把所有音频都送云端）、隐私（须家长明示授权 + 本地优先处理）
 - **务实路径**：先做「半主动」——定时问候（早安/睡前）、事件触发（开机时说"三天没见啦"）、家长远程发起（小程序推一句话让玩具说）
 
-## 七、能力边界
+## 七、接入步骤
+
+下面只列本文件和 demo 里已经写明的路径。
+
+1. 按第二节准备：开通 Qwen 与 CosyVoice（伴学再开视觉模型），创建 API-KEY。LLM / VL 走 OpenAI 兼容协议，TTS 走 WebSocket。
+2. 自调对话：按 3.3 用兼容协议调用 `qwen-plus`，系统提示词用 3.1。
+3. 播报：按 3.3 调用 `cosyvoice-v3.5-flash`。
+4. 亲情包：公网音频 URL 克隆音色后再合成。可跑示例见 [`demo/voice-clone/`](./demo/voice-clone/)，步骤见该目录 README，对应 4.1。
+5. 拍照问答与学情日报的调用写在 4.2。口语陪练写在 4.3。
+6. 多模态交互开发套件的控制台点击顺序：待核实。方案总览只比较了套件与自调，没有逐步命令。
+
+## 八、能力边界
 
 明确写清楚，避免对客户过度承诺：
 
@@ -419,7 +430,7 @@ response = client.chat.completions.create(
 - **不能做（当前）**：实时多人对话路由、原生唱歌（TTS 不带音乐）、超过 30 秒的长样本声音克隆精度提升边际递减、真 always-on 云端理解（成本/功耗不成立）
 - **建议自建的部分**：长记忆策略、跟读评测、点读业务、学情数据库、订阅鉴权——这些走客户自己的 Agent
 
-## 八、官方文档与 SDK 链接
+## 九、官方文档与 SDK 链接
 
 - 自定义对话角色：https://help.aliyun.com/zh/model-studio/custom-role
 - CosyVoice 声音克隆 API：https://help.aliyun.com/zh/model-studio/cosyvoice-clone-design-api

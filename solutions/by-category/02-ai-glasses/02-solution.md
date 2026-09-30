@@ -68,38 +68,7 @@
 | 设备指令 | 预置指令集 + 可视化自定义（「拍张照」→ `cmd_camera_capture`） |
 | 配置面 | 控制台可视化：模型 / 提示词 / 知识库 / Agent / 插件 / 指令 |
 
-### 1.2 接入步骤
-
-**控制台路径**：
-
-1. 千问大模型控制台 → 应用 → 「多模态交互开发套件」官方应用
-2. 可视化配置：模型、系统提示词、知识库（上传文档）、Agent/插件、设备指令
-3. 选择「智能眼镜」场景模板
-4. 调试台用网页麦克风测试对话效果 → 发布
-
-**端侧 SDK 集成**（以 Linux 为例）：
-
-```bash
-git clone https://github.com/aliyun/alibabacloud-bailian-speech-demo
-cd alibabacloud-bailian-speech-demo/linux
-# 按 README 配置 API-KEY 和应用 ID
-make && ./demo
-```
-
-集成到产品固件的关键步骤：
-
-1. SDK 初始化时传入 API-KEY 和应用 ID
-2. 启动音频采集，将 PCM 流送入 SDK
-3. SDK 回调返回：识别文本、LLM 回复、TTS 音频流、设备指令
-4. 端侧根据回调执行播放、显示（显示款出字幕）、控制动作
-
-**RTOS 集成要点**：
-
-- SDK 提供精简版本，内存占用与芯片平台相关；音频缓冲区容量需按实际码率显式配置，默认值通常偏小
-- WebSocket 协议要求设备支持 TLS
-- 建议先在 Linux 上跑通逻辑，再移植到 RTOS
-
-### 1.3 「一看即懂」链路（底座核心场景）
+### 1.2 「一看即懂」链路（底座核心场景）
 
 ```
 用户：「这是什么菜？」（注视菜单）
@@ -112,7 +81,7 @@ make && ./demo
 
 > 🧪 可运行示例：[`demo/kit-chat/`](./demo/kit-chat/) — 图片 + 问题 → 视觉理解 → 语音播报的最小闭环
 
-### 1.4 端侧芯片方案参考
+### 1.3 端侧芯片方案参考
 
 三档形态对应不同的芯片组合（信息来自公开报道与拆解，供选型参考）：
 
@@ -211,21 +180,52 @@ make && ./demo
 
 配套体验设计：拍照后立即播报承接语（「让我看看…」）掩盖传输耗时；弱网时降档压缩优先保通率。
 
-## 七、能力边界
+## 七、接入步骤
+
+**控制台路径**：
+
+1. 千问大模型控制台 → 应用 → 「多模态交互开发套件」官方应用
+2. 可视化配置：模型、系统提示词、知识库（上传文档）、Agent/插件、设备指令
+3. 选择「智能眼镜」场景模板
+4. 调试台用网页麦克风测试对话效果 → 发布
+
+**端侧 SDK 集成**（以 Linux 为例）：
+
+```bash
+git clone https://github.com/aliyun/alibabacloud-bailian-speech-demo
+cd alibabacloud-bailian-speech-demo/linux
+# 按 README 配置 API-KEY 和应用 ID
+make && ./demo
+```
+
+集成到产品固件的关键步骤：
+
+1. SDK 初始化时传入 API-KEY 和应用 ID
+2. 启动音频采集，将 PCM 流送入 SDK
+3. SDK 回调返回：识别文本、LLM 回复、TTS 音频流、设备指令
+4. 端侧根据回调执行播放、显示（显示款出字幕）、控制动作
+
+**RTOS 集成要点**：
+
+- SDK 提供精简版本，内存占用与芯片平台相关；音频缓冲区容量需按实际码率显式配置，默认值通常偏小
+- WebSocket 协议要求设备支持 TLS
+- 建议先在 Linux 上跑通逻辑，再移植到 RTOS
+
+## 八、能力边界
 
 - **能做**：Android / iOS / Linux / RTOS 全覆盖、全双工对话、拍照视觉问答、同传（音频+字幕双输出）、实时音视频交互、离线/实时转写、可视化配置
 - **不能做（当前）**：端到端延迟的量化 SLA 承诺（需在客户硬件实测）、livetranslate 自选音色（仅 Tina）、特定芯片白名单（建议售前联调）
 - **建议自建的部分**：端侧拍照压缩与蓝牙传输策略、录音提示与隐私同意流程、功能包付费开关与设备配额管理
 
-## 八、官方文档与 SDK 链接
+## 九、官方文档与 SDK 链接
 
-- 多模态交互开发套件总览：https://help.aliyun.com/zh/model-studio/multimodal-products-overview
-- 套件 Demo 仓库：https://github.com/aliyun/alibabacloud-bailian-speech-demo
-- Qwen-VL 视觉模型：https://help.aliyun.com/zh/model-studio/vision
-- Omni 实时交互：https://help.aliyun.com/zh/model-studio/omni-realtime
-- 实时翻译（livetranslate）：https://help.aliyun.com/zh/model-studio/translation-abilities
-- 通义听悟：https://tingwu.aliyun.com
-- 计费页面：https://bailian.console.aliyun.com/?productCode=p_efm#/billing
+- [多模态交互开发套件总览](https://help.aliyun.com/zh/model-studio/multimodal-products-overview)（查证 2026-09-30）
+- [套件 Demo 仓库](https://github.com/aliyun/alibabacloud-bailian-speech-demo)（查证 2026-09-30）
+- [视觉理解](https://help.aliyun.com/zh/model-studio/vision)（查证 2026-09-30）
+- [Qwen-Omni 实时模型](https://help.aliyun.com/zh/model-studio/realtime)（查证 2026-09-30）
+- [语音转语音](https://help.aliyun.com/zh/model-studio/s2s-model)（查证 2026-09-30）
+- [通义听悟](https://tingwu.aliyun.com)（查证 2026-09-30）
+- [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing)（查证 2026-09-30）
 
 > 计费具体单价请以官方控制台为准；本文档不维护具体价格数字，避免过期误导。
 
