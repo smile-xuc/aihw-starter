@@ -10,7 +10,7 @@
 
 ### LeRobot（Hugging Face）
 
-- **仓库**：https://github.com/huggingface/lerobot
+- **仓库**：<https://github.com/huggingface/lerobot>
 - **Star**：以 HTML 大盘为准
 - **License**：Apache-2.0
 - **框架**：硬件无关（支持 SO-100 等）
@@ -21,7 +21,7 @@
 
 ### SO-ARM100 / SO-101
 
-- **仓库**：https://github.com/TheRobotStudio/SO-ARM100
+- **仓库**：<https://github.com/TheRobotStudio/SO-ARM100>
 - **Star**：以 HTML 大盘为准
 - **License**：Apache-2.0
 - **框架**：3D 打印 + STS3215 舵机
@@ -32,7 +32,7 @@
 
 ### OpenCat（Petoi）
 
-- **仓库**：https://github.com/PetoiCamp/OpenCat-Quadruped-Robot
+- **仓库**：<https://github.com/PetoiCamp/OpenCat-Quadruped-Robot>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：Arduino/ESP32 + RPi
@@ -43,7 +43,7 @@
 
 ### JetBot（NVIDIA）
 
-- **仓库**：https://github.com/NVIDIA-AI-IOT/jetbot
+- **仓库**：<https://github.com/NVIDIA-AI-IOT/jetbot>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：Jetson Nano
@@ -54,7 +54,7 @@
 
 ### Reachy Mini（Pollen）
 
-- **仓库**：https://github.com/pollen-robotics/reachy_mini
+- **仓库**：<https://github.com/pollen-robotics/reachy_mini>
 - **Star**：以 HTML 大盘为准
 - **License**：Apache-2.0
 - **框架**：Pollen Reachy 生态
@@ -65,7 +65,7 @@
 
 ### OpenArm
 
-- **仓库**：https://github.com/enactic/openarm
+- **仓库**：<https://github.com/enactic/openarm>
 - **Star**：以 HTML 大盘为准
 - **License**：Apache-2.0
 - **框架**：开源机械臂
@@ -76,12 +76,12 @@
 
 ### Dummy-Robot（另见）
 
-- **仓库**：https://github.com/peng-zhihui/Dummy-Robot
+- **仓库**：<https://github.com/peng-zhihui/Dummy-Robot>
 - **简介**：超迷你机械臂。**主卡在** [`05-desktop-pet.md`](./05-desktop-pet.md)（桌面形态）；具身入门可交叉参考。
 
 ### PX4（另见）
 
-- **仓库**：https://github.com/PX4/PX4-Autopilot
+- **仓库**：<https://github.com/PX4/PX4-Autopilot>
 - **简介**：无人机飞控，不作具身主卡。详见 [`_others.md`](./_others.md)。
 
 ## 贡献指引
