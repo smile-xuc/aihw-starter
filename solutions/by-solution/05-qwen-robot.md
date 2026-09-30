@@ -1,6 +1,6 @@
 # 千问具身智能方案（Qwen-Robot Suite）
 
-> 阿里通义千问大模型家族的具身智能模型系列。「首个完整」待核实。
+> 阿里通义千问大模型家族的具身智能模型系列。
 >
 > Qwen-Robot Suite 包含 Qwen-RobotNav、Qwen-RobotManip、Qwen-RobotWorld。三款可以单独使用，也可以组合成机器人通用底座（[新京报 2026-06-16](https://m.bjnews.com.cn/detail/1781590837129774.html)，查证 2026-09-30）。智能体框架 Qwen-RobotClaw 把这几个模型串起来（[知乎 2026-06-16](https://zhuanlan.zhihu.com/p/2050195778107450150)，查证 2026-09-30）。
 >
