@@ -91,7 +91,7 @@
 
 ### Curio Grem / Gabbo（Curio Interactive）
 
-- **上市状态**：在售（查证 2026-09-30）
+- **上市状态**：在售（官网，查证 2026-09-30）
 - **官网/渠道**：<https://heycurio.com/>；Grem <https://heycurio.com/products/v2/grem-2>；FAQ <https://heycurio.com/faq>
 - **形态**：会说话的 AI 毛绒玩具，无屏。Grem 页写适合 3 岁以上、screen-free。FAQ 写玩具主要面向 3 至 12 岁，部分角色面向更大年龄
 - **定价**：
@@ -113,7 +113,7 @@
 
 ### Miko Mini（Miko）
 
-- **上市状态**：在售（Miko Mini、Miko 3、Miko Max 产品页均可加入购物车，查证 2026-09-30）
+- **上市状态**：在售（官网，查证 2026-09-30）
 - **官网/渠道**：<https://miko.ai/products/miko-mini>；Miko 3 <https://miko.ai/products/miko-3>；Miko Max <https://miko.ai/products/miko-max>；FAQ <https://miko.ai/pages/miko-3-faqs>
 - **形态**：带屏的小型桌面儿童陪伴机器人。FAQ 称 Miko Mini 为 "GPT-powered conversational learning robot"
 - **定价**：
@@ -135,7 +135,7 @@
 
 ### ポケとも（シャープ / Sharp）
 
-- **上市状态**：在售（第 1 弹 SR-C01M-W 新闻稿写 2025-12-05 发售；第 2 弹博客写预计 2026-12 发售并接受预约，查证 2026-09-30）
+- **上市状态**：在售（官网，查证 2026-09-30）
 - **官网/渠道**：<https://poketomo.com/>；新闻稿 <https://corporate.jp.sharp/news/251027-a.html>；博客 <https://blog.jp.sharp/2026/08/27/59555/>
 - **形态**：猫鼬造型的口袋机器人，配合手机 App。新闻稿规格写相机 5M AF、伺服电机脸 2 个与手臂 2 个
 - **定价**：
@@ -146,7 +146,7 @@
 - **目标市场**：日本市场的口袋型陪伴机器人，需配合 App 与月费
 - **AI 能力**：产品站写对话、记住用户、按摄像头看到的内容聊天、写日记、Google 日历联动，以及两台之间对话。博客把 Google 日历联动写为已上线的功能更新
 - **大模型方案**：产品站写使用生成 AI 进行对话，未写模型名。官网未公开具体基座模型（非千问默认绑定）
-- **公开数据**：未见公开销量。新闻稿写原定 2025-11-21 发售，后改为 2025-12-05
+- **公开数据**：未见公开销量。新闻稿写原定 2025-11-21 发售，后改为 2025-12-05。第 2 弹博客写预计 2026-12 发售并接受预约
 - **关键差异化**：① 本体写オープン価格，服务费按月；② 产品站写使用生成 AI 进行对话；③ 产品站写两台之间对话，并按摄像头内容聊天、写日记
 - **商业模式**：硬件（オープン価格）+ 月费
 - **另见**：[公开案例](../../../solutions/by-category/03-toys-companion/04-cases.md)

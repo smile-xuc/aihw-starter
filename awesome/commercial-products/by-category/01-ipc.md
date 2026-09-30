@@ -92,7 +92,7 @@
 
 ### Wyze Duo Cam Doorbell（Wyze）
 
-- **上市状态**：在售（官方商店显示 In stock，可加入购物车，查证 2026-09-30）
+- **上市状态**：在售（美国官方商店，查证 2026-09-30）
 - **官网/渠道**：<https://www.wyze.com/products/wyze-duo-cam-doorbell>；订阅 <https://www.wyze.com/products/cam-unlimited-pro>
 - **形态**：电池供电双摄可视门铃。商品描述写人和包裹两个画面、2K、本地存储、双向对讲。规格写 microSD 最大 256 GB（exFAT）
 - **定价**：
@@ -114,7 +114,7 @@
 
 ### Tapo D260（Tapo / TP-Link）
 
-- **上市状态**：在售（美国官方商店显示 Add to cart，查证 2026-09-30）
+- **上市状态**：在售（美国官方商店，查证 2026-09-30）
 - **官网/渠道**：<https://www.tapo.com/us/product/smart-doorbell/tapo-d260/>；商店 <https://us.store.tapo.com/products/tapo-d260>；Tapo Care <https://www.tp-link.com/us/tapocare/>
 - **形态**：4K 可视门铃，180° 从头到脚视角，电池或有线。商品页写雷达移动侦测、microSD 最大 512 GB，并称无线续航最长 180 天
 - **定价**：
