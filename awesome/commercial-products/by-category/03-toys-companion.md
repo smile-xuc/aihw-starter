@@ -89,6 +89,72 @@
 
 ---
 
+### Curio Grem / Gabbo（Curio Interactive）
+
+- **上市状态**：在售（Grem 单品页 schema.org 写 InStock，查证 2026-09-30）
+- **官网/渠道**：<https://heycurio.com/>；Grem <https://heycurio.com/products/v2/grem-2>；FAQ <https://heycurio.com/faq>
+- **形态**：会说话的 AI 毛绒玩具，无屏。Grem 页写适合 3 岁以上、screen-free。FAQ 写玩具主要面向 3 至 12 岁，部分角色面向更大年龄
+- **定价**：
+  - 首发价：待核实
+  - 现价：$119 USD · 美国 · [官网首页](https://heycurio.com/) 与 [Grem 单品页](https://heycurio.com/products/v2/grem-2) 可见价 · 查证 2026-09-30。页面不一致：Grem 页 schema.org Offer 写 $150.0 USD
+  - MSRP：$150 USD · 美国 · 首页划线价，与 Grem 页 schema.org Offer 一致 · 查证 2026-09-30
+  - 订阅：FAQ 写 "Free chat and baseline features will always be available"。Grem 页原文 "no subscription"
+- **目标市场**：儿童语音陪伴。FAQ 写主要面向 3 至 12 岁
+- **AI 能力**：语音对话，App 配置。FAQ 写语音转写后音频会很快删除，转写文本保存 90 天后自动删除。Grem 页出现的 Grok 与 Gabbo 同为角色名，原文 "share them with you, Gabbo, and Grok"
+- **大模型方案**：官网未公开具体基座模型（非千问默认绑定）
+- **公开数据**：未见公开销量
+- **关键差异化**：① FAQ 写基础对话持续可用；② 无屏，靠 App 配置；③ 角色名与模型名不是同一件事（Grok 为角色）
+- **商业模式**：硬件销售；基础对话按 FAQ 持续可用
+- **另见**：[公开案例](../../../solutions/by-category/03-toys-companion/04-cases.md)
+
+> 来源：[Curio 首页](https://heycurio.com/) · [Grem 单品页](https://heycurio.com/products/v2/grem-2) · [FAQ](https://heycurio.com/faq)（均查证 2026-09-30）
+
+---
+
+### Miko Mini（Miko）
+
+- **上市状态**：在售（Miko Mini、Miko 3、Miko Max 产品页均可加入购物车，查证 2026-09-30）
+- **官网/渠道**：<https://miko.ai/products/miko-mini>；Miko 3 <https://miko.ai/products/miko-3>；Miko Max <https://miko.ai/products/miko-max>；FAQ <https://miko.ai/pages/miko-3-faqs>
+- **形态**：带屏的小型桌面儿童陪伴机器人。FAQ 称 Miko Mini 为 "GPT-powered conversational learning robot"
+- **定价**：
+  - 首发价：待核实
+  - 现价：Miko Mini $149.00 USD · 美国 · [产品页](https://miko.ai/products/miko-mini) · 查证 2026-09-30。Miko 3 $299.00 USD · [产品页](https://miko.ai/products/miko-3) · 查证 2026-09-30
+  - MSRP：Miko Mini $199.00 USD（同页 Regular price）；Miko 3 同现价
+  - 订阅：Miko Max 现价 $89.00 USD/年（Regular price $99.00 USD），月付 $14.99 USD · [Miko Max](https://miko.ai/products/miko-max) · 查证 2026-09-30
+- **目标市场**：儿童对话式学习。Google Cloud 案例写受众为 4 至 12 岁
+- **AI 能力**：FAQ 写 GPT-powered 对话式学习。Google Cloud 案例章节 "Building smarter, safer bots with Gemini" 引用负责人原话，称 Gemini 是实现安全、可靠、符合文化情境的儿童交互的关键；结果栏写加快发布周期，并写识别与减少幻觉
+- **大模型方案**：FAQ 写 GPT-powered，未写具体型号。官网未公开具体基座模型（非千问默认绑定）。Google Cloud 案例把 Gemini 写在安全相关章节，不是对话主模型的型号说明
+- **公开数据**：未见公开销量
+- **关键差异化**：① 硬件标价与 Miko Max 年费分开；② FAQ 与 Google Cloud 案例写的是两层：对话方案、安全层；③ 带屏表情互动
+- **商业模式**：硬件销售 + Miko Max 内容订阅
+- **另见**：[公开案例](../../../solutions/by-category/03-toys-companion/04-cases.md)
+
+> 来源：[Miko Mini](https://miko.ai/products/miko-mini) · [Miko 3](https://miko.ai/products/miko-3) · [Miko Max](https://miko.ai/products/miko-max) · [FAQ](https://miko.ai/pages/miko-3-faqs) · [Google Cloud 客户案例](https://cloud.google.com/customers/miko-ai)（均查证 2026-09-30）
+
+---
+
+### ポケとも（シャープ / Sharp）
+
+- **上市状态**：在售（第 1 弹 SR-C01M-W 新闻稿写 2025-12-05 发售；第 2 弹博客写预计 2026-12 发售并接受预约，查证 2026-09-30）
+- **官网/渠道**：<https://poketomo.com/>；新闻稿 <https://corporate.jp.sharp/news/251027-a.html>；博客 <https://blog.jp.sharp/2026/08/27/59555/>
+- **形态**：猫鼬造型的口袋机器人，配合手机 App。新闻稿规格写相机 5M AF、伺服电机脸 2 个与手臂 2 个
+- **定价**：
+  - 首发价：待核实（第 1 弹零售价未见官方标价）
+  - 现价：本体为オープン価格 · 日本 · [新闻稿（2025-10-27）](https://corporate.jp.sharp/news/251027-a.html) · 查证 2026-09-30。第 2 弹 COCORO STORE ¥49,500 JPY（含税）· [官方博客（2026-08-27）](https://blog.jp.sharp/2026/08/27/59555/)
+  - MSRP：新闻稿写オープン価格
+  - 订阅：新闻稿与产品站写 ¥495 JPY/月起（含税）。产品站另列 ¥990 JPY、¥1,980 JPY、¥3,300 JPY 三档（含税）· [产品站](https://poketomo.com/) · 查证 2026-09-30
+- **目标市场**：日本市场的口袋型陪伴机器人，需配合 App 与月费
+- **AI 能力**：产品站写对话、记住用户、按摄像头看到的内容聊天、写日记、Google 日历联动，以及两台之间对话。博客把 Google 日历联动写为已上线的功能更新
+- **大模型方案**：产品站写使用生成 AI 进行对话，未写模型名。官网未公开具体基座模型（非千问默认绑定）
+- **公开数据**：未见公开销量。新闻稿写原定 2025-11-21 发售，后改为 2025-12-05
+- **关键差异化**：① 本体写オープン価格，服务费按月；② 产品站写生成 AI，但没有模型名；③ 第 2 弹有官方通贩标价，第 1 弹没有
+- **商业模式**：硬件（オープン価格）+ 月费
+- **另见**：[公开案例](../../../solutions/by-category/03-toys-companion/04-cases.md)
+
+> 来源：[新闻稿（2025-10-27）](https://corporate.jp.sharp/news/251027-a.html) · [官方博客（2026-08-27）](https://blog.jp.sharp/2026/08/27/59555/) · [产品站](https://poketomo.com/)（均查证 2026-09-30）
+
+---
+
 ## 待补充清单
 
 - [ ] **阳仔 AI 陪伴机**（方直科技）
