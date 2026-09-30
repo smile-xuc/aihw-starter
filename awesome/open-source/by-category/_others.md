@@ -133,6 +133,20 @@
 - **简介**：IP 摄像头开源固件（亦可对照 IPC 品类）。
 - **HTML 品类**：视觉 AI
 
+## 驾驶辅助
+
+### openpilot（comma.ai）
+
+- **仓库**：<https://github.com/commaai/openpilot>
+- **Star**：以 HTML 大盘为准
+- **License**：MIT
+- **框架**：comma 3X（Snapdragon）
+- **状态**：活跃
+- **简介**：开源 ADAS / 驾驶视觉操作系统。主卡在本页。
+- **关键特性**：车道/前车检测；驾驶员监控；端到端神经网络
+- **HTML 品类**：视觉 AI
+- **另见**：IPC 分册仅留一行，见 [`01-ipc.md`](./01-ipc.md)
+
 ## 手表开源稀缺说明
 
 完整「AI 智能手表整机」优质开源仍然稀缺；手表 OS 级参考已收入 [`08-smart-watch.md`](./08-smart-watch.md)（InfiniTime 等）。欢迎按收录原则 PR 补录。

@@ -50,16 +50,9 @@
 - **关键特性**：车牌检测；OCR；多地区格式
 - **HTML 品类**：视觉 AI
 
-### openpilot（comma.ai）
+### openpilot（另见）
 
-- **仓库**：<https://github.com/commaai/openpilot>
-- **Star**：以 HTML 大盘为准
-- **License**：MIT
-- **框架**：comma 3X（Snapdragon）
-- **状态**：活跃
-- **简介**：开源 ADAS / 驾驶视觉操作系统。**边界**：作「驾驶视觉参考」，非家用 IPC 产品形态。
-- **关键特性**：车道/前车检测；驾驶员监控；端到端神经网络
-- **HTML 品类**：视觉 AI
+- **简介**：车载驾驶辅助（ADAS），不是家用 IPC。主卡见 [`_others.md`](./_others.md)。
 
 ### ZoneMinder
 
