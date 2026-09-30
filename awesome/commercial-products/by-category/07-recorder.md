@@ -153,7 +153,7 @@
 - **关键差异化（教训）**：① 品类易被大厂吸收；② 后端绑定风险高
 - **商业模式**：硬件 + 订阅 → 收购退出销售
 
-> 来源：见上市状态中的 TechCrunch 报道
+> 来源：[TechCrunch](https://techcrunch.com/2025/12/05/meta-acquires-ai-device-startup-limitless/)
 
 ## 待补充清单
 
