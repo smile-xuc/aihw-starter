@@ -24,7 +24,7 @@
 | 形态 | 公开参考价 | 来源口径 |
 |---|---|---|
 | 宇树 Go2 Air / Pro / X | 约 $1,600 / $2,800 / $4,500 起（未含税运） | [Unitree Go2](https://www.unitree.com/go2) |
-| 宇树 G1 | 约 $13,500 起（未含税运）；EDU 联系销售 | [Unitree G1](https://www.unitree.com/g1/) |
+| 宇树 G1 | 首发价 $16K / 现价约 $13.5K 起（未含税运；EDU 联系销售；查证 2026-09-30） | [PR Newswire 2024-05-15](https://www.prnewswire.com/news-releases/unitree-robotics-introduces-g1-humanoid-agent-ai-avatar-302146198.html) · [官方商店](https://shop.unitree.com/products/unitree-g1) |
 | 协作臂 UR7e 级 | 美区经销商公开估算约 $38k–$48k（臂+控制器） | 公开经销商报价汇总（随配置变） |
 | 协作臂遨博 i5 级 | 公开估算约 $6k–$10k 量级 | 公开对比站 / 渠道价（随区域变） |
 

@@ -66,7 +66,7 @@
 |---|---|---|---|---|
 | 协作臂 | 6–7 DOF | 臂本体约 $6k–$40k+；整单元更高 | 语言 → 抓取 / 装配规划 | ⭐⭐⭐ 已规模落地 |
 | 四足 | 12+ DOF | Go2 Air/Pro/X 约 $1.6k–$4.5k 起（未含税运） | 语言 → 导航 + 巡检任务 | ⭐⭐ 场景验证中 |
-| 人形 | 20–40+ DOF | G1 官宣约 $13.5k 起；EDU 报价制 | 全任务泛化（远期） | ⭐ 早期探索 |
+| 人形 | 20–40+ DOF | G1 首发价 $16K / 现价约 $13.5K 起（[PR Newswire 2024-05-15](https://www.prnewswire.com/news-releases/unitree-robotics-introduces-g1-humanoid-agent-ai-avatar-302146198.html) · [官方商店](https://shop.unitree.com/products/unitree-g1)，查证 2026-09-30）；EDU 报价制 | 全任务泛化（远期） | ⭐ 早期探索 |
 
 > 价格以厂商官网 / 公开渠道为准，随配置与区域浮动。详见 [`03-cost.md`](./03-cost.md) 与 [`awesome/.../09-embodied.md`](../../../awesome/commercial-products/by-category/09-embodied.md)。
 

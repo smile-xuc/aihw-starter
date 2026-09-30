@@ -9,7 +9,7 @@
 
 - **官网/渠道**：<https://www.evenrealities.com>；全球 40+ 国家销售，300+ 欧洲光学门店
 - **形态**：日常佩戴型 AI 显示眼镜，无摄像头、无扬声器；G1 为双目绿色 microLED + 光波导（640×200）；支持处方镜片；G2 增加 HAO™ 显示技术升级
-- **定价**：G1 首发价 **US$599**（2024-06）；现官网已售罄（查证 2026-09-30）
+- **定价**：G1 首发价 **US$599**（2024-06）；现官网已售罄。G2 现价 From $599；R1 $249（[官网 Store](https://www.evenrealities.com/store)，查证 2026-09-30）
 - **目标市场**：全球商务/日常佩戴人群，强调隐私（无摄像头）和"看起来像普通眼镜"
 - **AI 能力**：自研 Even LLM（长期记忆 + 主动式 AI 提示）+ ChatGPT / Perplexity 联网检索；支持多轮对话、实时翻译（22+ 语言）、日程提醒、语音唤醒（"Hey Even"）
 - **大模型方案**：自研 Even LLM + OpenAI ChatGPT / Perplexity（**国内大模型方案未确认**）
@@ -87,7 +87,7 @@
 - **目标市场**：全球消费级 AI/AR 眼镜
 - **AI 能力**：iO 侧重语音助手与日常信息；GT 系列侧重虚屏影音办公
 - **关键差异化**：① AI 镜与显示镜分产品线；② 自现价 US$299 的 GT 切入显示档；③ 处方与 HSA/FSA 等区域政策（以当地为准）
-- **商业模式**：硬件销售；官网博客另有 iO VIP 订阅 US$9.99/月
+- **商业模式**：硬件销售
 
 > 来源：[PR Newswire · IFA 2026](https://www.prnewswire.com/news-releases/rayneo-showcases-next-generation-cinematic-ar-and-ai-smart-glasses-at-ifa-2026-with-dolby-and-bang--olufsen-302870052.html) · [RayNeo 官网博客](https://www.rayneo.com/blogs/news/latest-smart-glasses-2026-rayneo-io-gt) · [iO](https://www.rayneo.com/products/rayneo-io-ai-glasses) · [GT Max](https://www.rayneo.com/products/rayneo-gt-max-ar-glasses) · [GT](https://www.rayneo.com/products/rayneo-gt-ar-glasses)（查证 2026-09-30）
 
