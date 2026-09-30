@@ -8,11 +8,18 @@
 
 ### 萤石 EZVIZ（海康旗下 C2C）
 
-- **官网**：<https://www.ezviz.com/> · CloudPlay <https://www.ezviz.com/cloudplay>
+- **上市状态**：在售（原卡按在售产品收录，查证日期待核实）
+- **官网/渠道**：<https://www.ezviz.com/>；CloudPlay <https://www.ezviz.com/cloudplay>
 - **形态**：家用 Wi-Fi / 电池摄像机 + App 云回看；多数机型支持 microSD 本地录像
-- **定价（公开，区域可变）**：CloudPlay 单机示例约 **$3.99/月（7 天事件）** / **$6.99/月（30 天）**；另有多机档；AI Edition（自然语言搜片 / 日更摘要）在 App 内单独标价
+- **定价**：
+  - 首发价：待核实
+  - 现价：待核实
+  - MSRP：待核实
+  - 订阅：CloudPlay 单机示例约 $3.99 USD/月（7 天事件）/ $6.99 USD/月（30 天）；另有多机档；AI Edition（自然语言搜片 / 日更摘要）在 App 内单独标价
 - **目标市场**：全球家用安防；国内亦有萤石云体系
 - **AI 能力**：人形/车辆等检测 + 云存；CloudPlay AI 向自然语言检索与关键事件摘要演进
+- **大模型方案**：待核实
+- **公开数据**：待核实
 - **关键差异化**：① 本地卡录像可不订阅；② 云存与 AI 增值分层；③ 与海康供应链协同
 - **商业模式**：硬件销售 + 云存 / AI 订阅
 
@@ -22,11 +29,18 @@
 
 ### Ring（Amazon）
 
-- **官网**：<https://ring.com/> · 订阅页 <https://ring.com/plans>
+- **上市状态**：在售（原卡写美区公开价；查证日期未精确到日，待核实）
+- **官网/渠道**：<https://ring.com/>；订阅页 <https://ring.com/plans>
 - **形态**：视频门铃 + 室内外相机 + Alarm 套装
-- **定价（美区公开，2026）**：**Solo $4.99/月或 $49.99/年**（单设备，最长约 180 天事件回看）；**Multi $9.99/月或 $99.99/年**（单地址全设备）；**Pro $19.99/月或 $199.99/年**（含智能描述 / 专业值守等）；更高档 Virtual Security Guard **$99/月**
+- **定价**：
+  - 首发价：待核实
+  - 现价：待核实
+  - MSRP：待核实
+  - 订阅：美区公开，2026。Solo $4.99 USD/月或 $49.99 USD/年（单设备，最长约 180 天事件回看）；Multi $9.99 USD/月或 $99.99 USD/年（单地址全设备）；Pro $19.99 USD/月或 $199.99 USD/年（含智能描述 / 专业值守等）；更高档 Virtual Security Guard $99 USD/月
 - **目标市场**：北美为主的家用安防
 - **AI 能力**：人/包裹/车辆告警；Pro 档含 Video Descriptions、Familiar Faces（区域受限）、Video Search 等
+- **大模型方案**：待核实
+- **公开数据**：待核实
 - **关键差异化**：① 门铃场景心智强；② 订阅解锁完整录像；③ 与 Amazon / Alexa 生态绑定
 - **商业模式**：硬件 + Ring Protect 订阅（无订阅仍可部分实时查看，录像能力受限）
 
@@ -34,13 +48,20 @@
 
 ---
 
-### Google Nest Cam / Google Home Premium
+### Google Nest Cam / Google Home Premium（Google）
 
-- **官网**：<https://store.google.com/us/product/google_home_premium>
+- **上市状态**：在售（查证日期见定价）
+- **官网/渠道**：<https://store.google.com/us/product/google_home_premium>
 - **形态**：Nest 室内外相机 / 门铃，深度接入 Google Home
-- **定价（美区公开，查证 2026-09-30）**：订阅已由 Nest Aware 改为 **Google Home Premium**。Standard **$10/月或 $100/年**；Advanced **$20/月或 $200/年**。已迁到 Google 账号的 Nest Aware 用户沿用更名后的方案；未迁移的 Nest Aware（1st gen）仍按相机单独订阅，Google 帮助页未给出统一标价
+- **定价**：
+  - 首发价：待核实
+  - 现价：待核实
+  - MSRP：待核实
+  - 订阅：美区公开，查证 2026-09-30。订阅已由 Nest Aware 改为 Google Home Premium。Standard $10 USD/月或 $100 USD/年；Advanced $20 USD/月或 $200 USD/年。已迁到 Google 账号的 Nest Aware 用户沿用更名后的方案；未迁移的 Nest Aware（1st gen）仍按相机单独订阅，Google 帮助页未给出统一标价
 - **目标市场**：Google 生态家用用户
 - **AI 能力**：熟悉人脸、包裹、动物、异常声响等事件智能（随 Google Home Premium 档位）
+- **大模型方案**：待核实
+- **公开数据**：待核实
 - **关键差异化**：① 账户级覆盖多机；② 与手机 / 音箱生态一体；③ AI 事件质量口碑向
 - **商业模式**：硬件 + Google Home Premium 订阅
 
@@ -50,11 +71,18 @@
 
 ### eufy Security（Anker）
 
-- **官网**：<https://www.eufy.com/>
+- **上市状态**：在售（查证日期见定价）
+- **官网/渠道**：<https://www.eufy.com/>
 - **形态**：家用相机 / 门铃，强调本地存储（HomeBase / 机内）
-- **定价**：硬件买断为主；**核心录像可不订阅**；可选云存储 Basic 单机 **$3.99/月、$39.99/年**（2025-04-01 起，查证 2026-09-30）
+- **定价**：
+  - 首发价：待核实
+  - 现价：待核实（原卡写硬件买断，未列硬件标价）
+  - MSRP：待核实
+  - 订阅：可选云存储 Basic 单机 $3.99 USD/月、$39.99 USD/年（2025-04-01 起，查证 2026-09-30）；核心录像可不订阅
 - **目标市场**：厌恶强制云订阅的家用用户
 - **AI 能力**：端侧 / 基站侧人车宠物检测（机型差异大）
+- **大模型方案**：待核实
+- **公开数据**：待核实
 - **关键差异化**：① 「本地优先」对抗云订阅疲劳；② Anker 渠道与供应链；③ 可选云仅为备份
 - **商业模式**：硬件为主 + 可选云
 
