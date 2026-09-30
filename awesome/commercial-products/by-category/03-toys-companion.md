@@ -21,7 +21,7 @@
 - **关键差异化**：① 将大模型从"人-机对话"扩展到"宠物-人翻译"场景；② 多模态融合（声纹 + 行为 + 微表情）；③ 具备针对个体宠物的自学习适应能力
 - **商业模式**：硬件销售（手机 App 配套，订阅模式暂未公开披露）
 
-> 来源：[ZOL 中关村在线](https://ai.zol.com.cn/1185/11854843.html) · [36氪/APPSO 深度测评](https://mp.weixin.qq.com/s/E_v86-XhNKq9qTdBYE4zwA) · 厂商微信公众号
+> 来源：[ZOL 中关村在线](https://ai.zol.com.cn/1185/11854843.html) · [新浪财经](https://finance.sina.com.cn/tech/discovery/2026-05-17/doc-inhyerim1837213.shtml) · [36氪/APPSO 深度测评](https://mp.weixin.qq.com/s/E_v86-XhNKq9qTdBYE4zwA) · 厂商微信公众号
 
 ---
 
@@ -84,7 +84,7 @@
 - **商业模式**：硬件 + 云服务。Embodied 宣布倒闭，并称核心功能依赖云端，服务停止后设备无法正常使用
 - **风险事件**：公司关闭、云服务停止（日期见上市状态）。收录为「断服变砖」教训样本（与 04 Agent 硬件的 Humane AI Pin 同类），不是在售采购对象。本地续命见 [OpenMoxie](https://github.com/jbeghtol/openmoxie)：在原厂云停止后用本地服务恢复部分功能，仓库说明部分较新模块不在支持范围内
 
-> 来源：[OpenMoxie](https://github.com/jbeghtol/openmoxie) · [Fox Business · Moxie](https://www.foxbusiness.com/technology/embodieds-ai-robot-moxie-designed-for-kids-with-limits)
+> 来源：[Ars Technica 2024-12-20](https://arstechnica.com/gadgets/2024/12/800-kids-robot-due-for-bricking-sees-potential-open-source-second-life/) · [OpenMoxie](https://github.com/jbeghtol/openmoxie) · [Fox Business · Moxie](https://www.foxbusiness.com/technology/embodieds-ai-robot-moxie-designed-for-kids-with-limits)
 
 ---
 
