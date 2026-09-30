@@ -32,15 +32,3 @@ jobs:
             solutions/**/*.md
             primer/**/*.md
             docs/*.html
-
-      # Temporary: print HTTP status for the two exclude candidates.
-      # Removed after the status codes are recorded. Not part of the check.
-      - name: Probe candidate URL status codes
-        if: always()
-        continue-on-error: true
-        run: |
-          lychee --version
-          printf '%s\n' \
-            'https://www.androidauthority.com/halliday-g2-smart-glasses-launch-3689649/' \
-            'https://www.qbitai.com/2025/10/341663.html' \
-            | lychee --verbose --verbose --no-progress --mode plain --format detailed -
