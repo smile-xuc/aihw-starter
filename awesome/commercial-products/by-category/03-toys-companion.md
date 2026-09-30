@@ -91,19 +91,19 @@
 
 ### Curio Grem / Gabbo（Curio Interactive）
 
-- **上市状态**：在售（Grem 单品页 schema.org 写 InStock，查证 2026-09-30）
+- **上市状态**：在售（查证 2026-09-30）
 - **官网/渠道**：<https://heycurio.com/>；Grem <https://heycurio.com/products/v2/grem-2>；FAQ <https://heycurio.com/faq>
 - **形态**：会说话的 AI 毛绒玩具，无屏。Grem 页写适合 3 岁以上、screen-free。FAQ 写玩具主要面向 3 至 12 岁，部分角色面向更大年龄
 - **定价**：
   - 首发价：待核实
-  - 现价：$119 USD · 美国 · [官网首页](https://heycurio.com/) 与 [Grem 单品页](https://heycurio.com/products/v2/grem-2) 可见价 · 查证 2026-09-30。页面不一致：Grem 页 schema.org Offer 写 $150.0 USD
-  - MSRP：$150 USD · 美国 · 首页划线价，与 Grem 页 schema.org Offer 一致 · 查证 2026-09-30
+  - 现价：$119 USD · 美国 · [官网首页](https://heycurio.com/) · [Grem 单品页](https://heycurio.com/products/v2/grem-2) · 查证 2026-09-30
+  - MSRP：$150 USD · 美国 · [官网首页](https://heycurio.com/) · [Grem 单品页](https://heycurio.com/products/v2/grem-2) · 查证 2026-09-30
   - 订阅：FAQ 写 "Free chat and baseline features will always be available"。Grem 页原文 "no subscription"
 - **目标市场**：儿童语音陪伴。FAQ 写主要面向 3 至 12 岁
-- **AI 能力**：语音对话，App 配置。FAQ 写语音转写后音频会很快删除，转写文本保存 90 天后自动删除。Grem 页出现的 Grok 与 Gabbo 同为角色名，原文 "share them with you, Gabbo, and Grok"
+- **AI 能力**：语音对话，App 配置。FAQ 写语音转写后音频会很快删除，转写文本保存 90 天后自动删除
 - **大模型方案**：官网未公开具体基座模型（非千问默认绑定）
 - **公开数据**：未见公开销量
-- **关键差异化**：① FAQ 写基础对话持续可用；② 无屏，靠 App 配置；③ 角色名与模型名不是同一件事（Grok 为角色）
+- **关键差异化**：① FAQ 写基础对话持续可用；② 无屏，靠 App 配置
 - **商业模式**：硬件销售；基础对话按 FAQ 持续可用
 - **另见**：[公开案例](../../../solutions/by-category/03-toys-companion/04-cases.md)
 
@@ -147,7 +147,7 @@
 - **AI 能力**：产品站写对话、记住用户、按摄像头看到的内容聊天、写日记、Google 日历联动，以及两台之间对话。博客把 Google 日历联动写为已上线的功能更新
 - **大模型方案**：产品站写使用生成 AI 进行对话，未写模型名。官网未公开具体基座模型（非千问默认绑定）
 - **公开数据**：未见公开销量。新闻稿写原定 2025-11-21 发售，后改为 2025-12-05
-- **关键差异化**：① 本体写オープン価格，服务费按月；② 产品站写生成 AI，但没有模型名；③ 第 2 弹有官方通贩标价，第 1 弹没有
+- **关键差异化**：① 本体写オープン価格，服务费按月；② 产品站写使用生成 AI 进行对话；③ 产品站写两台之间对话，并按摄像头内容聊天、写日记
 - **商业模式**：硬件（オープン価格）+ 月费
 - **另见**：[公开案例](../../../solutions/by-category/03-toys-companion/04-cases.md)
 

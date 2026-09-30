@@ -115,10 +115,10 @@
 
 - **公开信息源**：[官网首页](https://heycurio.com/) · [Grem 单品页](https://heycurio.com/products/v2/grem-2) · [FAQ](https://heycurio.com/faq)（查证 2026-09-30）
 - **形态**：会说话的 AI 毛绒，无屏，靠 App 配置。Grem 页写 3 岁以上、screen-free。FAQ 写主要面向 3 至 12 岁
-- **技术路线**：基座模型未公开。Grem 页原文 "share them with you, Gabbo, and Grok"，Grok 与 Gabbo 同为角色名
+- **技术路线**：未公开
 - **亮点**：FAQ 原文 "Free chat and baseline features will always be available"。Grem 页写 "no subscription"
-- **公开数据**：首页与单品页可见价 $119 USD，划线 $150 USD。页面不一致：Grem 页 schema.org Offer 为 $150.0 USD。首发价待核实（查证 2026-09-30）
-- **可借鉴点**：基础对话写在购机之后持续可用；角色名不要当成模型名
+- **公开数据**：现价 $119 USD，MSRP $150 USD（查证 2026-09-30）
+- **可借鉴点**：基础对话写在购机之后持续可用
 - **另见**：[Curio 商业产品卡][toy]
 
 ### 案例：Miko Mini（Miko）— 带屏儿童机器人与内容订阅
@@ -145,7 +145,7 @@
 
 - [ ] 火火兔、贝乐虎、奥飞娱乐等传统早教/玩具品牌的 AI 化公开路线
 - [ ] 牛听听、喜马拉雅小雅 nano 等听学产品的公开 AI 能力描述
-- [x] 海外案例：Curio Grem / Gabbo（官方页里的 Grok 是玩具角色名）
+- [x] 海外案例：Curio Grem / Gabbo
 - [ ] Joy For All 等海外案例
 - [ ] 欧洲市场「声音克隆 + 月订阅」模式的可核实案例（此前收录的相关条目因无法核实公司名已移除，欢迎提供公开信源后重新收录）
 
