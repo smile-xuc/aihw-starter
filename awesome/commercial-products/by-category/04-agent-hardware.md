@@ -50,12 +50,12 @@
 
 ### 铠盒 AIBOX-A1（铠盒智能）
 
-- **上市状态**：在售（产品页公开价，查证日期待核实）
+- **上市状态**：在售（产品页标价 ¥1,199 CNY，查证 2026-09-30）
 - **官网/渠道**：<https://agentaibox.com/products/a1>
 - **形态**：桌面常开 Agent 盒（RK3576，约 6 TOPS，4GB/64GB）
 - **定价**：
   - 首发价：待核实
-  - 现价：约 ¥999 CNY（产品页公开；口径未区分首发价 / MSRP）
+  - 现价：¥1,199 CNY · [产品页](https://agentaibox.com/products/a1) · 查证 2026-09-30
   - MSRP：待核实
 - **目标市场**：家庭中枢 / 个人助理 / 本地 Agent
 - **AI 能力**：本地轻量模型 + 云端通义千问等；宣传预装 OpenClaw
@@ -64,7 +64,7 @@
 - **关键差异化**：① 低功耗常开；② 开箱即用叙事；③ 隐私本地优先
 - **商业模式**：硬件买断（本地模型零 Token 叙事）
 
-> 来源：[agentaibox.com/products/a1](https://agentaibox.com/products/a1)
+> 来源：[agentaibox.com/products/a1](https://agentaibox.com/products/a1)（查证 2026-09-30）
 
 ---
 
