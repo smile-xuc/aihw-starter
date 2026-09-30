@@ -28,9 +28,9 @@ Agent 硬件的购买心智是：**少掏手机、少切 App、把重复任务�
 | 路线 | 加价逻辑 | 谁在做（公开） | 备注 |
 |---|---|---|---|
 | **轻硬件口袋助手** | BOM 低 → 零售约 $199 | Rabbit R1 | 公开 **无订阅**；靠软件与 Agent 生态迭代 |
-| **高客单可穿戴 Pin** | BOM + 设计溢价 → 首发价 US$699（2024-04）→ 2024-10 降至 US$499（Eclipse）+ US$24/月 | Humane AI Pin（已停售） | 订阅心智失败的反面教材 |
+| **高客单可穿戴 Pin** | BOM + 设计溢价，高定价加订阅没卖动，另见 [Humane 主卡][pin] | Humane AI Pin（已停售） | 订阅心智失败的反面教材 |
 | **桌面 / 家庭 Agent 盒** | SoC + NPU → 约 ¥999–3999 | 铠盒 AIBOX-A1 等 | 本地模型 + 云端 FC；卖 7×24 在线 |
-| **记忆型挂件** | 极简麦 → 约 $99 + 订阅 | Limitless Pendant（停售新客） | 被大厂收购后停售，品类风险高 |
+| **记忆型挂件** | 极简麦，硬件加订阅，另见 [Limitless 主卡][pendant] | Limitless Pendant（停售新客） | 被大厂收购后停售，品类风险高 |
 
 对方案商 / 品牌商的含义：
 
@@ -72,7 +72,7 @@ Agent 硬件的购买心智是：**少掏手机、少切 App、把重复任务�
 | 口袋助手（屏 + 麦 + 推送说话） | 中低 | Rabbit R1 ≈ $199 | 语音入口、无订阅 |
 | 桌面 Agent 盒（RK/NPU） | 150–400 元 | 铠盒 A1 ≈ ¥999 | 常开、本地轻量模型 |
 | 家庭中枢（带屏 Hub） | 300–600 元 | 视 SKU | 多模态 + 全屋联动 |
-| 记忆挂件（仅麦） | 极低 | Limitless 曾 ≈ $99 | 对话记忆；品类收购风险高 |
+| 记忆挂件（仅麦） | 极低 | 另见 [Limitless 主卡][pendant] | 对话记忆；品类收购风险高 |
 
 ### 2.2 三类客户
 
@@ -98,7 +98,7 @@ Agent 硬件的购买心智是：**少掏手机、少切 App、把重复任务�
 
 已知尝试与观察：
 
-1. **Humane AI Pin**：首发价 US$699（2024-04）→ 2024-10 降至 US$499（Eclipse）+ 订阅 US$24/月；2025-02 停售，资产以约 $116M 售予 HP，设备云服务关闭（[Reuters](https://www.reuters.com/markets/deals/ai-startup-humane-wind-down-wearable-pin-business-sell-assets-hp-2025-02-19/) / [The Verge 停售](https://www.theverge.com/news/614883/humane-ai-hp-acquisition-pin-shutdown) / [The Verge 降价](https://www.theverge.com/2024/10/23/24277964/humane-slashes-ai-pin-price-weak-sales)，查证 2026-09-30）
+1. **Humane AI Pin**：高定价加订阅没卖动；2025-02 停售，资产以约 $116M 售予 HP，设备云服务关闭（[Reuters](https://www.reuters.com/markets/deals/ai-startup-humane-wind-down-wearable-pin-business-sell-assets-hp-2025-02-19/) / [The Verge 停售](https://www.theverge.com/news/614883/humane-ai-hp-acquisition-pin-shutdown)，查证 2026-09-30）。另见 [Humane 主卡][pin]
 2. **Rabbit R1**：公开坚持 **$199 / 无订阅**；部分进阶能力改为用户自带 API Key
 3. **Limitless Pendant**：曾硬件 + 订阅；2025-12 Meta 收购后**停售新客**，存量免费 Unlimited（[TechCrunch](https://techcrunch.com/2025/12/05/meta-acquires-ai-device-startup-limitless/)）
 4. **国内桌面盒**：多见硬件买断 + 本地模型「零 Token」叙事，云端按需自配 Key
@@ -164,6 +164,9 @@ Agent 硬件的购买心智是：**少掏手机、少切 App、把重复任务�
 **版本**：千问大模型方案
 **更新日期**：2026-09
 **贡献欢迎**：补充公开定价与案例，见 [`CONTRIBUTING.md`](../../../CONTRIBUTING.md)
+
+[pin]: ../../../awesome/commercial-products/by-category/04-agent-hardware.md
+[pendant]: ../../../awesome/commercial-products/by-category/07-recorder.md
 
 <!-- FOOTER:START -->
 
