@@ -32,7 +32,7 @@
 |---|---|---|---|---|---|---|
 | **Rabbit R1** | rabbit inc. | 口袋助手 | rabbitOS / LAM + 第三方 Agent | 语音 + 触屏 + 推送说话 | **$199 / 无订阅** | 在售（官网） |
 | **Humane AI Pin** | Humane | 胸针可穿戴 | CosmOS + 云端 AI | 投影 + 语音 | 首发价 US$699（2024-04）→ 2024-10 降至 US$499（Eclipse）+ US$24/月 | **2025-02 停售** |
-| **Limitless Pendant** | Limitless（Meta 收购） | 记忆挂件 | 云端转录 / 记忆 | 常开麦 | 曾约 $99 + 订阅 | **2025-12 停售新客** |
+| **Limitless Pendant** | Limitless（Meta 收购） | 记忆挂件 | 云端转录 / 记忆 | 常开麦 | 硬件加订阅，另见 [Limitless 主卡][pendant] | **2025-12 停售新客** |
 | **铠盒 AIBOX-A1** | 铠盒智能 | 桌面 Agent 盒 | 本地轻量 + 云端千问等 | 常开盒子 / OpenClaw | 约 **¥999** | 公开在售页 |
 
 ### 形态路线图
@@ -67,7 +67,7 @@
 - **公开信息源**：[TechCrunch](https://techcrunch.com/2025/12/05/meta-acquires-ai-device-startup-limitless/)、[limitless.ai](https://www.limitless.ai/)
 - **亮点**：2025-12 Meta 收购；停售新客；存量免费 Unlimited；多地区服务收缩
 - **可借鉴点**：记忆挂件赛道收购风险高；方案商勿把「唯一云」绑死在单一初创后端
-- **另见**：[Limitless 商业产品卡](../../../awesome/commercial-products/by-category/07-recorder.md)
+- **另见**：[Limitless 商业产品卡][pendant]
 
 ### 案例：铠盒 AIBOX-A1（铠盒智能）— 国内桌面盒公开 SKU
 
@@ -100,6 +100,7 @@
 ---
 
 [hw]: ../../../awesome/commercial-products/by-category/04-agent-hardware.md
+[pendant]: ../../../awesome/commercial-products/by-category/07-recorder.md
 
 **版本**：千问大模型方案
 **更新日期**：2026-09
