@@ -43,4 +43,4 @@ jobs:
           printf '%s\n' \
             'https://www.androidauthority.com/halliday-g2-smart-glasses-launch-3689649/' \
             'https://www.qbitai.com/2025/10/341663.html' \
-            | lychee --verbose --no-progress --format detailed -
+            | lychee --verbose --verbose --no-progress --mode plain --format detailed -
