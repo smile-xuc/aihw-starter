@@ -81,7 +81,7 @@
 - **目标市场**：待核实。W4 Plus 商品页写商务会议与跨境沟通
 - **AI 能力**：公开列通话 / 视频翻译、AI Memo、更高语种覆盖等（以对比页为准）。W4 Plus 商品页写 Babel OS 3.0，52 种语言、106 种口音，13 组离线语言对：英文对中、日、韩、法、西、俄、德，中文对英、日、韩、法、西、俄、德。通话翻译、媒体翻译和 AI 会议纪要写明需要云端
 - **大模型方案**：W4 Plus 商品页写 Babel OS 3.0，未写底层模型名。官网未公开具体基座模型（非千问默认绑定）。W4 / W4 Pro 待核实
-- **公开数据**：W4 / W4 Pro 待核实。W4 Plus 商品页内嵌数据 published_at 为 2026-08-05（UTC+8）。未见公开销量
+- **公开数据**：W4 / W4 Pro 待核实。W4 Plus 上架日待核实。未见公开销量
 - **关键差异化**：① W4 Plus 同一硬件分买断版与订阅版；② 商品页写 13 组离线语言对，通话与媒体翻译走云端；③ 订阅版把双人对话和现场旁听标为永久免费，高级功能 7 天试用后按月订阅
 - **商业模式**：硬件销售。W4 Plus 另有订阅版硬件价，月费待核实
 - **另见**：[公开案例](../../../solutions/by-category/06-ai-earphone/04-cases.md)
@@ -102,7 +102,7 @@
 - **目标市场**：面对面与多人对话。商品页写可通过手机连接最多 10 台，或通过 Vasco 手持翻译机连接最多 6 人
 - **AI 能力**：商品页写 51 种语言，无需按键。与 Vasco 手持翻译机配对后，翻译流量终身免费，语言扩到 85 种
 - **大模型方案**：商品页规格写 "10 translation engines that utilize Artificial Intelligence"。同页引用 "Vasco’s devices use 12 translation engines"。未写具体模型名。官网未公开具体基座模型（非千问默认绑定）
-- **公开数据**：未见公开销量。新闻稿 datePublished 为 2025-01-22，写 E1 available for purchase。[WIRED 评测](https://www.wired.com/review/vasco-translator-e1/)标 $389 USD（查证 2026-09-30）
+- **公开数据**：未见公开销量。新闻稿（2025-01-22）写 E1 available for purchase。[WIRED 评测](https://www.wired.com/review/vasco-translator-e1/)标 $389 USD（查证 2026-09-30）
 - **关键差异化**：① 开放式耳挂，51 种语言；② 与自家手持翻译机配对后，翻译流量终身免费，语言扩到 85 种；③ 商品页写用多套翻译引擎，而不是单引擎
 - **商业模式**：硬件销售
 - **另见**：[公开案例](../../../solutions/by-category/06-ai-earphone/04-cases.md)
@@ -123,7 +123,7 @@
 - **目标市场**：Pixel 与 Android 生态里的 TWS 用户
 - **AI 能力**：博客写手机锁屏时仍可与 Gemini 对话。商店页写 Live Translate：耳机里听译文，对方从手机外放听译文
 - **大模型方案**：Gemini（非千问默认绑定）
-- **公开数据**：未见公开销量。博客 datePublished 为 2024-08-13T17:00:00+00:00。博客摘要写 "hitting shelves on September 26"，该句未写年份
+- **公开数据**：未见公开销量。博客（2024-08-13）。博客摘要写 "hitting shelves on September 26"，该句未写年份
 - **关键差异化**：① 免手持 Gemini 对话，手机锁屏时仍可进行；② Live Translate 把译文分到耳机和手机外放；③ 商品页写 Tensor A1 负责降噪
 - **商业模式**：硬件销售
 - **另见**：[公开案例](../../../solutions/by-category/06-ai-earphone/04-cases.md)

@@ -127,7 +127,7 @@
 - **目标市场**：Galaxy 生态的日常健康管理。加拿大新闻室写 Gemini 也可在更早的受支持 Galaxy Watch 上使用
 - **AI 能力**：加拿大新闻室写 Raise to Talk：抬腕对向嘴部即可唤起 Gemini，不必按键或说唤醒词。同页写可发消息、摘要邮件、打电话，以及建提醒、管任务、往日历加事件。全球新闻室写睡眠呼吸暂停检测用 AI 算法按每小时呼吸中断次数分三级；Heart Health Score 综合活动、睡眠、体成分和压力趋势；Fitness Index 用体成分和运动史判断运动量；Daily Cardio Load 用于看训练量和恢复时间
 - **大模型方案**：加拿大新闻室写 Gemini（非千问默认绑定）
-- **公开数据**：未见公开销量。全球新闻室标题为 Galaxy Unpacked July 2026，页内视频 uploadDate 为 2026-07-22。开售日待核实
+- **公开数据**：未见公开销量。全球新闻室标题为 Galaxy Unpacked July 2026。开售日待核实
 - **关键差异化**：① Raise to Talk 抬腕唤起 Gemini；② 睡眠呼吸暂停检测按 AI 算法分三级；③ Heart Health Score、Fitness Index、Daily Cardio Load 把活动和恢复收成可读指标
 - **商业模式**：硬件销售
 - **另见**：[公开案例](../../../solutions/by-category/08-smart-watch/04-cases.md)
