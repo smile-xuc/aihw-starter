@@ -114,14 +114,14 @@
 
 ### Galaxy Watch9（Samsung）
 
-- **上市状态**：在售（美国官方商店、加拿大官方商店，查证 2026-09-30）
+- **上市状态**：在售（加拿大新闻室写 currently available for purchase，查证 2026-09-30）
 - **官网/渠道**：<https://www.samsung.com/us/watches/galaxy-watch9/buy/galaxy-watch9-40mm-cream-bluetooth-sku-sm-l340nzeaxaa/>；加拿大 <https://www.samsung.com/ca/watches/galaxy-watch/galaxy-watch9-44mm-graphite-bluetooth-sm-l350nzkaxac/>；新闻室 <https://news.samsung.com/global/galaxy-unpacked-july-2026-a-first-look-at-galaxy-watch-ultra2-and-galaxy-watch9>
 - **形态**：圆形表盘，40 mm / 44 mm。全球新闻室写搭载 Snapdragon Wear Elite，电池 390 mAh
 - **定价**：
   - 首发价：待核实
-  - 现价：$379.99 USD · 美国 · 40 mm 蓝牙 Cream · [购买页](https://www.samsung.com/us/watches/galaxy-watch9/buy/galaxy-watch9-40mm-cream-bluetooth-sku-sm-l340nzeaxaa/) · 查证 2026-09-30
-  - 现价：$409.99 USD · 美国 · 44 mm 蓝牙 Graphite · [购买页](https://www.samsung.com/us/watches/galaxy-watch9/buy/galaxy-watch9-44mm-graphite-bluetooth-sku-sm-l350nzkaxaa/) · 查证 2026-09-30
-  - 现价：$559.99 CAD · 加拿大 · 44 mm 蓝牙 Graphite · [加拿大商品页](https://www.samsung.com/ca/watches/galaxy-watch/galaxy-watch9-44mm-graphite-bluetooth-sm-l350nzkaxac/) · 查证 2026-09-30
+  - 现价：$379.99 USD · 美国 · 40 mm 蓝牙 · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · 查证 2026-09-30
+  - 现价：$409.99 USD · 美国 · 44 mm 蓝牙 · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · 查证 2026-09-30
+  - 现价：$559.99 CAD · 加拿大 · 44 mm 蓝牙 · [Aubaine](https://aubaine.ca/en/blog/apple-watch-vs-galaxy-watch-which-smartwatch-should-you-buy-in-2026) · 查证 2026-09-30
   - MSRP：待核实
   - LTE 款：待核实
 - **目标市场**：Galaxy 生态的日常健康管理。加拿大新闻室写 Gemini 也可在更早的受支持 Galaxy Watch 上使用
@@ -132,7 +132,7 @@
 - **商业模式**：硬件销售
 - **另见**：[公开案例](../../../solutions/by-category/08-smart-watch/04-cases.md)
 
-> 来源：[美国 40 mm 购买页](https://www.samsung.com/us/watches/galaxy-watch9/buy/galaxy-watch9-40mm-cream-bluetooth-sku-sm-l340nzeaxaa/) · [美国 44 mm 购买页](https://www.samsung.com/us/watches/galaxy-watch9/buy/galaxy-watch9-44mm-graphite-bluetooth-sku-sm-l350nzkaxaa/) · [加拿大商品页](https://www.samsung.com/ca/watches/galaxy-watch/galaxy-watch9-44mm-graphite-bluetooth-sm-l350nzkaxac/) · [全球新闻室（Galaxy Unpacked July 2026）](https://news.samsung.com/global/galaxy-unpacked-july-2026-a-first-look-at-galaxy-watch-ultra2-and-galaxy-watch9) · [加拿大新闻室](https://news.samsung.com/ca/what-can-you-do-with-gemini-on-galaxy-watch-ultra2-and-galaxy-watch9)（均查证 2026-09-30）
+> 来源：[美国 40 mm 购买页](https://www.samsung.com/us/watches/galaxy-watch9/buy/galaxy-watch9-40mm-cream-bluetooth-sku-sm-l340nzeaxaa/) · [美国 44 mm 购买页](https://www.samsung.com/us/watches/galaxy-watch9/buy/galaxy-watch9-44mm-graphite-bluetooth-sku-sm-l350nzkaxaa/) · [加拿大商品页](https://www.samsung.com/ca/watches/galaxy-watch/galaxy-watch9-44mm-graphite-bluetooth-sm-l350nzkaxac/) · [全球新闻室（Galaxy Unpacked July 2026）](https://news.samsung.com/global/galaxy-unpacked-july-2026-a-first-look-at-galaxy-watch-ultra2-and-galaxy-watch9) · [加拿大新闻室](https://news.samsung.com/ca/what-can-you-do-with-gemini-on-galaxy-watch-ultra2-and-galaxy-watch9) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · [Aubaine](https://aubaine.ca/en/blog/apple-watch-vs-galaxy-watch-which-smartwatch-should-you-buy-in-2026)（均查证 2026-09-30）
 
 ---
 
