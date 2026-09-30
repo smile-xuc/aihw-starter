@@ -133,9 +133,8 @@
 ### 案例：Looki L1（Looki）— 首个多模态 AI 穿戴式相机
 
 - **公开信息源**：[looki.ai](https://www.looki.ai/) · [Google Play](https://play.google.com/store/apps/details?id=ai.looki.lifelog) · [52audio 首发报道](https://www.52audio.com/archives/251405.html) · [极客公园访谈](https://www.geekpark.net/news/352913)
-- **亮点**：待核实
-
 - **形态**：30 克磁吸式穿戴，六角恐龙外形，可固定于衣物或背包，实现"无感佩戴"
+- **亮点**：待核实
 - **硬件**：4K 拍照 / 1080p 30fps 录像 / 3 麦克风阵列 + 语音降噪 / 6 轴陀螺仪 / 触控板 AI 对话 / 32GB 存储 / 12 小时续航
 - **主要 AI 功能**：
   - **Story Mode 智能间隔拍摄**：全天候自动捕捉视觉、听觉与环境数据
@@ -227,7 +226,7 @@
 
 ---
 
-## 八、待补充清单
+## 八、待补充清单（欢迎 PR）
 
 欢迎社区贡献以下方向的公开案例：
 
