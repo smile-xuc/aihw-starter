@@ -32,7 +32,7 @@
 | **HUAWEI WATCH 6 Pro** | 旗舰表 | AI 健康洞察 / 小艺 | 约 ¥3499 起 | 活力人生 15 元/月等 |
 | **Apple Watch Ultra 3/4** | 旗舰运动表 | Workout Buddy / Health 洞察等 | 约 $799 起 | Fitness+ $9.99/月（生态） |
 
-## 三、速览
+## 三、关键案例速览
 
 ### 案例：Oura（Oura）
 - **公开信息源**：[ouraring.com/membership](https://ouraring.com/membership)、支持文
