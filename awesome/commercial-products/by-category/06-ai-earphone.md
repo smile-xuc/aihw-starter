@@ -66,23 +66,69 @@
 
 ---
 
-### Timekettle W4 / W4 Pro（时空壶）
+### Timekettle W4 / W4 Pro / W4 Plus（时空壶）
 
-- **上市状态**：在售（官方商店有现价，查证 2026-09-30）
-- **官网/渠道**：<https://www.timekettle.co/products/w4-ai-interpreter-earbuds>；对比页 <https://www.timekettle.co/pages/product-compare>
-- **形态**：AI Interpreter 耳机系列
+- **上市状态**：在售（官方商店，查证 2026-09-30）
+- **官网/渠道**：<https://www.timekettle.co/products/w4-ai-interpreter-earbuds>；对比页 <https://www.timekettle.co/pages/product-compare>；W4 Plus <https://www.timekettle.co/products/w4-plus-ai-interpreter-earbuds>
+- **形态**：AI Interpreter 耳机系列。W4 Plus 商品页写骨传导拾音与 VoiceFocus，单次续航 3 h，含充电盒共 18 h
 - **定价**：
   - 首发价：待核实
   - 现价：W4 $279.20 USD（划线价 $349 USD）· [产品页](https://www.timekettle.co/products/w4-ai-interpreter-earbuds)；W4 Pro $449.00 USD · [对比页](https://www.timekettle.co/pages/product-compare) · 查证 2026-09-30
+  - 现价：W4 Plus 买断版 $379.00 USD（划线价 $399.00 USD）；订阅版硬件 $299.00 USD（划线价 $319.00 USD）· [W4 Plus 商品页](https://www.timekettle.co/products/w4-plus-ai-interpreter-earbuds) · 查证 2026-09-30
   - MSRP：待核实（W4 划线价 $349 USD，是否即 MSRP 未在页面写明）
-- **目标市场**：待核实
-- **AI 能力**：公开列通话 / 视频翻译、AI Memo、更高语种覆盖等（以对比页为准）
-- **大模型方案**：待核实
-- **公开数据**：待核实
-- **关键差异化**：待核实
-- **商业模式**：硬件销售
+  - MSRP：W4 Plus 待核实
+  - 订阅：W4 Plus 月费待核实。订阅版写双人对话与现场旁听永久免费；媒体翻译、通话翻译和高级 AI 功能 7 天试用后按月订阅。买断版写一次购买后不再按月收费 · [W4 Plus 商品页](https://www.timekettle.co/products/w4-plus-ai-interpreter-earbuds) · 查证 2026-09-30
+- **目标市场**：待核实。W4 Plus 商品页写商务会议与跨境沟通
+- **AI 能力**：公开列通话 / 视频翻译、AI Memo、更高语种覆盖等（以对比页为准）。W4 Plus 商品页写 Babel OS 3.0，52 种语言、106 种口音，13 组离线语言对：英文对中、日、韩、法、西、俄、德，中文对英、日、韩、法、西、俄、德。通话翻译、媒体翻译和 AI 会议纪要写明需要云端
+- **大模型方案**：W4 Plus 商品页写 Babel OS 3.0，未写底层模型名。官网未公开具体基座模型（非千问默认绑定）。W4 / W4 Pro 待核实
+- **公开数据**：W4 / W4 Pro 待核实。W4 Plus 上架日待核实。未见公开销量
+- **关键差异化**：① W4 Plus 同一硬件分买断版与订阅版；② 商品页写 13 组离线语言对，通话与媒体翻译走云端；③ 订阅版把双人对话和现场旁听标为永久免费，高级功能 7 天试用后按月订阅
+- **商业模式**：硬件销售。W4 Plus 另有订阅版硬件价，月费待核实
+- **另见**：[公开案例](../../../solutions/by-category/06-ai-earphone/04-cases.md)
 
-> 来源：[W4 产品页](https://www.timekettle.co/products/w4-ai-interpreter-earbuds) · [Timekettle Product Compare](https://www.timekettle.co/pages/product-compare)（查证 2026-09-30）
+> 来源：[W4 产品页](https://www.timekettle.co/products/w4-ai-interpreter-earbuds) · [Timekettle Product Compare](https://www.timekettle.co/pages/product-compare) · [W4 Plus 商品页](https://www.timekettle.co/products/w4-plus-ai-interpreter-earbuds)（查证 2026-09-30）
+
+---
+
+### Vasco Translator E1（Vasco Electronics）
+
+- **上市状态**：在售（官方商品页，查证 2026-09-30）
+- **官网/渠道**：<https://vasco-translator.com/translators/vasco-translator-e1>；新闻稿 <https://vasco-translator.com/articles/press-release/vasco-ces-2025/>
+- **形态**：开放式耳挂翻译耳机，配 Vasco Connect App。商品页写两只耳塞都戴在右耳，可分给对话对方一只
+- **定价**：
+  - 首发价：待核实
+  - 现价：$389 USD · [商品页](https://vasco-translator.com/translators/vasco-translator-e1) · 查证 2026-09-30
+  - MSRP：待核实
+- **目标市场**：面对面与多人对话。商品页写可通过手机连接最多 10 台，或通过 Vasco 手持翻译机连接最多 6 人
+- **AI 能力**：商品页写 51 种语言，无需按键。与 Vasco 手持翻译机配对后，翻译流量终身免费，语言扩到 85 种
+- **大模型方案**：商品页规格写 "10 translation engines that utilize Artificial Intelligence"。同页引用 "Vasco’s devices use 12 translation engines"。未写具体模型名。官网未公开具体基座模型（非千问默认绑定）
+- **公开数据**：未见公开销量。新闻稿（2025-01-22）写 E1 available for purchase。[WIRED 评测](https://www.wired.com/review/vasco-translator-e1/)标 $389 USD（查证 2026-09-30）
+- **关键差异化**：① 开放式耳挂，51 种语言；② 与自家手持翻译机配对后，翻译流量终身免费，语言扩到 85 种；③ 商品页写用多套翻译引擎，而不是单引擎
+- **商业模式**：硬件销售
+- **另见**：[公开案例](../../../solutions/by-category/06-ai-earphone/04-cases.md)
+
+> 来源：[Vasco Translator E1 商品页](https://vasco-translator.com/translators/vasco-translator-e1) · [CES 2025 新闻稿（2025-01-22）](https://vasco-translator.com/articles/press-release/vasco-ces-2025/) · [WIRED 评测](https://www.wired.com/review/vasco-translator-e1/)（均查证 2026-09-30）
+
+---
+
+### Pixel Buds Pro 2（Google）
+
+- **上市状态**：在售（美国官方商店，查证 2026-09-30）
+- **官网/渠道**：<https://store.google.com/us/product/pixel_buds_pro_2>；博客 <https://blog.google/products-and-platforms/devices/pixel/google-pixel-buds-pro-2/>
+- **形态**：主动降噪 TWS。商品页写搭载 Google Tensor A1
+- **定价**：
+  - 首发价：$229 USD · 美国 · [官方博客（2024-08-13）](https://blog.google/products-and-platforms/devices/pixel/google-pixel-buds-pro-2/) · 博客写当天开始预购
+  - 现价：$229 USD · 美国 · [美国商店](https://store.google.com/us/product/pixel_buds_pro_2) · 查证 2026-09-30
+  - MSRP：同现价
+- **目标市场**：Pixel 与 Android 生态里的 TWS 用户
+- **AI 能力**：博客写手机锁屏时仍可与 Gemini 对话。商店页写 Live Translate：耳机里听译文，对方从手机外放听译文
+- **大模型方案**：Gemini（非千问默认绑定）
+- **公开数据**：未见公开销量。博客（2024-08-13）写 "hitting shelves on September 26"，该句未写年份
+- **关键差异化**：① 免手持 Gemini 对话，手机锁屏时仍可进行；② Live Translate 把译文分到耳机和手机外放；③ 商品页写 Tensor A1 负责降噪
+- **商业模式**：硬件销售
+- **另见**：[公开案例](../../../solutions/by-category/06-ai-earphone/04-cases.md)
+
+> 来源：[Pixel Buds Pro 2 美国商店](https://store.google.com/us/product/pixel_buds_pro_2) · [官方博客（2024-08-13）](https://blog.google/products-and-platforms/devices/pixel/google-pixel-buds-pro-2/)（均查证 2026-09-30）
 
 ---
 
@@ -92,11 +138,13 @@
 
 - [ ] **Apple AirPods** 实时翻译 / 系统助手能力（随 iOS 版本核对）
 - [ ] **华为 FreeBuds / 三星 Galaxy Buds** 翻译功能档位
+- [x] **Google Pixel Buds Pro 2**
 
 ### 出海与白牌
 
 - [ ] **Anker / Soundcore** AI 翻译耳机当期 SKU
 - [ ] 亚马逊高销量 Translator Earbuds 拆解（须附 listing）
+- [x] **Vasco Translator E1**
 
 ## 卡片格式
 

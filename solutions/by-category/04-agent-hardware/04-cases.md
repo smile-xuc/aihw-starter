@@ -34,6 +34,9 @@
 | **Humane AI Pin** | Humane | 胸针可穿戴 | CosmOS + 云端 AI | 投影 + 语音 | 首发价 US$699（2024-04）→ 2024-10 降至 US$499（Eclipse）+ US$24/月 | **2025-02 停售** |
 | **Limitless Pendant** | Limitless（Meta 收购） | 记忆挂件 | 云端转录 / 记忆 | 常开麦 | 硬件加订阅，另见 [Limitless 主卡][pendant] | **2025-12 停售新客** |
 | **铠盒 AIBOX-A1** | 铠盒智能 | 桌面 Agent 盒 | 本地轻量 + 云端千问等 | 常开盒子 / OpenClaw | **¥1,199 CNY** · [产品页](https://agentaibox.com/products/a1) · 查证 2026-09-30 | 公开在售页 |
+| **SwitchBot AI Hub** | SwitchBot | 桌面家庭中枢 | 商品页写 Vision Language Model，未写模型名 | 摄像头理解后联动设备 | **$259.99 USD** · [美国商品页](https://us.switch-bot.com/products/switchbot-ai-hub) · 查证 2026-09-30 | 在售（美国官方商店、欧盟官方商店、英国官方商店，查证 2026-09-30） |
+| **Sandbar Stream** | Sandbar | 语音戒指 | 未公开 | 按住说话 | 预购价 **$249 USD** · [官方商店](https://shop.sandbar.com/) · 查证 2026-09-30 | 预售（官方商店，查证 2026-09-30） |
+| **Pebble Index 01** | Core Devices / Pebble | 语音备忘戒指 | 博客写端侧大模型，未写模型名 | 一键录音，手机上选动作 | 预购价 **$75 USD** · [产品页](https://repebble.com/index) · 查证 2026-09-30 | 待核实（查证 2026-09-30） |
 
 ### 形态路线图
 
@@ -76,6 +79,26 @@
 - **可借鉴点**：桌面中枢叙事（7×24、隐私、开箱即用）比「替代手机」更容易落地
 - **另见**：[铠盒商业产品卡][hw]
 
+### 案例：SwitchBot AI Hub（SwitchBot）— 家庭 Agent 中枢
+
+- **公开信息源**：[美国商品页](https://us.switch-bot.com/products/switchbot-ai-hub) · [欧盟商品页](https://eu.switch-bot.com/products/switchbot-ai-hub) · [英国商品页](https://uk.switch-bot.com/products/switchbot-ai-hub) · [AI+ 服务协议](https://us.switch-bot.com/pages/ai-plus-user-agreement)（查证 2026-09-30）
+- **形态**：桌面中枢。商品页写可接 SwitchBot 摄像头、门铃和第三方 RTSP，并写兼容 Frigate
+- **技术路线**：商品页原文 "Powered by a Vision Language Model (VLM)"，规格写 "6T local computing power" 与 "local VLM automation"。协议写触发事件时摄像机会把部分图像加密上传云端。未写具体模型名
+- **亮点**：可在设备上安装 Home Assistant，并带 Matter Bridge。VLM 服务 1 个月免费，之后 $4.99 USD/月
+- **公开数据**：美国 $259.99 USD，欧盟 €259.99 EUR，英国 £259.99 GBP（查证 2026-09-30）。首发价与 MSRP 待核实。未见公开销量
+- **可借鉴点**：摄像头理解与设备联动放在同一中枢，VLM 服务和硬件价分开标
+- **另见**：[SwitchBot AI Hub 商业产品卡][hw]
+
+### 案例：Pebble Index 01（Core Devices / Pebble）— 端侧意图路由
+
+- **公开信息源**：[产品页](https://repebble.com/index) · [发布博客](https://repebble.com/blog/meet-pebble-index-01-external-memory-for-your-brain)（查证 2026-09-30）
+- **形态**：戒指，一个按键加麦克风。产品页写电池可用数年、不用充电，防水 1 m
+- **技术路线**：博客写录音传到手机后，用开源语音转文字，再由端侧大模型选择动作（建笔记、加提醒等）。另有可选云端语音转文字。博客写 Pebble App 开源
+- **亮点**：博客写支持 iPhone 与 Android。产品页写 no subscription
+- **公开数据**：产品页写预购价 $75 USD，并写 "After pre-orders, price will go up to $99"。规格表写 "Starts shipping March 2026"。发货状态待核实（查证 2026-09-30）
+- **可借鉴点**：动作选择放在手机端侧。本仓 [`demo/intent-router/`](./demo/intent-router/) 是离线分流示例
+- **另见**：[Pebble Index 01 商业产品卡][hw]
+
 ---
 
 ## 四、开源 / 自建验证
@@ -94,6 +117,8 @@
 - [ ] 更多国内桌面 Agent 盒公开 SKU（须附官网价）
 - [ ] 车载外挂盒公开方案
 - [ ] DFRobot AI 智能体盒子正式定价后补卡
+- [x] SwitchBot AI Hub（出海公开价）
+- [x] Pebble Index 01（端侧意图路由）
 
 补充位置：本品类本页，或 [awesome/commercial-products/by-category/04-agent-hardware.md][hw]。
 
