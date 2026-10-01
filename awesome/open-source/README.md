@@ -76,7 +76,7 @@
 
 1. 在 `by-category/` **主品类** Markdown 中追加项目卡片（一项目一主品类）
 2. 建议同步更新 HTML `projects` 数组（浏览大盘）
-3. 包含：项目名、框架、license、一句话简介、原始链接；Star 可写「以 HTML 为准」
+3. 包含：项目名、框架、license、一句话简介、原始链接；Star 可写「以 HTML 为准」。字段顺序见 [CONTRIBUTING.md](../../CONTRIBUTING.md) §五
 4. 验证项目至少满足「收录原则」中的 3 条
 
 详见根目录 [`CONTRIBUTING.md`](../../CONTRIBUTING.md)。

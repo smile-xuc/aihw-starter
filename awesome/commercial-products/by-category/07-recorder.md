@@ -128,7 +128,7 @@
 
 ## 卡片格式
 
-参考 [`../README.md`](../README.md) 中的产品卡片规范；字段对齐本页 Plaud / Notta / 讯飞示例。
+字段与顺序以根目录 [CONTRIBUTING.md](../../../CONTRIBUTING.md) 的商业产品卡模板为准。
 
 ## 贡献指引
 

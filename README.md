@@ -204,7 +204,7 @@ aihw-starter/
 | 贡献类型 | 说明 |
 |---|---|
 | **新增品类** | 在 `solutions/by-category/` 下新建目录，提交完整 6 文件 + demo |
-| **新增方案** | 在 `solutions/by-solution/` 新增方案页，并在各品类 `02-solution-{model}.md` 补充接入代码 |
+| **新增方案** | 在 `solutions/by-solution/` 新增方案页；品类内接入差异写进对应品类现有 `02-solution.md` 的小节 |
 | **新增案例** | 在对应品类 `04-cases.md` 加脱敏案例，或在 `awesome/` 加产品记录 |
 | **新增开源项目** | 补充到 `awesome/open-source/by-category/` 对应文件 |
 
