@@ -100,7 +100,7 @@ IPC（摄像头 + 本地移动侦测）
 ## 常见问题
 
 - **401 / 403**：Key 与地域不一致，或业务空间 ID 不属于这个 Key
-- **事件卡不是合法 JSON**：重跑一次；确认请求里带了 `enable_thinking=false`；仍不稳定时把 `VISION_MODEL` 换成 `qwen3.7-plus` 对比
+- **事件卡不是合法 JSON**：重跑一次；确认请求里带了 `enable_thinking=false`；仍不稳定时把 `VISION_MODEL` 换成效果档 `qwen3.7-plus` 对比（单价已在 `PRICES` 里，北京约为 `qwen3.7-flash` 的 10 倍）
 - **为什么不用 `qwen3-vl-flash`**：它和 `qwen-vl-plus` / `qwen-vl-max` 都在 2026-10-10 下线（[公告 118344](https://www.aliyun.com/notice/118344)）；官方替代 `qwen3.6-flash` 单价更高，`qwen3.7-flash` 原生看图、输出更便宜
 - **`--camera` 打不开摄像头**：先 `pip install -r requirements-device.txt`；macOS 需要在「隐私与安全性」里给终端摄像头权限
 - **量产怎么接**：端侧先做移动侦测、人形 / 宠物检测，只上传触发帧控制成本；事件帧走自己的 OSS + STS 上传；设备不放长期 Key，见 [demo-standard](../../../../demo-standard/README.md)「设备侧凭证」

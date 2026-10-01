@@ -40,9 +40,10 @@ MAX_DATA_URI = 20 * 1024 * 1024  # 官方：Qwen3.x 系列 Base64 Data URI ≤20
 TIME_FMT = "%Y-%m-%d %H:%M:%S"
 RISK = {"low": "低", "medium": "中", "high": "高"}
 
-# 元 / 百万 Token，按单次请求的输入 Token 数分档：(档位上限, 输入, 输出)。查证 2026-10-01：
+# 元 / 百万 Token，按单次请求的输入 Token 数分档：(档位上限, 输入, 输出)；均为原价，不含限时折扣。
+# 后两个是备选：文字质量档 qwen3.8-flash、效果档 qwen3.7-plus。查证 2026-10-01：
 #   qwen3.7-flash：https://help.aliyun.com/zh/model-studio/qwen3-7-flash
-#   qwen3.8-flash：https://help.aliyun.com/zh/model-studio/model-pricing
+#   qwen3.8-flash、qwen3.7-plus：https://help.aliyun.com/zh/model-studio/model-pricing
 PRICES = {
     "qwen3.7-flash": {
         "cn-beijing": [(32_000, 0.2, 0.8), (256_000, 0.6, 2.4), (1_000_000, 1.2, 4.8)],
@@ -51,6 +52,10 @@ PRICES = {
     "qwen3.8-flash": {
         "cn-beijing": [(1_000_000, 0.8, 2.7)],
         "ap-southeast-1": [(1_000_000, 1.094, 3.427)],
+    },
+    "qwen3.7-plus": {
+        "cn-beijing": [(256_000, 2.0, 8.0), (1_000_000, 6.0, 24.0)],
+        "ap-southeast-1": [(256_000, 2.998, 11.991), (1_000_000, 8.993, 35.972)],
     },
 }
 
