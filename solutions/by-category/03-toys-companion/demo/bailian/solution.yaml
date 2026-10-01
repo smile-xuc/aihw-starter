@@ -1,0 +1,29 @@
+schema: aihw/solution@0.1
+id: 03-toys-companion.bailian
+title: AI 玩具 / 陪伴 · 百炼实时语音
+category: 03-toys-companion
+stack: bailian
+kind: reference
+summary: 毛绒玩具按键说话 + 眼睛摄像头 → qwen3.8-omni-flash-realtime 实时语音回复，并用 Function Calling 控制动作与灯光
+models:
+  - id: qwen3.8-omni-flash-realtime
+    role: 实时语音对话 + 看图 + 工具调用（内置输入转写 qwen3-asr-flash-realtime）
+regions: [cn-beijing, ap-southeast-1]
+env: [DASHSCOPE_API_KEY, DASHSCOPE_WORKSPACE_ID]
+device:
+  inputs: [wav, mic, jpg, camera]
+  outputs: [speaker, wav, console]
+run:
+  setup: pip install -r requirements.txt
+  live: python3 run.py
+  mock: python3 run.py --mock
+metrics:
+  first_token: 松开按键（input_audio_buffer.commit）→ 首个 response.audio.delta，含工具调用往返
+  cost: 一轮 response.done.usage 之和 × 模型单价（按地域）
+verification:
+  status: pending-live
+  last_verified: null
+  record: VERIFY.md
+license: MIT
+compliance_tags: [minors, anthropomorphic]
+maintainers: ["@smile-xuc"]
