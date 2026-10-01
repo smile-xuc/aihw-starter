@@ -161,11 +161,11 @@ python3 run.py --region ap-southeast-1   # 临时切地域
 
 | 档 | 模型 | 什么时候用 | 单价（京 / 新） |
 |---|---|---|---|
-| 默认档 | `qwen3.7-flash` | 新 demo 一律默认用它：原生看图，两地都支持 Function Calling 和结构化输出 | 按单次输入长度分档：≤32K 入 0.2 / 0.225、出 0.8 / 0.974；32K–256K 入 0.6 / 0.749、出 2.4 / 2.998 |
-| 质量档 | `qwen3.8-flash` | 默认档效果不够时：多轮工具编排、参数复杂的调用、长纪要 | 入 0.8 / 1.094，出 2.7 / 3.427，不分档 |
+| 默认档 | `qwen3.7-flash` | 新 demo 默认用它：文本对话、摘要 / 纪要、拍照问答、单次工具调用。原生看图，两地都支持 Function Calling 和结构化输出 | 按单次输入长度分档：≤32K 入 0.2 / 0.225、出 0.8 / 0.974；32K–256K 入 0.6 / 0.749、出 2.4 / 2.998 |
+| 质量档 | `qwen3.8-flash` | 默认档效果不够时切过来；以多轮工具编排为主的 demo（04 Agent 硬件、09 具身）直接默认用它 | 入 0.8 / 1.094，出 2.7 / 3.427，不分档 |
 
 - 两档都默认开思考（Qwen3.5–3.8 系列都是），设备交互一律传 `enable_thinking: false`（OpenAI SDK 放在 `extra_body` 里）
-- 需要切档的 demo 统一用 `--quality` 参数切到质量档，`run.py` 顶部各放一个常量；两个模型都写进 `solution.yaml` 的 `models`
+- 切档参数统一：默认用默认档的 demo 提供 `--quality`（切到质量档）；默认用质量档的 demo 提供 `--cheap`（切回默认档，对比成本）。`run.py` 顶部各放一个常量，两个模型都写进 `solution.yaml` 的 `models`
 - 默认档的单次输入超过 32K Token 后，单价约变成 3 倍。长输入（如 1 小时录音的逐字稿）要么分段，要么在 README 里按实际档位算成本
 - 更高一档 `qwen3.7-plus`（2 / 8）、旗舰 `qwen3.8-max`（12 / 36）只在 README 里作为可选项提及，参考 demo 不默认用
 - 来源：[视觉理解](https://help.aliyun.com/zh/model-studio/vision)（思考模式默认值）· [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing)，查证 2026-10-01
@@ -183,7 +183,7 @@ python3 run.py --region ap-southeast-1   # 临时切地域
 | 同声传译 | `qwen3.8-livetranslate-flash-realtime` | Realtime WebSocket（业务空间专属域名）；RPM 10 | 音频入 40 / 54.688，图片入 3.3 / 4.01，文本出 100 / 145.835，音频出 160 / 218.752；音频入每秒 7 Token、出每秒 12.5 Token | [模型页](https://help.aliyun.com/zh/model-studio/qwen3-8-livetranslate-flash-realtime) |
 | 拍照问答 / 图片理解 | 默认档 `qwen3.7-flash`（原生多模态，两地支持 Function Calling）；质量档 `qwen3.8-flash`；带语音提问时用 `qwen3.8-omni-flash`（音频 + 图片一次输入） | OpenAI 兼容；本地图 Base64 Data URI；每 32×32 像素约 1 Token | `qwen3.7-flash` ≤32K 入 0.2 / 0.225、出 0.8 / 0.974；`qwen3.8-omni-flash` 入 0.8 / 1.094、出 2.7 / 3.427 | [视觉理解](https://help.aliyun.com/zh/model-studio/vision) · 模型价格 |
 | 文本对话 / 摘要 | 默认档 `qwen3.7-flash`；质量档 `qwen3.8-flash`（见上一小节） | OpenAI 兼容；传 `enable_thinking: false` | 见上一小节 | 模型价格 |
-| 工具调用 / 多轮编排 | 默认档 `qwen3.7-flash`；多轮编排、参数复杂时用质量档 `qwen3.8-flash`；再往上 `qwen3.7-plus`（`qwen3.8-max` 为旗舰） | OpenAI 兼容 Function Calling；传 `enable_thinking: false` | plus 入 2 / 2.998、出 8 / 11.991；max 入 12 / 14.988、出 36 / 44.965 | [Function Calling](https://help.aliyun.com/zh/model-studio/qwen-function-calling) · 模型价格 |
+| 工具调用 / 多轮编排 | 多轮编排默认用质量档 `qwen3.8-flash`（`--cheap` 切默认档 `qwen3.7-flash`）；单次工具调用用默认档即可；再往上 `qwen3.7-plus`（`qwen3.8-max` 为旗舰） | OpenAI 兼容 Function Calling；传 `enable_thinking: false` | plus 入 2 / 2.998、出 8 / 11.991；max 入 12 / 14.988、出 36 / 44.965 | [Function Calling](https://help.aliyun.com/zh/model-studio/qwen-function-calling) · 模型价格 |
 
 几条容易踩的坑：
 
@@ -246,8 +246,8 @@ python3 solutions/demo-standard/check.py sync   # 改完模板公共件后同步
 
 - **v0.2（2026-10-01）**：
   - 地址：填了 `DASHSCOPE_WORKSPACE_ID` 时，`demo_kit` 的全部 HTTP / WebSocket 地址（OpenAI 兼容、DashScope 原生 HTTP、任务制 WebSocket 的流式 ASR / TTS、Realtime）都走业务空间专属域名；新增 `Config.ws_root()` / `workspace_host()` / `shared_api_base()`；`realtime_url()` 没填业务空间 ID 时改走通用域名（必须专属域名的模型仍由 `need_workspace=True` 拦下）
-  - 文本模型分两档：默认档 `qwen3.7-flash`，质量档 `qwen3.8-flash`，统一用 `--quality` 切换
-  - 成本可以写成区间（`finish(cost=(下限, 上限))`）；`fmt_cny` 不再输出科学计数法；`HttpError` 带 `status`（HTTP 状态码）
+  - 文本模型分两档：默认档 `qwen3.7-flash`，质量档 `qwen3.8-flash`；多轮工具编排默认用质量档；切档参数统一为 `--quality` / `--cheap`
+  - 成本可以写成区间（`finish(cost=(下限, 上限))`）；`fmt_cny` 小于 0.0001 元时不再输出科学计数法，其余输出与 v0.1 相同；`HttpError` 带 `status`（HTTP 状态码）
   - VERIFY.md 增加「待实测」清单
   - `check.py` 增加下线模型、快照名、清单与代码一致、写死域名四项检查
   - 用官方 SDK 的 demo 要求 `dashscope>=1.26.5`
