@@ -251,7 +251,7 @@
 ## 七、阿里云 OSS AI 内容感知公开案例
 
 - **产品介绍**：[OSS AI 内容感知产品页](https://help.aliyun.com/zh/oss/user-guide/ai-content-awareness)
-- **产品纪录片**（推荐观看）：[看见生活，懂得守护——通义实验室 x 云存储打造 IPC 行业的智能新标杆](https://www.bilibili.com/video/BV16d6vBAEJt/)
+- **产品纪录片**（推荐观看）：[看见生活，懂得守护：通义X云存储打造IPC行业的智能新标杆](https://developer.aliyun.com/live/255628)
 - **行业案例频道**：[阿里云行业案例](https://www.aliyun.com/customer)
 
 ---

@@ -199,7 +199,7 @@
 - **能做（本仓 demo）**：自然语言收成技能列表；禁动作拒绝；超力矩改写
 - **不能做（本仓 demo）**：真实 VLA 推理与实机下发
 - **官方仓库已写明**：Qwen-RobotManip、Qwen-RobotNav 目前没有发布模型权重的计划。见 [Manip 仓库](https://github.com/QwenLM/Qwen-RobotManip) 与 [Nav 仓库](https://github.com/QwenLM/Qwen-RobotNav)（查证 2026-09-30）
-- **待核实**：百炼或其他公有云上是否提供可调用 API。`QwenLM/Qwen-RobotWorld` 于查证日不是有效仓库页，公开代码仓库地址待核实
+- **待核实**：百炼或其他公有云上是否提供可调用 API。公开代码仓库地址待核实（[arXiv 2606.17030](https://arxiv.org/abs/2606.17030)）
 
 ## 十二、官方文档与 SDK 链接
 
@@ -208,7 +208,7 @@
 - [Qwen-RobotManip 仓库](https://github.com/QwenLM/Qwen-RobotManip)（查证 2026-09-30）
 - [Qwen-RobotNav 仓库](https://github.com/QwenLM/Qwen-RobotNav)（查证 2026-09-30）
 - [Qwen-RobotManip 技术报告](https://arxiv.org/abs/2606.17846)（查证 2026-09-30）
-- Qwen-RobotWorld 公开代码仓库：待核实
+- Qwen-RobotWorld（[arXiv 2606.17030](https://arxiv.org/abs/2606.17030)）公开代码仓库：待核实
 - 可调用的云 API / SDK：待核实
 
 ---
