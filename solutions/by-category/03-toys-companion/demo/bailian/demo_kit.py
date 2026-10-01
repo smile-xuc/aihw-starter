@@ -123,7 +123,7 @@ class Config:
 def add_standard_args(parser: argparse.ArgumentParser) -> None:
     """所有百炼 demo 共有的三个参数。"""
     parser.add_argument("--mock", action="store_true", help="强制离线 mock：不联网、不需要 Key（CI 用）")
-    parser.add_argument("--region", choices=sorted(REGIONS), help="临时覆盖 .env 里的 DASHSCOPE_REGION")
+    parser.add_argument("--region", choices=sorted(REGIONS), help="临时覆盖 .env 里的 DASHSCOPE_API_REGION")
     parser.add_argument("--record", action="store_true", help="真跑成功后把验证记录追加到 VERIFY.md")
 
 
@@ -131,9 +131,11 @@ def resolve(args: argparse.Namespace, demo_dir: Path, need_workspace: bool = Fal
     """决定 live / mock。没有 Key → 自动 mock；有 Key 但配置不全 → 报错退出，不静默降级。"""
     for path in env_files(demo_dir):
         load_dotenv(path)
-    region = (args.region or os.getenv("DASHSCOPE_REGION") or DEFAULT_REGION).strip()
+    # 变量名与官方 dashscope SDK 一致；DASHSCOPE_REGION 是早期写法，仍兼容
+    region = (args.region or os.getenv("DASHSCOPE_API_REGION") or os.getenv("DASHSCOPE_REGION")
+              or DEFAULT_REGION).strip()
     if region not in REGIONS:
-        sys.exit(f"DASHSCOPE_REGION={region!r} 不支持，可选：{' / '.join(REGIONS)}")
+        sys.exit(f"DASHSCOPE_API_REGION={region!r} 不支持，可选：{' / '.join(REGIONS)}")
     key = os.getenv("DASHSCOPE_API_KEY", "")
     workspace = os.getenv("DASHSCOPE_WORKSPACE_ID", "").strip()
 

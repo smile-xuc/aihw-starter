@@ -84,7 +84,7 @@
 
 ## 地域
 
-| 地域 | `.env` 里的 `DASHSCOPE_REGION` | Realtime 地址 |
+| 地域 | `.env` 里的 `DASHSCOPE_API_REGION` | Realtime 地址 |
 |---|---|---|
 | 华北2（北京） | `cn-beijing` | `wss://{业务空间ID}.cn-beijing.maas.aliyuncs.com/api-ws/v1/realtime` |
 | 新加坡 | `ap-southeast-1` | `wss://{业务空间ID}.ap-southeast-1.maas.aliyuncs.com/api-ws/v1/realtime` |
