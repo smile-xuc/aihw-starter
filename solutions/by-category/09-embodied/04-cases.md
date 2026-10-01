@@ -35,6 +35,9 @@
 | **UR e-Series** | Universal Robots | 协作臂 | 多为第三方视觉 / VLA 集成 | 产线抓取装配生态 | 2025-05-12 更名 UR7e；经销商约 $38k+（第三方，官方不公开统一标价） |
 | **AUBO-i5 级** | 遨博 | 协作臂 | 方案商集成 | 性价比协作抓取 | 臂展 886.5 mm；价格为估算约 $6k–$10k |
 | **Qwen-Robot Suite** | 阿里通义 | 模型套件 | RobotNav / Manip / World | 语言优先工具接口 | 以官方发布为准 |
+| **Walker S2** | 优必选（UBTECH） | 工业人形 | 厂商称 BrainNet 2.0 + Co-Agents；基座模型未公开 | 3 分钟内自主换电；负载 15 kg | 单价待核实（[产品页](https://www.ubtrobot.com/en/humanoid/products/walker-s2)，查证 2026-09-30） |
+| **绝影 X30** | 云深处（DEEP Robotics） | 工业四足 | 未公开 | IP67；-20℃至 55℃；续航 2.5–4 h | 单价待核实（[产品页](https://www.deeprobotics.cn/en/index/product3.html)，查证 2026-09-30） |
+| **远征 A2** | 智元（AgiBot） | 交互服务人形 | 英文页写 large language models + RAG | 全双工对话、企业知识库 | A2 单款待核实；系列 ¥168,000 CNY 起（[中文页](https://www.agibot.com.cn/article/188/detail/107.html)，查证 2026-09-30） |
 
 ### 形态路线图
 
@@ -80,6 +83,36 @@
 - **公开信息源**：[Qwen-RobotManip 博客](https://www.alibabacloud.com/blog/qwen-robotmanip-alignment-unlocks-scale-for-robotic-manipulation-foundation-models_603267) · [Qwen-Robot Suite](https://www.alibabacloud.com/blog/qwen-robot-suite-a-foundation-model-suite-for-physical-world-intelligence_603262) · [品类解读](../../by-solution/05-qwen-robot.md)（查证 2026-09-30）
 - **亮点**：博客写 RoboChallenge Table30 v1 成功率 45%，排名第一
 - **可借鉴点**：用公开基准选模型，仍要用自有工位回归；Safety Gate 不可省
+
+### 案例：Walker S2（优必选 / UBTECH）— 工业人形量产交付
+
+- **公开信息源**：[产品页](https://www.ubtrobot.com/en/humanoid/products/walker-s2) · [PR Newswire（2025-11-17）](https://www.prnewswire.co.uk/news-releases/ubtech-humanoid-robot-walker-s2-begins-mass-production-and-delivery-with-orders-exceeding-800-million-yuan-302616978.html)（查证 2026-09-30）
+- **形态**：全尺寸双足工业人形。产品页写 3 分钟内自主换电，负载 15 kg，腰部 ±162°，纯 RGB 双目立体视觉
+- **技术路线**：产品页写 BrainNet 2.0 + Co-Agents。厂商称 Co-Agent 为自研工业智能体。基座模型未公开
+- **亮点**：新闻稿（2025-11-17）称首批数百台开始量产交付
+- **公开数据**：单价待核实。2025 年初以来 Walker 系列累计订单超过 ¥800,000,000 CNY（新闻稿 2025-11-17）
+- **可借鉴点**：产品页写 3 分钟内自主换电、负载 15 kg、腰部 ±162°，以及纯 RGB 双目立体视觉
+- **另见**：[Walker S2 商业产品卡][emb]
+
+### 案例：绝影 X30（云深处 / DEEP Robotics）— 工业四足
+
+- **公开信息源**：[产品页](https://www.deeprobotics.cn/en/index/product3.html) · [中新网上海（2023-10-11）](https://www.sh.chinanews.com.cn/kjjy/2023-10-11/116934.shtml)（查证 2026-09-30）
+- **形态**：行业级四足。规格表写 IP67、-20℃至 55℃、续航 2.5–4 h、里程 ≥10 km、重量 59 kg。产品页写可上下 45° 楼梯，电池可快换
+- **技术路线**：产品页写融合感知和自主巡检。大模型方案未公开
+- **亮点**：中新网上海 2023-10-11 报道发布，场景包括电站、工厂、管廊巡检
+- **公开数据**：单价待核实。公开项目价 / 标案未见
+- **可借鉴点**：防护、温度、续航以官方规格表为准；没有公开标价就不补数字
+- **另见**：[绝影 X30 商业产品卡][emb]
+
+### 案例：远征 A2（智元 / AgiBot）— 交互服务人形
+
+- **公开信息源**：[英文产品页](https://www.agibot.com/products/A2) · [官方中文介绍](https://www.agibot.com.cn/article/188/detail/107.html)（查证 2026-09-30）
+- **形态**：全尺寸人形。英文页：身高 169 cm、体重 69 kg、电池 700 Wh、续航 2 h、主动自由度 40+。中文页：灵巧手 19 个自由度；2024-08-18 发布，2024-12-16 量产
+- **技术路线**：英文页写 large language models、全双工对话、端侧部署，并结合 RAG 做企业知识库。具体模型名未公开
+- **亮点**：对话方案和知识库都写在英文产品页
+- **公开数据**：A2 单款价待核实。中文页写远征系列售价 ¥168,000 CNY 起、累计出货约 1,000 台，均为系列口径
+- **可借鉴点**：系列售价不能写成 A2 单款价
+- **另见**：[远征 A2 商业产品卡][emb]
 
 ---
 

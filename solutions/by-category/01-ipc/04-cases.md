@@ -66,6 +66,26 @@
 - **可借鉴点**：待核实
 - **另见**：[Ring 商业产品卡][ipc] · [Nest 商业产品卡][ipc]
 
+### 案例：Wyze Duo Cam Doorbell（Wyze）— 双摄门铃与描述式提醒
+
+- **公开信息源**：[商品页](https://www.wyze.com/products/wyze-duo-cam-doorbell) · [Cam Unlimited Pro](https://www.wyze.com/products/cam-unlimited-pro)（查证 2026-09-30）
+- **形态**：电池双摄门铃。商品描述写人和包裹两个画面、2K，规格写 microSD 最大 256 GB
+- **技术路线**：描述式提醒和 AI 视频搜索写在 Cam Unlimited Pro 里。订阅页写该档兼容除 Wyze Cam v1、Wyze Video Doorbell v1、Wyze Cam Outdoor v1/v2 以外的机型。基座模型未公开
+- **亮点**：订阅页 Descriptive Alerts 举例原文 "Black bear in trash bin detected at 9:12 PM."
+- **公开数据**：现价 $119.98 USD。Cam Unlimited Pro $19.99 USD/月或 $199.99 USD/年，覆盖全部摄像头，最多 60 天云录像（查证 2026-09-30）
+- **可借鉴点**：门铃硬件价和描述式提醒订阅价分开标
+- **另见**：[Wyze Duo Cam Doorbell 商业产品卡][ipc]
+
+### 案例：Tapo D260（Tapo / TP-Link）— 端侧检测与可选 AI 订阅
+
+- **公开信息源**：[商品页](https://www.tapo.com/us/product/smart-doorbell/tapo-d260/) · [美国官方商店](https://us.store.tapo.com/products/tapo-d260) · [Tapo Care](https://www.tp-link.com/us/tapocare/) · [Tapo Care FAQ](https://www.tapo.com/us/faq/101/)（查证 2026-09-30）
+- **形态**：4K 可视门铃，180° 从头到脚视角，电池或有线。商品页写雷达移动侦测、microSD 最大 512 GB
+- **技术路线**：商品页写端侧识别与人脸档案存在设备上；智能摘要、AI Chat 在 Cloud Advanced AI 订阅档。FAQ 写 Aireal 相关套餐仍按地区和账号逐步推出。基座模型未公开
+- **亮点**：人、动物、车辆、包裹检测写在商品页，标注不另收费
+- **公开数据**：商店现价 $219.99 USD。Tapo Care：Cloud $3.49 USD/月或 $34.99 USD/年（最多 2 台）；Cloud Advanced $11.99 USD/月或 $119.99 USD/年（不限台数）；Cloud Advanced AI $19.99 USD/月或 $199.99 USD/年。首发价与 MSRP 待核实（查证 2026-09-30）
+- **可借鉴点**：端侧检测与云端摘要分成两层，订阅档按台数和 AI 功能分开标价
+- **另见**：[Tapo D260 商业产品卡][ipc]
+
 ---
 
 ## 三、头部方案商 / ODM 的 AI 打包能力
@@ -217,6 +237,15 @@
 - **可借鉴点**：待核实
 - **另见**：[eufy 商业产品卡][ipc]
 
+### 案例：Reolink Home Hub 2（Reolink）— 端侧 AI 家用中枢
+
+- **公开信息源**：[Reolink IFA 2026 新闻稿](https://reolink.com/blog/reolink-new-release-at-ifa/) · [T3（2026-09-07）](https://www.t3.com/home-living/smart-home/reolink-launches-new-smart-home-hub-with-smarter-ai-powered-security-features)（查证 2026-09-30）
+- **形态**：家用安防中枢。新闻稿写最多接入 8 台 Reolink 摄像机，外接存储最大 16 TB
+- **技术路线**：新闻稿称 ReoNeura 为 "on-device AI engine"，检测与分析不依赖云订阅。Local AI Video Search 用自然语言描述在本地检索录像。Custom AI Detection 需固件更新，新闻稿写最早 2026-12。新闻稿写可接入 Alexa、Google Home、Home Assistant、Homey、IFTTT
+- **亮点**：本地自然语言检索录像，新闻稿写不需要云订阅
+- **公开数据**：新闻稿写 fall 上市，价格 $199.99 USD。T3 写数周内到货，价格 £149.99 GBP（文中另写 around $200，为媒体换算）。上市状态：待核实（查证 2026-09-30）
+- **可借鉴点**：检索放在本地中枢，官方表述是 on-device AI engine；媒体价与新闻稿价同时保留并注明出处
+
 ---
 
 ## 七、阿里云 OSS AI 内容感知公开案例
@@ -231,11 +260,12 @@
 
 欢迎社区贡献以下方向的公开案例：
 
-- [ ] 户外门铃品类的 AI 智能摘要案例（对标 Ring Video Doorbell）
-- [ ] 出海 IPC 在欧美市场对抗 Ring/Nest 的具体打法（订阅结构 / 定价 / 转化）
+- [x] 户外门铃品类的 AI 智能摘要案例（Wyze Duo Cam Doorbell）
+- [x] 出海 IPC 在欧美市场的订阅结构与定价（Tapo D260 + Tapo Care）
 - [ ] 商用 IPC 的事件分析订阅模式（连锁零售 / 工业巡检）
 - [ ] 私域监控（小店、工作室）的轻量 AI 升级
-- [ ] 政企/工业 IPC 的 AI 边缘部署方案（除 Eufy 外的本地大模型架构）
+- [x] 除 eufy 外的本地端侧 AI 架构（Reolink Home Hub 2；官方称 on-device AI engine）
+- [ ] 政企/工业 IPC 的 AI 边缘部署方案
 - [ ] 头部 ODM（技威/九安/乔安等）为品牌方的分润白牌案例细节
 - [ ] 更多 AI 视觉可穿戴案例（对标 Looki / Humane AI Pin / Rabbit R1）
 
@@ -244,7 +274,7 @@
 [ipc]: ../../../awesome/commercial-products/by-category/01-ipc.md
 
 **版本**：千问大模型方案
-**更新日期**：2026-07
+**更新日期**：2026-09
 
 <!-- FOOTER:START -->
 

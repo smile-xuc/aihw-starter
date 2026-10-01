@@ -90,11 +90,56 @@
 
 ---
 
+### Wyze Duo Cam Doorbell（Wyze）
+
+- **上市状态**：在售（美国官方商店，查证 2026-09-30）
+- **官网/渠道**：<https://www.wyze.com/products/wyze-duo-cam-doorbell>；订阅 <https://www.wyze.com/products/cam-unlimited-pro>
+- **形态**：电池供电双摄可视门铃。商品描述写人和包裹两个画面、2K、本地存储、双向对讲。规格写 microSD 最大 256 GB（exFAT）
+- **定价**：
+  - 首发价：待核实
+  - 现价：$119.98 USD · 美国 · [官方商店](https://www.wyze.com/products/wyze-duo-cam-doorbell) · 查证 2026-09-30。加电池款 $138.98 USD（同页划线 $142.97 USD）
+  - MSRP：同现价（同页 Regular price 与 Deal 均为 $119.98 USD）
+  - 订阅：Cam Unlimited Pro $19.99 USD/月或 $199.99 USD/年，覆盖全部摄像头；含最多 60 天云录像、Descriptive Alerts、AI Video Search · [订阅页](https://www.wyze.com/products/cam-unlimited-pro) · 查证 2026-09-30
+- **目标市场**：家用门铃与包裹看护
+- **AI 能力**：商品页写实时 AI 检测与告警。订阅页 Descriptive Alerts 举例原文 "Black bear in trash bin detected at 9:12 PM."；AI Video Search 可按相关度或日期排序。订阅页写 Cam Unlimited Pro 兼容除 Wyze Cam v1、Wyze Video Doorbell v1、Wyze Cam Outdoor v1/v2 以外的 Wyze Cams
+- **大模型方案**：官网未公开具体基座模型（非千问默认绑定）
+- **公开数据**：未见公开销量
+- **关键差异化**：① 双摄分开看人和包裹；② 描述式提醒与视频搜索放在 Cam Unlimited Pro；③ 本地 microSD 与云录像并存
+- **商业模式**：硬件销售 + Cam Unlimited Pro 订阅
+- **另见**：[公开案例](../../../solutions/by-category/01-ipc/04-cases.md)
+
+> 来源：[Wyze Duo Cam Doorbell 商品页](https://www.wyze.com/products/wyze-duo-cam-doorbell) · [Cam Unlimited Pro](https://www.wyze.com/products/cam-unlimited-pro)（均查证 2026-09-30）
+
+---
+
+### Tapo D260（Tapo / TP-Link）
+
+- **上市状态**：在售（美国官方商店，查证 2026-09-30）
+- **官网/渠道**：<https://www.tapo.com/us/product/smart-doorbell/tapo-d260/>；商店 <https://us.store.tapo.com/products/tapo-d260>；Tapo Care <https://www.tp-link.com/us/tapocare/>
+- **形态**：4K 可视门铃，180° 从头到脚视角，电池或有线。商品页写雷达移动侦测、microSD 最大 512 GB，并称无线续航最长 180 天
+- **定价**：
+  - 首发价：待核实（商品页与商店页均未标注首发价）
+  - 现价：$219.99 USD · 美国 · [官方商店](https://us.store.tapo.com/products/tapo-d260) · 查证 2026-09-30
+  - MSRP：待核实（页面未写 MSRP）
+  - 订阅：[Tapo Care](https://www.tp-link.com/us/tapocare/) · 查证 2026-09-30。Cloud 最多 2 台 $3.49 USD/月或 $34.99 USD/年；Cloud Advanced 不限台数 $11.99 USD/月或 $119.99 USD/年；Cloud Advanced AI $19.99 USD/月或 $199.99 USD/年（含 AI Chat、Facial Recognition、Intelligent Notifications、Intelligent Summaries）
+- **目标市场**：美国市场家用门铃。[FAQ](https://www.tapo.com/us/faq/101/) 写由 Aireal 支持的 Cloud / Cloud Advanced / Advanced AI 仍按地区和账号逐步推出
+- **AI 能力**：商品页写端侧识别家人、朋友和常客，人脸档案存在设备上、不上传；人、动物、车辆、包裹检测不另收费。Cloud Advanced AI 档含智能摘要与 AI Chat；订阅页写可让 Aireal 检索画面
+- **大模型方案**：官网未公开具体基座模型（非千问默认绑定）
+- **公开数据**：未见公开销量
+- **关键差异化**：① 端侧检测与人脸识别不另收费；② 智能摘要和 AI Chat 在 Cloud Advanced AI 档；③ 本地 microSD 与可选云存并存
+- **商业模式**：硬件销售 + 可选 Tapo Care 订阅
+- **另见**：[公开案例](../../../solutions/by-category/01-ipc/04-cases.md)
+
+> 来源：[Tapo D260 商品页](https://www.tapo.com/us/product/smart-doorbell/tapo-d260/) · [美国官方商店](https://us.store.tapo.com/products/tapo-d260) · [Tapo Care](https://www.tp-link.com/us/tapocare/) · [Tapo Care FAQ](https://www.tapo.com/us/faq/101/)（均查证 2026-09-30）
+
+---
+
 ## 待补充清单
 
 - [ ] TP-LINK / 小米 / 360 / 乐橙 国内 SKU 卡片
-- [ ] Arlo Secure / Wyze Cam Plus
-- [ ] Reolink / Lorex 偏专业家用
+- [x] Wyze Duo Cam Doorbell / Cam Unlimited Pro
+- [ ] Arlo Secure
+- [ ] Lorex 偏专业家用（Reolink Home Hub 2 案例见 [04-cases](../../../solutions/by-category/01-ipc/04-cases.md)；官方写 fall 上市，未单列商业卡）
 
 ## 贡献指引
 

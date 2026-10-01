@@ -111,11 +111,42 @@
 - **商业模式**：新闻稿写 Club Moflin 年费 ¥6,600 JPY（含税）。维修、清洁、毛皮更换是否都含在年费里，以新闻稿表格为准，此处不另扩写
 - **可借鉴点**：目前少见的「陪伴硬件 + 付费会员」探索——将订阅包装为「宠物保养服务」而非「聊天月费」，规避了服务订阅的心智门槛；高客单 + 情感黏性人群先行，可作为国内厂商观察订阅可行性的参照
 
+### 案例：Curio Grem / Gabbo（Curio Interactive）— 无屏 AI 毛绒
+
+- **公开信息源**：[官网首页](https://heycurio.com/) · [Grem 单品页](https://heycurio.com/products/v2/grem-2) · [FAQ](https://heycurio.com/faq)（查证 2026-09-30）
+- **形态**：会说话的 AI 毛绒，无屏，靠 App 配置。Grem 页写 3 岁以上、screen-free。FAQ 写主要面向 3 至 12 岁
+- **技术路线**：未公开
+- **亮点**：FAQ 原文 "Free chat and baseline features will always be available"。Grem 页写 "no subscription"
+- **公开数据**：现价 $119 USD，MSRP $150 USD（查证 2026-09-30）
+- **可借鉴点**：基础对话写在购机之后持续可用
+- **另见**：[Curio 商业产品卡][toy]
+
+### 案例：Miko Mini（Miko）— 带屏儿童机器人与内容订阅
+
+- **公开信息源**：[Miko Mini](https://miko.ai/products/miko-mini) · [Miko 3](https://miko.ai/products/miko-3) · [Miko Max](https://miko.ai/products/miko-max) · [FAQ](https://miko.ai/pages/miko-3-faqs) · [Google Cloud 客户案例](https://cloud.google.com/customers/miko-ai)（查证 2026-09-30）
+- **形态**：带屏的小型桌面儿童陪伴机器人
+- **技术路线**：FAQ 称 Miko Mini 为 "GPT-powered conversational learning robot"，未写具体型号。Google Cloud 案例把 Gemini 写在儿童交互安全一节，结果栏写加快发布周期，并写识别与减少幻觉
+- **亮点**：硬件与 Miko Max 订阅分开标价
+- **公开数据**：Miko Mini 现价 $149.00 USD（Regular price $199.00 USD）；Miko 3 $299.00 USD；Miko Max $89.00 USD/年（Regular price $99.00 USD），月付 $14.99 USD。首发价待核实（查证 2026-09-30）
+- **可借鉴点**：对话方案和安全层分别有公开出处，不要合成成一个模型名
+- **另见**：[Miko Mini 商业产品卡][toy]
+
+### 案例：ポケとも（シャープ / Sharp）— 口袋机器人与月费
+
+- **公开信息源**：[新闻稿（2025-10-27）](https://corporate.jp.sharp/news/251027-a.html) · [官方博客（2026-08-27）](https://blog.jp.sharp/2026/08/27/59555/) · [产品站](https://poketomo.com/)（查证 2026-09-30）
+- **形态**：猫鼬造型口袋机器人，配合手机 App。新闻稿写相机 5M AF、伺服电机脸 2 个与手臂 2 个。第 1 弹 2025-12-05 发售（原定 2025-11-21，新闻稿有修正说明）。第 2 弹博客写预计 2026-12
+- **技术路线**：产品站写使用生成 AI 进行对话，未写模型名
+- **亮点**：产品站写对话并记住用户、按摄像头内容聊天、写日记、Google 日历联动，以及两台之间对话
+- **公开数据**：新闻稿写本体オープン価格，服务费 ¥495 JPY/月起（含税）。博客写第 2 弹 COCORO STORE ¥49,500 JPY（含税），服务费与第 1 弹相同。第 1 弹零售价待核实（查证 2026-09-30）
+- **可借鉴点**：硬件标价与月费分开；生成 AI 有产品站原文，模型名没有
+- **另见**：[ポケとも商业产品卡][toy]
+
 ## 五、待补充清单（欢迎 PR）
 
 - [ ] 火火兔、贝乐虎、奥飞娱乐等传统早教/玩具品牌的 AI 化公开路线
 - [ ] 牛听听、喜马拉雅小雅 nano 等听学产品的公开 AI 能力描述
-- [ ] 海外案例：Curio（Grok 驱动毛绒玩具）、Joy For All 等
+- [x] 海外案例：Curio Grem / Gabbo
+- [ ] Joy For All 等海外案例
 - [ ] 欧洲市场「声音克隆 + 月订阅」模式的可核实案例（此前收录的相关条目因无法核实公司名已移除，欢迎提供公开信源后重新收录）
 
 ---
@@ -123,7 +154,7 @@
 [toy]: ../../../awesome/commercial-products/by-category/03-toys-companion.md
 
 **版本**：千问大模型方案
-**更新日期**：2026-08
+**更新日期**：2026-09
 
 <!-- FOOTER:START -->
 
