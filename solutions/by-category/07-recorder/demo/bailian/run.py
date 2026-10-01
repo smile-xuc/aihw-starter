@@ -4,10 +4,11 @@
 模拟一张 AI 录音卡：会后把录音交给云端，拿回「谁说了什么」和结构化纪要。
   录音（录音文件或麦克风）
   → 转写 + 说话人分离：
-      ≤5 分钟的 WAV / MP3：qwen-audio-3.1-asr-flash 同步接口，本地文件直接 Base64
+      ≤3 分钟的 WAV / MP3：qwen-audio-3.1-asr-flash 同步接口，本地文件直接 Base64
       更长或其他格式：百炼临时存储（oss://，48 小时）→ qwen-audio-3.1-asr-flash-filetrans 异步任务
+      （同步接口单次最多输出 1,024 Token，demo 只把 ≤3 分钟的录音交给它）
       --audio-url：公网 URL → qwen-audio-3.1-asr-flash-filetrans 异步任务（≤12 小时）
-  → 纪要：qwen3.8-flash（OpenAI 兼容，流式 JSON）
+  → 纪要：qwen3.7-flash（OpenAI 兼容，流式 JSON，关闭思考）
   → 手机 App 纪要卡片：out/minutes.md + out/minutes.json + out/transcript.txt
 
 一条命令：
@@ -31,22 +32,23 @@ from pathlib import Path
 import demo_kit as kit
 
 DEMO_DIR = Path(__file__).resolve().parent
-ASR_MODEL = "qwen-audio-3.1-asr-flash"                  # 同步：本地文件 Base64，≤5 分钟，编码后 ≤10 MB
+ASR_MODEL = "qwen-audio-3.1-asr-flash"                  # 同步：本地文件 Base64，编码后 ≤10 MB，单次输出 ≤1,024 Token
 ASR_FILE_MODEL = "qwen-audio-3.1-asr-flash-filetrans"   # 异步：公网 URL 或 oss:// 临时 URL，≤12 小时
-LLM_MODEL = "qwen3.8-flash"
+LLM_MODEL = "qwen3.7-flash"
 SAMPLE_AUDIO = DEMO_DIR / "samples" / "meeting.mp3"
 MAX_BASE64_BYTES = 10 * 1024 * 1024
-SYNC_MAX_SECONDS = 300
-MP3_SYNC_MAX_BYTES = 1_200_000                          # 按 32 kbps 估算约 5 分钟；更大的 MP3 改走异步
+SYNC_MAX_SECONDS = 180                                  # 官方上限 5 分钟，但密集讲话 3 分钟以上可能超出 1,024 Token
+MP3_SYNC_MAX_BYTES = 720_000                            # 按 32 kbps 估算约 3 分钟；更大的 MP3 改走异步
 AUDIO_TYPES = {".wav": ("wav", "audio/wav"), ".mp3": ("mp3", "audio/mpeg")}
 POLL_SECONDS, POLL_TIMEOUT = 2, 600
 TOKENS_PER_SECOND_GUESS = 25  # 官方未写 3.1 ASR 的秒数折算；接口没返回 Token 数时才用它粗估
 
 # 元 / 百万 Token。来源：https://help.aliyun.com/zh/model-studio/model-pricing（查证 2026-10-01）
-# qwen-audio-3.1-asr-flash(-filetrans) 与 qwen3.8-flash 同价。
-PRICES = {
-    "cn-beijing": {"in": 0.8, "out": 2.7},
-    "ap-southeast-1": {"in": 1.094, "out": 3.427},
+ASR_PRICES = {"cn-beijing": (0.8, 2.7), "ap-southeast-1": (1.094, 3.427)}
+# qwen3.7-flash 按单次输入 Token 分档（0<Token≤32K / ≤256K / ≤1M）：(上限, 输入, 输出)
+LLM_TIERS = {
+    "cn-beijing": [(32_000, 0.2, 0.8), (256_000, 0.6, 2.4), (1_000_000, 1.2, 4.8)],
+    "ap-southeast-1": [(32_000, 0.225, 0.974), (256_000, 0.749, 2.998), (1_000_000, 1.499, 5.995)],
 }
 
 MINUTES_PROMPT = """你是会议纪要助手。输入是录音转写稿，每行格式为「[分:秒] 说话人N：内容」。
@@ -87,9 +89,10 @@ class Stats:
     notes: list[str] = field(default_factory=list)
 
     def cost(self, region: str) -> tuple[float, float]:
-        p = PRICES[region]
-        asr = (self.asr_tokens[0] * p["in"] + self.asr_tokens[1] * p["out"]) / 1e6
-        llm = (self.llm_tokens[0] * p["in"] + self.llm_tokens[1] * p["out"]) / 1e6
+        asr_in, asr_out = ASR_PRICES[region]
+        asr = (self.asr_tokens[0] * asr_in + self.asr_tokens[1] * asr_out) / 1e6
+        _, llm_in, llm_out = next((t for t in LLM_TIERS[region] if self.llm_tokens[0] <= t[0]), LLM_TIERS[region][-1])
+        llm = (self.llm_tokens[0] * llm_in + self.llm_tokens[1] * llm_out) / 1e6
         return asr, llm
 
 
@@ -122,9 +125,9 @@ def async_reason(audio: Path, force: bool) -> str | None:
     if suffix == ".wav":
         with wave.open(str(audio), "rb") as w:
             if w.getnframes() / w.getframerate() > SYNC_MAX_SECONDS:
-                return "超过 5 分钟"
+                return "超过 3 分钟"
     elif size > MP3_SYNC_MAX_BYTES:
-        return "MP3 较大，可能超过 5 分钟"
+        return "MP3 较大，可能超过 3 分钟"
     return None
 
 
@@ -308,7 +311,7 @@ def capture(args: argparse.Namespace) -> tuple[Path | None, str, float]:
 def main() -> None:
     ap = argparse.ArgumentParser(description="07 录音卡 / 会议盒子 · 百炼录音纪要参考 demo")
     kit.add_standard_args(ap)
-    ap.add_argument("--audio", type=Path, default=SAMPLE_AUDIO, help="本地录音；≤5 分钟的 WAV / MP3 走同步，其余自动走异步")
+    ap.add_argument("--audio", type=Path, default=SAMPLE_AUDIO, help="本地录音；≤3 分钟的 WAV / MP3 走同步，其余自动走异步")
     ap.add_argument("--audio-url", help="公网可访问的录音 URL（走异步 filetrans）")
     ap.add_argument("--long", action="store_true", help="本地录音强制走「临时上传 + 异步转写」")
     ap.add_argument("--mic", action="store_true", help="用麦克风录一段（回车结束，或配合 --seconds）")

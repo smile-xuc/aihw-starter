@@ -20,7 +20,7 @@
 
 | 栈 | 目录 | 场景 | 状态 |
 |---|---|---|---|
-| 百炼 | [`bailian/`](./bailian/) | 录音卡会后上传 → `qwen-audio-3.1-asr-flash` 转写并分离说话人 → `qwen3.8-flash` 生成纪要卡片 | 待真 Key 验证 |
+| 百炼 | [`bailian/`](./bailian/) | 录音卡会后上传 → `qwen-audio-3.1-asr-flash` 转写并分离说话人 → `qwen3.7-flash` 生成纪要卡片 | 待真 Key 验证 |
 
 ## 专题 demo
 

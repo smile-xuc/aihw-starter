@@ -17,16 +17,18 @@
 | 录音卡环节 | 默认（文件模拟） | 其他方式 |
 |---|---|---|
 | 会议录音 | `samples/meeting.mp3`：三人短会，54.8 s | `--audio my.m4a`（任意格式和时长，见下文路线）；`--mic`（需 `pip install -r requirements-device.txt`） |
-| 长录音上传 | 超过 5 分钟或非 WAV / MP3 的本地文件，自动传到百炼临时存储 | `--audio-url https://…`：设备已把录音传到自己的公网存储（量产常见做法是 OSS + STS 临时凭证） |
+| 长录音上传 | 超过 3 分钟或非 WAV / MP3 的本地文件，自动传到百炼临时存储 | `--audio-url https://…`：设备已把录音传到自己的公网存储（量产常见做法是 OSS + STS 临时凭证） |
 | 手机 App 纪要卡片 | `out/minutes.md`、`out/minutes.json`、`out/transcript.txt` | 量产时由业务服务端推送 |
 
 转写路线按录音自动选择，`[云端] 转写路线` 一行会写明原因：
 
 | 录音 | 路线 | 模型 |
 |---|---|---|
-| ≤5 分钟的 WAV / MP3（默认样本） | 同步接口，本地文件直接 Base64 | `qwen-audio-3.1-asr-flash` |
+| ≤3 分钟的 WAV / MP3（默认样本） | 同步接口，本地文件直接 Base64 | `qwen-audio-3.1-asr-flash` |
 | 更长、其他格式（m4a / aac / opus …），或加 `--long` | 百炼临时存储（`oss://`，48 小时）→ 异步任务 | `qwen-audio-3.1-asr-flash-filetrans` |
 | `--audio-url` | 公网 URL → 异步任务 | `qwen-audio-3.1-asr-flash-filetrans` |
+
+同步接口官方上限是 5 分钟，但单次最多输出 1,024 Token，密集讲话 3 分钟以上可能被截断，所以 demo 只把 ≤3 分钟的录音交给它。
 
 ## 预期输出（mock）
 
@@ -38,7 +40,7 @@
         [00:00] 说话人1：开个短会，今天就两件事：一是新款录音卡的试产排期，二是下周的客户拜访。
         [00:08] 说话人2：先说拜访。星云科技下周二见面，他们想先试点两百台，报价单我来准备。
         ……
-[云端] 纪要 qwen3.8-flash（流式）……
+[云端] 纪要 qwen3.7-flash（流式）……
 [App] 推送纪要卡片 → out/minutes.md（另存 minutes.json、transcript.txt）
         # 新款录音卡试产排期与客户拜访
         ## 决策
@@ -46,7 +48,7 @@
         ## 待办
         - [ ] 与麦克风阵列供应商确认交期 · 说话人3 · 周三前
         ……
-[统计] 录音结束 → 纪要首字 —（mock 不计时） · ¥0.0037（转写 ¥0.0017 + 纪要 ¥0.0019）
+[统计] 录音结束 → 纪要首字 —（mock 不计时） · ¥0.0023（转写 ¥0.0017 + 纪要 ¥0.00054）
 ```
 
 mock 的转写句子取自合成样本时记录的真实台词与时间轴，纪要内容是固定示意；真跑时两者都由模型生成。
@@ -55,7 +57,7 @@ mock 的转写句子取自合成样本时记录的真实台词与时间轴，纪
 
 ```text
 录音卡 / 手机 App
-  ├─ ≤5 分钟：POST {base}/api/v1/services/aigc/multimodal-generation/generation   ← 默认
+  ├─ ≤3 分钟：POST {base}/api/v1/services/aigc/multimodal-generation/generation   ← 默认
   │    model=qwen-audio-3.1-asr-flash，input_audio.data=data:audio/mpeg;base64,…
   │    parameters={format, speaker_diarization_enabled: true} → output.sentences[].speaker_id
   ├─ 长录音（本地文件）：GET https://dashscope.aliyuncs.com/api/v1/uploads?action=getPolicy&model=…filetrans
@@ -65,7 +67,7 @@ mock 的转写句子取自合成样本时记录的真实台词与时间轴，纪
   │    model=qwen-audio-3.1-asr-flash-filetrans，parameters={channel_id:[0], diarization_enabled:true}
   │    → GET {base}/api/v1/tasks/{task_id} 轮询 → 下载 transcription_url（24 小时内有效）
   └─ 纪要：POST {base}/compatible-mode/v1/chat/completions
-       model=qwen3.8-flash，stream=true，response_format=json_object，enable_thinking=false
+       model=qwen3.7-flash，stream=true，response_format=json_object，enable_thinking=false
 ```
 
 `{base}` 由 `.env` 决定：填了业务空间 ID 是 `https://{业务空间ID}.cn-beijing.maas.aliyuncs.com`（新加坡为 `ap-southeast-1`），否则是通用域名 `https://dashscope.aliyuncs.com`（新加坡 `https://dashscope-intl.aliyuncs.com`）。通用域名自 2026-09-30 起不再支持新特性，建议填业务空间 ID。上传凭证接口按官方示例走通用域名。
@@ -89,9 +91,9 @@ mock 的转写句子取自合成样本时记录的真实台词与时间轴，纪
 | 模型 | 华北2（北京）输入 / 输出 | 新加坡 输入 / 输出 |
 |---|---|---|
 | `qwen-audio-3.1-asr-flash`、`qwen-audio-3.1-asr-flash-filetrans` | 0.8 / 2.7 | 1.094 / 3.427 |
-| `qwen3.8-flash` | 0.8 / 2.7 | 1.094 / 3.427 |
+| `qwen3.7-flash`（单次输入 ≤32K；32K–256K 为 0.6 / 2.4，256K–1M 为 1.2 / 4.8） | 0.2 / 0.8 | 0.225 / 0.974 |
 
-- 成本按接口返回的 `usage` 计算。官方未写 3.1 ASR「每秒音频折合多少 Token」；接口没返回 Token 数时，demo 按每秒 25 Token 粗估并在 `[统计]` 里注明。按这个粗估，样本这样一段 55 秒短会，转写加纪要约 ¥0.004
+- 成本按接口返回的 `usage` 计算，纪要按输入 Token 所在档位计价。官方未写 3.1 ASR「每秒音频折合多少 Token」；接口没返回 Token 数时，demo 按每秒 25 Token 粗估并在 `[统计]` 里注明。按这个粗估，样本这样一段 55 秒短会，转写加纪要约 ¥0.002
 - 免费额度（各 100 万 Token）只适用于北京地域
 - 百炼临时存储免费，但 48 小时后失效、上传凭证接口限 100 QPS，官方注明不用于生产
 - 首字延迟 = 录音结束（开始上传）→ 纪要首个 token，主要花在上传与转写上；`[统计]` 一行给出分项
@@ -100,10 +102,9 @@ mock 的转写句子取自合成样本时记录的真实台词与时间轴，纪
 
 - **401 / 403**：Key 与地域不一致，或业务空间 ID 不属于这个 Key
 - **上传或转写 `oss://` 报 400 `invalid_parameter_error`**：缺 `X-DashScope-OssResourceResolve` 请求头（demo 已自动加），或临时地址已过 48 小时；403 `AccessDenied` 表示上传凭证过期，重跑即可
-- **同步转写报时长超限**：MP3 无法在本地准确判断时长，超过 5 分钟的录音加 `--long`
+- **同步转写报时长超限或结果不全**：MP3 无法在本地准确判断时长，超过 3 分钟的录音加 `--long`
 - **说话人只有一位**：说话人分离只支持单声道；双声道录音先转：`ffmpeg -i in.wav -ac 1 out.wav`
-- **纪要不是合法 JSON**：重跑一次；仍失败时把 `LLM_MODEL` 换成 `qwen3.7-plus` 对比
-- **想更省**：纪要模型可换 `qwen3.7-flash`（北京 ≤32K 输入 0.2、输出 0.8 元 / 百万 Token），改 `run.py` 顶部 `LLM_MODEL` 与 `solution.yaml` 即可
+- **纪要不是合法 JSON，或想要更强的纪要**：把 `LLM_MODEL` 换成 `qwen3.8-flash`（0.8 / 2.7）或 `qwen3.7-plus` 对比；改 `run.py` 顶部常量与单价表、`solution.yaml` 即可
 
 ## 合规提示
 
