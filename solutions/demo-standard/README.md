@@ -30,18 +30,20 @@ solutions/by-category/<品类>/demo/
 
 ## 二、统一配置：`.env.example`
 
-所有百炼 demo 的 `.env.example` 与 [`templates/bailian/.env.example`](./templates/bailian/.env.example) 逐字一致：
+所有百炼 demo 的 `.env.example` 与 [`templates/bailian/.env.example`](./templates/bailian/.env.example) 逐字一致。变量名与官方 dashscope Python SDK 一致：
 
 | 变量 | 必填 | 说明 |
 |---|---|---|
 | `DASHSCOPE_API_KEY` | 真跑必填 | 百炼控制台「密钥管理」创建；Key 与地域绑定 |
-| `DASHSCOPE_REGION` | 否 | `cn-beijing`（默认）或 `ap-southeast-1` |
-| `DASHSCOPE_WORKSPACE_ID` | 视模型 | 走业务空间专属域名时需要；`qwen3.8-omni-flash-realtime` 必须 |
+| `DASHSCOPE_API_REGION` | 否 | `cn-beijing`（默认）或 `ap-southeast-1`；早期写法 `DASHSCOPE_REGION` 仍兼容 |
+| `DASHSCOPE_WORKSPACE_ID` | 视模型 | 形如 `llm-xxx`，在控制台「业务空间管理」的 API Host 列；走业务空间专属域名时需要，`qwen3.8-omni-flash-realtime` 必须 |
 | `AIHW_VERIFIED_BY` | 否 | 验证人 GitHub ID，`--record` 时写入 |
 
+- Key、地域、业务空间三者必须属于同一地域，否则接口返回 401
 - `.env` 可放在 demo 目录或仓库根目录；根目录放一份，全部 demo 共用。`.env` 已被 `.gitignore` 忽略
 - 只读取 `DASHSCOPE_*` / `AIHW_*` 变量；空值、`xxx` / `your` 之类占位符一律视为未填
 - 有 Key 但缺必需的业务空间 ID 时直接报错退出，不静默降级成 mock
+- 用官方 SDK 的 demo 要显式把推导出的地址赋给 `dashscope.base_http_api_url` / `base_websocket_api_url`：SDK 在 `cn-beijing` 下默认仍走通用域名
 
 ## 三、一条启动命令
 
@@ -121,13 +123,17 @@ python3 run.py --region ap-southeast-1   # 临时切地域
 | 通用域名 | `https://dashscope.aliyuncs.com` · `wss://dashscope.aliyuncs.com` | `https://dashscope-intl.aliyuncs.com` · `wss://dashscope-intl.aliyuncs.com` |
 | 业务空间专属域名（官方推荐） | `{WorkspaceId}.cn-beijing.maas.aliyuncs.com` | `{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com` |
 | Realtime（`qwen3.8-omni-flash-realtime` 必须用专属域名） | `wss://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/api-ws/v1/realtime` | `wss://{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com/api-ws/v1/realtime` |
+| 任务制 WebSocket（CosyVoice / Qwen-Audio-TTS / Fun-ASR 等，`run-task`） | `wss://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/api-ws/v1/inference` | `wss://{WorkspaceId}.ap-southeast-1.maas.aliyuncs.com/api-ws/v1/inference` |
 | API Key | 只能调北京 | 只能调新加坡 |
-| 免费额度 | 多数模型各 100 万 Token（90 天） | 无 |
+| 免费额度 | 多数模型各 100 万 Token（90 天） | 中国站无（国际站账号在新加坡另有免费额度） |
 | 单价 | 基准 | 普遍更高，例如 `qwen3.8-flash` 输入 0.8 → 1.094 元 / 百万 Token |
+| 新加坡缺的 | — | `cosyvoice-v3.5-*`、`paraformer-*`、`qwen-audio-3.1-tts-flash`、多模态交互开发套件；Qwen-Audio-TTS 的 HTTP 接口只在北京，新加坡要走 WebSocket |
 
+- 通用域名「当前可继续使用」，但官方注明自 2026-09-30 起不再支持新特性；新 demo 一律建议填业务空间 ID
 - `demo_kit.Config`：填了业务空间 ID 时 HTTP 也走专属域名，否则走通用域名；Realtime 一律走专属域名
-- 价格页另列美国（弗吉尼亚）、德国（法兰克福）、日本（东京）、中国香港等地域，部分模型可用；本标准暂只覆盖北京与新加坡
-- 来源：[Qwen-Omni-Realtime](https://help.aliyun.com/zh/model-studio/realtime)（2026-09-24）· [Realtime Python SDK](https://www.alibabacloud.com/help/zh/model-studio/omni-realtime-python-sdk) · [非实时语音识别](https://www.alibabacloud.com/help/zh/model-studio/non-realtime-speech-recognition-user-guide)（2026-09-22）· [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing)
+- `regions` 只写两地都核实过可用的；只在北京可用的模型（如 `cosyvoice-v3.5-flash`）要在 `solution.yaml` 只写 `cn-beijing`
+- 价格页另列美国（弗吉尼亚）、德国（法兰克福）、日本（东京）、中国香港等地域，部分模型可用；语音类 WebSocket 文档只给了北京与新加坡，本标准暂只覆盖这两地
+- 来源：[地域](https://help.aliyun.com/zh/model-studio/regions) · [Base URL](https://help.aliyun.com/zh/model-studio/base-url) · [Qwen-Omni-Realtime](https://help.aliyun.com/zh/model-studio/realtime)（2026-09-24）· [Realtime Python SDK](https://www.alibabacloud.com/help/zh/model-studio/omni-realtime-python-sdk) · [非实时语音识别](https://www.alibabacloud.com/help/zh/model-studio/non-realtime-speech-recognition-user-guide)（2026-09-22）· [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing)
 
 ## 九、百炼能力速查（查证 2026-10-01）
 
@@ -136,19 +142,28 @@ python3 run.py --region ap-southeast-1   # 临时切地域
 | 能力 | 推荐模型 | 接入 | 价格（京 / 新） | 来源 |
 |---|---|---|---|---|
 | 实时音视频对话（语音进语音出、看图、工具调用、MCP） | `qwen3.8-omni-flash-realtime` | WebSocket / WebRTC，业务空间专属域名 | 音频入 6 / 6.781，音频出 12 / 13.636，文本图片入 1.5 / 1.677，文本出 4.5 / 5.104 | [模型页](https://help.aliyun.com/zh/model-studio/qwen3-8-omni-flash-realtime) |
-| 实时语音对话（纯音频） | `qwen-audio-3.1-realtime-plus` | WebSocket | 见价格页「实时语音对话」节；音频按每秒 12.5 Token 折算 | [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing) |
-| 文件转写 + 说话人分离（≤5 分钟） | `qwen-audio-3.1-asr-flash` | HTTP 同步，本地文件可 Base64 | 入 0.8 / 1.094，出 2.7 / 3.427；音频每秒 25 Token | [HTTP API](https://help.aliyun.com/en/model-studio/fun-asr-flash-recorded-speech-recognition-http-api) |
-| 长录音转写 + 说话人分离（≤12 小时） | `qwen-audio-3.1-asr-flash-filetrans` | HTTP 异步任务，公网 URL | 同上 | [非实时语音识别](https://www.alibabacloud.com/help/zh/model-studio/non-realtime-speech-recognition-user-guide) |
-| 流式转写 | `qwen-audio-3.1-asr-flash-streaming` | WebSocket | 入 6 / 6.781，出 4.5 / 5.104 | [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing) |
-| 语音合成 | `qwen-audio-3.1-tts-flash`；`qwen-audio-3.0-tts-plus` / `-flash`；`cosyvoice-v3.5-flash`（声音复刻） | WebSocket / HTTP | 3.1-flash 入 1.5、出 12；3.0-plus 1.4 元 / 万字符；cosyvoice-v3.5-flash 0.8 元 / 万字符 | 同上 |
-| 同声传译 | `qwen3.8-livetranslate-flash-realtime` | WebSocket | 音频入 40 / 54.688，图片入 3.3 / 4.01，文本出 100 / 145.835，音频出 160 / 218.752 | 同上 |
-| 图片理解 | `qwen3-vl-flash`（低价）；`qwen3.7-plus` / `qwen3.8-omni-flash`（综合） | OpenAI 兼容 | `qwen3-vl-flash` 入 0.15、出 1.5（≤32K，北京）；`qwen3.8-omni-flash` 入 0.8 / 1.094、出 2.7 / 3.427 | 同上 |
-| 文本 / 工具调用 | `qwen3.8-flash`；`qwen3.7-plus`；`qwen3.8-max` | OpenAI 兼容，Function Calling | flash 入 0.8 / 1.094、出 2.7 / 3.427；plus 入 2 / 2.998、出 8 / 11.991；max 入 12 / 14.988、出 36 / 44.965 | 同上 |
+| 实时语音对话（纯音频） | `qwen-audio-3.1-realtime-plus`；成本敏感用 `qwen-audio-3.0-realtime-flash`（单价与 `qwen3.8-omni-flash-realtime` 相同） | WebSocket | 3.1-plus：文本入 5、音频入 40、文本出 40、音频出 150（北京）；音频按每秒 12.5 Token 折算 | [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing)「实时语音对话」节 |
+| 文件转写 + 说话人分离（≤5 分钟） | `qwen-audio-3.1-asr-flash` | HTTP 同步，本地文件可 Base64；`speaker_diarization_enabled` | 入 0.8 / 1.094，出 2.7 / 3.427（官方未写每秒音频折合多少 Token） | [HTTP API](https://help.aliyun.com/en/model-studio/fun-asr-flash-recorded-speech-recognition-http-api) |
+| 长录音转写 + 说话人分离（≤12 小时） | `qwen-audio-3.1-asr-flash-filetrans`；按秒计费可选 `fun-asr`（0.00022 / 0.00026 元 / 秒） | HTTP 异步任务；公网 URL 或 `oss://` 临时 URL；`diarization_enabled` | 同上 | [非实时语音识别](https://www.alibabacloud.com/help/zh/model-studio/non-realtime-speech-recognition-user-guide) · [录音文件识别 HTTP API](https://help.aliyun.com/zh/model-studio/fun-asr-recorded-speech-recognition-http-api) |
+| 流式转写 | `qwen-audio-3.1-asr-flash-streaming` | 任务制 WebSocket（`run-task`） | 入 6 / 6.781，出 4.5 / 5.104 | [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing) |
+| 语音合成 | `qwen-audio-3.0-tts-flash` / `-plus`（两地，含童声如 `longpaopao_v3.6`）；`cosyvoice-v3-flash`（两地，童声 `longhuhu_v3`）；`qwen-audio-3.1-tts-flash`（仅北京）；`cosyvoice-v3.5-*` 仅北京且没有系统音色，只能用复刻音色 | 任务制 WebSocket（两地）/ HTTP（仅北京） | 3.0-flash 1 / 1.124 元 / 万字符；3.0-plus 1.4 / 1.499；cosyvoice-v3-flash 1 / 0.954；3.1-flash 入 1.5、出 12（北京）。按字符计费时一个汉字算 2 个字符 | [语音合成](https://help.aliyun.com/zh/model-studio/tts-model) · 模型价格 |
+| 同声传译 | `qwen3.8-livetranslate-flash-realtime` | Realtime WebSocket（业务空间专属域名）；RPM 10 | 音频入 40 / 54.688，图片入 3.3 / 4.01，文本出 100 / 145.835，音频出 160 / 218.752；音频入每秒 7 Token、出每秒 12.5 Token | [模型页](https://help.aliyun.com/zh/model-studio/qwen3-8-livetranslate-flash-realtime) |
+| 图片理解 | `qwen3.7-flash`（低价原生多模态，两地支持 Function Calling）；`qwen3-vl-flash`；`qwen3.7-plus` / `qwen3.8-omni-flash`（综合） | OpenAI 兼容；本地图 Base64 Data URI | `qwen3.7-flash` ≤32K 入 0.2、出 0.8；`qwen3-vl-flash` 入 0.15、出 1.5（≤32K，北京）；`qwen3.8-omni-flash` 入 0.8 / 1.094、出 2.7 / 3.427 | [视觉理解](https://help.aliyun.com/zh/model-studio/vision) · 模型价格 |
+| 文本 / 工具调用 | `qwen3.8-flash`；`qwen3.7-flash`（更便宜）；`qwen3.7-plus`；`qwen3.8-max` | OpenAI 兼容，Function Calling；以上四个默认开思考，延迟敏感时传 `enable_thinking: false` | flash 入 0.8 / 1.094、出 2.7 / 3.427；plus 入 2 / 2.998、出 8 / 11.991；max 入 12 / 14.988、出 36 / 44.965 | [Function Calling](https://help.aliyun.com/zh/model-studio/qwen-function-calling) · 模型价格 |
+
+几条容易踩的坑：
+
+- `qwen3.8-omni-flash`（非实时）只输出文本，默认开思考（`reasoning_effort` 默认 `xhigh`），设备场景传 `reasoning_effort: "none"`；音频按每秒 7 Token 计
+- Function Calling：默认只返回一个工具调用，要多个时传 `parallel_tool_calls: true`；`tool_choice` 不支持 `"required"`，思考模式下也不能用对象形式强制调用
+- Realtime 工具调用不支持 `tool_choice` / `parallel_tool_calls`，且不能与 `enable_search` 同时开
+- 同传 3.8 与 3.5 的事件名不同（3.8 用 `response.text.delta` / `response.audio_transcript.delta`）；音频发完要先发 `session.finish`、等到 `session.finished` 再断开，否则最后一段会丢
+- 异步转写的 `parameters` 必须传，没有参数也传 `{}`；`oss://` 地址要加请求头 `X-DashScope-OssResourceResolve: enable`，官方 SDK 不支持自定义请求头，只能直接调 HTTP
 
 ## 十、设备侧凭证
 
 - demo 把长期 Key 放在本机 `.env`，只适合开发者自测
-- 量产设备不放长期 Key：由业务服务端调用 `POST https://dashscope.aliyuncs.com/api/v1/tokens?expire_in_seconds=…` 换取临时 Key（`st-` 开头，默认 60 秒，可设 1–1,800 秒，继承原 Key 的全部权限），设备拿临时 Key 连 Realtime / HTTP；见[生成临时 API Key](https://help.aliyun.com/zh/model-studio/generate-temporary-api-key)
+- 量产设备不放长期 Key：由业务服务端调用 `POST …/api/v1/tokens?expire_in_seconds=…` 换取临时 Key（北京示例为 `https://dashscope.aliyuncs.com`，新加坡用业务空间专属域名），设备拿临时 Key 连 Realtime / HTTP。临时 Key 以 `st-` 开头，默认 60 秒，可设 1–1,800 秒，继承原 Key 的全部权限，不能提前作废；见[生成临时 API Key](https://help.aliyun.com/zh/model-studio/generate-temporary-api-key)
+- 临时 Key 能否用于业务空间专属域名上的 Realtime 连接，官方没有写明，量产前要实测
 - 录音、图片等文件在量产中走自己的 OSS + STS 上传；百炼「临时存储」（`oss://`，48 小时）官方注明不用于生产
 
 ## 十一、CI 与自检
