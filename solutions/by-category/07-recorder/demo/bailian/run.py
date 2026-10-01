@@ -2,9 +2,11 @@
 """07 录音卡 / 会议盒子 · 百炼录音纪要参考 demo
 
 模拟一张 AI 录音卡：会后把录音交给云端，拿回「谁说了什么」和结构化纪要。
-  录音（WAV / MP3 文件或麦克风）
-  → 转写 + 说话人分离：qwen-audio-3.1-asr-flash（同步，≤5 分钟本地文件）
-                       或 qwen-audio-3.1-asr-flash-filetrans（异步，公网 URL，≤12 小时）
+  录音（录音文件或麦克风）
+  → 转写 + 说话人分离：
+      ≤5 分钟的 WAV / MP3：qwen-audio-3.1-asr-flash 同步接口，本地文件直接 Base64
+      更长或其他格式：百炼临时存储（oss://，48 小时）→ qwen-audio-3.1-asr-flash-filetrans 异步任务
+      --audio-url：公网 URL → qwen-audio-3.1-asr-flash-filetrans 异步任务（≤12 小时）
   → 纪要：qwen3.8-flash（OpenAI 兼容，流式 JSON）
   → 手机 App 纪要卡片：out/minutes.md + out/minutes.json + out/transcript.txt
 
@@ -30,15 +32,18 @@ import demo_kit as kit
 
 DEMO_DIR = Path(__file__).resolve().parent
 ASR_MODEL = "qwen-audio-3.1-asr-flash"                  # 同步：本地文件 Base64，≤5 分钟，编码后 ≤10 MB
-ASR_FILE_MODEL = "qwen-audio-3.1-asr-flash-filetrans"   # 异步：公网 URL，≤12 小时
+ASR_FILE_MODEL = "qwen-audio-3.1-asr-flash-filetrans"   # 异步：公网 URL 或 oss:// 临时 URL，≤12 小时
 LLM_MODEL = "qwen3.8-flash"
 SAMPLE_AUDIO = DEMO_DIR / "samples" / "meeting.mp3"
 MAX_BASE64_BYTES = 10 * 1024 * 1024
+SYNC_MAX_SECONDS = 300
+MP3_SYNC_MAX_BYTES = 1_200_000                          # 按 32 kbps 估算约 5 分钟；更大的 MP3 改走异步
 AUDIO_TYPES = {".wav": ("wav", "audio/wav"), ".mp3": ("mp3", "audio/mpeg")}
 POLL_SECONDS, POLL_TIMEOUT = 2, 600
+TOKENS_PER_SECOND_GUESS = 25  # 官方未写 3.1 ASR 的秒数折算；接口没返回 Token 数时才用它粗估
 
 # 元 / 百万 Token。来源：https://help.aliyun.com/zh/model-studio/model-pricing（查证 2026-10-01）
-# qwen-audio-3.1-asr-flash(-filetrans) 与 qwen3.8-flash 同价；音频按每秒 25 Token 折算。
+# qwen-audio-3.1-asr-flash(-filetrans) 与 qwen3.8-flash 同价。
 PRICES = {
     "cn-beijing": {"in": 0.8, "out": 2.7},
     "ap-southeast-1": {"in": 1.094, "out": 3.427},
@@ -104,15 +109,49 @@ def to_sentences(items: list[dict]) -> list[Sentence]:
 
 # ───────────────────────── 转写 ─────────────────────────
 
+def async_reason(audio: Path, force: bool) -> str | None:
+    """本地录音不适合同步接口时返回原因（改走临时上传 + 异步转写）；适合时返回 None。"""
+    suffix = audio.suffix.lower()
+    size = audio.stat().st_size
+    if force:
+        return "--long"
+    if suffix not in AUDIO_TYPES:
+        return f"同步接口不收 {suffix or '无后缀'} 格式"
+    if (size + 2) // 3 * 4 > MAX_BASE64_BYTES:
+        return "Base64 后超过 10 MB"
+    if suffix == ".wav":
+        with wave.open(str(audio), "rb") as w:
+            if w.getnframes() / w.getframerate() > SYNC_MAX_SECONDS:
+                return "超过 5 分钟"
+    elif size > MP3_SYNC_MAX_BYTES:
+        return "MP3 较大，可能超过 5 分钟"
+    return None
+
+
+def upload_temp(http, cfg: kit.Config, audio: Path, model: str) -> str:
+    """百炼临时存储：getPolicy → OSS 表单上传 → oss:// 地址。48 小时有效，官方注明不用于生产。"""
+    url = f"{kit.REGIONS[cfg.region]['http']}/api/v1/uploads?action=getPolicy&model={model}"
+    policy = http.json("GET", url, cfg.headers()).get("data") or {}
+    if not policy.get("upload_host"):
+        raise kit.HttpError(f"获取上传凭证失败：{json.dumps(policy, ensure_ascii=False)[:200]}")
+    key = f"{policy['upload_dir']}/{int(time.time())}{audio.suffix.lower()}"
+    fields = {  # 字段顺序与官方示例一致；file 必须是最后一个字段
+        "OSSAccessKeyId": policy["oss_access_key_id"],
+        "Signature": policy["signature"],
+        "policy": policy["policy"],
+        "x-oss-object-acl": policy["x_oss_object_acl"],
+        "x-oss-forbid-overwrite": policy["x_oss_forbid_overwrite"],
+        "key": key,
+        "success_action_status": "200",
+    }
+    http.multipart(policy["upload_host"], fields, "file", key.rsplit("/", 1)[-1], audio.read_bytes())
+    return f"oss://{key}"
+
+
 def transcribe_local(http, cfg: kit.Config, audio: Path, stats: Stats) -> list[Sentence]:
     """同步转写：本地文件转 Base64 Data URI，开启说话人分离。"""
-    suffix = audio.suffix.lower()
-    if suffix not in AUDIO_TYPES:
-        sys.exit(f"{audio.name}：同步转写只演示 WAV / MP3。转换：ffmpeg -i in{suffix} -ac 1 -ar 16000 out.mp3")
-    fmt, mime = AUDIO_TYPES[suffix]
+    fmt, mime = AUDIO_TYPES[audio.suffix.lower()]
     data = base64.b64encode(audio.read_bytes()).decode()
-    if len(data) > MAX_BASE64_BYTES:
-        sys.exit(f"{audio.name}：Base64 后超过 10 MB。长录音请上传到 OSS 等公网地址，改用 --audio-url")
     parameters = {"format": fmt, "speaker_diarization_enabled": True}
     if fmt == "wav":
         with wave.open(str(audio), "rb") as w:
@@ -135,21 +174,23 @@ def transcribe_local(http, cfg: kit.Config, audio: Path, stats: Stats) -> list[S
     usage = resp.get("usage") or {}
     stats.asr_tokens = (int(usage.get("input_tokens") or 0), int(usage.get("output_tokens") or 0))
     if not any(stats.asr_tokens):
-        stats.asr_tokens = (int(usage.get("duration") or 0) * 25, len(output.get("text") or ""))
+        stats.asr_tokens = (int(usage.get("duration") or 0) * TOKENS_PER_SECOND_GUESS, len(output.get("text") or ""))
         stats.asr_estimated = True
     return to_sentences(items)
 
 
 def transcribe_url(http, cfg: kit.Config, url: str, speakers: int | None, stats: Stats) -> list[Sentence]:
-    """异步转写：公网 URL → 提交任务 → 轮询 → 下载 transcription_url。"""
+    """异步转写：公网 URL 或 oss:// 临时 URL → 提交任务 → 轮询 → 下载 transcription_url。"""
     parameters: dict = {"channel_id": [0], "diarization_enabled": True}
     if speakers:
         parameters["speaker_count"] = speakers
     payload = {"model": ASR_FILE_MODEL, "input": {"file_urls": [url]}, "parameters": parameters}
+    headers = {"X-DashScope-Async": "enable"}
+    if url.startswith("oss://"):
+        headers["X-DashScope-OssResourceResolve"] = "enable"  # 不带这个头，服务端解析不了 oss:// 地址
     kit.say("云端", f"转写 {ASR_FILE_MODEL}（异步任务 · 说话人分离）……")
     t0 = kit.now_ms()
-    submit = http.json("POST", f"{cfg.api_base()}/services/audio/asr/transcription",
-                       cfg.headers(**{"X-DashScope-Async": "enable"}), payload)
+    submit = http.json("POST", f"{cfg.api_base()}/services/audio/asr/transcription", cfg.headers(**headers), payload)
     task_id = (submit.get("output") or {}).get("task_id")
     if not task_id:
         raise kit.HttpError(f"提交转写任务失败：{json.dumps(submit, ensure_ascii=False)[:300]}")
@@ -174,7 +215,7 @@ def transcribe_url(http, cfg: kit.Config, url: str, speakers: int | None, stats:
     stats.asr_tokens = (int(usage.get("input_tokens") or 0), int(usage.get("output_tokens") or 0))
     if not any(stats.asr_tokens):
         duration_ms = int((result.get("properties") or {}).get("original_duration_in_milliseconds") or 0)
-        stats.asr_tokens = (duration_ms * 25 // 1000, sum(len(s.get("text") or "") for s in items))
+        stats.asr_tokens = (duration_ms * TOKENS_PER_SECOND_GUESS // 1000, sum(len(s.get("text") or "") for s in items))
         stats.asr_estimated = True
     return to_sentences(items)
 
@@ -267,16 +308,19 @@ def capture(args: argparse.Namespace) -> tuple[Path | None, str, float]:
 def main() -> None:
     ap = argparse.ArgumentParser(description="07 录音卡 / 会议盒子 · 百炼录音纪要参考 demo")
     kit.add_standard_args(ap)
-    ap.add_argument("--audio", type=Path, default=SAMPLE_AUDIO, help="本地录音（WAV / MP3，≤5 分钟）")
-    ap.add_argument("--audio-url", help="公网可访问的录音 URL（长录音，走异步 filetrans）")
+    ap.add_argument("--audio", type=Path, default=SAMPLE_AUDIO, help="本地录音；≤5 分钟的 WAV / MP3 走同步，其余自动走异步")
+    ap.add_argument("--audio-url", help="公网可访问的录音 URL（走异步 filetrans）")
+    ap.add_argument("--long", action="store_true", help="本地录音强制走「临时上传 + 异步转写」")
     ap.add_argument("--mic", action="store_true", help="用麦克风录一段（回车结束，或配合 --seconds）")
     ap.add_argument("--seconds", type=float, help="--mic 时的录音时长")
-    ap.add_argument("--speakers", type=int, help="说话人数量参考值（仅 --audio-url，2–100）")
+    ap.add_argument("--speakers", type=int, help="说话人数量参考值（仅异步转写，2–100）")
     args = ap.parse_args()
 
     cfg = kit.resolve(args, DEMO_DIR)
-    models = [ASR_FILE_MODEL if args.audio_url else ASR_MODEL, LLM_MODEL]
-    kit.banner("07 录音卡 / 会议盒子 · 百炼录音纪要参考 demo", cfg, models)
+    planned_async = bool(args.audio_url) or (not args.mic and args.audio.is_file()
+                                             and async_reason(args.audio, args.long) is not None)
+    kit.banner("07 录音卡 / 会议盒子 · 百炼录音纪要参考 demo", cfg,
+               [ASR_FILE_MODEL if planned_async else ASR_MODEL, LLM_MODEL])
     if cfg.live:
         http = kit.HttpTransport()
         if not cfg.workspace_id:
@@ -290,10 +334,17 @@ def main() -> None:
     try:
         path, source, seconds = capture(args)
         t_end = kit.now_ms()
+        reason = None if path is None else async_reason(path, args.long)
         if path is None:
             sentences = transcribe_url(http, cfg, args.audio_url, args.speakers, stats)
+        elif reason:
+            kit.say("云端", f"转写路线：临时上传 + 异步任务（{reason}）")
+            oss_url = upload_temp(http, cfg, path, ASR_FILE_MODEL)
+            kit.say("云端", "已上传百炼临时存储（oss://，48 小时有效）")
+            sentences = transcribe_url(http, cfg, oss_url, args.speakers, stats)
         else:
             sentences = transcribe_local(http, cfg, path, stats)
+        models = [ASR_MODEL if path is not None and not reason else ASR_FILE_MODEL, LLM_MODEL]
         if not sentences:
             sys.exit("[云端] 转写结果为空：检查录音是否有人声")
         speakers = len({s.speaker for s in sentences})
@@ -322,13 +373,13 @@ def main() -> None:
     print("\n" + "\n".join("        " + ln if ln else "" for ln in markdown.strip().splitlines()) + "\n")
 
     asr_cost, llm_cost = stats.cost(cfg.region)
-    estimated = "（转写用量按时长估算）" if stats.asr_estimated else ""
+    estimated = f"（接口未返回转写 Token 数，按每秒 {TOKENS_PER_SECOND_GUESS} Token 粗估）" if stats.asr_estimated else ""
     total = f"{first_ms / 1000:.1f} s" if cfg.live and first_ms is not None else "—（mock 不计时）"
     kit.say("统计", f"录音结束 → 纪要首字 {total} · ¥{kit.fmt_cny(asr_cost + llm_cost)}"
                     f"（转写 ¥{kit.fmt_cny(asr_cost)} + 纪要 ¥{kit.fmt_cny(llm_cost)}）{estimated}")
     note = "首字=录音结束→纪要首字"
     if cfg.live:
-        note += f"；转写 {stats.asr_ms / 1000:.1f} s"
+        note += f"；转写 {stats.asr_ms / 1000:.1f} s（{'同步' if models[0] == ASR_MODEL else '异步'}）"
     kit.finish(cfg, args, DEMO_DIR, models=models, first_ms=first_ms, cost=asr_cost + llm_cost,
                sample=f"{source}（{seconds:.0f} s）", note=note + estimated)
 

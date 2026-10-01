@@ -9,13 +9,13 @@ models:
   - id: qwen-audio-3.1-asr-flash
     role: 同步转写 + 说话人分离（本地文件 Base64，≤5 分钟）
   - id: qwen-audio-3.1-asr-flash-filetrans
-    role: 异步转写 + 说话人分离（--audio-url，公网 URL，≤12 小时）
+    role: 异步转写 + 说话人分离（长录音经百炼临时存储 oss://，或 --audio-url 公网 URL；≤12 小时）
   - id: qwen3.8-flash
     role: 结构化纪要（OpenAI 兼容，流式 JSON）
 regions: [cn-beijing, ap-southeast-1]
 env: [DASHSCOPE_API_KEY]
 device:
-  inputs: [mp3, wav, mic, url]
+  inputs: [mp3, wav, m4a, mic, url]
   outputs: [markdown, json, console]
 run:
   setup: 仅标准库，无需安装

@@ -1,7 +1,8 @@
 """mock.py — 离线假百炼 HTTP 接口
 
-与 demo_kit.HttpTransport 同接口（json / sse / get_bytes），按官方响应结构回放：
+与 demo_kit.HttpTransport 同接口（json / sse / multipart / get_bytes），按官方响应结构回放：
 - 同步转写 multimodal-generation：output.sentences（带 speaker_id）+ usage
+- 临时存储 uploads?action=getPolicy → OSS 表单上传 → oss:// 地址
 - 异步转写 transcription → tasks/{task_id} → transcription_url 指向的 JSON
 - 纪要 chat/completions 流式：choices[].delta.content，末尾一条带 usage
 句子与时间轴取自 samples/meeting.json（与 meeting.mp3 同时生成，内容一致）。纪要为固定示意内容。
@@ -54,9 +55,18 @@ class MockHttp:
             return {"request_id": "mock-asr",
                     "output": {"text": self.text, "sentence": self.sentences[-1], "sentences": self.sentences},
                     "usage": {"duration": seconds, "input_tokens": seconds * 25, "output_tokens": len(self.text)}}
+        if "/uploads?action=getPolicy" in url:
+            return {"request_id": "mock-policy", "data": {
+                "policy": "mock-policy", "signature": "mock-signature", "upload_dir": "dashscope-instant/mock/2026-10-01",
+                "upload_host": "mock://dashscope-file-mock.oss-cn-beijing.aliyuncs.com", "expire_in_seconds": 300,
+                "max_file_size_mb": 100, "capacity_limit_mb": 999999999, "oss_access_key_id": "mock-access-key-id",
+                "x_oss_object_acl": "private", "x_oss_forbid_overwrite": "true"}}
         if url.endswith("/services/audio/asr/transcription"):
             if headers.get("X-DashScope-Async") != "enable":
                 raise HttpError("mock：异步转写需要请求头 X-DashScope-Async: enable")
+            file_url = ((payload or {}).get("input") or {}).get("file_urls", [""])[0]
+            if file_url.startswith("oss://") and headers.get("X-DashScope-OssResourceResolve") != "enable":
+                raise HttpError("mock：oss:// 地址需要请求头 X-DashScope-OssResourceResolve: enable")
             return {"request_id": "mock-submit", "output": {"task_id": "mock-task-1", "task_status": "PENDING"}}
         if url.endswith("/tasks/mock-task-1"):
             self.polls += 1
@@ -78,6 +88,13 @@ class MockHttp:
         prompt = sum(len(m.get("content") or "") for m in payload.get("messages") or [])
         yield {"choices": [], "usage": {"prompt_tokens": prompt, "completion_tokens": len(text),
                                         "total_tokens": prompt + len(text)}}
+
+    def multipart(self, url: str, fields: dict, file_field: str, filename: str, content: bytes,
+                  timeout: float = 120) -> int:
+        required = ("OSSAccessKeyId", "Signature", "policy", "key", "success_action_status")
+        if not url.startswith("mock://") or any(not fields.get(k) for k in required) or not content:
+            raise HttpError("mock：OSS 表单上传缺少字段")
+        return 200
 
     def get_bytes(self, url: str, timeout: float = 60) -> bytes:
         if url != "mock://transcription.json":

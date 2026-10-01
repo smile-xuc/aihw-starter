@@ -9,7 +9,7 @@
 
 - `solutions/demo-standard/`：百炼参考 demo 统一标准 v0.1（目录按「品类 × 栈」、统一 `.env.example`、一条启动命令、README「三步跑通」、无 Key 自动 mock、`solution.yaml` 最小清单与 schema、`VERIFY.md` 验证记录格式）、百炼模板、`check.py` 自检、离线语音样本合成工具
 - `03-toys-companion/demo/bailian/`：毛绒玩具实时语音试点（`qwen3.8-omni-flash-realtime`，按键说话 + 看图 + Function Calling 控制动作灯光），待真 Key 验证
-- `07-recorder/demo/bailian/`：录音卡纪要试点（`qwen-audio-3.1-asr-flash` 转写 + 说话人分离 → `qwen3.8-flash` 纪要），待真 Key 验证
+- `07-recorder/demo/bailian/`：录音卡纪要试点（`qwen-audio-3.1-asr-flash` 转写 + 说话人分离 → `qwen3.8-flash` 纪要；长录音自动经百炼临时存储走 `qwen-audio-3.1-asr-flash-filetrans` 异步转写），待真 Key 验证
 - `.github/workflows/demo-smoke.yml`：全部 demo 在无 Key 的 mock / 离线模式下冒烟 + 密钥扫描 + 清单校验（Python 3.9 / 3.12）
 - `awesome/open-source/by-category/`：从 HTML 大盘挑真实仓库填充分册卡片（去空壳占位；01–09 + `_others`）
 - `.github/PULL_REQUEST_TEMPLATE.md`：对齐 CONTRIBUTING §七字段

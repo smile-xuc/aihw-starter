@@ -16,9 +16,17 @@
 
 | 录音卡环节 | 默认（文件模拟） | 其他方式 |
 |---|---|---|
-| 会议录音 | `samples/meeting.mp3`：三人短会，54.8 s | `--audio my.mp3`（WAV / MP3，≤5 分钟）；`--mic`（需 `pip install -r requirements-device.txt`） |
-| 长录音上传 | — | `--audio-url https://…`：设备已把录音传到公网存储（量产常见做法是 OSS + STS 临时凭证） |
+| 会议录音 | `samples/meeting.mp3`：三人短会，54.8 s | `--audio my.m4a`（任意格式和时长，见下文路线）；`--mic`（需 `pip install -r requirements-device.txt`） |
+| 长录音上传 | 超过 5 分钟或非 WAV / MP3 的本地文件，自动传到百炼临时存储 | `--audio-url https://…`：设备已把录音传到自己的公网存储（量产常见做法是 OSS + STS 临时凭证） |
 | 手机 App 纪要卡片 | `out/minutes.md`、`out/minutes.json`、`out/transcript.txt` | 量产时由业务服务端推送 |
+
+转写路线按录音自动选择，`[云端] 转写路线` 一行会写明原因：
+
+| 录音 | 路线 | 模型 |
+|---|---|---|
+| ≤5 分钟的 WAV / MP3（默认样本） | 同步接口，本地文件直接 Base64 | `qwen-audio-3.1-asr-flash` |
+| 更长、其他格式（m4a / aac / opus …），或加 `--long` | 百炼临时存储（`oss://`，48 小时）→ 异步任务 | `qwen-audio-3.1-asr-flash-filetrans` |
+| `--audio-url` | 公网 URL → 异步任务 | `qwen-audio-3.1-asr-flash-filetrans` |
 
 ## 预期输出（mock）
 
@@ -50,22 +58,26 @@ mock 的转写句子取自合成样本时记录的真实台词与时间轴，纪
   ├─ ≤5 分钟：POST {base}/api/v1/services/aigc/multimodal-generation/generation   ← 默认
   │    model=qwen-audio-3.1-asr-flash，input_audio.data=data:audio/mpeg;base64,…
   │    parameters={format, speaker_diarization_enabled: true} → output.sentences[].speaker_id
-  ├─ 长录音：POST {base}/api/v1/services/audio/asr/transcription（X-DashScope-Async: enable） ← --audio-url
+  ├─ 长录音（本地文件）：GET https://dashscope.aliyuncs.com/api/v1/uploads?action=getPolicy&model=…filetrans
+  │    → POST {upload_host}（OSS 表单上传，file 字段放最后）→ oss://{upload_dir}/{文件名}
+  ├─ 长录音：POST {base}/api/v1/services/audio/asr/transcription
+  │    请求头 X-DashScope-Async: enable；oss:// 地址另加 X-DashScope-OssResourceResolve: enable
   │    model=qwen-audio-3.1-asr-flash-filetrans，parameters={channel_id:[0], diarization_enabled:true}
   │    → GET {base}/api/v1/tasks/{task_id} 轮询 → 下载 transcription_url（24 小时内有效）
   └─ 纪要：POST {base}/compatible-mode/v1/chat/completions
        model=qwen3.8-flash，stream=true，response_format=json_object，enable_thinking=false
 ```
 
-`{base}` 由 `.env` 决定：填了业务空间 ID 是 `https://{业务空间ID}.cn-beijing.maas.aliyuncs.com`（新加坡为 `ap-southeast-1`），否则是通用域名 `https://dashscope.aliyuncs.com`（新加坡 `https://dashscope-intl.aliyuncs.com`）。
+`{base}` 由 `.env` 决定：填了业务空间 ID 是 `https://{业务空间ID}.cn-beijing.maas.aliyuncs.com`（新加坡为 `ap-southeast-1`），否则是通用域名 `https://dashscope.aliyuncs.com`（新加坡 `https://dashscope-intl.aliyuncs.com`）。通用域名自 2026-09-30 起不再支持新特性，建议填业务空间 ID。上传凭证接口按官方示例走通用域名。
 
 ## 常用参数
 
 | 参数 | 作用 |
 |---|---|
-| `--audio my.mp3` | 换本地录音（WAV / MP3，≤5 分钟，Base64 后 ≤10 MB） |
-| `--audio-url https://…` | 长录音走异步 filetrans（≤12 小时、≤2 GB；开说话人分离时官方建议 ≤2 小时） |
-| `--speakers 3` | 说话人数量参考值，仅 `--audio-url` 有效 |
+| `--audio my.m4a` | 换本地录音；路线见上表 |
+| `--long` | 本地录音强制走「临时上传 + 异步任务」 |
+| `--audio-url https://…` | 公网录音走异步 filetrans（≤12 小时、≤2 GB；开说话人分离时官方建议 ≤2 小时） |
+| `--speakers 3` | 说话人数量参考值（2–100），仅异步路线有效 |
 | `--mic [--seconds 60]` | 用麦克风录一段；不给秒数时回车结束 |
 | `--region ap-southeast-1` | 临时切到新加坡（Key 也要换成新加坡的） |
 | `--record` | 真跑成功后把一行验证记录追加到 `VERIFY.md` |
@@ -79,17 +91,19 @@ mock 的转写句子取自合成样本时记录的真实台词与时间轴，纪
 | `qwen-audio-3.1-asr-flash`、`qwen-audio-3.1-asr-flash-filetrans` | 0.8 / 2.7 | 1.094 / 3.427 |
 | `qwen3.8-flash` | 0.8 / 2.7 | 1.094 / 3.427 |
 
-- 音频按每秒 25 Token 折算：1 分钟录音转写约 1,500 输入 Token；样本这样一段 55 秒短会，转写加纪要约 ¥0.004
+- 成本按接口返回的 `usage` 计算。官方未写 3.1 ASR「每秒音频折合多少 Token」；接口没返回 Token 数时，demo 按每秒 25 Token 粗估并在 `[统计]` 里注明。按这个粗估，样本这样一段 55 秒短会，转写加纪要约 ¥0.004
 - 免费额度（各 100 万 Token）只适用于北京地域
-- 首字延迟 = 录音结束 → 纪要首个 token，主要花在转写上；`[统计]` 一行给出分项
+- 百炼临时存储免费，但 48 小时后失效、上传凭证接口限 100 QPS，官方注明不用于生产
+- 首字延迟 = 录音结束（开始上传）→ 纪要首个 token，主要花在上传与转写上；`[统计]` 一行给出分项
 
 ## 常见问题
 
 - **401 / 403**：Key 与地域不一致，或业务空间 ID 不属于这个 Key
-- **提示 Base64 超过 10 MB**：长录音先传到 OSS 等公网地址，再用 `--audio-url`
+- **上传或转写 `oss://` 报 400 `invalid_parameter_error`**：缺 `X-DashScope-OssResourceResolve` 请求头（demo 已自动加），或临时地址已过 48 小时；403 `AccessDenied` 表示上传凭证过期，重跑即可
+- **同步转写报时长超限**：MP3 无法在本地准确判断时长，超过 5 分钟的录音加 `--long`
 - **说话人只有一位**：说话人分离只支持单声道；双声道录音先转：`ffmpeg -i in.wav -ac 1 out.wav`
 - **纪要不是合法 JSON**：重跑一次；仍失败时把 `LLM_MODEL` 换成 `qwen3.7-plus` 对比
-- **百炼临时存储（`oss://` 地址）**：官方说明其适用于多模态模型输入；异步文件转写文档要求公网 HTTP(S) URL，本 demo 不依赖它
+- **想更省**：纪要模型可换 `qwen3.7-flash`（北京 ≤32K 输入 0.2、输出 0.8 元 / 百万 Token），改 `run.py` 顶部 `LLM_MODEL` 与 `solution.yaml` 即可
 
 ## 合规提示
 
@@ -109,4 +123,4 @@ mock 的转写句子取自合成样本时记录的真实台词与时间轴，纪
 
 长会议的分段 Map-Reduce 摘要见旧 demo [`map-reduce-summary/`](../map-reduce-summary/)。
 
-> ⚠️ AI 生成代码，仅作接入参考。接口字段以[非实时语音识别](https://help.aliyun.com/zh/model-studio/non-realtime-speech-recognition-user-guide)与 [Qwen-Audio-3.x-ASR-Flash HTTP API](https://help.aliyun.com/en/model-studio/fun-asr-flash-recorded-speech-recognition-http-api) 文档为准。
+> ⚠️ AI 生成代码，仅作接入参考。接口字段以[非实时语音识别](https://help.aliyun.com/zh/model-studio/non-realtime-speech-recognition-user-guide)、[Qwen-Audio-3.x-ASR-Flash HTTP API](https://help.aliyun.com/en/model-studio/fun-asr-flash-recorded-speech-recognition-http-api)、[录音文件识别 HTTP API](https://help.aliyun.com/zh/model-studio/fun-asr-recorded-speech-recognition-http-api)（RESTful 支持 `oss://` 临时 URL）与[上传本地文件获取临时 URL](https://help.aliyun.com/zh/model-studio/get-temporary-file-url) 文档为准。
