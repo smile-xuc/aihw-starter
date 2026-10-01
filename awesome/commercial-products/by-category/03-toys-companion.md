@@ -29,7 +29,7 @@
 
 - **上市状态**：在售（官网商店有现价，查证 2026-09-30）
 - **官网/渠道**：<https://folotoy.com/>
-- **形态**：AI 毛绒 / 故事机改造形态；内置 AI 模组，按键对讲
+- **形态**：AI 毛绒玩具（乐乐，内置 Magicbox 芯片）；Fofo 为基于火火兔 G6 改造的 AI 对话玩具；内置 AI 模组，按键对讲
 - **定价**：
   - 首发价：待核实
   - 现价：乐乐 $99 USD（含 1 个月试用）· [乐乐产品页](https://folotoy.com/zh/products/teddy/)；Fofo $129 USD（含 1 个月试用）· [Fofo 产品页](https://folotoy.com/zh/products/fofo/) · 查证 2026-09-30
@@ -43,7 +43,7 @@
 - **商业模式**：硬件 + 月度会员
 - **风险事件**：CNN 2025-11-19 报道 Kumma 暂停销售，页内写售价 $99、接入 GPT-4o（[CNN](https://www.cnn.com/2025/11/19/tech/folotoy-kumma-ai-bear-scli-intl)）
 
-> 来源：[FoloToy 乐乐](https://folotoy.com/zh/products/teddy/) · [Fofo](https://folotoy.com/zh/products/fofo/) · [CNN（2025-11-19）](https://www.cnn.com/2025/11/19/tech/folotoy-kumma-ai-bear-scli-intl) · [Maker Faire 访谈](https://www.shenzhenmakerfaire.com/2025/08/29/gen-z-makers-vol-5-folotoy-nurturing-childhood-with-ai-powered-toys/)（查证 2026-09-30）
+> 来源：[FoloToy 乐乐](https://folotoy.com/zh/products/teddy/) · [Fofo](https://folotoy.com/zh/products/fofo/) · [CNN（2025-11-19）](https://www.cnn.com/2025/11/19/tech/folotoy-kumma-ai-bear-scli-intl) · [FoloToy Server 仓库](https://github.com/FoloToy/folotoy-server-self-hosting)（查证 2026-09-30）
 
 ---
 
