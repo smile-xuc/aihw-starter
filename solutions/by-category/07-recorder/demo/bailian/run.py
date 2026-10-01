@@ -8,7 +8,7 @@
       更长或其他格式：百炼临时存储（oss://，48 小时）→ qwen-audio-3.1-asr-flash-filetrans 异步任务
       （同步接口单次最多输出 1,024 Token，demo 只把 ≤3 分钟的录音交给它）
       --audio-url：公网 URL → qwen-audio-3.1-asr-flash-filetrans 异步任务（≤12 小时）
-  → 纪要：qwen3.7-flash（OpenAI 兼容，流式 JSON，关闭思考）
+  → 纪要：默认档 qwen3.7-flash，--quality 用质量档 qwen3.8-flash（OpenAI 兼容，流式 JSON，关闭思考）
   → 手机 App 纪要卡片：out/minutes.md + out/minutes.json + out/transcript.txt
 
 一条命令：
@@ -34,21 +34,31 @@ import demo_kit as kit
 DEMO_DIR = Path(__file__).resolve().parent
 ASR_MODEL = "qwen-audio-3.1-asr-flash"                  # 同步：本地文件 Base64，编码后 ≤10 MB，单次输出 ≤1,024 Token
 ASR_FILE_MODEL = "qwen-audio-3.1-asr-flash-filetrans"   # 异步：公网 URL 或 oss:// 临时 URL，≤12 小时
-LLM_MODEL = "qwen3.7-flash"
+LLM_MODEL = "qwen3.7-flash"                             # 默认档
+LLM_QUALITY_MODEL = "qwen3.8-flash"                     # 质量档（--quality）
 SAMPLE_AUDIO = DEMO_DIR / "samples" / "meeting.mp3"
 MAX_BASE64_BYTES = 10 * 1024 * 1024
 SYNC_MAX_SECONDS = 180                                  # 官方上限 5 分钟，但密集讲话 3 分钟以上可能超出 1,024 Token
 MP3_SYNC_MAX_BYTES = 720_000                            # 按 32 kbps 估算约 3 分钟；更大的 MP3 改走异步
 AUDIO_TYPES = {".wav": ("wav", "audio/wav"), ".mp3": ("mp3", "audio/mpeg")}
 POLL_SECONDS, POLL_TIMEOUT = 2, 600
-TOKENS_PER_SECOND_GUESS = 25  # 官方未写 3.1 ASR 的秒数折算；接口没返回 Token 数时才用它粗估
+SYNC_MAX_OUTPUT_TOKENS = 1024
+# 官方未公布 3.1 ASR 的「每秒音频折合多少 Token」。接口没返回 Token 数时只给区间：
+# 7 是同代 omni / 同传的输入口径，25 是旧 Qwen-Audio 的口径
+TOKENS_PER_SECOND_RANGE = (7, 25)
 
 # 元 / 百万 Token。来源：https://help.aliyun.com/zh/model-studio/model-pricing（查证 2026-10-01）
 ASR_PRICES = {"cn-beijing": (0.8, 2.7), "ap-southeast-1": (1.094, 3.427)}
-# qwen3.7-flash 按单次输入 Token 分档（0<Token≤32K / ≤256K / ≤1M）：(上限, 输入, 输出)
+# 纪要模型按单次输入 Token 分档：(上限, 输入, 输出)。qwen3.7-flash 分 ≤32K / ≤256K / ≤1M 三档，qwen3.8-flash 不分档
 LLM_TIERS = {
-    "cn-beijing": [(32_000, 0.2, 0.8), (256_000, 0.6, 2.4), (1_000_000, 1.2, 4.8)],
-    "ap-southeast-1": [(32_000, 0.225, 0.974), (256_000, 0.749, 2.998), (1_000_000, 1.499, 5.995)],
+    LLM_MODEL: {
+        "cn-beijing": [(32_000, 0.2, 0.8), (256_000, 0.6, 2.4), (1_000_000, 1.2, 4.8)],
+        "ap-southeast-1": [(32_000, 0.225, 0.974), (256_000, 0.749, 2.998), (1_000_000, 1.499, 5.995)],
+    },
+    LLM_QUALITY_MODEL: {
+        "cn-beijing": [(float("inf"), 0.8, 2.7)],
+        "ap-southeast-1": [(float("inf"), 1.094, 3.427)],
+    },
 }
 
 MINUTES_PROMPT = """你是会议纪要助手。输入是录音转写稿，每行格式为「[分:秒] 说话人N：内容」。
@@ -80,20 +90,34 @@ class Sentence:
 
 @dataclass
 class Stats:
+    llm_model: str = LLM_MODEL
     asr_ms: float = 0.0
     llm_first_ms: float | None = None   # 发出纪要请求 → 首个 token
     llm_first_at: float | None = None   # 首个 token 到达的时刻（kit.now_ms 时间轴）
-    asr_tokens: tuple[int, int] = (0, 0)
+    asr_tokens: tuple[int, int] | None = None   # 接口返回的（输入, 输出）Token
+    asr_seconds: float = 0.0                      # 接口没返回 Token 数时，按时长与字数估算
+    asr_chars: int = 0
     llm_tokens: tuple[int, int] = (0, 0)
-    asr_estimated: bool = False
     notes: list[str] = field(default_factory=list)
 
-    def cost(self, region: str) -> tuple[float, float]:
-        asr_in, asr_out = ASR_PRICES[region]
-        asr = (self.asr_tokens[0] * asr_in + self.asr_tokens[1] * asr_out) / 1e6
-        _, llm_in, llm_out = next((t for t in LLM_TIERS[region] if self.llm_tokens[0] <= t[0]), LLM_TIERS[region][-1])
-        llm = (self.llm_tokens[0] * llm_in + self.llm_tokens[1] * llm_out) / 1e6
-        return asr, llm
+    @property
+    def asr_estimated(self) -> bool:
+        return self.asr_tokens is None
+
+    def asr_cost(self, region: str) -> tuple[float, float]:
+        """转写费用（下限, 上限）；接口返回了 Token 数时两者相等。"""
+        p_in, p_out = ASR_PRICES[region]
+        if self.asr_tokens is not None:
+            exact = (self.asr_tokens[0] * p_in + self.asr_tokens[1] * p_out) / 1e6
+            return exact, exact
+        low, high = (self.asr_seconds * rate * p_in / 1e6 + self.asr_chars * p_out / 1e6
+                     for rate in TOKENS_PER_SECOND_RANGE)
+        return low, high
+
+    def llm_cost(self, region: str) -> float:
+        tiers = LLM_TIERS[self.llm_model][region]
+        _, p_in, p_out = next((t for t in tiers if self.llm_tokens[0] <= t[0]), tiers[-1])
+        return (self.llm_tokens[0] * p_in + self.llm_tokens[1] * p_out) / 1e6
 
 
 def speaker_label(raw) -> str:
@@ -133,8 +157,16 @@ def async_reason(audio: Path, force: bool) -> str | None:
 
 def upload_temp(http, cfg: kit.Config, audio: Path, model: str) -> str:
     """百炼临时存储：getPolicy → OSS 表单上传 → oss:// 地址。48 小时有效，官方注明不用于生产。"""
-    url = f"{kit.REGIONS[cfg.region]['http']}/api/v1/uploads?action=getPolicy&model={model}"
-    policy = http.json("GET", url, cfg.headers()).get("data") or {}
+    query = f"/uploads?action=getPolicy&model={model}"
+    try:
+        resp = http.json("GET", cfg.api_base() + query, cfg.headers())
+    except kit.HttpError as exc:
+        if exc.status != 404 or not cfg.workspace_id:
+            raise
+        # 官方示例只给了通用域名的上传凭证接口；专属域名不提供时退回
+        kit.say("提示", "业务空间专属域名没有上传凭证接口（404），改用通用域名获取")
+        resp = http.json("GET", cfg.shared_api_base() + query, cfg.headers())
+    policy = resp.get("data") or {}
     if not policy.get("upload_host"):
         raise kit.HttpError(f"获取上传凭证失败：{json.dumps(policy, ensure_ascii=False)[:200]}")
     key = f"{policy['upload_dir']}/{int(time.time())}{audio.suffix.lower()}"
@@ -174,12 +206,26 @@ def transcribe_local(http, cfg: kit.Config, audio: Path, stats: Stats) -> list[S
     if "sentences" not in output and isinstance(output.get("output"), dict):
         output = output["output"]  # 官方指南提到的另一种嵌套结构
     items = output.get("sentences") or ([output["sentence"]] if output.get("sentence") else [])
-    usage = resp.get("usage") or {}
-    stats.asr_tokens = (int(usage.get("input_tokens") or 0), int(usage.get("output_tokens") or 0))
-    if not any(stats.asr_tokens):
-        stats.asr_tokens = (int(usage.get("duration") or 0) * TOKENS_PER_SECOND_GUESS, len(output.get("text") or ""))
-        stats.asr_estimated = True
+    record_asr_usage(stats, resp.get("usage") or {}, float((resp.get("usage") or {}).get("duration") or 0),
+                     len(output.get("text") or ""))
     return to_sentences(items)
+
+
+def sync_truncation(stats: Stats, sentences: list[Sentence], seconds: float) -> str | None:
+    """同步接口单次最多输出 1,024 Token；输出接近上限或结尾缺一大段时，判为疑似截断。"""
+    if stats.asr_tokens and stats.asr_tokens[1] >= SYNC_MAX_OUTPUT_TOKENS * 0.95:
+        return f"输出 {stats.asr_tokens[1]} Token，接近 {SYNC_MAX_OUTPUT_TOKENS} 上限"
+    if seconds and sentences and sentences[-1].end_ms / 1000 < seconds - 10:
+        return f"最后一句结束于 {sentences[-1].end_ms / 1000:.0f} s，录音长 {seconds:.0f} s"
+    return None
+
+
+def record_asr_usage(stats: Stats, usage: dict, seconds: float, chars: int) -> None:
+    tokens = (int(usage.get("input_tokens") or 0), int(usage.get("output_tokens") or 0))
+    if any(tokens):
+        stats.asr_tokens = tokens
+    else:
+        stats.asr_seconds, stats.asr_chars = seconds, chars
 
 
 def transcribe_url(http, cfg: kit.Config, url: str, speakers: int | None, stats: Stats) -> list[Sentence]:
@@ -214,12 +260,8 @@ def transcribe_url(http, cfg: kit.Config, url: str, speakers: int | None, stats:
     result = json.loads(http.get_bytes(results[0]["transcription_url"]).decode("utf-8"))
     stats.asr_ms = kit.now_ms() - t0
     items = [s for t in result.get("transcripts") or [] for s in t.get("sentences") or []]
-    usage = task.get("usage") or {}
-    stats.asr_tokens = (int(usage.get("input_tokens") or 0), int(usage.get("output_tokens") or 0))
-    if not any(stats.asr_tokens):
-        duration_ms = int((result.get("properties") or {}).get("original_duration_in_milliseconds") or 0)
-        stats.asr_tokens = (duration_ms * TOKENS_PER_SECOND_GUESS // 1000, sum(len(s.get("text") or "") for s in items))
-        stats.asr_estimated = True
+    duration_ms = int((result.get("properties") or {}).get("original_duration_in_milliseconds") or 0)
+    record_asr_usage(stats, task.get("usage") or {}, duration_ms / 1000, sum(len(s.get("text") or "") for s in items))
     return to_sentences(items)
 
 
@@ -227,14 +269,14 @@ def transcribe_url(http, cfg: kit.Config, url: str, speakers: int | None, stats:
 
 def summarize(http, cfg: kit.Config, transcript: str, stats: Stats) -> dict:
     payload = {
-        "model": LLM_MODEL,
+        "model": stats.llm_model,
         "messages": [{"role": "system", "content": MINUTES_PROMPT}, {"role": "user", "content": transcript}],
         "stream": True,
         "stream_options": {"include_usage": True},
         "response_format": {"type": "json_object"},
         "enable_thinking": False,
     }
-    kit.say("云端", f"纪要 {LLM_MODEL}（流式）……")
+    kit.say("云端", f"纪要 {stats.llm_model}（流式）……")
     t0 = kit.now_ms()
     chunks: list[str] = []
     for event in http.sse(f"{cfg.compatible_base()}/chat/completions", cfg.headers(), payload):
@@ -255,12 +297,12 @@ def summarize(http, cfg: kit.Config, transcript: str, stats: Stats) -> dict:
         raise kit.HttpError(f"纪要不是合法 JSON（{exc}）：{text[:200]}") from None
 
 
-def render(minutes: dict, speakers: int, seconds: float) -> str:
+def render(minutes: dict, speakers: int, seconds: float, models: list[str]) -> str:
     def bullet(items, fmt):
         return [f"- {fmt(i)}" for i in items] or ["- （无）"]
 
     lines = [f"# {minutes.get('title') or '会议纪要'}", "",
-             f"> 录音 {seconds:.0f} 秒 · {speakers} 位说话人 · 由 {ASR_MODEL} + {LLM_MODEL} 生成，请人工核对", "",
+             f"> 录音 {seconds:.0f} 秒 · {speakers} 位说话人 · 由 {' + '.join(models)} 生成，请人工核对", "",
              minutes.get("summary") or "", "", "## 议题"]
     lines += bullet(minutes.get("agenda") or [], str)
     lines += ["", "## 决策"]
@@ -317,13 +359,15 @@ def main() -> None:
     ap.add_argument("--mic", action="store_true", help="用麦克风录一段（回车结束，或配合 --seconds）")
     ap.add_argument("--seconds", type=float, help="--mic 时的录音时长")
     ap.add_argument("--speakers", type=int, help="说话人数量参考值（仅异步转写，2–100）")
+    ap.add_argument("--quality", action="store_true", help=f"纪要用质量档 {LLM_QUALITY_MODEL}（默认档 {LLM_MODEL}）")
     args = ap.parse_args()
 
     cfg = kit.resolve(args, DEMO_DIR)
+    llm_model = LLM_QUALITY_MODEL if args.quality else LLM_MODEL
     planned_async = bool(args.audio_url) or (not args.mic and args.audio.is_file()
                                              and async_reason(args.audio, args.long) is not None)
     kit.banner("07 录音卡 / 会议盒子 · 百炼录音纪要参考 demo", cfg,
-               [ASR_FILE_MODEL if planned_async else ASR_MODEL, LLM_MODEL])
+               [ASR_FILE_MODEL if planned_async else ASR_MODEL, llm_model])
     if cfg.live:
         http = kit.HttpTransport()
         if not cfg.workspace_id:
@@ -333,7 +377,7 @@ def main() -> None:
         http = MockHttp(DEMO_DIR / "samples" / "meeting.json")
         kit.say("设备", "连接本地 mock 云端（回放 samples/meeting.json，不联网）")
 
-    stats = Stats()
+    stats = Stats(llm_model=llm_model)
     try:
         path, source, seconds = capture(args)
         t_end = kit.now_ms()
@@ -347,7 +391,7 @@ def main() -> None:
             sentences = transcribe_url(http, cfg, oss_url, args.speakers, stats)
         else:
             sentences = transcribe_local(http, cfg, path, stats)
-        models = [ASR_MODEL if path is not None and not reason else ASR_FILE_MODEL, LLM_MODEL]
+        models = [ASR_MODEL if path is not None and not reason else ASR_FILE_MODEL, llm_model]
         if not sentences:
             sys.exit("[云端] 转写结果为空：检查录音是否有人声")
         speakers = len({s.speaker for s in sentences})
@@ -355,6 +399,9 @@ def main() -> None:
         kit.say("云端", f"转写完成 · {len(sentences)} 句 · {speakers} 位说话人 · {asr_time}")
         for sentence in sentences:
             print("        " + sentence.line())
+        truncated = sync_truncation(stats, sentences, seconds) if models[0] == ASR_MODEL else None
+        if truncated:
+            kit.say("提示", f"同步转写结果可能被截断（{truncated}）；加 --long 改走 filetrans 对比")
         transcript = "\n".join(s.line() for s in sentences)
         seconds = seconds or sentences[-1].end_ms / 1000
         minutes = summarize(http, cfg, transcript, stats)
@@ -366,7 +413,7 @@ def main() -> None:
 
     out = DEMO_DIR / "out"
     out.mkdir(exist_ok=True)
-    markdown = render(minutes, speakers, seconds)
+    markdown = render(minutes, speakers, seconds, models)
     (out / "transcript.txt").write_text(transcript + "\n", encoding="utf-8")
     (out / "minutes.json").write_text(json.dumps(minutes, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (out / "minutes.md").write_text(markdown, encoding="utf-8")
@@ -375,15 +422,21 @@ def main() -> None:
     kit.say("App", "推送纪要卡片 → out/minutes.md（另存 minutes.json、transcript.txt）")
     print("\n" + "\n".join("        " + ln if ln else "" for ln in markdown.strip().splitlines()) + "\n")
 
-    asr_cost, llm_cost = stats.cost(cfg.region)
-    estimated = f"（接口未返回转写 Token 数，按每秒 {TOKENS_PER_SECOND_GUESS} Token 粗估）" if stats.asr_estimated else ""
+    asr_cost, llm_cost = stats.asr_cost(cfg.region), stats.llm_cost(cfg.region)
+    total_cost = (asr_cost[0] + llm_cost, asr_cost[1] + llm_cost)
+    estimated = ""
+    if stats.asr_estimated:
+        low, high = TOKENS_PER_SECOND_RANGE
+        estimated = f"（接口未返回转写 Token 数，按每秒 {low}–{high} Token 给区间）"
     total = f"{first_ms / 1000:.1f} s" if cfg.live and first_ms is not None else "—（mock 不计时）"
-    kit.say("统计", f"录音结束 → 纪要首字 {total} · ¥{kit.fmt_cny(asr_cost + llm_cost)}"
+    kit.say("统计", f"录音结束 → 纪要首字 {total} · ¥{kit.fmt_cny(total_cost)}"
                     f"（转写 ¥{kit.fmt_cny(asr_cost)} + 纪要 ¥{kit.fmt_cny(llm_cost)}）{estimated}")
     note = "首字=录音结束→纪要首字"
     if cfg.live:
         note += f"；转写 {stats.asr_ms / 1000:.1f} s（{'同步' if models[0] == ASR_MODEL else '异步'}）"
-    kit.finish(cfg, args, DEMO_DIR, models=models, first_ms=first_ms, cost=asr_cost + llm_cost,
+    if truncated:
+        note += f"；疑似截断：{truncated}"
+    kit.finish(cfg, args, DEMO_DIR, models=models, first_ms=first_ms, cost=total_cost,
                sample=f"{source}（{seconds:.0f} s）", note=note + estimated)
 
 

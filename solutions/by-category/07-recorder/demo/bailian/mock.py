@@ -52,6 +52,7 @@ class MockHttp:
             params = (payload or {}).get("parameters") or {}
             if not params.get("speaker_diarization_enabled") or not params.get("format"):
                 raise HttpError("mock：同步转写需要 format 和 speaker_diarization_enabled")
+            # 3.1 ASR 的音频 Token 折算率官方未公布，这里取 run.py 估算区间的上限（每秒 25 Token），仅作示意
             return {"request_id": "mock-asr",
                     "output": {"text": self.text, "sentence": self.sentences[-1], "sentences": self.sentences},
                     "usage": {"duration": seconds, "input_tokens": seconds * 25, "output_tokens": len(self.text)}}
