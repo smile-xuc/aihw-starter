@@ -14,6 +14,14 @@
 
 > 本目录存放 AI 耳机品类可运行示例。
 
+## 参考 demo（品类 × 栈）
+
+按 [demo 统一标准](../../../demo-standard/README.md) 组织：每个栈一个目录，三步跑通，无 Key 自动 mock。
+
+| 栈 | 目录 | 场景 | 状态 |
+|---|---|---|---|
+| 百炼 | [`bailian/`](./bailian/) | 耳机听到的中文讲话按实时节奏推流 → `qwen3.8-livetranslate-flash-realtime` → 英文字幕增量 + 英文译音，自动区分说话人 | 待真 Key 验证 |
+
 ## 已提供
 
 | Demo | 说明 | 依赖 |
