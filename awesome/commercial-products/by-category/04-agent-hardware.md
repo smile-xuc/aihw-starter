@@ -102,7 +102,7 @@
   - 现价：待核实
   - MSRP：待核实
   - 预售价：$249 USD（划线价 $349 USD）· [官方商店](https://shop.sandbar.com/) · 查证 2026-09-30
-  - 订阅：Data Plan 价格待核实。商店页写笔记、音乐和每周听写免费；Data Plan 解锁无限听写、对话和记忆
+  - 订阅：预订会员送 3 个月，之后 $10/月 · [官方商店](https://shop.sandbar.com/) · 查证 2026-10-01。商店页写笔记、音乐和每周听写免费；Data Plan 解锁无限听写、对话和记忆
 - **目标市场**：需要随手记笔记和听写的语音入口用户。商店页写 Stream App 在 iOS，听写在 iOS 与 Mac
 - **AI 能力**：商店页写笔记、对话和跨应用听写。部分 App 功能需要联网；笔记离线仍可用。音乐和播客可用点击、双击和滑动控制
 - **大模型方案**：官网未公开具体基座模型（非千问默认绑定）
@@ -116,8 +116,8 @@
 
 ### Pebble Index 01（Core Devices / Pebble）
 
-- **上市状态**：待核实（查证 2026-09-30）
-- **官网/渠道**：<https://repebble.com/index>；发布博客 <https://repebble.com/blog/meet-pebble-index-01-external-memory-for-your-brain>
+- **上市状态**：预售（官网；新订单 1–2 个月发货，查证 2026-10-01）
+- **官网/渠道**：<https://repebble.com/index>；发布博客 <https://repebble.com/blog/meet-pebble-index-01-external-memory-for-your-brain>；量产博客 <https://repebble.com/blog/index-01-is-in-mass-production>
 - **形态**：戒指，一个按键加麦克风。产品页写电池可用数年、不用充电；防水 1 m（洗手、淋浴可以，不建议游泳）
 - **定价**：
   - 首发价：待核实
@@ -127,12 +127,12 @@
 - **目标市场**：要用戒指做语音备忘的 iPhone 与 Android 用户。博客写 "Works with iPhone and Android"
 - **AI 能力**：一键录音传到手机。博客写在手机上用开源语音转文字，再由端侧大模型选择动作（建笔记、加提醒等）。另有可选的更高质量云端语音转文字。博客写 Pebble App 开源
 - **大模型方案**：博客写 on-device large language model，未写模型名。官网未公开具体基座模型（非千问默认绑定）
-- **公开数据**：未见公开销量。产品页规格表写 "Starts shipping March 2026"。博客写 "After worldwide shipping begins in March 2026, the price will go up to $99"
+- **公开数据**：未见公开销量。产品页规格表写 "Starts shipping March 2026"。博客写 "After worldwide shipping begins in March 2026, the price will go up to $99"。已开始发货。官方博客写首批订单 2026-07 底发货 · [量产博客](https://repebble.com/blog/index-01-is-in-mass-production)
 - **关键差异化**：① 端侧大模型按录音选择动作；② 开源语音转文字跑在手机上，另有可选云端转写；③ 产品页写不用充电、电池按年平均使用可用数年
 - **商业模式**：硬件预购。产品页写 no subscription
 - **另见**：[公开案例](../../../solutions/by-category/04-agent-hardware/04-cases.md)
 
-> 来源：[Pebble Index 01 产品页](https://repebble.com/index) · [发布博客](https://repebble.com/blog/meet-pebble-index-01-external-memory-for-your-brain)（均查证 2026-09-30）
+> 来源：[Pebble Index 01 产品页](https://repebble.com/index) · [发布博客](https://repebble.com/blog/meet-pebble-index-01-external-memory-for-your-brain)（均查证 2026-09-30） · [量产博客](https://repebble.com/blog/index-01-is-in-mass-production)（查证 2026-10-01）
 
 ---
 

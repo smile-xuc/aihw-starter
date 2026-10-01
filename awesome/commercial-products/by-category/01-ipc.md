@@ -76,7 +76,7 @@
 - **形态**：家用相机 / 门铃，强调本地存储（HomeBase / 机内）
 - **定价**：
   - 首发价：待核实
-  - 现价：待核实（原卡写硬件买断，未列硬件标价）
+  - 现价：待核实
   - MSRP：待核实
   - 订阅：可选云存储 Basic 单机 $3.99 USD/月、$39.99 USD/年；2 台 $7.99 USD/月；3 台 $11.99 USD/月；Plus 不限台数 $13.99 USD/月、$139.99 USD/年（2025-04-01 起，[帮助中心](https://service.eufy.com/article-description/Introducing-Cloud-Storage?urlName=Introducing-Cloud-Storage)，查证 2026-09-30）；核心录像可不订阅
 - **目标市场**：厌恶强制云订阅的家用用户
@@ -120,7 +120,7 @@
 - **定价**：
   - 首发价：待核实（商品页与商店页均未标注首发价）
   - 现价：$219.99 USD · 美国 · [官方商店](https://us.store.tapo.com/products/tapo-d260) · 查证 2026-09-30
-  - MSRP：待核实（页面未写 MSRP）
+  - MSRP：待核实
   - 订阅：[Tapo Care](https://www.tp-link.com/us/tapocare/) · 查证 2026-09-30。Cloud 最多 2 台 $3.49 USD/月或 $34.99 USD/年；Cloud Advanced 不限台数 $11.99 USD/月或 $119.99 USD/年；Cloud Advanced AI $19.99 USD/月或 $199.99 USD/年（含 AI Chat、Facial Recognition、Intelligent Notifications、Intelligent Summaries）
 - **目标市场**：美国市场家用门铃。[FAQ](https://www.tapo.com/us/faq/101/) 写由 Aireal 支持的 Cloud / Cloud Advanced / Advanced AI 仍按地区和账号逐步推出
 - **AI 能力**：商品页写端侧识别家人、朋友和常客，人脸档案存在设备上、不上传；人、动物、车辆、包裹检测不另收费。Cloud Advanced AI 档含智能摘要与 AI Chat；订阅页写可让 Aireal 检索画面
@@ -139,7 +139,7 @@
 - [ ] TP-LINK / 小米 / 360 / 乐橙 国内 SKU 卡片
 - [x] Wyze Duo Cam Doorbell / Cam Unlimited Pro
 - [ ] Arlo Secure
-- [ ] Lorex 偏专业家用（Reolink Home Hub 2 案例见 [04-cases](../../../solutions/by-category/01-ipc/04-cases.md)；官方写 fall 上市，未单列商业卡）
+- [ ] Lorex 偏专业家用（Reolink Home Hub 2 案例见 [04-cases](../../../solutions/by-category/01-ipc/04-cases.md)；官方写 fall 上市；标价 $199.99（官网，[产品页](https://reolink.com/product/home-hub-2/)）；上市状态：待核实（官网，查证 2026-10-01）；未单列商业卡）
 
 ## 贡献指引
 

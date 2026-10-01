@@ -63,8 +63,8 @@
 
 ### 案例：Ray-Ban Meta（Meta × EssilorLuxottica）
 
-- **公开信息源**：Meta 官方、IDC、公开财经报道。价格见 [Meta Quest Blog · Ray-Ban Meta Gen 2](https://www.meta.com/blog/ray-ban-meta-gen-2-now-available-ai-glasses-extended-battery-life-3k-video/)：Gen 2 自 379 美元，Gen 1 自 299 美元
-- **形态**：拍照音频眼镜。Gen 1 约 299 美元 / Gen 2 自 379 美元
+- **公开信息源**：Meta 官方、IDC、公开财经报道。价格见 [产品页](https://www.meta.com/ai-glasses/ray-ban-meta-skyler-shiny-black-clear-gen-2/) · [Meta Quest Blog · Ray-Ban Meta Gen 2](https://www.meta.com/blog/ray-ban-meta-gen-2-now-available-ai-glasses-extended-battery-life-3k-video/)：Gen 2 自 $379 USD 起（查证 2026-10-01）。Gen 1 待核实
+- **形态**：拍照音频眼镜。Gen 2 自 $379 USD 起。Gen 1 待核实
 - **技术路线**：Meta AI（Llama 系列）语音助手 + 12MP 拍摄 + 开放式音频；与传统眼镜巨头联合设计渠道共享
 - **亮点**：待核实
 - **公开数据**：2025 年 Ray-Ban Meta 与 Oakley Meta 合计超过 700 万副（业绩稿链接待核实）
@@ -73,8 +73,8 @@
 
 ### 案例：Oakley Meta HSTN（Meta × Oakley，运动向）
 
-- **公开信息源**：[Meta Quest Blog](https://www.meta.com/blog/oakley-meta-ai-glasses-sports-wearables-hstn/) · [Oakley 新闻稿](https://oakley-media-hub.prezly.com/introducing-oakley-meta-glasses-amplifying-human-potential) · [Oakley Meta](https://www.oakley.com/en-us/l/oakley-meta)
-- **形态**：无显示拍照音频眼镜，HSTN 运动镜框，IPX4；可选 PRIZM、Transitions 与处方镜片。美区起价 399 美元，限量版 499 美元，2025-08-26 开售
+- **公开信息源**：[Meta 产品页](https://www.meta.com/ai-glasses/oakley-meta-hstn/) · [Meta Quest Blog](https://www.meta.com/blog/oakley-meta-ai-glasses-sports-wearables-hstn/) · [Oakley 新闻稿](https://oakley-media-hub.prezly.com/introducing-oakley-meta-glasses-amplifying-human-potential) · [Oakley Meta](https://www.oakley.com/en-us/l/oakley-meta)（产品页与博客查证 2026-10-01）
+- **形态**：无显示拍照音频眼镜，HSTN 运动镜框，IPX4；可选 PRIZM、Transitions 与处方镜片。自 $399 USD 起，2025-08-26 开售（查证 2026-10-01）。限量版 $499 USD（2025-07-11 起预购，同博客）
 - **技术路线**：内置 Meta AI，经 Meta AI app 与手机配对。官方示例包括询问当天风力，以及语音录像后发布到 Stories；也可通话与发消息
 - **亮点**：待核实
 - **公开数据**：官方称典型使用最长约 8 小时（续航较此前约长 40%）、待机约 19 小时，约 20 分钟可充至 50%，充电盒再约 48 小时；视频为 3K，高于 1080p

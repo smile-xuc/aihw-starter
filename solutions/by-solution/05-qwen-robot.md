@@ -14,7 +14,7 @@ Qwen-Robot Suite 由三个专用基础模型组成，可以单独使用，也可
 |---|---|---|
 | **Qwen-RobotNav** | 导航 | 1,560 万样本训练。EXPRESS-Bench 提升 15.4%，导航步数减少 77%。指令跟随、点/目标导航、目标追踪、自动驾驶等任务划分待核实 |
 | **Qwen-RobotManip** | 操作 | 基于 Qwen3.5-4B VL，训练数据超过 38,100 小时。状态-动作空间、相机坐标系增量位姿，以及「完全由开源数据构建」待核实 |
-| **Qwen-RobotWorld** | 世界模型 | 覆盖 20 多种本体、500 多种动作，860 万视频-文本对。跨操作、驾驶和导航的表述待核实 |
+| **Qwen-RobotWorld** | 世界模型 | 覆盖 20 多种本体、500 多种动作，860 万视频-文本对。跨机器人操作、自动驾驶与室内导航（[arXiv 2606.17030](https://arxiv.org/abs/2606.17030)；[阿里云博客](https://www.alibabacloud.com/blog/qwen-robot-suite-a-foundation-model-suite-for-physical-world-intelligence_603262)） |
 
 ## 2. 技术架构
 
@@ -98,12 +98,12 @@ Qwen-Robot Suite 由三个专用基础模型组成，可以单独使用，也可
 Qwen 模型家族
 ├── Qwen3.5（是否担任上层规划器，待核实）
 ├── Qwen-VL / Qwen3-VL（是否为 RobotNav 骨干，待核实）
-├── Qwen2.5-VL（是否为 RobotWorld 动作编码器，待核实）
+├── Qwen2.5-VL（RobotWorld 动作编码器为 Qwen2.5-VL，[arXiv 2606.17030](https://arxiv.org/abs/2606.17030)；[阿里云博客](https://www.alibabacloud.com/blog/qwen-robot-suite-a-foundation-model-suite-for-physical-world-intelligence_603262)）
 ├── Qwen-Omni（是否负责任务评判，待核实）
 └── Qwen-Robot Suite ← 本页
     ├── RobotManip（Qwen3.5-4B VL 骨干）
     ├── RobotNav（1,560 万样本；骨干规模待核实）
-    └── RobotWorld（860 万视频-文本对；层数与编码器待核实）
+    └── RobotWorld（860 万视频-文本对；60 层双流 MMDiT，动作编码器为 Qwen2.5-VL，[arXiv 2606.17030](https://arxiv.org/abs/2606.17030)；[阿里云博客](https://www.alibabacloud.com/blog/qwen-robot-suite-a-foundation-model-suite-for-physical-world-intelligence_603262)）
 ```
 
 ## 7. 开放资源

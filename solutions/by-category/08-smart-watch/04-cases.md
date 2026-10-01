@@ -32,7 +32,7 @@
 | **HUAWEI WATCH 6 Pro** | 旗舰表 | AI 健康洞察 / 小艺 | ¥3,499 CNY 起（查证 2026-09-30） | 活力人生连续包月 ¥15 CNY、年卡 ¥208 CNY |
 | **Apple Watch Ultra 3/4** | 旗舰运动表 | Workout Buddy；Health Age 在 iPhone「健康」App | $799 起（查证 2026-09-30） | Fitness+ $9.99/月或 $79.99/年 |
 | **Pixel Watch 5** | 圆形表，41 mm / 45 mm | Gemini；Health Guardian | 博客 41 mm $399 / 45 mm $429；商店 From $399.99（查证 2026-09-30） | Google Health Premium From $9.99/月；商店页写附 3 个月 |
-| **Galaxy Watch9** | 40 mm / 44 mm，圆形表盘 | Gemini；raise to talk | 美国 40 mm 蓝牙 $379.99、44 mm 蓝牙 $409.99（SammyGuru）；加拿大 44 mm 蓝牙 $559.99 CAD（Aubaine）（查证 2026-09-30） | 未见公开订阅价 |
+| **Galaxy Watch9** | 40 mm / 44 mm，圆形表盘 | Gemini；raise to talk | 美国 40 mm 蓝牙 $379.99、44 mm 蓝牙 $409.99（SammyGuru）；LTE $429.99（40 mm）/ $459.99（44 mm）USD · 美国（SammyGuru、AT&T，查证 2026-10-01）；加拿大 44 mm 蓝牙 $559.99 CAD（Aubaine） | 未见公开订阅价 |
 | **Amazfit Balance 2** | 运动健康手表 | Zepp Flow；Zepp Coach | $299.99（查证 2026-09-30） | 未见公开订阅价 |
 | **TicNote Watch** | 1.43 英寸圆形 AMOLED | 腕上录音；转写 / 摘要走 App；官网称 120+ 语种、<1.5s | 现价 $199.00 USD（划线价 $249.00 USD）（查证 2026-10-01） | 订阅价待核实 |
 
@@ -74,11 +74,11 @@
 
 ### 案例：Galaxy Watch9（Samsung）— 不说唤醒词即可 raise to talk
 
-- **公开信息源**：[The Verge（2026-07-22）](https://www.theverge.com/tech/968728/samsung-galaxy-watch-9-ultra-2-hands-on-wearables-smartwatches) · [9to5Google（2026-07-22）](https://9to5google.com/2026/07/22/galaxy-watch-9-watch-ultra-2-are-official-as-samsung-makes-the-jump-to-snapdragon/) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · [Aubaine](https://aubaine.ca/en/blog/apple-watch-vs-galaxy-watch-which-smartwatch-should-you-buy-in-2026)（查证 2026-09-30）
+- **公开信息源**：[The Verge（2026-07-22）](https://www.theverge.com/tech/968728/samsung-galaxy-watch-9-ultra-2-hands-on-wearables-smartwatches) · [9to5Google（2026-07-22）](https://9to5google.com/2026/07/22/galaxy-watch-9-watch-ultra-2-are-official-as-samsung-makes-the-jump-to-snapdragon/) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · [Aubaine](https://aubaine.ca/en/blog/apple-watch-vs-galaxy-watch-which-smartwatch-should-you-buy-in-2026)（查证 2026-09-30） · [AT&T 40 mm](https://www.att.com/buy/wearables/samsung-galaxy-watch9-40mm.html) · [AT&T 44 mm](https://www.att.com/buy/wearables/samsung-galaxy-watch9-44mm.html)（查证 2026-10-01）
 - **形态**：SammyGuru 写圆形表盘。The Verge 写 40 mm / 44 mm，较小尺寸电池 390 mAh，较大尺寸 445 mAh，芯片为 Snapdragon Wear Elite
 - **技术路线**：The Verge 写 Gemini。不说唤醒词即可 raise to talk；同文写抬腕看时间不会误触发
 - **亮点**：Heart Health Score、Daily Cardio Load、Fitness Index 均写在 The Verge。9to5Google 也列出这三项名称
-- **公开数据**：SammyGuru 写美国 40 mm 蓝牙 $379.99 USD、44 mm 蓝牙 $409.99 USD，并写 2026-08-07 起在售。Aubaine 写加拿大 44 mm 蓝牙 $559.99 CAD。The Verge 写 2026-07-22 起可预购，预计 2026-08-07 发货。LTE 款、首发价、MSRP 与开售日待核实（查证 2026-09-30）
+- **公开数据**：SammyGuru 写美国 40 mm 蓝牙 $379.99 USD、44 mm 蓝牙 $409.99 USD。LTE $429.99（40 mm）/ $459.99（44 mm）USD · 美国 · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · [AT&T 40 mm](https://www.att.com/buy/wearables/samsung-galaxy-watch9-40mm.html) · [AT&T 44 mm](https://www.att.com/buy/wearables/samsung-galaxy-watch9-44mm.html) · 查证 2026-10-01。Aubaine 写加拿大 44 mm 蓝牙 $559.99 CAD。美国开售日 2026-08-07 · [9to5Google（2026-07-22）](https://9to5google.com/2026/07/22/galaxy-watch-9-watch-ultra-2-are-official-as-samsung-makes-the-jump-to-snapdragon/) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/)。The Verge 写 2026-07-22 起可预购，预计 2026-08-07 发货。首发价与 MSRP 待核实
 - **可借鉴点**：唤起方式和健康指标分开：raise to talk 负责叫出 Gemini，Heart Health Score 与 Daily Cardio Load 分别记每日分数和训练负荷
 - **另见**：[Galaxy Watch9 商业产品卡][watch]
 

@@ -76,7 +76,7 @@
   - 首发价：待核实
   - 现价：—（已停售）
   - MSRP：待核实
-  - 历史价：约 $799 USD 硬件档（原卡「历史公开」）
+  - 历史价：约 $799 USD 硬件档
 - **目标市场**：北美家庭儿童 SEL（社交情绪学习）场景
 - **AI 能力**：多模态感知 + 引导式游戏与对话；厂商强调使用时长限制以防过度依恋
 - **大模型方案**：待核实
@@ -140,8 +140,8 @@
 - **官网/渠道**：<https://poketomo.com/>；新闻稿 <https://corporate.jp.sharp/news/251027-a.html>；博客 <https://blog.jp.sharp/2026/08/27/59555/>
 - **形态**：猫鼬造型的口袋机器人，配合手机 App。新闻稿规格写相机 5M AF、伺服电机脸 2 个与手臂 2 个
 - **定价**：
-  - 首发价：待核实（第 1 弹零售价未见官方标价）
-  - 现价：本体为オープン価格 · 日本 · [新闻稿（2025-10-27）](https://corporate.jp.sharp/news/251027-a.html) · 查证 2026-09-30。第 2 弹 COCORO STORE ¥49,500 JPY（含税）· [官方博客（2026-08-27）](https://blog.jp.sharp/2026/08/27/59555/)
+  - 首发价：待核实
+  - 现价：第 1 弹 ¥39,600 JPY（含税，COCORO STORE，查证 2026-10-01）· [商品页](https://cocorostore.jp.sharp/sr-c01m-w.html)。本体为オープン価格 · 日本 · [新闻稿（2025-10-27）](https://corporate.jp.sharp/news/251027-a.html) · 查证 2026-09-30。第 2 弹 COCORO STORE ¥49,500 JPY（含税）· [官方博客（2026-08-27）](https://blog.jp.sharp/2026/08/27/59555/)
   - MSRP：新闻稿写オープン価格
   - 订阅：新闻稿与产品站写 ¥495 JPY/月起（含税）。产品站另列 ¥990 JPY、¥1,980 JPY、¥3,300 JPY 三档（含税）· [产品站](https://poketomo.com/) · 查证 2026-09-30
 - **目标市场**：日本市场的口袋型陪伴机器人，需配合 App 与月费
@@ -152,7 +152,7 @@
 - **商业模式**：硬件（オープン価格）+ 月费
 - **另见**：[公开案例](../../../solutions/by-category/03-toys-companion/04-cases.md)
 
-> 来源：[新闻稿（2025-10-27）](https://corporate.jp.sharp/news/251027-a.html) · [官方博客（2026-08-27）](https://blog.jp.sharp/2026/08/27/59555/) · [产品站](https://poketomo.com/)（均查证 2026-09-30）
+> 来源：[新闻稿（2025-10-27）](https://corporate.jp.sharp/news/251027-a.html) · [官方博客（2026-08-27）](https://blog.jp.sharp/2026/08/27/59555/) · [产品站](https://poketomo.com/)（均查证 2026-09-30） · [COCORO STORE 第 1 弹](https://cocorostore.jp.sharp/sr-c01m-w.html)（查证 2026-10-01）
 
 ---
 
