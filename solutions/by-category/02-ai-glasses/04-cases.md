@@ -74,7 +74,7 @@
 ### 案例：Oakley Meta HSTN（Meta × Oakley，运动向）
 
 - **公开信息源**：[Meta 产品页](https://www.meta.com/ai-glasses/oakley-meta-hstn/) · [Meta Quest Blog](https://www.meta.com/blog/oakley-meta-ai-glasses-sports-wearables-hstn/) · [Oakley 新闻稿](https://oakley-media-hub.prezly.com/introducing-oakley-meta-glasses-amplifying-human-potential) · [Oakley Meta](https://www.oakley.com/en-us/l/oakley-meta)（产品页与博客查证 2026-10-01）
-- **形态**：无显示拍照音频眼镜，HSTN 运动镜框，IPX4；可选 PRIZM、Transitions 与处方镜片。自 $399 USD 起，2025-08-26 开售（查证 2026-10-01）。限量版 $499 USD（同博客）
+- **形态**：无显示拍照音频眼镜，HSTN 运动镜框，IPX4；可选 PRIZM、Transitions 与处方镜片。自 $399 USD 起，2025-08-26 开售（查证 2026-10-01）。限量版 $499 USD（2025-07-11 起预购，同博客）
 - **技术路线**：内置 Meta AI，经 Meta AI app 与手机配对。官方示例包括询问当天风力，以及语音录像后发布到 Stories；也可通话与发消息
 - **亮点**：待核实
 - **公开数据**：官方称典型使用最长约 8 小时（续航较此前约长 40%）、待机约 19 小时，约 20 分钟可充至 50%，充电盒再约 48 小时；视频为 3K，高于 1080p
