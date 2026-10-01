@@ -23,13 +23,14 @@ REPLY = [
     "小朋友觉得阿绿勇敢吗？",
 ]
 TOOL_ARGS = {"motion": "wave", "light": "rainbow"}
-# 用量为示意值（按一轮约 2 秒提问 + 1 张 640×480 画面 + 约 10 秒回答估算），仅用于演示成本计算
-USAGE_TOOL = {"input_tokens": 980, "output_tokens": 18,
-              "input_tokens_details": {"text_tokens": 920, "audio_tokens": 60},
-              "output_tokens_details": {"text_tokens": 18}}
-USAGE_REPLY = {"input_tokens": 1010, "output_tokens": 260,
-               "input_tokens_details": {"text_tokens": 950, "audio_tokens": 60},
-               "output_tokens_details": {"text_tokens": 120, "audio_tokens": 140}}
+# 用量为示意值，按官方折算估算：音频输入每秒 7 Token、输出每秒 12.5 Token，图片每 32×32 像素 1 Token。
+# 2.3 秒提问 ≈ 16 Token；640×480 画面 ≈ 300 Token；instructions + tools ≈ 450 Token；上面的故事约 24 秒语音 ≈ 300 Token
+USAGE_TOOL = {"input_tokens": 766, "output_tokens": 20,
+              "input_tokens_details": {"text_tokens": 750, "audio_tokens": 16},
+              "output_tokens_details": {"text_tokens": 20}}
+USAGE_REPLY = {"input_tokens": 816, "output_tokens": 400,
+               "input_tokens_details": {"text_tokens": 800, "audio_tokens": 16},
+               "output_tokens_details": {"text_tokens": 100, "audio_tokens": 300}}
 
 
 def _chime(index: int, rate: int = 24000, seconds: float = 0.35) -> bytes:
