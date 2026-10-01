@@ -210,12 +210,6 @@ def ask_omni(http, cfg: kit.Config, image: bytes, wav: bytes, on_text) -> tuple[
     return "".join(chunks), call
 
 
-def tts_url(cfg: kit.Config) -> str:
-    """实时语音合成 WebSocket；官方只给了业务空间专属域名的地址。"""
-    host = kit.REGIONS[cfg.region]["workspace_host"].format(workspace=cfg.workspace_id)
-    return f"wss://{host}/api-ws/v1/inference"
-
-
 class TtsWs:
     """live：websocket-client 连实时语音合成。文本帧是 JSON 事件，二进制帧是音频。"""
 
@@ -363,7 +357,7 @@ def run_ask(args: argparse.Namespace, cfg: kit.Config) -> None:
     voice = args.voice or TTS_VOICE
     if cfg.live:
         http = kit.HttpTransport()
-        url, headers = tts_url(cfg), cfg.headers()
+        url, headers = cfg.ws_inference(), cfg.headers()  # 本 demo 必填业务空间 ID，所以这里是专属域名
 
         def connect():
             return TtsWs(url, headers)

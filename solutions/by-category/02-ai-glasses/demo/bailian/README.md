@@ -119,8 +119,8 @@ mock 的回答是固定示意内容，播报用提示音代替真实语音，用
 
 ## 常见问题
 
-- **提示缺少 `DASHSCOPE_WORKSPACE_ID`**：在百炼控制台「业务空间详情」复制 ID 填入 `.env`
-- **401 / 403**：Key 与地域不一致，或业务空间 ID 不属于这个 Key
+- **提示缺少 `DASHSCOPE_WORKSPACE_ID`**：在百炼控制台「业务空间管理」页的 API Host 列找到业务空间 ID（形如 `llm-xxx`），填入 `.env`
+- **401 / 403**：Key、地域、业务空间三者不属于同一地域，或业务空间 ID 不属于这个 Key
 - **回答很慢、开头有长时间空白**：确认请求里带了 `reasoning_effort="none"`；`qwen3.8-omni-flash` 默认开深度思考
 - **播报报音色错误**：音色必须属于所选 TTS 模型，`qwen-audio-3.0-tts-flash` 的系统音色只支持中文普通话和英文，例如 `longanhuan_v3.6`、`longanfengyue`
 - **`--realtime` 图片报错**：只收 JPG / JPEG，编码前不超过 190 KB，建议 480P–720P
