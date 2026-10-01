@@ -1,0 +1,9 @@
+{
+  "now": "2026-10-01 08:30",
+  "frames": [
+    {"file": "events/01_door_package.jpg", "time": "2026-09-30 18:20:05", "camera": "门口", "trigger": "移动侦测"},
+    {"file": "events/02_cat_sofa_night.jpg", "time": "2026-09-30 21:47:10", "camera": "客厅", "trigger": "移动侦测"},
+    {"file": "events/03_kitchen_kettle.jpg", "time": "2026-10-01 07:05:32", "camera": "厨房", "trigger": "画面变化"},
+    {"file": "events/04_vacuum_dog_morning.jpg", "time": "2026-10-01 07:40:18", "camera": "客厅", "trigger": "移动侦测"}
+  ]
+}

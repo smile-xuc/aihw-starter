@@ -1,0 +1,29 @@
+schema: aihw/solution@0.1
+id: 01-ipc.bailian
+title: IPC / AI 视觉 · 百炼事件理解与检索
+category: 01-ipc
+stack: bailian
+kind: reference
+summary: 看护摄像头事件抓拍 → qwen3.7-flash 看图生成结构化事件卡，并在 App 里做自然语言检索和看护日报
+models:
+  - id: qwen3.7-flash
+    role: 看图生成事件卡（JSON）+ 自然语言检索（JSON）+ 看护日报（流式 Markdown），均关闭思考
+regions: [cn-beijing, ap-southeast-1]
+env: [DASHSCOPE_API_KEY]
+device:
+  inputs: [jpg, camera]
+  outputs: [json, markdown, console]
+run:
+  setup: 仅标准库，无需安装
+  live: python3 run.py
+  mock: python3 run.py --mock
+metrics:
+  first_token: 抓拍完成（开始上传事件帧）→ 事件卡首个 token
+  cost: 每个事件的 usage × 模型单价（按地域与输入档位）；检索、日报另计
+verification:
+  status: pending-live
+  last_verified: null
+  record: VERIFY.md
+license: MIT
+compliance_tags: [camera-privacy]
+maintainers: ["@smile-xuc"]
