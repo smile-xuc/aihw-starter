@@ -68,7 +68,8 @@
 ```
 
 - 品类方案推荐的「标签嵌入式」（`[emoji-01][action-04]` 写在回复文字里）适合「文本模型 + TTS」链路；实时语音模型会把文字直接说出来，标签也会被念出来，所以本 demo 改用 Function Calling 的 `pet_expression`。离线标签解析见旧 demo [`stream-tag-parser/`](../stream-tag-parser/)
-- `{base}` 由 `.env` 决定：填了业务空间 ID 是 `https://{业务空间ID}.cn-beijing.maas.aliyuncs.com`，否则是通用域名 `https://dashscope.aliyuncs.com`（新加坡分别换成 `ap-southeast-1` 与 `https://dashscope-intl.aliyuncs.com`）
+- 实时模型没用单价相同的纯语音模型 `qwen-audio-3.0-realtime-flash`：本 demo 靠 Function Calling 切换表情，`qwen3.8-omni-flash-realtime` 官方明确支持自定义工具调用；多轮对话时它的历史音频按每秒 7 Token 重复计入输入（`qwen-audio-3.0-realtime-flash` 收发都按每秒 12.5 Token），聊得越久越省；协议代码也能直接复用 03 试点
+- `{base}` 是 `https://{业务空间ID}.cn-beijing.maas.aliyuncs.com`（新加坡为 `ap-southeast-1`）：本 demo 必须填业务空间 ID，日记请求也走专属域名
 - 固件端照搬这条 WebSocket 即可；量产不要在设备里放长期 Key，改由业务服务端下发临时 Key（见 [demo-standard](../../../../demo-standard/README.md)「设备侧凭证」）
 
 ## 常用参数
@@ -107,7 +108,7 @@
 
 ## 地域
 
-| 地域 | `.env` 里的 `DASHSCOPE_REGION` | Realtime 地址 |
+| 地域 | `.env` 里的 `DASHSCOPE_API_REGION` | Realtime 地址 |
 |---|---|---|
 | 华北2（北京） | `cn-beijing` | `wss://{业务空间ID}.cn-beijing.maas.aliyuncs.com/api-ws/v1/realtime` |
 | 新加坡 | `ap-southeast-1` | `wss://{业务空间ID}.ap-southeast-1.maas.aliyuncs.com/api-ws/v1/realtime` |
@@ -116,7 +117,7 @@
 
 ## 常见问题
 
-- **提示缺少 `DASHSCOPE_WORKSPACE_ID`**：在百炼控制台「业务空间详情」复制 ID 填入 `.env`
+- **提示缺少 `DASHSCOPE_WORKSPACE_ID`**：在百炼控制台「业务空间管理」页的 API Host 列复制业务空间 ID（形如 `llm-xxx`）填入 `.env`
 - **连接时报 401 / 403**：Key 与地域不一致（例如北京的 Key 配了 `ap-southeast-1`），或业务空间 ID 不属于这个 Key
 - **模型没有调用 `pet_expression`**：提示词已要求每次回答前先调用；实测仍有遗漏时，在设备端保留上一个表情或按回答文字的情绪兜底
 - **想用复刻音色**：复刻音色要先通过声音复刻接口创建，并绑定实际使用的模型（`target_model`，不能跨模型）；创建免费，每个账号最多 1,000 个
