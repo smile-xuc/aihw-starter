@@ -29,7 +29,7 @@
 
 ### Plaud Note Pro（Plaud）
 
-- **上市状态**：在售（查证 2026-09-30）
+- **上市状态**：在售（官网，查证 2026-09-30）
 
 - **官网/渠道**：<https://www.plaud.ai/products/plaud-note-pro>
 - **形态**：Plaud 卡片生态旗舰硬件（同属 Note 产品线，规格以官网为准）

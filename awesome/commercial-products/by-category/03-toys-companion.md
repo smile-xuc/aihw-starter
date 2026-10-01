@@ -119,8 +119,9 @@
 - **定价**：
   - 首发价：待核实
   - 现价：Miko Mini $149.00 USD · 美国 · [产品页](https://miko.ai/products/miko-mini) · 查证 2026-09-30。Miko 3 $299.00 USD · [产品页](https://miko.ai/products/miko-3) · 查证 2026-09-30
-  - MSRP：Miko Mini $199.00 USD（同页 Regular price）；Miko 3 同现价
-  - 订阅：Miko Max 现价 $89.00 USD/年（Regular price $99.00 USD），月付 $14.99 USD · [Miko Max](https://miko.ai/products/miko-max) · 查证 2026-09-30
+  - MSRP：待核实
+  - 划线价：Miko Mini $199.00 USD（同页划线价）；Miko 3 同现价
+  - 订阅：Miko Max 现价 $89.00 USD/年（划线价 $99.00 USD），月付 $14.99 USD · [Miko Max](https://miko.ai/products/miko-max) · 查证 2026-09-30
 - **目标市场**：儿童对话式学习。Google Cloud 案例写受众为 4 至 12 岁
 - **AI 能力**：FAQ 写 GPT-powered 对话式学习。Google Cloud 案例章节 "Building smarter, safer bots with Gemini" 引用负责人原话，称 Gemini 是实现安全、可靠、符合文化情境的儿童交互的关键；结果栏写加快发布周期，并写识别与减少幻觉
 - **大模型方案**：FAQ 写 GPT-powered，未写具体型号。官网未公开具体基座模型（非千问默认绑定）。Google Cloud 案例把 Gemini 写在安全相关章节，不是对话主模型的型号说明

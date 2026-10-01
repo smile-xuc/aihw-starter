@@ -36,7 +36,7 @@
 - **形态**：无摄像头的双目光波导显示眼镜。官网规格表（首页与订购页一致，查证 2026-09-29）：双 MicroLED 光机，显示颜色绿色，单眼 600×300，视场角 25.2°，峰值亮度最高 1,600 nits，镜片透光率 98%；整机 49g；开放式扬声器；四麦阵列（设计页写 2 米拾音，并可识别佩戴者人声）；电池 210 mAh，常规使用 12 小时，磁吸充电；IP54。处方范围规格表为 SPH -9.00 D 至 +2.00 D、CYL -3.00 D 至 3.00 D。设计页文案写「from -9.00 to +3.00 SPH」，与规格表的正球镜上限不一致，卡片以规格表为准
 - **定价**：
   - 首发价：待核实
-  - 现价：美区公开，查证 2026-09-29。订购页标价 **USD $599**。同页可见 Launch Special：处方镜片优惠，结账码 **LAUNCH50 再减 $50**。官网称 $199 镜片折扣可覆盖 1.60 / 1.67 折射率，1.74 需另付 $100。2026-07-21 The Verge 与 Android Authority 报道的预售口径是可退 $10 定金换 $100 券、零售价 $599；订购页 meta 仍残留该句，当前可见活动是 LAUNCH50 的 $50 优惠，以订购页为准。官网 FAQ 称非处方 Batch 1 自 9 月 15 日起发货，处方订单预计 10 月起、下单后约 4–6 周（页面未写年份）
+  - 现价：美区公开，查证 2026-09-29。订购页标价 **USD $599**。同页可见 Launch Special：处方镜片优惠，结账码 **LAUNCH50 再减 $50**。官网称 $199 镜片折扣可覆盖 1.60 / 1.67 折射率，1.74 需另付 $100。2026-07-21 The Verge 与 Android Authority 报道的预售口径是可退 $10 定金换 $100 券、零售价 $599；订购页 meta 仍残留该句，当前可见活动是 LAUNCH50 的 $50 优惠，以订购页为准。官网 FAQ 称非处方 Batch 1 自 9 月 15 日起发货，处方订单预计 10 月起、下单后约 4–6 周（年份待核实）
   - MSRP：待核实
 - **目标市场**：职场会议与全天商务佩戴。官网将无摄像头写成隐私设计（不拍摄周围的人）。The Verge、Android Authority（2026-07-21）将其描述为面向工作会议的无相机工具
 - **AI 能力**：官网功能表含 Halliday AI、实时翻译、Cheatsheet（配图 alt 为 Teleprompter，文案为讲稿留在视线内并自动滚动）、通知、Dashboard、通话与音乐。Meeting Flow 列出 Thread Tracker、Decision Confirmation、Commitment Check、Open-Item Tracker、字幕与翻译、Quick Summary、Quick Research、Idea Tracking、会后摘要。FAQ 称翻译与 Meeting Flow 支持 45 种以上语言；眼镜系统与 App 当前版本只支持英文。FAQ 称同时接入多家大模型，未点名供应商。会后转写见于 The Verge 与 Android Authority；官网写的是会后摘要，以及整理后的笔记、待办和可检索记录，页面未出现 transcript。Android Authority 称可用「Hey Halliday」唤醒，官网页面未核到该唤醒词
@@ -93,7 +93,7 @@
 
 ### Rokid AI Glasses Style（Rokid）
 
-- **上市状态**：在售（查证 2026-09-30）
+- **上市状态**：在售（官网/Amazon，查证 2026-09-30）
 
 - **官网/渠道**：<https://global.rokid.com/>（以官网/Amazon 当前 listing 为准）
 - **形态**：**无显示** AI 音频/摄像眼镜；公开规格约 38.5g、约 12 小时续航、12MP 相机
@@ -115,7 +115,7 @@
 
 ### RayNeo iO / GT 系列（雷鸟）
 
-- **上市状态**：在售（查证 2026-09-30）
+- **上市状态**：在售（渠道待核实，查证 2026-09-30）
 
 - **官网/渠道**：<https://www.rayneo.com/>
 - **形态**：iO = AI 助手眼镜；GT / GT Max = 显示向 AR 眼镜；另有 Pocket TV 等配件
