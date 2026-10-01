@@ -157,9 +157,32 @@
 
 ---
 
+### TicNote Watch（TicNote / HK SmartMV Limited）
+
+- **上市状态**：在售（官网产品页，查证 2026-10-01）
+- **官网/渠道**：<https://ticnote.ai/products/ticnote-watch>
+- **形态**：1.43 英寸圆形 AMOLED 腕表（型号 REW026）。双全向数字硅麦
+- **定价**：
+  - 首发价：待核实（查证 2026-10-01）
+  - 现价：$199.00 USD · 美国 · 产品页 Sale price · [产品页](https://ticnote.ai/products/ticnote-watch) · 查证 2026-10-01
+  - MSRP：$249.00 USD · 美国 · 产品页 Regular price · [产品页](https://ticnote.ai/products/ticnote-watch) · 查证 2026-10-01
+  - 订阅：待核实（查证 2026-10-01）
+- **目标市场**：产品页写面向专业人士、学生与创作者（原文 "professionals, students, and creators"）
+- **AI 能力**：FAQ 写表端录音与回放不需要手机；实时转写、翻译、AI 摘要与云同步需要连接运行 TicNote App 的手机。官网称 "120+ Languages & Dialects | 17 Live Subtitles | ≥98% Accuracy | <1.5s Latency"。健康侧写心率、血氧、睡眠与单频 GPS，并写 "Not a medical device"。CE/FCC 等认证 in progress（以官方 FAQ 为准）；FAQ 同时写 PSE、TELEC 为 in progress，IC/ISED Canada 待定，CMIIT（中国）已获批
+- **大模型方案**：产品页写 TicNote Agent，未写底层模型名。官网未公开具体基座模型（非千问默认绑定）
+- **公开数据**：未见公开销量
+- **关键差异化**：① 腕上双麦录音，本地能录能放，转写、摘要与云同步走 TicNote App；② 官网称 120+ 语种与实时字幕延迟 <1.5s；③ 心率、血氧、睡眠、单频 GPS，并写明非医疗器械
+- **商业模式**：硬件销售。订阅价待核实（查证 2026-10-01）
+- **另见**：[公开案例](../../../solutions/by-category/08-smart-watch/04-cases.md)
+
+> 来源：[TicNote Watch 产品页](https://ticnote.ai/products/ticnote-watch)（查证 2026-10-01）
+
+---
+
 ## 待补充清单
 
 - [x] Amazfit Balance 2（Zepp Flow / Zepp Coach）
+- [x] TicNote Watch（腕上 AI 录音和纪要）
 - [ ] Garmin 公开 AI 解读 SKU
 - [ ] 医疗级注册手表公开案例
 

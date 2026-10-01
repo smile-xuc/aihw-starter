@@ -41,6 +41,7 @@
 - **公开数据**：待核实
 - **关键差异化**：① 表情丰富度与「活人感」口碑；② 无强制订阅（相对 Vector）；③ 配件生态（滑板、灯等）
 - **商业模式**：硬件买断为主
+- **另见**：03 玩具陪伴 · [Loona Petbot Premium](./03-toys-companion.md)
 
 > 来源：[Living.AI EMO](https://living.ai/emo/) · [EMO 产品页](https://living.ai/product/emo/) · [EMO Go Home](https://living.ai/product/emo-go-home/) · [经销商下单页](https://living.ai/product/emo-for-agents/)（查证 2026-09-30）
 
@@ -62,6 +63,7 @@
 - **公开数据**：待核实
 - **关键差异化**：① 重传感与自主移动；② 订阅才能完整语音（与 EMO 买断对照）；③ 有 Escape Pod 等本地化选项叙事
 - **商业模式**：硬件 + 云订阅（历史服务中断风险需知情）
+- **另见**：03 玩具陪伴 · [Loona Petbot Premium](./03-toys-companion.md)
 
 > 来源：[anki.bot · Vector](https://anki.bot/products/vector-robot) · [Digital Dream Labs · Vector 2.0](https://www.digitaldreamlabs.com/products/vector-robot) · 公开横评如 [Robot Review Desk · Vector 2.0](https://robotreviewdesk.com/reviews/vector-2-review/) · [EMO vs Vector](https://keyirobot.com/blogs/buying-guide/emo-vs-vector-2-0-desk-robot)（查证 2026-09-30）
 
