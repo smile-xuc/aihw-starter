@@ -7,7 +7,7 @@
 ## 三步跑通
 
 1. 准备环境：Python 3.9+；有依赖时 `pip install -r requirements.txt`
-2. 填 Key：复制 `.env.example` 为 `.env`，填 `DASHSCOPE_API_KEY`（需要业务空间专属域名的模型再填 `DASHSCOPE_WORKSPACE_ID`），地域默认北京
+2. 填 Key：复制 `.env.example` 为 `.env`，填 `DASHSCOPE_API_KEY`；建议同时填 `DASHSCOPE_WORKSPACE_ID`（全部接口走业务空间专属域名，部分模型必填），地域默认北京
 3. 运行：`python3 run.py`（Windows 用 `python run.py`）
 
 没有 Key 时，同一条命令自动进入 mock，不联网、不计费。`python3 run.py --mock` 强制 mock。

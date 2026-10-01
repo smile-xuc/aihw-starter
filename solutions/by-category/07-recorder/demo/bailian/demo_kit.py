@@ -1,8 +1,9 @@
-"""demo_kit.py — aihw-starter 百炼参考 demo 公共件 v0.1
+"""demo_kit.py — aihw-starter 百炼参考 demo 公共件 v0.2
 
 每个百炼 demo 目录放一份原样副本，单个目录拷走也能跑。
 正本：solutions/demo-standard/templates/bailian/demo_kit.py
 CI（solutions/demo-standard/check.py）校验副本与正本逐字节一致；要改先改正本，再同步到各 demo。
+所有接入地址都从 Config 的方法取，demo 代码里不写死域名（check.py 会检查）。
 
 只依赖标准库。麦克风 / 扬声器 / 摄像头为可选能力，需要时安装 requirements-device.txt。
 """
@@ -11,6 +12,7 @@ from __future__ import annotations
 import argparse
 import datetime as _dt
 import json
+import math
 import os
 import platform
 import sys
@@ -22,9 +24,9 @@ import wave
 from array import array
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterator
+from typing import Iterator, Optional, Tuple, Union
 
-KIT_VERSION = "0.1"
+KIT_VERSION = "0.2"
 
 # 地域 → 接入地址（查证 2026-10-01，来源见 solutions/demo-standard/README.md「地域」一节）
 REGIONS = {
@@ -93,31 +95,42 @@ class Config:
     def region_label(self) -> str:
         return REGIONS[self.region]["label"]
 
+    # 地址规则：填了业务空间 ID，下面所有 HTTP / WebSocket 地址都走业务空间专属域名；
+    # 没填时走通用域名。必须用专属域名的模型（如 qwen3.8-omni-flash-realtime）由 resolve(need_workspace=True) 拦住。
+
+    def workspace_host(self) -> str | None:
+        """业务空间专属域名，如 llm-xxx.cn-beijing.maas.aliyuncs.com；没填业务空间 ID 时为 None。"""
+        if not self.workspace_id:
+            return None
+        return REGIONS[self.region]["workspace_host"].format(workspace=self.workspace_id)
+
     def http_root(self) -> str:
-        """HTTP 根地址：填了业务空间 ID 就用官方推荐的业务空间专属域名，否则用通用域名。"""
-        if self.workspace_id:
-            return "https://" + REGIONS[self.region]["workspace_host"].format(workspace=self.workspace_id)
-        return REGIONS[self.region]["http"]
+        host = self.workspace_host()
+        return f"https://{host}" if host else REGIONS[self.region]["http"]
+
+    def ws_root(self) -> str:
+        host = self.workspace_host()
+        return f"wss://{host}" if host else REGIONS[self.region]["ws"]
 
     def compatible_base(self) -> str:
         """OpenAI 兼容接口（Chat Completions 等）。"""
         return self.http_root() + "/compatible-mode/v1"
 
     def api_base(self) -> str:
-        """DashScope 原生 HTTP 接口（同步 / 异步推理、任务查询等）。"""
+        """DashScope 原生 HTTP 接口（同步 / 异步推理、任务查询、上传凭证、TTS HTTP 等）。"""
         return self.http_root() + "/api/v1"
 
     def ws_inference(self) -> str:
-        """任务制 WebSocket（run-task：流式 ASR / TTS 等）；与 http_root 一样，填了业务空间 ID 就走专属域名。"""
-        if self.workspace_id:
-            host = REGIONS[self.region]["workspace_host"].format(workspace=self.workspace_id)
-            return f"wss://{host}/api-ws/v1/inference"
-        return REGIONS[self.region]["ws"] + "/api-ws/v1/inference"
+        """任务制 WebSocket（run-task：流式 ASR、TTS 等）。"""
+        return self.ws_root() + "/api-ws/v1/inference"
 
     def realtime_url(self, model: str) -> str:
-        """Realtime WebSocket，业务空间专属域名（qwen3.8-omni-flash-realtime 必须用）。"""
-        host = REGIONS[self.region]["workspace_host"].format(workspace=self.workspace_id)
-        return f"wss://{host}/api-ws/v1/realtime?model={model}"
+        """会话制 Realtime WebSocket（omni / Qwen-Audio 实时 / 同传 / 实时 ASR、TTS）。"""
+        return f"{self.ws_root()}/api-ws/v1/realtime?model={model}"
+
+    def shared_api_base(self) -> str:
+        """通用域名的原生 HTTP 接口，只用于官方仅给出通用域名、且专属域名返回 404 时的退路。"""
+        return REGIONS[self.region]["http"] + "/api/v1"
 
     def headers(self, **extra: str) -> dict:
         return {"Authorization": f"Bearer {self.api_key}", **extra}
@@ -182,11 +195,24 @@ def now_ms() -> float:
 VERIFY_HEADER = "| 日期 | 地域 | 模型 | 首字延迟 | 单次成本（元） | 输入 | 环境 | 验证人 | 备注 |"
 
 
-def fmt_cny(value: float | None) -> str:
-    return "—" if value is None else f"{value:.2g}" if value < 0.01 else f"{value:.3f}"
+Cost = Optional[Union[float, Tuple[float, float]]]  # 单次成本：确定值，或（下限, 上限）估算区间
 
 
-def verify_row(cfg: Config, models: list[str], first_ms: float | None, cost: float | None,
+def fmt_cny(value: Cost) -> str:
+    """金额显示：≥ 0.01 元保留 3 位小数，更小的保留 2 位有效数字（定点小数，不用科学计数法）。
+    传入（下限, 上限）时显示区间，用于接口未返回用量、只能按官方口径估算的情况。"""
+    if isinstance(value, tuple):
+        low, high = value
+        return fmt_cny(low) if abs(high - low) < 1e-9 else f"{fmt_cny(low)}–{fmt_cny(high)}"
+    if value is None:
+        return "—"
+    if value >= 0.01 or value <= 0:
+        return f"{max(value, 0.0):.3f}"
+    rounded = float(f"{value:.2g}")
+    return f"{rounded:.{max(3, 1 - math.floor(math.log10(rounded)))}f}"
+
+
+def verify_row(cfg: Config, models: list[str], first_ms: float | None, cost: Cost,
                sample: str, note: str = "") -> str:
     env = f"{platform.system()} {platform.machine()} · Python {platform.python_version()}"
     who = os.getenv("AIHW_VERIFIED_BY", "").strip() or "（填 GitHub ID）"
@@ -197,7 +223,7 @@ def verify_row(cfg: Config, models: list[str], first_ms: float | None, cost: flo
 
 
 def finish(cfg: Config, args: argparse.Namespace, demo_dir: Path, *, models: list[str],
-           first_ms: float | None, cost: float | None, sample: str, note: str = "") -> None:
+           first_ms: float | None, cost: Cost, sample: str, note: str = "") -> None:
     """打印本次运行的验证记录；--record 时追加到 VERIFY.md 末尾的表格。"""
     row = verify_row(cfg, models, first_ms if cfg.live else None, cost, sample,
                      note if cfg.live else "；".join(filter(None, ["mock 用量为示意值", note])))
@@ -216,7 +242,11 @@ def finish(cfg: Config, args: argparse.Namespace, demo_dir: Path, *, models: lis
 # ───────────────────────── HTTP（标准库） ─────────────────────────
 
 class HttpError(RuntimeError):
-    pass
+    """接口返回非 2xx。status 为 HTTP 状态码（mock 或非 HTTP 原因时为 None）。"""
+
+    def __init__(self, message: str, status: int | None = None):
+        super().__init__(message)
+        self.status = status
 
 
 def _request(method: str, url: str, headers: dict | None, body: bytes | None, timeout: float):
@@ -225,7 +255,7 @@ def _request(method: str, url: str, headers: dict | None, body: bytes | None, ti
         return urllib.request.urlopen(req, timeout=timeout)
     except urllib.error.HTTPError as exc:
         detail = exc.read().decode("utf-8", "replace")[:500]
-        raise HttpError(f"HTTP {exc.code} {method} {url.split('?')[0]}：{detail}") from None
+        raise HttpError(f"HTTP {exc.code} {method} {url.split('?')[0]}：{detail}", exc.code) from None
 
 
 class HttpTransport:

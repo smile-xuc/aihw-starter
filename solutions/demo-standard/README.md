@@ -1,8 +1,8 @@
-# 百炼参考 demo 统一标准 v0.1
+# 百炼参考 demo 统一标准 v0.2
 
 > 目标：9 个品类各有一个「百炼参考 demo」——填入自己的百炼 Key，在本机用文件或麦克风 / 摄像头模拟设备，真实跑通一次；没有 Key 时自动 mock，供 CI 和快速体验。以后接入小智、TuyaOpen、火山等栈，按同一结构并列放置。
 >
-> 试点：[03 AI 玩具 / 陪伴（实时语音）](../by-category/03-toys-companion/demo/bailian/) · [07 录音卡（非实时）](../by-category/07-recorder/demo/bailian/)。模板：[`templates/bailian/`](./templates/bailian/)。
+> 试点：[03 AI 玩具 / 陪伴（实时语音）](../by-category/03-toys-companion/demo/bailian/) · [07 录音卡（非实时）](../by-category/07-recorder/demo/bailian/)。模板：[`templates/bailian/`](./templates/bailian/)。v0.2 相对 v0.1 的变化见文末「十四、版本」。
 
 ## 一、目录：品类 × 栈
 
@@ -18,7 +18,7 @@ solutions/by-category/<品类>/demo/
 │   ├── run.py                唯一入口
 │   ├── mock.py               离线假接口，按官方事件 / 响应结构回放
 │   ├── demo_kit.py           公共件，与模板逐字一致
-│   ├── VERIFY.md             验证记录
+│   ├── VERIFY.md             验证记录（含「待实测」清单）
 │   └── samples/              模拟设备输入 + README（写明来源与许可）
 ├── xiaozhi/ tuyaopen/ volcengine/ …   以后的栈：同一套文件，同一套口径
 └── <旧 demo>/                专题 demo，保留原路径（文档里已有大量链接）
@@ -36,14 +36,14 @@ solutions/by-category/<品类>/demo/
 |---|---|---|
 | `DASHSCOPE_API_KEY` | 真跑必填 | 百炼控制台「密钥管理」创建；Key 与地域绑定 |
 | `DASHSCOPE_API_REGION` | 否 | `cn-beijing`（默认）或 `ap-southeast-1`；早期写法 `DASHSCOPE_REGION` 仍兼容 |
-| `DASHSCOPE_WORKSPACE_ID` | 视模型 | 形如 `llm-xxx`，在控制台「业务空间管理」的 API Host 列；走业务空间专属域名时需要，`qwen3.8-omni-flash-realtime` 必须 |
+| `DASHSCOPE_WORKSPACE_ID` | 推荐；部分模型必填 | 形如 `llm-xxx`，在控制台「业务空间管理」的 API Host 列。填了之后全部 HTTP / WebSocket 都走业务空间专属域名（见「八、地域」的地址规则）；`qwen3.8-omni-flash-realtime` 必须填 |
 | `AIHW_VERIFIED_BY` | 否 | 验证人 GitHub ID，`--record` 时写入 |
 
 - Key、地域、业务空间三者必须属于同一地域，否则接口返回 401
 - `.env` 可放在 demo 目录或仓库根目录；根目录放一份，全部 demo 共用。`.env` 已被 `.gitignore` 忽略
 - 只读取 `DASHSCOPE_*` / `AIHW_*` 变量；空值、`xxx` / `your` 之类占位符一律视为未填
 - 有 Key 但缺必需的业务空间 ID 时直接报错退出，不静默降级成 mock
-- 用官方 SDK 的 demo 要显式把推导出的地址赋给 `dashscope.base_http_api_url` / `base_websocket_api_url`：SDK 在 `cn-beijing` 下默认仍走通用域名
+- 用官方 SDK 的 demo：`dashscope>=1.26.5`（`qwen3.8-omni-flash-realtime` 的最低版本；PyPI 当前最新 1.27.7）；并显式把 `Config` 推导出的地址赋给 `dashscope.base_http_api_url` / `base_websocket_api_url`，因为 SDK 在 `cn-beijing` 下默认仍走通用域名
 
 ## 三、一条启动命令
 
@@ -69,7 +69,7 @@ python3 run.py --region ap-southeast-1   # 临时切地域
 4. 预期输出（mock）
 5. 链路：接口地址、关键事件 / 字段
 6. 常用参数
-7. 计费与延迟口径：单价表（北京 / 新加坡，附官方链接与查证日期）、首字延迟起止点、免费额度
+7. 计费与延迟口径：单价表（北京 / 新加坡，附官方链接与查证日期）、首字延迟起止点、免费额度；接口不返回用量时写明估算方法
 8. 常见问题、合规提示、文件清单
 
 ## 五、`solution.yaml`（最小清单）
@@ -103,8 +103,11 @@ python3 run.py --region ap-southeast-1   # 临时切地域
 - **首字延迟**：用户感知的第一个输出到达的时间，起点在 `metrics.first_token` 写清：
   - 实时语音：松开按键（`input_audio_buffer.commit`）或 VAD 判停 → 首包音频
   - 非实时（录音、图片）：输入完成（开始上传）→ 第一个输出 token，含转写 / 上传耗时
-- **单次成本**：一次交互的接口 `usage` × `run.py` 里的单价表（单价旁注明官方链接与查证日期）；接口不返回用量时写明估算方法
+- **单次成本**：一次交互的接口 `usage` × `run.py` 里的单价表（单价旁注明官方链接与查证日期）
+  - 接口不返回用量、官方又没公布折算率时，按能查到的口径给区间：`demo_kit.finish(cost=(下限, 上限))`，记录里显示为 `0.0015–0.0023`，备注写明估算依据（例：07 的异步转写按每秒 7–25 Token）
+  - 不要把未公布的折算率写成确定值
 - **环境**：自动填系统与 Python 版本；网络环境（家庭宽带 / 4G 热点 / 机房）写进「备注」
+- **待实测**：官方文档没写清、只能靠真跑核对的点，写成表格上方的清单（例：07 同步转写是否截断、03 的 Token 折算）。真跑后把结论写进「备注」，再改 README 和 `run.py` 里的常量
 - 至少一条真跑记录后，把 `solution.yaml` 的 `verification.status` 改成 `live-verified`、填 `last_verified`，README 状态行同步更新
 
 ## 七、设备模拟
@@ -130,27 +133,57 @@ python3 run.py --region ap-southeast-1   # 临时切地域
 | 新加坡缺的 | — | `cosyvoice-v3.5-*`、`paraformer-*`、`qwen-audio-3.1-tts-flash`、多模态交互开发套件；Qwen-Audio-TTS 的 HTTP 接口只在北京，新加坡要走 WebSocket |
 
 - 通用域名「当前可继续使用」，但官方注明自 2026-09-30 起不再支持新特性；新 demo 一律建议填业务空间 ID
-- `demo_kit.Config`：填了业务空间 ID 时 HTTP 也走专属域名，否则走通用域名；Realtime 一律走专属域名
 - `regions` 只写两地都核实过可用的；只在北京可用的模型（如 `cosyvoice-v3.5-flash`）要在 `solution.yaml` 只写 `cn-beijing`
+
+**地址规则（v0.2）**：demo 里的接入地址一律从 `demo_kit.Config` 的方法取，不写死域名。填了 `DASHSCOPE_WORKSPACE_ID`，下表全部地址都走业务空间专属域名 `{WorkspaceId}.{地域}.maas.aliyuncs.com`；没填时走通用域名 `dashscope.aliyuncs.com` / `dashscope-intl.aliyuncs.com`，路径不变。
+
+| `Config` 方法 | 用途 | 路径 |
+|---|---|---|
+| `compatible_base()` | OpenAI 兼容接口：文本、看图、工具调用 | `https://…/compatible-mode/v1` |
+| `api_base()` | DashScope 原生 HTTP：同步 / 异步推理、任务查询、临时存储上传凭证、TTS HTTP | `https://…/api/v1` |
+| `ws_inference()` | 任务制 WebSocket（`run-task`）：流式 ASR、流式 TTS | `wss://…/api-ws/v1/inference` |
+| `realtime_url(model)` | 会话制 Realtime WebSocket：omni 实时、Qwen-Audio 实时、同传 | `wss://…/api-ws/v1/realtime?model=…` |
+| `shared_api_base()` | 通用域名的 `…/api/v1`：只在专属域名对某个接口返回 404 时退回，并打印提示 | `https://dashscope(-intl).aliyuncs.com/api/v1` |
+
+- 必须用专属域名的模型（`qwen3.8-omni-flash-realtime`），demo 调 `kit.resolve(…, need_workspace=True)`：有 Key 没填业务空间 ID 时直接报错退出
+- 07 的临时存储上传凭证（`GET …/uploads?action=getPolicy`）官方只给了通用域名的示例：先走专属域名，返回 404 再退回 `shared_api_base()`，是否需要退回列在 07 的「待实测」里
+- `check.py` 会拦下 demo 的 `.py` 文件（`demo_kit.py` 除外）里出现的 `dashscope(-intl).aliyuncs.com` / `maas.aliyuncs.com`
 - 价格页另列美国（弗吉尼亚）、德国（法兰克福）、日本（东京）、中国香港等地域，部分模型可用；语音类 WebSocket 文档只给了北京与新加坡，本标准暂只覆盖这两地
 - 来源：[地域](https://help.aliyun.com/zh/model-studio/regions) · [Base URL](https://help.aliyun.com/zh/model-studio/base-url) · [Qwen-Omni-Realtime](https://help.aliyun.com/zh/model-studio/realtime)（2026-09-24）· [Realtime Python SDK](https://www.alibabacloud.com/help/zh/model-studio/omni-realtime-python-sdk) · [非实时语音识别](https://www.alibabacloud.com/help/zh/model-studio/non-realtime-speech-recognition-user-guide)（2026-09-22）· [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing)
 
 ## 九、百炼能力速查（查证 2026-10-01）
 
-参考 demo 默认选用下表的「推荐」列；换模型时改 `run.py` 顶部常量、`solution.yaml` 的 `models` 与 README 价格表。模型一律用主线名，不用带日期的快照：快照下线只提前 30 天通知，主线提前 3 个月（[模型下线机制](https://help.aliyun.com/zh/model-studio/model-depreciation)）。2026-10-10 将下线 `qwen-vl-plus` / `qwen-vl-max`、`qwen3-vl-flash`、`qwen3-omni-flash-realtime`、`gummy-*-v1` 等，新 demo 不要再用。价格单位：元 / 百万 Token，或注明的单位；「京 / 新」= 北京 / 新加坡。
+参考 demo 默认选用下表的「推荐」列；换模型时改 `run.py` 顶部常量、`solution.yaml` 的 `models` 与 README 价格表。模型一律用主线名，不用带日期的快照：快照下线只提前 30 天通知，主线提前 3 个月（[模型下线机制](https://help.aliyun.com/zh/model-studio/model-depreciation)）。2026-10-10 将下线 `qwen-vl-plus` / `qwen-vl-max`、`qwen3-vl-flash`、`qwen3-omni-flash-realtime`、`gummy-*-v1` 等，新 demo 不要再用（`check.py` 会拦下）。价格单位：元 / 百万 Token，或注明的单位；「京 / 新」= 北京 / 新加坡。
+
+### 文本模型：默认档与质量档
+
+文本对话、摘要 / 纪要、拍照问答、工具调用这类走 OpenAI 兼容接口的环节，统一分两档：
+
+| 档 | 模型 | 什么时候用 | 单价（京 / 新） |
+|---|---|---|---|
+| 默认档 | `qwen3.7-flash` | 新 demo 一律默认用它：原生看图，两地都支持 Function Calling 和结构化输出 | 按单次输入长度分档：≤32K 入 0.2 / 0.225、出 0.8 / 0.974；32K–256K 入 0.6 / 0.749、出 2.4 / 2.998 |
+| 质量档 | `qwen3.8-flash` | 默认档效果不够时：多轮工具编排、参数复杂的调用、长纪要 | 入 0.8 / 1.094，出 2.7 / 3.427，不分档 |
+
+- 两档都默认开思考（Qwen3.5–3.8 系列都是），设备交互一律传 `enable_thinking: false`（OpenAI SDK 放在 `extra_body` 里）
+- 需要切档的 demo 统一用 `--quality` 参数切到质量档，`run.py` 顶部各放一个常量；两个模型都写进 `solution.yaml` 的 `models`
+- 默认档的单次输入超过 32K Token 后，单价约变成 3 倍。长输入（如 1 小时录音的逐字稿）要么分段，要么在 README 里按实际档位算成本
+- 更高一档 `qwen3.7-plus`（2 / 8）、旗舰 `qwen3.8-max`（12 / 36）只在 README 里作为可选项提及，参考 demo 不默认用
+- 来源：[视觉理解](https://help.aliyun.com/zh/model-studio/vision)（思考模式默认值）· [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing)，查证 2026-10-01
+
+### 各能力推荐
 
 | 能力 | 推荐模型 | 接入 | 价格（京 / 新） | 来源 |
 |---|---|---|---|---|
 | 实时音视频对话（语音进语音出、看图、工具调用、MCP） | `qwen3.8-omni-flash-realtime` | WebSocket / WebRTC / AOQ，业务空间专属域名 | 音频入 6 / 6.781，音频出 12 / 13.636，文本图片入 1.5 / 1.677，文本出 4.5 / 5.104；音频入每秒 7 Token、出每秒 12.5 Token（空间音频输入翻倍） | [模型页](https://help.aliyun.com/zh/model-studio/qwen3-8-omni-flash-realtime) · [Realtime](https://help.aliyun.com/zh/model-studio/realtime) |
 | 实时语音对话（纯音频） | `qwen-audio-3.0-realtime-flash`（单价与 `qwen3.8-omni-flash-realtime` 相同）；效果优先用 `qwen-audio-3.1-realtime-plus` | WebSocket | 3.1-plus：文本入 5、音频入 40、文本出 40、音频出 150（北京）；音频收发都按每秒 12.5 Token 折算 | [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing)「实时语音对话」节 |
-| 短录音转写 + 说话人分离（官方 ≤5 分钟） | `qwen-audio-3.1-asr-flash` | HTTP 同步，本地文件可 Base64；`speaker_diarization_enabled`；单次最多输出 1,024 Token，密集讲话建议 ≤3 分钟 | 入 0.8 / 1.094，出 2.7 / 3.427（官方未写每秒音频折合多少 Token） | [HTTP API](https://help.aliyun.com/en/model-studio/fun-asr-flash-recorded-speech-recognition-http-api) |
+| 短录音转写 + 说话人分离（官方 ≤5 分钟） | `qwen-audio-3.1-asr-flash` | HTTP 同步，本地文件可 Base64；`speaker_diarization_enabled`；上下文 8,192 Token、单次最多输出 1,024 Token，密集讲话 3–5 分钟可能被截断（待实测），所以参考 demo 只把 ≤3 分钟的录音送同步接口，更长的一律走 `-filetrans` | 入 0.8 / 1.094，出 2.7 / 3.427（官方未写每秒音频折合多少 Token） | [HTTP API](https://help.aliyun.com/en/model-studio/fun-asr-flash-recorded-speech-recognition-http-api) |
 | 长录音转写 + 说话人分离（≤12 小时） | `qwen-audio-3.1-asr-flash-filetrans`；按秒计费可选 `fun-asr`（0.00022 / 0.00026 元 / 秒） | HTTP 异步任务；公网 URL 或 `oss://` 临时 URL；`diarization_enabled` | 同上 | [非实时语音识别](https://www.alibabacloud.com/help/zh/model-studio/non-realtime-speech-recognition-user-guide) · [录音文件识别 HTTP API](https://help.aliyun.com/zh/model-studio/fun-asr-recorded-speech-recognition-http-api) |
 | 流式转写 | `qwen-audio-3.0-asr-flash-streaming`（支持热词、Prompt 上下文）；备选 `fun-asr-realtime` | 任务制 WebSocket（`run-task`）/ AOQ | 0.00033 / 0.00066 元 / 秒；`qwen-audio-3.1-asr-flash-streaming` 按 Token 计（入 6、出 4.5） | [语音识别](https://help.aliyun.com/zh/model-studio/asr-model) · [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing) |
 | 语音合成 | `qwen-audio-3.0-tts-flash` / `-plus`（两地，含童声如 `longpaopao_v3.6`）；`cosyvoice-v3-flash`（两地，童声 `longhuhu_v3`）；`qwen-audio-3.1-tts-flash`（仅北京）；`cosyvoice-v3.5-*` 仅北京且没有系统音色，只能用复刻音色 | 任务制 WebSocket（两地）/ HTTP（仅北京） | 3.0-flash 1 / 1.124 元 / 万字符；3.0-plus 1.4 / 1.499；cosyvoice-v3-flash 1 / 0.954；3.1-flash 入 1.5、出 12（北京）。按字符计费时一个汉字算 2 个字符 | [语音合成](https://help.aliyun.com/zh/model-studio/tts-model) · 模型价格 |
 | 同声传译 | `qwen3.8-livetranslate-flash-realtime` | Realtime WebSocket（业务空间专属域名）；RPM 10 | 音频入 40 / 54.688，图片入 3.3 / 4.01，文本出 100 / 145.835，音频出 160 / 218.752；音频入每秒 7 Token、出每秒 12.5 Token | [模型页](https://help.aliyun.com/zh/model-studio/qwen3-8-livetranslate-flash-realtime) |
-| 拍照问答 / 图片理解 | `qwen3.7-flash`（原生多模态，两地支持 Function Calling）；带语音提问时用 `qwen3.8-omni-flash`（音频 + 图片一次输入）；效果档 `qwen3.7-plus` | OpenAI 兼容；本地图 Base64 Data URI；每 32×32 像素约 1 Token | `qwen3.7-flash` ≤32K 入 0.2 / 0.225、出 0.8 / 0.974；`qwen3.8-omni-flash` 入 0.8 / 1.094、出 2.7 / 3.427 | [视觉理解](https://help.aliyun.com/zh/model-studio/vision) · 模型价格 |
-| 文本对话 / 摘要 | `qwen3.7-flash`；质量档 `qwen3.8-flash` | OpenAI 兼容；两者默认开思考，传 `enable_thinking: false` | `qwen3.7-flash` 按单次输入分档：≤32K 0.2 / 0.8、32K–256K 0.6 / 2.4（北京）；`qwen3.8-flash` 0.8 / 2.7（不分档） | 模型价格 |
-| 工具调用 / 多轮编排 | `qwen3.8-flash`；备选 `qwen3.7-plus`（`qwen3.8-max` 为旗舰） | OpenAI 兼容 Function Calling；默认开思考，传 `enable_thinking: false` | flash 入 0.8 / 1.094、出 2.7 / 3.427；plus 入 2 / 2.998、出 8 / 11.991；max 入 12 / 14.988、出 36 / 44.965 | [Function Calling](https://help.aliyun.com/zh/model-studio/qwen-function-calling) · 模型价格 |
+| 拍照问答 / 图片理解 | 默认档 `qwen3.7-flash`（原生多模态，两地支持 Function Calling）；质量档 `qwen3.8-flash`；带语音提问时用 `qwen3.8-omni-flash`（音频 + 图片一次输入） | OpenAI 兼容；本地图 Base64 Data URI；每 32×32 像素约 1 Token | `qwen3.7-flash` ≤32K 入 0.2 / 0.225、出 0.8 / 0.974；`qwen3.8-omni-flash` 入 0.8 / 1.094、出 2.7 / 3.427 | [视觉理解](https://help.aliyun.com/zh/model-studio/vision) · 模型价格 |
+| 文本对话 / 摘要 | 默认档 `qwen3.7-flash`；质量档 `qwen3.8-flash`（见上一小节） | OpenAI 兼容；传 `enable_thinking: false` | 见上一小节 | 模型价格 |
+| 工具调用 / 多轮编排 | 默认档 `qwen3.7-flash`；多轮编排、参数复杂时用质量档 `qwen3.8-flash`；再往上 `qwen3.7-plus`（`qwen3.8-max` 为旗舰） | OpenAI 兼容 Function Calling；传 `enable_thinking: false` | plus 入 2 / 2.998、出 8 / 11.991；max 入 12 / 14.988、出 36 / 44.965 | [Function Calling](https://help.aliyun.com/zh/model-studio/qwen-function-calling) · 模型价格 |
 
 几条容易踩的坑：
 
@@ -178,7 +211,11 @@ python3 solutions/demo-standard/check.py sync   # 改完模板公共件后同步
 ```
 
 - **secrets**：扫描 git 跟踪的文件与未忽略的新文件，发现 `sk-` 形态 Key、阿里云 AccessKey、GitHub Token、私钥或提交了 `.env` 即失败；`sk-xxxx`、`sk-your-…` 等占位符放行
-- **manifests**：`solution.yaml` 过 schema；`id` 与目录一致；必备文件齐全；README 含「三步跑通」；VERIFY.md 表头标准；`demo_kit.py` 与 `.env.example` 和模板逐字一致
+- **manifests**：`solution.yaml` 过 schema；`id` 与目录一致；必备文件齐全；README 含「三步跑通」；VERIFY.md 表头标准；`demo_kit.py` 与 `.env.example` 和模板逐字一致。v0.2 起另查：
+  - `solution.yaml` 里的每个模型 ID 都要在 demo 的 `.py` 里以字符串出现（清单与 `run.py` 常量一致）
+  - 模型不得在 2026-10-10 下线清单里（`check.py` 的 `DEPRECATED_MODELS`），也不得用带日期的快照或 `-latest` 别名
+  - `.py`（`demo_kit.py` 除外）不得写死百炼域名，地址走 `Config` 的方法
+  - 旧 demo（`LEGACY`）只查下线模型，允许快照名
 - **smoke**：模板 + 每个 `solution.yaml` 的 `run.mock` + 旧 demo 清单（`check.py` 里的 `LEGACY`），在不带任何 `DASHSCOPE_*` 变量的子进程里运行，必须退出 0；新标准 demo 还必须打印 MOCK 标识和验证记录
 
 ## 十二、新增一个百炼 demo
@@ -198,3 +235,21 @@ python3 solutions/demo-standard/check.py sync   # 改完模板公共件后同步
 | `check.py` 的 `LEGACY` 清单 | 迁移旧 demo 的那个 PR | 只删自己品类的条目 |
 | 品类目录 `by-category/<品类>/demo/bailian/`、该品类 `demo/README.md` | 负责该品类的人 | 互不交叉 |
 | 根 `README.md`、`CHANGELOG.md`、`solutions/README.md` | 维护者合并后统一更新 | 品类 PR 不改，避免冲突 |
+
+公共件或 `check.py` 升级后，已经开工的品类分支这样跟进：
+
+1. `git fetch origin <基线分支>`，`git rebase origin/<基线分支>`（公共件只会在基线里改，正常不会冲突）
+2. `python3 solutions/demo-standard/check.py sync`，单独提交一次「同步 demo 标准 v0.x 公共件」
+3. `python3 solutions/demo-standard/check.py` 全绿后推送（rebase 过的分支用 `git push --force-with-lease`）
+
+## 十四、版本
+
+- **v0.2（2026-10-01）**：
+  - 地址：填了 `DASHSCOPE_WORKSPACE_ID` 时，`demo_kit` 的全部 HTTP / WebSocket 地址（OpenAI 兼容、DashScope 原生 HTTP、任务制 WebSocket 的流式 ASR / TTS、Realtime）都走业务空间专属域名；新增 `Config.ws_root()` / `workspace_host()` / `shared_api_base()`；`realtime_url()` 没填业务空间 ID 时改走通用域名（必须专属域名的模型仍由 `need_workspace=True` 拦下）
+  - 文本模型分两档：默认档 `qwen3.7-flash`，质量档 `qwen3.8-flash`，统一用 `--quality` 切换
+  - 成本可以写成区间（`finish(cost=(下限, 上限))`）；`fmt_cny` 不再输出科学计数法；`HttpError` 带 `status`（HTTP 状态码）
+  - VERIFY.md 增加「待实测」清单
+  - `check.py` 增加下线模型、快照名、清单与代码一致、写死域名四项检查
+  - 用官方 SDK 的 demo 要求 `dashscope>=1.26.5`
+  - 向后兼容：v0.1 的 `Config` 方法签名不变，品类 demo 代码不用改，只需 `check.py sync`
+- **v0.1（2026-10-01）**：目录、`.env.example`、启动命令、三步跑通、`--mock`、`solution.yaml`、验证记录格式、CI
