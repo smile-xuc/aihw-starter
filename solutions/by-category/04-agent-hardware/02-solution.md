@@ -126,7 +126,7 @@ else:
    - `hybrid`：句子里有多步线索。`--offline` 时降级为可理解话术，不静默丢任务
 3. 第六节建议云端对话用 `qwen-plus`，控成本用 `qwen-flash`，工具走 Function Calling。本 demo 没有真实请求代码，调用参数待核实。
 4. 门锁、支付类二次确认：demo README 写明未实现。
-5. 真实请求体见百炼参考 demo [`demo/bailian/`](./demo/bailian/)：端侧规则 + `qwen3.7-flash` Function Calling 多轮编排 + 断网降级，无 Key 时自动 mock。
+5. 真实请求体见百炼参考 demo [`demo/bailian/`](./demo/bailian/)：端侧规则 + `qwen3.8-flash` Function Calling 多轮编排 + 断网降级，无 Key 时自动 mock。
 
 ## 十、能力边界
 

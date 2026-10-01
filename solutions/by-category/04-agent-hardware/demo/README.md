@@ -20,7 +20,7 @@
 
 | 栈 | 目录 | 场景 | 状态 |
 |---|---|---|---|
-| 百炼 | [`bailian/`](./bailian/) | 桌面 AI 盒子：端侧规则先执行能做的 → `qwen3.7-flash` Function Calling 多轮编排本地设备与云端服务；语音指令经 `qwen-audio-3.1-asr-flash` 转写；断网降级 | 待真 Key 验证 |
+| 百炼 | [`bailian/`](./bailian/) | 桌面 AI 盒子：端侧规则先执行能做的 → `qwen3.8-flash` Function Calling 多轮编排本地设备与云端服务；语音指令经 `qwen-audio-3.1-asr-flash` 转写；断网降级 | 待真 Key 验证 |
 
 ## 专题 demo
 

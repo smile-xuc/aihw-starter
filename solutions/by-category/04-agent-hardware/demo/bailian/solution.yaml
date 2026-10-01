@@ -4,12 +4,12 @@ title: Agent 硬件 · 百炼工具编排
 category: 04-agent-hardware
 stack: bailian
 kind: reference
-summary: 桌面 AI 盒子收到一句指令 → 端侧规则能做的直接执行 → 其余由 qwen3.7-flash 用 Function Calling 多轮编排本地设备与云端服务 → 断网时降级到端侧规则
+summary: 桌面 AI 盒子收到一句指令 → 端侧规则能做的直接执行 → 其余由 qwen3.8-flash 用 Function Calling 多轮编排本地设备与云端服务 → 断网时降级到端侧规则
 models:
-  - id: qwen3.7-flash
-    role: 多轮工具编排，默认档（OpenAI 兼容，流式 Function Calling，关闭思考）
   - id: qwen3.8-flash
-    role: 多轮工具编排，质量档（--quality）
+    role: 多轮工具编排，默认（OpenAI 兼容，流式 Function Calling，关闭思考）
+  - id: qwen3.7-flash
+    role: 多轮工具编排，省钱档（--cheap）
   - id: qwen-audio-3.1-asr-flash
     role: 语音指令转写（HTTP 同步，本地 WAV 转 Base64）
 regions: [cn-beijing, ap-southeast-1]

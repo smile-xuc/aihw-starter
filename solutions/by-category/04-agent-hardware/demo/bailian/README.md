@@ -1,8 +1,8 @@
 # 04 Agent 硬件 · 百炼工具编排参考 demo
 
-一台桌面 AI 盒子：一句指令先过端侧规则，本地能完成的（开关灯、设闹钟、调音量）直接执行、不上云；多步任务交给 `qwen3.7-flash` 做 Function Calling 多轮编排，同时调用本地设备工具和云端服务工具；断网时降级到端侧规则，做不了的部分明确说出来。文本、WAV 或电脑麦克风模拟盒子的语音入口（语音先经 `qwen-audio-3.1-asr-flash` 转写），控制台 `[设备]` 日志模拟灯光、闹钟和音量。
+一台桌面 AI 盒子：一句指令先过端侧规则，本地能完成的（开关灯、设闹钟、调音量）直接执行、不上云；多步任务交给 `qwen3.8-flash` 做 Function Calling 多轮编排，同时调用本地设备工具和云端服务工具；断网时降级到端侧规则，做不了的部分明确说出来。文本、WAV 或电脑麦克风模拟盒子的语音入口（语音先经 `qwen-audio-3.1-asr-flash` 转写），控制台 `[设备]` 日志模拟灯光、闹钟和音量。
 
-模型分两档：默认档 `qwen3.7-flash`，`--quality` 换质量档 `qwen3.8-flash` 对比编排效果与成本。两者都是混合思考模型、默认开思考，demo 显式传 `enable_thinking=false`。
+模型：默认 `qwen3.8-flash`（百炼「工具调用 / 多轮编排」的首选），`--cheap` 换省钱档 `qwen3.7-flash`（单价约四分之一），可对比编排效果与成本。两者都是混合思考模型、默认开思考，demo 显式传 `enable_thinking=false`。
 
 > **状态：待真 Key 验证**（目前只通过 mock 冒烟）。验证记录见 [VERIFY.md](./VERIFY.md)，标准见 [demo-standard](../../../../demo-standard/README.md)。
 
@@ -35,13 +35,13 @@
 [设备] 麦克风 ← cmd_morning.wav（7.0 s）· 松开按键
 [云端] 转写 qwen-audio-3.1-asr-flash……
 [云端] 听到：明早七点叫我，顺便查一下杭州天气，要是下雨就提前半小时。（mock 不计时）
-[云端] 多步线索「查一下」 → qwen3.7-flash 编排（Function Calling，流式）
+[云端] 多步线索「查一下」 → qwen3.8-flash 编排（Function Calling，流式）
 [云端] 第 1 轮 → 调用 get_weather
 [云端] 天气服务（示例数据）：杭州 明天 小雨 18–23℃，降水概率 70%
 [云端] 第 2 轮 → 调用 set_alarm
 [设备] 闹钟：明天 06:30「起床」
 [盒子] 杭州明天小雨，18–23 度。闹钟已改到明早 06:30，出门记得带伞。
-[统计] 指令 2 · 云端 3 轮 · 工具 2 次 · 说完指令 → 首个工具调用 —（mock 不计时） · ¥0.00074（转写 ¥0.00022 + 编排 ¥0.00053；编排共 2201 / 110 Token）
+[统计] 指令 2 · 云端 3 轮 · 工具 2 次 · 说完指令 → 首个工具调用 —（mock 不计时） · ¥0.0023（转写 ¥0.00022 + 编排 ¥0.0021；编排共 2201 / 110 Token）
 [设备] 盒子状态：灯 客厅关 · 闹钟 「起床」明天 06:30 · 音量 40
 ```
 
@@ -65,7 +65,7 @@ mock 的转写取自样本台词，编排按固定剧本回放（只覆盖查天
   ├─ 端侧规则 local_rules.py：classify() 三分 local / cloud / hybrid
   │    local 且能解析出参数 → Box 直接执行（不上云）
   └─ 其余：POST {base}/compatible-mode/v1/chat/completions（每轮一次，最多 4 轮）
-       model=qwen3.7-flash（--quality：qwen3.8-flash），stream=true，enable_thinking=false，
+       model=qwen3.8-flash（--cheap：qwen3.7-flash），stream=true，enable_thinking=false，
        tools=[set_light, set_alarm, set_volume, get_weather, add_calendar]，parallel_tool_calls=true
        流式 delta.tool_calls：首块带 id 和 name，后续块只带 arguments 片段，按 index 拼接
        → 盒子执行工具（参数在宿主侧校验，不合法返回 ok=false 让模型修正）
@@ -85,7 +85,7 @@ mock 的转写取自样本台词，编排按固定剧本回放（只覆盖查天
 | `--audio my.wav` | 语音指令（16-bit WAV，建议单声道 16 kHz），可重复 |
 | `--mic` | 用麦克风：回车开始、回车结束，可连续多条 |
 | `--offline` | 模拟断网：只用端侧规则，演示降级；语音指令用样本附带的台词模拟端侧离线识别 |
-| `--quality` | 编排改用质量档 `qwen3.8-flash` |
+| `--cheap` | 编排改用省钱档 `qwen3.7-flash` |
 | `--region ap-southeast-1` | 临时切到新加坡（Key 也要换成新加坡的） |
 | `--record` | 真跑成功后把一行验证记录追加到 `VERIFY.md` |
 
@@ -95,11 +95,11 @@ mock 的转写取自样本台词，编排按固定剧本回放（只覆盖查天
 
 | 模型 | 华北2（北京）输入 / 输出 | 新加坡 输入 / 输出 |
 |---|---|---|
-| `qwen3.7-flash`（单次输入 ≤32K；32K–256K 为 0.6 / 2.4） | 0.2 / 0.8 | 0.225 / 0.974 |
-| `qwen3.8-flash`（`--quality`，不分档） | 0.8 / 2.7 | 1.094 / 3.427 |
+| `qwen3.8-flash`（默认，不分档） | 0.8 / 2.7 | 1.094 / 3.427 |
+| `qwen3.7-flash`（`--cheap`；单次输入 ≤32K，32K–256K 为 0.6 / 2.4） | 0.2 / 0.8 | 0.225 / 0.974 |
 | `qwen-audio-3.1-asr-flash` | 0.8 / 2.7 | 1.094 / 3.427 |
 
-- 多轮编排每一轮都要把系统提示、工具定义和之前的对话重新计入输入：样本指令 3 轮约 2,000–3,000 输入 Token，默认档约 ¥0.0006，质量档约 ¥0.0025；语音转写 7 秒约 ¥0.0002（音频 Token 折算率官方未公布，接口返回 `usage` 时以实际为准）
+- 多轮编排每一轮都要把系统提示、工具定义和之前的对话重新计入输入：样本指令 3 轮约 2,000–3,000 输入 Token，默认约 ¥0.0025，`--cheap` 约 ¥0.0006；语音转写 7 秒约 ¥0.0002（音频 Token 折算率官方未公布，接口返回 `usage` 时以实际为准）
 - 端侧命中的指令不上云、不计费；断网降级同样不计费
 - 免费额度只在北京地域发放
 - 首字延迟 = 说完指令（松开按键 / 提交文本）→ 首个工具调用到达（流式里第一个带函数名的 `tool_calls` 块），语音指令含转写耗时

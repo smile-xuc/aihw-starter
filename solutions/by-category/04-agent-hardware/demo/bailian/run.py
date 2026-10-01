@@ -4,7 +4,7 @@
 模拟一台桌面 AI 盒子：
   指令（文本 / WAV / 麦克风；语音先经 qwen-audio-3.1-asr-flash 转写）
   → 端侧规则（复制自旧 intent-router）：本地能完成的直接执行，不上云
-  → 其余交给 qwen3.7-flash（默认档；--quality 换质量档 qwen3.8-flash）做 Function Calling 多轮编排
+  → 其余交给 qwen3.8-flash（工具调用首选；--cheap 换省钱档 qwen3.7-flash）做 Function Calling 多轮编排
        本地工具 set_light / set_alarm / set_volume → [设备]
        云端工具 get_weather / add_calendar → demo 内的固定示例数据
   → --offline：断网降级，只用端侧规则，做不了的部分明确告诉用户
@@ -31,8 +31,8 @@ import demo_kit as kit
 from local_rules import ROOMS, classify, local_actions, offline_split
 
 DEMO_DIR = Path(__file__).resolve().parent
-LLM_MODEL = "qwen3.7-flash"          # 默认档
-QUALITY_MODEL = "qwen3.8-flash"      # 质量档：--quality
+LLM_MODEL = "qwen3.8-flash"          # 默认：工具调用 / 多轮编排首选
+CHEAP_MODEL = "qwen3.7-flash"        # 省钱档：--cheap
 ASR_MODEL = "qwen-audio-3.1-asr-flash"
 MAX_ROUNDS = 4                       # 一条指令最多几轮模型调用
 SAMPLE_AUDIO = DEMO_DIR / "samples" / "cmd_morning.wav"
@@ -44,11 +44,11 @@ WEEKDAYS = "一二三四五六日"
 #   https://help.aliyun.com/zh/model-studio/qwen3-8-flash
 #   https://help.aliyun.com/zh/model-studio/model-pricing（qwen-audio-3.1-asr-flash）
 PRICES = {
-    LLM_MODEL: {
+    LLM_MODEL: {"cn-beijing": [(1_000_000, 0.8, 2.7)], "ap-southeast-1": [(1_000_000, 1.094, 3.427)]},
+    CHEAP_MODEL: {
         "cn-beijing": [(32_000, 0.2, 0.8), (256_000, 0.6, 2.4), (1_000_000, 1.2, 4.8)],
         "ap-southeast-1": [(32_000, 0.225, 0.974), (256_000, 0.749, 2.998), (1_000_000, 1.499, 5.995)],
     },
-    QUALITY_MODEL: {"cn-beijing": [(1_000_000, 0.8, 2.7)], "ap-southeast-1": [(1_000_000, 1.094, 3.427)]},
     ASR_MODEL: {"cn-beijing": [(1_000_000, 0.8, 2.7)], "ap-southeast-1": [(1_000_000, 1.094, 3.427)]},
 }
 
@@ -362,11 +362,11 @@ def main() -> None:
     ap.add_argument("--audio", type=Path, action="append", help="一条语音指令（WAV），可重复")
     ap.add_argument("--mic", action="store_true", help="用麦克风：回车开始说话、再回车结束，可多条")
     ap.add_argument("--offline", action="store_true", help="模拟断网：只用端侧规则，演示降级")
-    ap.add_argument("--quality", action="store_true", help=f"编排改用质量档 {QUALITY_MODEL}（默认 {LLM_MODEL}）")
+    ap.add_argument("--cheap", action="store_true", help=f"编排改用省钱档 {CHEAP_MODEL}（默认 {LLM_MODEL}）")
     args = ap.parse_args()
 
     cfg = kit.resolve(args, DEMO_DIR)
-    model = QUALITY_MODEL if args.quality else LLM_MODEL
+    model = CHEAP_MODEL if args.cheap else LLM_MODEL
     uses_voice = args.mic or bool(args.audio) or not args.text
     planned = ["端侧规则（断网）"] if args.offline else [model] + ([ASR_MODEL] if uses_voice else [])
     kit.banner("04 Agent 硬件 · 百炼工具编排参考 demo", cfg, planned)
