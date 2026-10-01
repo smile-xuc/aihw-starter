@@ -123,7 +123,7 @@
 - **目标市场**：Pixel 与 Android 生态里的 TWS 用户
 - **AI 能力**：博客写手机锁屏时仍可与 Gemini 对话。商店页写 Live Translate：耳机里听译文，对方从手机外放听译文
 - **大模型方案**：Gemini（非千问默认绑定）
-- **公开数据**：未见公开销量。博客（2024-08-13）写 "hitting shelves on September 26"，该句未写年份
+- **公开数据**：未见公开销量。博客（2024-08-13）写 "hitting shelves on September 26"（年份待核实）
 - **关键差异化**：① 免手持 Gemini 对话，手机锁屏时仍可进行；② Live Translate 把译文分到耳机和手机外放；③ 商品页写 Tensor A1 负责降噪
 - **商业模式**：硬件销售
 - **另见**：[公开案例](../../../solutions/by-category/06-ai-earphone/04-cases.md)

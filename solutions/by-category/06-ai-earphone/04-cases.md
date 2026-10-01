@@ -109,7 +109,7 @@
 - **形态**：主动降噪 TWS。商品页写搭载 Google Tensor A1
 - **技术路线**：Gemini。商店页写 Live Translate：耳机里听译文，对方从手机外放听译文
 - **亮点**：博客写手机锁屏时仍可与 Gemini 对话
-- **公开数据**：博客写预购价 $229 USD。商店现价 $229 USD（查证 2026-09-30）。博客摘要写 "hitting shelves on September 26"，该句未写年份
+- **公开数据**：博客写预购价 $229 USD。商店现价 $229 USD（查证 2026-09-30）。博客摘要写 "hitting shelves on September 26"（年份待核实）
 - **可借鉴点**：译文一路进耳机，一路从手机外放
 - **另见**：[Pixel Buds Pro 2 商业产品卡][ear]
 
