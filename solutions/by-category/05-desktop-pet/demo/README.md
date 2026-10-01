@@ -14,6 +14,14 @@
 
 > 本目录存放桌宠品类可运行示例。对应技术方案：[`02-solution.md`](../02-solution.md) 方案 C（标签嵌入式）与第八节硬约束。
 
+## 参考 demo（品类 × 栈）
+
+按 [demo 统一标准](../../../demo-standard/README.md) 组织：每个栈一个目录，三步跑通，无 Key 自动 mock。
+
+| 栈 | 目录 | 场景 | 状态 |
+|---|---|---|---|
+| 百炼 | [`bailian/`](./bailian/) | 桌宠按键说话 → `qwen3.8-omni-flash-realtime` 实时语音回复，Function Calling 切换屏幕表情与动作；结束时 `qwen3.7-flash` 写陪伴日记、提炼记忆，下次开机注入 | 待真 Key 验证 |
+
 ## 已提供
 
 ### [`stream-tag-parser/`](./stream-tag-parser/) — 流式标签解析（离线可跑）

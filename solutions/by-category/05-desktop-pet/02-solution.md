@@ -386,6 +386,8 @@ cosyvoice-v3-plus / cosyvoice-v3-flash 支持 7 种情绪。仅部分音色支�
 - 同标签设最小冷却（默认 1 秒，防抖动）
 - 表情持续到下一句话开始
 
+> 百炼参考 demo（实时语音 + `pet_expression` 工具调用 + 每日记忆日记，无 Key 自动 mock）：[`demo/bailian/`](./demo/bailian/)
+
 ---
 
 ## 十、示例与模板
