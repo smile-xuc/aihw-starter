@@ -63,7 +63,7 @@ IPC（摄像头 + 本地移动侦测）
   └─ 看护日报：同一接口，流式 Markdown → App
 ```
 
-`{base}` 由 `.env` 决定：填了业务空间 ID 是 `https://{业务空间ID}.cn-beijing.maas.aliyuncs.com`（新加坡为 `ap-southeast-1`），否则是通用域名 `https://dashscope.aliyuncs.com`（新加坡 `https://dashscope-intl.aliyuncs.com`）。
+`{base}` 由 `.env` 决定：填了业务空间 ID 是 `https://{业务空间ID}.cn-beijing.maas.aliyuncs.com`（新加坡为 `ap-southeast-1`），否则是通用域名 `https://dashscope.aliyuncs.com`（新加坡 `https://dashscope-intl.aliyuncs.com`）。通用域名自 2026-09-30 起不再支持新特性，建议填业务空间 ID；Key、地域、业务空间三者要属于同一地域。
 
 - `qwen3.7-flash` 原生看图，看图、检索、日报用同一个模型；检索和日报更看重文字质量时，把 `run.py` 的 `TEXT_MODEL` 换成 `qwen3.8-flash`（单价已写在 `PRICES` 里）
 - Qwen3.5 及以后的系列默认开启思考，硬件场景一律传 `enable_thinking=false`，否则首字明显变慢、输出 Token 也会多
