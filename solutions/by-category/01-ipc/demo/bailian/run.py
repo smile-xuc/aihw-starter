@@ -9,8 +9,9 @@
   → 手机 App：out/events.json + out/daily.md；中高风险事件由设备联动录像和告警
 
 一条命令：
-  python3 run.py           有 DASHSCOPE_API_KEY 就真跑；没有就自动 mock
-  python3 run.py --mock    强制离线 mock（CI 冒烟用）
+  python3 run.py             有 DASHSCOPE_API_KEY 就真跑；没有就自动 mock
+  python3 run.py --mock      强制离线 mock（CI 冒烟用）
+  python3 run.py --quality   整条链路切到质量档 qwen3.8-flash
 
 只用标准库（--camera 需要 opencv-python）。接口以官方文档为准：https://help.aliyun.com/zh/model-studio/vision
 """
@@ -30,8 +31,8 @@ from typing import Iterator
 import demo_kit as kit
 
 DEMO_DIR = Path(__file__).resolve().parent
-VISION_MODEL = "qwen3.7-flash"   # 看图出事件卡
-TEXT_MODEL = "qwen3.7-flash"     # 检索 + 日报；文字质量优先时可换 qwen3.8-flash
+MODEL = "qwen3.7-flash"          # 默认档：看图出事件卡、检索、日报
+QUALITY_MODEL = "qwen3.8-flash"  # 质量档（--quality）：同样原生看图，单价约为默认档的 4 倍
 SAMPLES = DEMO_DIR / "samples"
 MANIFEST = SAMPLES / "events.json"
 DEFAULT_ASK = "找昨晚宠物跳沙发那段"
@@ -40,22 +41,17 @@ MAX_DATA_URI = 20 * 1024 * 1024  # 官方：Qwen3.x 系列 Base64 Data URI ≤20
 TIME_FMT = "%Y-%m-%d %H:%M:%S"
 RISK = {"low": "低", "medium": "中", "high": "高"}
 
-# 元 / 百万 Token，按单次请求的输入 Token 数分档：(档位上限, 输入, 输出)；均为原价，不含限时折扣。
-# 后两个是备选：文字质量档 qwen3.8-flash、效果档 qwen3.7-plus。查证 2026-10-01：
+# 元 / 百万 Token，按单次请求的输入 Token 数分档：(档位上限, 输入, 输出)；均为原价，不含限时折扣。查证 2026-10-01：
 #   qwen3.7-flash：https://help.aliyun.com/zh/model-studio/qwen3-7-flash
-#   qwen3.8-flash、qwen3.7-plus：https://help.aliyun.com/zh/model-studio/model-pricing
+#   qwen3.8-flash（不分档）：https://help.aliyun.com/zh/model-studio/model-pricing
 PRICES = {
-    "qwen3.7-flash": {
+    MODEL: {
         "cn-beijing": [(32_000, 0.2, 0.8), (256_000, 0.6, 2.4), (1_000_000, 1.2, 4.8)],
         "ap-southeast-1": [(32_000, 0.225, 0.974), (256_000, 0.749, 2.998), (1_000_000, 1.499, 5.995)],
     },
-    "qwen3.8-flash": {
+    QUALITY_MODEL: {
         "cn-beijing": [(1_000_000, 0.8, 2.7)],
         "ap-southeast-1": [(1_000_000, 1.094, 3.427)],
-    },
-    "qwen3.7-plus": {
-        "cn-beijing": [(256_000, 2.0, 8.0), (1_000_000, 6.0, 24.0)],
-        "ap-southeast-1": [(256_000, 2.998, 11.991), (1_000_000, 8.993, 35.972)],
     },
 }
 
@@ -166,14 +162,14 @@ def parse_json(text: str, what: str) -> dict:
         raise kit.HttpError(f"{what}不是合法 JSON（{exc}）：{text[:200]}") from None
 
 
-def describe(http, cfg: kit.Config, frame: Frame) -> tuple[dict, Call]:
+def describe(http, cfg: kit.Config, model: str, frame: Frame) -> tuple[dict, Call]:
     data_uri = f"data:{frame.mime};base64,{base64.b64encode(frame.data).decode()}"
     if len(data_uri) > MAX_DATA_URI:
         sys.exit("图片 Base64 后超过 20 MB，先缩到 1280×720 以内")
     meta = f"时间 {frame.time.strftime(TIME_FMT)}；位置 {frame.camera}；触发 {frame.trigger}"
     content = [{"type": "image_url", "image_url": {"url": data_uri}},
                {"type": "text", "text": EVENT_PROMPT.format(meta=meta)}]
-    text, call = chat(http, cfg, VISION_MODEL, content, json_mode=True)
+    text, call = chat(http, cfg, model, content, json_mode=True)
     card = parse_json(text, "事件卡")
     level = str(card.get("risk_level") or "low").strip().lower()
     card["risk_level"] = {"低": "low", "中": "medium", "高": "high"}.get(level, level)
@@ -185,11 +181,11 @@ def brief(events: list[dict]) -> str:
     return json.dumps([{k: e.get(k) for k in keys} for e in events], ensure_ascii=False, indent=1)
 
 
-def search(http, cfg: kit.Config, events: list[dict], question: str, now: dt.datetime) -> Call:
+def search(http, cfg: kit.Config, model: str, events: list[dict], question: str, now: dt.datetime) -> Call:
     kit.say("App", f"检索「{question}」")
-    kit.say("云端", f"检索 {TEXT_MODEL}（{len(events)} 个事件 · JSON）……")
+    kit.say("云端", f"检索 {model}（{len(events)} 个事件 · JSON）……")
     prompt = ASK_PROMPT.format(now=now.strftime("%Y-%m-%d %H:%M"), events=brief(events), question=question)
-    text, call = chat(http, cfg, TEXT_MODEL, prompt, json_mode=True)
+    text, call = chat(http, cfg, model, prompt, json_mode=True)
     result = parse_json(text, "检索结果")
     by_id = {e["id"]: e for e in events}
     kit.say("App", result.get("answer") or "（模型没有给出回答）")
@@ -220,10 +216,10 @@ def indented_echo(prefix: str = "        "):
     return echo
 
 
-def daily(http, cfg: kit.Config, events: list[dict], now: dt.datetime) -> tuple[str, Call]:
-    kit.say("云端", f"日报 {TEXT_MODEL}（流式 Markdown）……")
+def daily(http, cfg: kit.Config, model: str, events: list[dict], now: dt.datetime) -> tuple[str, Call]:
+    kit.say("云端", f"日报 {model}（流式 Markdown）……")
     prompt = DAILY_PROMPT.format(now=now.strftime("%Y-%m-%d %H:%M"), events=brief(events))
-    text, call = chat(http, cfg, TEXT_MODEL, prompt, json_mode=False, echo=indented_echo())
+    text, call = chat(http, cfg, model, prompt, json_mode=False, echo=indented_echo())
     print()
     return text.strip() + "\n", call
 
@@ -285,11 +281,12 @@ def main() -> None:
     ap.add_argument("--frames", type=int, default=3, help="--camera 抓几帧")
     ap.add_argument("--ask", default=DEFAULT_ASK, help="App 里的自然语言检索；传空字符串跳过")
     ap.add_argument("--no-daily", action="store_true", help="不生成看护日报")
+    ap.add_argument("--quality", action="store_true", help=f"切到质量档 {QUALITY_MODEL}（看图、检索、日报都换）")
     args = ap.parse_args()
 
     cfg = kit.resolve(args, DEMO_DIR)
-    models = list(dict.fromkeys([VISION_MODEL] + ([TEXT_MODEL] if args.ask or not args.no_daily else [])))
-    kit.banner("01 IPC / AI 视觉 · 百炼事件理解参考 demo", cfg, models)
+    model = QUALITY_MODEL if args.quality else MODEL
+    kit.banner("01 IPC / AI 视觉 · 百炼事件理解参考 demo", cfg, [model])
     if cfg.live:
         http = kit.HttpTransport()
         if not cfg.workspace_id:
@@ -311,8 +308,8 @@ def main() -> None:
     try:
         for index, frame in enumerate(frames, 1):
             kit.say("设备", f"{frame.camera} · {frame.trigger} → 抓拍 1 帧（{len(frame.data) // 1024} KB）· 上传云端")
-            kit.say("云端", f"事件理解 {VISION_MODEL}（看图 · JSON）……")
-            card, call = describe(http, cfg, frame)
+            kit.say("云端", f"事件理解 {model}（看图 · JSON）……")
+            card, call = describe(http, cfg, model, frame)
             event = {"id": index, "time": frame.time.strftime(TIME_FMT), "camera": frame.camera,
                      "trigger": frame.trigger, "image": frame.image, **card}
             events.append(event)
@@ -334,11 +331,11 @@ def main() -> None:
 
     extras = []
     if args.ask:
-        asked = search(http, cfg, events, args.ask, now)
+        asked = search(http, cfg, model, events, args.ask, now)
         kit.say("统计", f"检索首字 {fmt_ms(cfg, asked.first_ms)} · ¥{kit.fmt_cny(asked.cost(cfg.region))}")
         extras.append(("检索", asked.cost(cfg.region)))
     if not args.no_daily:
-        markdown, report = daily(http, cfg, events, now)
+        markdown, report = daily(http, cfg, model, events, now)
         (out / "daily.md").write_text(markdown, encoding="utf-8")
         kit.say("App", "推送看护日报 → out/daily.md")
         kit.say("统计", f"日报首字 {fmt_ms(cfg, report.first_ms)} · ¥{kit.fmt_cny(report.cost(cfg.region))}")
@@ -348,7 +345,7 @@ def main() -> None:
     firsts = [c.first_ms for c in calls if c.first_ms is not None]
     extra_text = "".join(f" · {name} ¥{kit.fmt_cny(value)}" for name, value in extras)
     kit.say("统计", f"{len(calls)} 个事件合计 ¥{kit.fmt_cny(per_event * len(calls))}{extra_text}")
-    kit.finish(cfg, args, DEMO_DIR, models=models, first_ms=sum(firsts) / len(firsts) if firsts else None,
+    kit.finish(cfg, args, DEMO_DIR, models=[model], first_ms=sum(firsts) / len(firsts) if firsts else None,
                cost=per_event, sample=f"{len(calls)} 帧事件（{source}）",
                note=f"首字=抓拍完成→事件卡首字，{len(calls)} 帧均值；单次成本=每个事件" + extra_text.replace(" · ", "；"))
 

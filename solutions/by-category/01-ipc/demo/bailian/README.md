@@ -65,7 +65,7 @@ IPC（摄像头 + 本地移动侦测）
 
 `{base}` 由 `.env` 决定：填了业务空间 ID 是 `https://{业务空间ID}.cn-beijing.maas.aliyuncs.com`（新加坡为 `ap-southeast-1`），否则是通用域名 `https://dashscope.aliyuncs.com`（新加坡 `https://dashscope-intl.aliyuncs.com`）。通用域名自 2026-09-30 起不再支持新特性，建议填业务空间 ID；Key、地域、业务空间三者要属于同一地域。
 
-- `qwen3.7-flash` 原生看图，看图、检索、日报用同一个模型；检索和日报更看重文字质量时，把 `run.py` 的 `TEXT_MODEL` 换成 `qwen3.8-flash`（单价已写在 `PRICES` 里）
+- 默认档 `qwen3.7-flash` 原生看图，看图、检索、日报用同一个模型；效果不够时加 `--quality`，整条链路换成质量档 `qwen3.8-flash`（同样原生看图）。再往上一档是 `qwen3.7-plus`（北京 2 / 8 元每百万 Token），要用时改 `run.py` 的常量并在 `PRICES` 里补单价
 - Qwen3.5 及以后的系列默认开启思考，硬件场景一律传 `enable_thinking=false`，否则首字明显变慢、输出 Token 也会多
 - 官方建议 Qwen3.x 看图时不设 system 消息，指令写在 user 消息里，本 demo 照此组织
 - JSON Object 模式要求消息里出现「JSON」字样；多模态输入不支持 `json_schema`，会自动降级为 `json_object`
@@ -78,21 +78,23 @@ IPC（摄像头 + 本地移动侦测）
 | `--camera [--interval 5] [--frames 3]` | 电脑摄像头定时抓帧，边抓边分析；Ctrl+C 提前结束 |
 | `--ask "门口有没有快递"` | 换检索问题；`--ask ""` 跳过检索 |
 | `--no-daily` | 不生成看护日报 |
+| `--quality` | 切到质量档 `qwen3.8-flash`，看图、检索、日报都换 |
 | `--region ap-southeast-1` | 临时切到新加坡（Key 也要换成新加坡的） |
 | `--record` | 真跑成功后把一行验证记录追加到 `VERIFY.md` |
 
 ## 计费与延迟口径
 
-`qwen3.7-flash` 单价（元 / 百万 Token，按单次请求的输入 Token 分档，[模型页](https://help.aliyun.com/zh/model-studio/qwen3-7-flash)，查证 2026-10-01）：
+单价（元 / 百万 Token，[qwen3.7-flash 模型页](https://help.aliyun.com/zh/model-studio/qwen3-7-flash)、[模型价格](https://help.aliyun.com/zh/model-studio/model-pricing)，查证 2026-10-01）：
 
-| 单次输入 | 华北2（北京）输入 / 输出 | 新加坡 输入 / 输出 |
-|---|---|---|
-| ≤32K | 0.2 / 0.8 | 0.225 / 0.974 |
-| 32K–256K | 0.6 / 2.4 | 0.749 / 2.998 |
-| 256K–1M | 1.2 / 4.8 | 1.499 / 5.995 |
+| 模型 | 单次输入 | 华北2（北京）输入 / 输出 | 新加坡 输入 / 输出 |
+|---|---|---|---|
+| `qwen3.7-flash`（默认档） | ≤32K | 0.2 / 0.8 | 0.225 / 0.974 |
+| | 32K–256K | 0.6 / 2.4 | 0.749 / 2.998 |
+| | 256K–1M | 1.2 / 4.8 | 1.499 / 5.995 |
+| `qwen3.8-flash`（质量档，`--quality`） | 不分档 | 0.8 / 2.7 | 1.094 / 3.427 |
 
 - 图片按每 32×32 像素 1 Token 折算（[视觉理解](https://help.aliyun.com/zh/model-studio/vision)）：640×360 的事件帧约 220 Token，1280×720 约 900 Token。抓拍分辨率直接决定成本，事件理解用 640×360 足够
-- 估算（北京，未计免费额度）：每个事件约 ¥0.0002（约 520 输入 + 120 输出 Token）；一路摄像头每天 30 个事件加一份日报，约 ¥0.007 / 天、¥0.2 / 月
+- 估算（北京，未计免费额度）：默认档每个事件约 ¥0.0002（约 520 输入 + 120 输出 Token），一路摄像头每天 30 个事件加一份日报约 ¥0.007 / 天、¥0.2 / 月；`--quality` 每个事件约 ¥0.0007
 - 免费额度只适用于北京地域
 - 首字延迟 = 抓拍完成（开始上传）→ 事件卡首个 token；检索和日报的首字单独打印在 `[统计]` 里
 - 每轮实际费用以 `[统计]` 里按 `usage` 算出的为准
@@ -100,7 +102,7 @@ IPC（摄像头 + 本地移动侦测）
 ## 常见问题
 
 - **401 / 403**：Key 与地域不一致，或业务空间 ID 不属于这个 Key
-- **事件卡不是合法 JSON**：重跑一次；确认请求里带了 `enable_thinking=false`；仍不稳定时把 `VISION_MODEL` 换成效果档 `qwen3.7-plus` 对比（单价已在 `PRICES` 里，北京约为 `qwen3.7-flash` 的 10 倍）
+- **事件卡不是合法 JSON**：重跑一次；确认请求里带了 `enable_thinking=false`；仍不稳定时加 `--quality` 用质量档对比
 - **为什么不用 `qwen3-vl-flash`**：它和 `qwen-vl-plus` / `qwen-vl-max` 都在 2026-10-10 下线（[公告 118344](https://www.aliyun.com/notice/118344)）；官方替代 `qwen3.6-flash` 单价更高，`qwen3.7-flash` 原生看图、输出更便宜
 - **`--camera` 打不开摄像头**：先 `pip install -r requirements-device.txt`；macOS 需要在「隐私与安全性」里给终端摄像头权限
 - **量产怎么接**：端侧先做移动侦测、人形 / 宠物检测，只上传触发帧控制成本；事件帧走自己的 OSS + STS 上传；设备不放长期 Key，见 [demo-standard](../../../../demo-standard/README.md)「设备侧凭证」

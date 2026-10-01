@@ -7,7 +7,9 @@ kind: reference
 summary: 看护摄像头事件抓拍 → qwen3.7-flash 看图生成结构化事件卡，并在 App 里做自然语言检索和看护日报
 models:
   - id: qwen3.7-flash
-    role: 看图生成事件卡（JSON）+ 自然语言检索（JSON）+ 看护日报（流式 Markdown），均关闭思考
+    role: 默认档：看图生成事件卡（JSON）+ 自然语言检索（JSON）+ 看护日报（流式 Markdown），均关闭思考
+  - id: qwen3.8-flash
+    role: 质量档（--quality）：整条链路换成它，同样原生看图，单价约为默认档的 4 倍
 regions: [cn-beijing, ap-southeast-1]
 env: [DASHSCOPE_API_KEY]
 device:
