@@ -62,6 +62,29 @@
 | 免责 | System + 输出后缀双保险 |
 | 延迟 | 日报异步 <5s；告警队列 <30s |
 
+## 六、接入步骤
+
+本仓可跑的是离线 mock，不发起真实 API。文件：[`demo/metrics-prompt/`](./demo/metrics-prompt/)。
+
+1. 准备一日指标 JSON。demo 的字段为 `gender`、`age`、`bmi`、`rhr`、`rhr_avg7`、`spo2`、`spo2_min`、`deep_sleep_min`、`total_sleep_min`、`steps`、`cal`。样例见 `sample_day.json`。
+2. `build_prompt()` 把指标填进提示词：一句话总结、需关注项、一条可执行建议，并写明不做医疗诊断。
+3. `mock_interpret()` 按代码里的规则生成日报。严重项在首行加 `[ALERT]`。文末固定「以上为AI健康参考，不替代专业医疗意见。」
+4. 第四节把日报对应 `qwen-flash`、深度周报对应 `qwen-plus`。把 prompt 发给这些模型的请求体，本 demo 未给出，待核实。
+
+## 七、能力边界
+
+- **能做（本仓 demo）**：聚合指标生成带免责声明的日报文本；异常项打 `[ALERT]`
+- **不能做**：医疗诊断。demo 与第五节都写明不做。demo 不上传原始波形
+- **待核实**：真实模型输出是否稳定带上免责声明；各地区对健康解读文案的资质要求
+
+## 八、官方文档与 SDK 链接
+
+- [文本生成](https://help.aliyun.com/zh/model-studio/text-generation)（查证 2026-09-30）
+- [OpenAI 兼容 Chat](https://help.aliyun.com/zh/model-studio/qwen-api-via-openai-chat-completions)（查证 2026-09-30）
+- [获取 API Key](https://help.aliyun.com/zh/model-studio/get-api-key)（查证 2026-09-30）
+- [安装百炼 SDK](https://help.aliyun.com/zh/model-studio/install-sdk)（查证 2026-09-30）
+- [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing)（查证 2026-09-30）
+
 ---
 
 **版本**：千问大模型方案
