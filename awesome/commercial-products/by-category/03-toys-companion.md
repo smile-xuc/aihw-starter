@@ -163,11 +163,11 @@
 - **定价**：
   - 首发价：待核实（查证 2026-10-01）
   - 现价：Premium $499 USD · 美国 · 据 KEYi buying guide 博客 · [购买指南](https://keyirobot.com/blogs/buying-guide/loona-robot-price-guide-cost-bundles-and-where-to-buy) · 查证 2026-10-01。博客写套装含 Loona Petbot Premium、充电坞、游戏道具套件
-  - 现价：Space Edition $699.00 USD · 美国 · [产品页](https://keyirobot.com/products/petbot) · 查证 2026-10-01。产品页写订单 9 月 19 日开放，10 月 17 日起发货（页面未写年份）
+  - 现价：Space Edition $699.00 USD · 美国 · [产品页](https://keyirobot.com/products/petbot) · 查证 2026-10-01。产品页写订单 9 月 19 日开放，10 月 17 日起发货，发货年份待核实
   - MSRP：待核实（查证 2026-10-01）
   - 订阅：购买指南写目前核心体验不强制月订阅（原文 "no mandatory monthly subscription for Loona Petbot's core experience"）。产品页 FAQ 写 "Loona offers free ChatGPT 4o function for the moment." 政策可能调整，以官网为准
 - **目标市场**：家庭与儿童陪伴。产品页写家庭成员识别、儿童向 Google Blockly，以及 remote monitoring
-- **AI 能力**：产品页写人脸识别并记住偏好、手势与表情识别、室内导航（home navigation）、Google Blockly 编程、App 游戏，以及 remote monitoring。对话写 "Interactive Nature Powered by GPT"，并写在互动中积累记忆、形成个性化陪伴。页脚有 Loona App 入口；监测是否一定走该 App，待核实（查证 2026-10-01）
+- **AI 能力**：产品页写人脸识别并记住偏好、手势与表情识别、室内导航（home navigation）、Google Blockly 编程、App 游戏，以及 remote monitoring。对话写 "Interactive Nature Powered by GPT"，并写在互动中积累记忆、形成个性化陪伴。远程监测是否走 Loona App：待核实（查证 2026-10-01）
 - **大模型方案**：产品页写 "Using Chat GPT" 与 "Powered by GPT"。FAQ 原文为 "ChatGPT 4o"（问句 "Will Loona charge for ChatGPT 4o function?"）。字面「GPT-4o」待核实（查证 2026-10-01）。非千问默认绑定
 - **公开数据**：未见公开销量。产品页写 Space Edition 为 "3,000 numbered explorers"、"No restock"
 - **关键差异化**：① 轮式室内导航，并写低电量自行返回充电坞；② Google Blockly 与 App 游戏；③ 人脸识别记住偏好，互动中积累个性化记忆

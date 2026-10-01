@@ -34,7 +34,7 @@
 | **Pixel Watch 5** | 圆形表，41 mm / 45 mm | Gemini；Health Guardian | 博客 41 mm $399 / 45 mm $429；商店 From $399.99（查证 2026-09-30） | Google Health Premium From $9.99/月；商店页写附 3 个月 |
 | **Galaxy Watch9** | 40 mm / 44 mm，圆形表盘 | Gemini；raise to talk | 美国 40 mm 蓝牙 $379.99、44 mm 蓝牙 $409.99（SammyGuru）；加拿大 44 mm 蓝牙 $559.99 CAD（Aubaine）（查证 2026-09-30） | 未见公开订阅价 |
 | **Amazfit Balance 2** | 运动健康手表 | Zepp Flow；Zepp Coach | $299.99（查证 2026-09-30） | 未见公开订阅价 |
-| **TicNote Watch** | 1.43 英寸圆形 AMOLED | 腕上录音；转写 / 摘要走 App；官网称 120+ 语种、<1.5s | Sale $199.00 / Regular $249.00（查证 2026-10-01） | 订阅价待核实 |
+| **TicNote Watch** | 1.43 英寸圆形 AMOLED | 腕上录音；转写 / 摘要走 App；官网称 120+ 语种、<1.5s | 现价 $199.00 USD（划线价 $249.00 USD）（查证 2026-10-01） | 订阅价待核实 |
 
 ## 三、关键案例速览
 

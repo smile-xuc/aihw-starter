@@ -146,7 +146,7 @@
 - **公开信息源**：[产品页](https://keyirobot.com/products/petbot) · [KEYi buying guide](https://keyirobot.com/blogs/buying-guide/loona-robot-price-guide-cost-bundles-and-where-to-buy)（查证 2026-10-01）
 - **形态**：室内轮式家庭 petbot。规格为轮式伺服，另有机身与耳朵伺服；不是四足
 - **技术路线**：产品页写 GPT 对话、人脸 / 手势 / 表情、室内导航、Google Blockly。FAQ 原文为 "ChatGPT 4o"。字面「GPT-4o」待核实（查证 2026-10-01）
-- **亮点**：购买指南写 Premium $499 USD，套装含本体、充电坞、游戏道具套件。产品页 Space Edition $699.00 USD，并写 9 月 19 日开放下单、10 月 17 日起发货（页面未写年份）。购买指南写核心体验目前无强制月订阅。政策可能调整，以官网为准
+- **亮点**：购买指南写 Premium $499 USD，套装含本体、充电坞、游戏道具套件。产品页 Space Edition $699.00 USD，并写 9 月 19 日开放下单、10 月 17 日起发货，发货年份待核实。购买指南写核心体验目前无强制月订阅。政策可能调整，以官网为准
 - **公开数据**：未见公开销量。产品页写 Space Edition 为 "3,000 numbered explorers"、"No restock"
 - **可借鉴点**：对照 05 的 EMO、Vector，以及本品类已停售的 Moxie。Loona 是官网仍标价的中价位海外轮式 petbot，价位落在这些桌宠与 Moxie 历史硬件价之间
 - **另见**：[Loona Petbot Premium 商业产品卡][toy]

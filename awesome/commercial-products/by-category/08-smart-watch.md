@@ -164,8 +164,8 @@
 - **形态**：1.43 英寸圆形 AMOLED 腕表（型号 REW026）。双全向数字硅麦
 - **定价**：
   - 首发价：待核实（查证 2026-10-01）
-  - 现价：$199.00 USD · 美国 · 产品页 Sale price · [产品页](https://ticnote.ai/products/ticnote-watch) · 查证 2026-10-01
-  - MSRP：$249.00 USD · 美国 · 产品页 Regular price · [产品页](https://ticnote.ai/products/ticnote-watch) · 查证 2026-10-01
+  - 现价：$199.00 USD（划线价 $249.00 USD）· 美国 · [产品页](https://ticnote.ai/products/ticnote-watch) · 查证 2026-10-01
+  - MSRP：待核实（查证 2026-10-01）
   - 订阅：待核实（查证 2026-10-01）
 - **目标市场**：产品页写面向专业人士、学生与创作者（原文 "professionals, students, and creators"）
 - **AI 能力**：FAQ 写表端录音与回放不需要手机；实时转写、翻译、AI 摘要与云同步需要连接运行 TicNote App 的手机。官网称 "120+ Languages & Dialects | 17 Live Subtitles | ≥98% Accuracy | <1.5s Latency"。健康侧写心率、血氧、睡眠与单频 GPS，并写 "Not a medical device"。CE/FCC 等认证 in progress（以官方 FAQ 为准）；FAQ 同时写 PSE、TELEC 为 in progress，IC/ISED Canada 待定，CMIIT（中国）已获批
