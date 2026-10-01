@@ -23,7 +23,6 @@ import threading
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterator
 
 import demo_kit as kit
 
@@ -131,10 +130,12 @@ class Stats:
 
 
 class Earphone:
-    """耳机本体：播放译音。量产时把 play() 换成蓝牙 / I2S 音频输出。"""
+    """耳机本体：播放译音（独立线程写声卡，不拖慢收发）。量产时把 play() 换成蓝牙 / I2S 音频输出。"""
 
     def __init__(self, play: bool, rate: int):
         self.speaker = None
+        self._pending: queue.Queue[bytes | None] = queue.Queue()
+        self._thread: threading.Thread | None = None
         if play:
             try:
                 import sounddevice as sd
@@ -142,61 +143,106 @@ class Earphone:
                 self.speaker.start()
             except Exception:  # noqa: BLE001 — 没有声卡 / 未装依赖时只写 WAV
                 self.speaker = None
+                return
+            self._thread = threading.Thread(target=self._drain, daemon=True)
+            self._thread.start()
+
+    def _drain(self) -> None:
+        while (pcm := self._pending.get()) is not None:
+            self.speaker.write(pcm)
 
     def play(self, pcm: bytes) -> None:
         if self.speaker:
-            self.speaker.write(pcm)
+            self._pending.put(pcm)
 
     def close(self) -> None:
         if self.speaker:
+            self._pending.put(None)
+            self._thread.join(timeout=30)  # 等已收到的译音播完
             self.speaker.stop()
             self.speaker.close()
 
 
-class Streamer(threading.Thread):
-    """设备侧推流线程：按实时节奏发 input_audio_buffer.append，讲完发 session.finish。"""
+class FileSource:
+    """WAV 文件当耳机麦克风：按实时节奏（mock 时加速）每 100 ms 放出一包。"""
 
-    def __init__(self, transport, chunks: Iterator[bytes], pace: float):
-        super().__init__(daemon=True)
-        self.t = transport
-        self.chunks = chunks
-        self.pace = pace                 # 每包之间等多少倍的 100 ms；0 表示不等（麦克风本身就是实时的）
-        self.t0: float | None = None     # 首包音频发出的时刻
-        self.sent_ms = 0.0
-        self.finished_at: float | None = None
-        self.error: BaseException | None = None
+    def __init__(self, pcm: bytes, pace: float):
+        self.chunks = [pcm[offset:offset + CHUNK_BYTES] for offset in range(0, len(pcm), CHUNK_BYTES)]
+        self.step = CHUNK_MS / 1000 * pace
+        self.index = 0
+        self.due: float | None = None
 
-    def run(self) -> None:
+    def poll(self) -> bytes | None:
+        """到点返回下一包；没到点返回 None；放完返回 b""。"""
+        now = time.perf_counter()
+        if self.due is None:
+            self.due = now
+        if self.index >= len(self.chunks):
+            return b""
+        if now < self.due:
+            return None
+        self.index += 1
+        self.due += self.step
+        return self.chunks[self.index - 1]
+
+    def wait(self) -> float:
+        return max(0.0, (self.due or 0.0) - time.perf_counter())
+
+    def close(self) -> None:
+        pass
+
+
+class MicSource:
+    """电脑麦克风当耳机麦克风：声卡回调每 100 ms 放一包进队列；按回车或到 seconds 结束。"""
+
+    def __init__(self, seconds: float | None):
         try:
-            due = time.perf_counter()
-            for chunk in self.chunks:
-                self.t.send({"type": "input_audio_buffer.append", "audio": base64.b64encode(chunk).decode()})
-                if self.t0 is None:
-                    self.t0 = kit.now_ms()
-                self.sent_ms += len(chunk) / (IN_RATE * 2 / 1000)
-                if self.pace:
-                    due += CHUNK_MS / 1000 * self.pace
-                    time.sleep(max(0.0, due - time.perf_counter()))
-            self.t.send({"type": "session.finish"})  # 不发它，最后一句的识别和翻译会丢
-        except BaseException as exc:  # noqa: BLE001 — 交给主线程报告
-            self.error = exc
-        finally:
-            self.finished_at = time.monotonic()
+            import sounddevice as sd
+        except ImportError:
+            sys.exit("麦克风需要可选依赖 sounddevice：pip install -r requirements-device.txt")
+        self.blocks: queue.Queue[bytes] = queue.Queue()
+        self.stop = threading.Event()
+        self.deadline = time.monotonic() + seconds if seconds else None
+        if not seconds:
+            threading.Thread(target=lambda: (input(), self.stop.set()), daemon=True).start()
+        self.stream = sd.RawInputStream(samplerate=IN_RATE, channels=1, dtype="int16", blocksize=CHUNK_BYTES // 2,
+                                        callback=lambda data, frames, t, status: self.blocks.put(bytes(data)))
+        self.stream.start()
+
+    def poll(self) -> bytes | None:
+        ended = self.stop.is_set() or (self.deadline is not None and time.monotonic() >= self.deadline)
+        try:
+            return self.blocks.get_nowait()
+        except queue.Empty:
+            if ended:
+                self.close()
+                return b""
+            return None
+
+    def wait(self) -> float:
+        return 0.02
+
+    def close(self) -> None:
+        if self.stream.active:
+            self.stream.stop()
+        self.stream.close()
 
 
 class Listener:
-    """主线程：收服务端事件，原文 / 字幕 / 译音分别交给控制台、耳机与统计。"""
+    """收发都在这一个线程里，按 100 ms 节拍交替：到点发一包音频，其余时间收服务端事件。
+    同一条 TLS 连接不能一个线程收、另一个线程同时发（OpenSSL 连接对象不是线程安全的）。"""
 
-    def __init__(self, transport, earphone: Earphone, streamer: Streamer):
+    def __init__(self, transport, earphone: Earphone):
         self.t = transport
         self.earphone = earphone
-        self.streamer = streamer
         self.stats = Stats()
         self.segments: dict[str, Segment] = {}
         self.translation_of: dict[str, str] = {}   # 译文项 id → 原文项 id
         self.speakers: dict[object, str] = {}
+        self.t0: float | None = None               # 首包音频发出的时刻
+        self.sent_ms = 0.0
+        self.finished_at: float | None = None
         self._line: str | None = None              # 正在打印的字幕属于哪个译文项
-        self._announced = False
 
     def _newline(self) -> None:
         if self._line is not None:
@@ -210,21 +256,35 @@ class Listener:
         source_id = self.translation_of.get(item_id) or item_id
         return self.segments.setdefault(source_id, Segment())
 
-    def run(self) -> Stats:
-        while True:
-            event = self.t.recv(1.0)
-            if self.streamer.finished_at is not None and not self._announced:
-                self._announced = True
+    def run(self, source) -> Stats:
+        try:
+            while True:
+                if self.finished_at is None:
+                    self._push(source)
+                # 收事件的等待时间就是离下一包到点还有多久，推流节奏因此不受收事件影响
+                event = self.t.recv(max(0.005, source.wait()) if self.finished_at is None else 1.0)
+                if event is None:
+                    if self.finished_at and time.monotonic() - self.finished_at > FINISH_TIMEOUT:
+                        raise RealtimeError(f"发出 session.finish 后 {FINISH_TIMEOUT} 秒仍未收到 session.finished")
+                    continue
+                if self.handle(event):
+                    return self.stats
+        finally:
+            source.close()
+
+    def _push(self, source) -> None:
+        """把已经到点的音频包发出去；讲完时发 session.finish。"""
+        while (chunk := source.poll()) is not None:
+            if not chunk:
+                self.t.send({"type": "session.finish"})  # 不发它，最后一句的识别和翻译会丢
+                self.finished_at = time.monotonic()
                 self._newline()
-                if self.streamer.error:
-                    raise RealtimeError(f"推流中断：{self.streamer.error}")
-                kit.say("设备", f"讲话结束（共推流 {self.streamer.sent_ms / 1000:.1f} s）→ session.finish，等待最后一句")
-            if event is None:
-                if self.streamer.finished_at and time.monotonic() - self.streamer.finished_at > FINISH_TIMEOUT:
-                    raise RealtimeError(f"发出 session.finish 后 {FINISH_TIMEOUT} 秒仍未收到 session.finished")
-                continue
-            if self.handle(event):
-                return self.stats
+                kit.say("设备", f"讲话结束（共推流 {self.sent_ms / 1000:.1f} s）→ session.finish，等待最后一句")
+                return
+            self.t.send({"type": "input_audio_buffer.append", "audio": base64.b64encode(chunk).decode()})
+            if self.t0 is None:
+                self.t0 = kit.now_ms()
+            self.sent_ms += len(chunk) / (IN_RATE * 2 / 1000)
 
     def handle(self, event: dict) -> bool:
         kind = event.get("type", "")
@@ -251,8 +311,8 @@ class Listener:
         elif kind in ("response.audio_transcript.delta", "response.text.delta"):
             now, item_id, delta = kit.now_ms(), event.get("item_id", ""), event.get("delta", "")
             seg = self._segment_for(item_id)
-            if self.stats.first_text_ms is None and self.streamer.t0 is not None:
-                self.stats.first_text_ms = now - self.streamer.t0
+            if self.stats.first_text_ms is None and self.t0 is not None:
+                self.stats.first_text_ms = now - self.t0
             if seg.first_at is None:
                 seg.first_at = now
             if self._line != item_id:
@@ -265,8 +325,8 @@ class Listener:
             seg.translation += delta
         elif kind == "response.audio.delta":
             pcm = base64.b64decode(event.get("delta", ""))
-            if self.stats.first_audio_ms is None and self.streamer.t0 is not None:
-                self.stats.first_audio_ms = kit.now_ms() - self.streamer.t0
+            if self.stats.first_audio_ms is None and self.t0 is not None:
+                self.stats.first_audio_ms = kit.now_ms() - self.t0
             self.stats.audio.extend(pcm)
             self.earphone.play(pcm)
         elif kind == "response.done":
@@ -283,37 +343,12 @@ class Listener:
 
     def lags(self) -> list[float]:
         """同传时延：该句开口（audio_start_ms 对应的推流时刻）→ 该句首个译文。"""
-        t0 = self.streamer.t0
+        t0 = self.t0
         return [s.first_at - (t0 + s.start_ms) for s in self.segments.values()
                 if t0 is not None and s.first_at is not None and s.start_ms is not None]
 
 
-# ───────────────────────── 设备模拟 ─────────────────────────
-
-def file_chunks(pcm: bytes) -> Iterator[bytes]:
-    for offset in range(0, len(pcm), CHUNK_BYTES):
-        yield pcm[offset:offset + CHUNK_BYTES]
-
-
-def mic_chunks(seconds: float | None) -> Iterator[bytes]:
-    """边录边推：每 100 ms 一包；按回车或到 seconds 结束。"""
-    try:
-        import sounddevice as sd
-    except ImportError:
-        sys.exit("麦克风需要可选依赖 sounddevice：pip install -r requirements-device.txt")
-    blocks: queue.Queue[bytes] = queue.Queue()
-    stop = threading.Event()
-    if not seconds:
-        threading.Thread(target=lambda: (input(), stop.set()), daemon=True).start()
-    deadline = time.monotonic() + seconds if seconds else None
-    with sd.RawInputStream(samplerate=IN_RATE, channels=1, dtype="int16", blocksize=CHUNK_BYTES // 2,
-                           callback=lambda data, frames, t, status: blocks.put(bytes(data))):
-        while not stop.is_set() and (deadline is None or time.monotonic() < deadline):
-            try:
-                yield blocks.get(timeout=0.5)
-            except queue.Empty:
-                continue
-
+# ───────────────────────── 会话 ─────────────────────────
 
 def configure(transport, target: str, text_only: bool, phrases: dict) -> dict:
     while True:
@@ -374,13 +409,13 @@ def main() -> None:
         text_only = True
         kit.say("设备", f"目标语种 {args.target} 只支持文字输出，自动切换为只出字幕")
 
+    pcm = b""
     if args.mic:
-        chunks, source, pace = mic_chunks(args.seconds), "麦克风", 0.0
+        sample = "麦克风"
         start_note = "耳机麦克风开始收音，边说边译" + ("" if args.seconds else "（按回车结束）")
     else:
         pcm = kit.read_wav(args.audio, IN_RATE)
-        chunks, source = file_chunks(pcm), f"{args.audio.name}（{kit.pcm_seconds(pcm, IN_RATE):.0f} s）"
-        pace = 1.0 if cfg.live else 1 / MOCK_SPEEDUP
+        sample = f"{args.audio.name}（{kit.pcm_seconds(pcm, IN_RATE):.0f} s）"
         start_note = (f"耳机麦克风 ← {args.audio.name}（{kit.pcm_seconds(pcm, IN_RATE):.1f} s），"
                       f"按 {CHUNK_MS} ms 一包{'实时' if cfg.live else f' {MOCK_SPEEDUP} 倍速'}推流")
 
@@ -404,12 +439,10 @@ def main() -> None:
         kit.say("云端", f"会话就绪：自动识别源语种 → {args.target} · {mode} · 断句 {detection}"
                         f"{f' · 热词 {len(phrases)} 个' if phrases else ''}")
         earphone = Earphone(play=cfg.live and not args.no_play and not text_only, rate=out_rate)
-        streamer = Streamer(transport, chunks, pace)
-        listener = Listener(transport, earphone, streamer)
+        listener = Listener(transport, earphone)
         kit.say("设备", start_note)
-        streamer.start()
-        stats = listener.run()
-        streamer.join(timeout=5)
+        source = MicSource(args.seconds) if args.mic else FileSource(pcm, 1.0 if cfg.live else 1 / MOCK_SPEEDUP)
+        stats = listener.run(source)
     except RealtimeError as exc:
         sys.exit(f"[云端] 错误：{exc}")
     except KeyboardInterrupt:
@@ -428,7 +461,7 @@ def main() -> None:
                         f"{' · 已播放' if earphone and earphone.speaker else ''}")
 
     cost = stats.usage.cost(cfg.region)
-    seconds = streamer.sent_ms / 1000
+    seconds = listener.sent_ms / 1000
     per_minute = cost / seconds * 60 if seconds else 0.0
     lags = listener.lags()
     if cfg.live:
@@ -449,7 +482,7 @@ def main() -> None:
     if text_only:
         note += "；只出字幕"
     kit.finish(cfg, args, DEMO_DIR, models=[MODEL], first_ms=stats.first_text_ms, cost=cost,
-               sample=source, note=note)
+               sample=sample, note=note)
 
 
 if __name__ == "__main__":

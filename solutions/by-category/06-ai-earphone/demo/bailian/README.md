@@ -48,7 +48,7 @@
 耳机（或手机 App 中转）
   │ WebSocket：wss://{业务空间ID}.cn-beijing.maas.aliyuncs.com/api-ws/v1/realtime?model=qwen3.8-livetranslate-flash-realtime
   ├─ session.update      output_modalities=["text","audio"]（--text-only 时 ["text"]）、translation.language=en
-  ├─ input_audio_buffer.append ×N（16 kHz PCM，100 ms 一包，按实时节奏，推流在独立线程）   ← 首包发出时开始计时
+  ├─ input_audio_buffer.append ×N（16 kHz PCM，100 ms 一包，按实时节奏，与收事件在同一线程交替）   ← 首包发出时开始计时
   ├─ ← input_audio_buffer.speech_started（speaker_id）→ 原文 conversation.item.input_audio_transcription.delta / .completed
   ├─ ← conversation.item.created（previous_item_id = 原文项）→ response.audio_transcript.delta（字幕）+ response.audio.delta（译音）
   ├─ ← response.done.usage → 成本（每句一次）
@@ -58,6 +58,7 @@
 - 3.8 的会话字段和事件与 3.5 不同：输出模态用 `output_modalities`（3.5 是 `modalities`）；字幕增量是 `response.text.delta` / `response.audio_transcript.delta`（3.5 是带 `stash` 的 `.text` 事件）；原文识别始终开启，不能关闭；默认 `speaker_detection` 断句，同时区分说话人；不支持 `same_language_skip_options`
 - 官方示例直接用 `websocket-client` 收发原生事件，不经过 SDK 的 `TranslationRealtime`；旧 demo [`livetranslate-ws/`](../livetranslate-ws/) 是 3.5 的 SDK 回调写法，仍保留
 - 原文与译文靠 `previous_item_id` 配对；说话人编号按首次出现的顺序显示为「说话人1、说话人2」
+- 收发放在一个线程里按 100 ms 节拍交替：同一条 TLS 连接不要一个线程收、另一个线程同时发（OpenSSL 的连接对象不是线程安全的）。官方 Python 示例用的是「发送线程 + 主线程接收」，本地仿真中这种写法偶发会话开头被误判断开。麦克风采集和扬声器播放各用一个线程，它们不碰网络连接
 - 量产不要在耳机或 App 里放长期 Key，改由业务服务端下发临时 Key（见 [demo-standard](../../../../demo-standard/README.md)「设备侧凭证」）；蓝牙耳机通常由手机 App 中转这条 WebSocket
 
 ## 常用参数
