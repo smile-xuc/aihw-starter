@@ -22,3 +22,7 @@ node_modules/
 .env
 *.key
 secrets/
+
+# Demo 运行输出
+solutions/**/demo/**/out/
+solutions/demo-standard/templates/**/out/

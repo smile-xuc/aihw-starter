@@ -1,0 +1,37 @@
+name: demo-smoke
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  demo-smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.9", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      # 只装检查工具。demo 的 mock 模式必须只用标准库，所以不装任何 demo 依赖。
+      - name: Install checker deps
+        run: pip install pyyaml jsonschema
+
+      - name: Secret scan
+        run: python solutions/demo-standard/check.py secrets
+
+      - name: Manifests and layout
+        run: python solutions/demo-standard/check.py manifests
+
+      # check.py 会把 DASHSCOPE_* 变量从子进程环境里剔除，全部 demo 都在无 Key 的 mock / 离线模式下运行
+      - name: Mock smoke (all demos, no key)
+        run: python solutions/demo-standard/check.py smoke
