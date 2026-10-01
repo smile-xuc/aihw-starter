@@ -19,7 +19,7 @@
 ## A. 商业模式与订阅
 
 **Q1：Agent 硬件能靠聊天月费跑通吗？**
-A：公开市场**高风险**。Humane AI Pin 首发价 US$699（2024-04）→ 2024-10 降至 US$499（Eclipse）+ US$24/月，已于 2025-02 停售（查证 2026-09-30）；Rabbit R1 公开坚持 $199 / 无订阅。建议云端成本内嵌或 BYOK；若做订阅，包装为备份 / 多设备同步 / 高级工具额度。详见 [`01-business.md`](./01-business.md) 第三节。
+A：公开市场**高风险**。Humane AI Pin 高定价加订阅没卖动，已于 2025-02 停售（查证 2026-09-30），另见 [Humane 主卡][pin]；Rabbit R1 公开坚持 $199 / 无订阅。建议云端成本内嵌或 BYOK；若做订阅，包装为备份 / 多设备同步 / 高级工具额度。详见 [`01-business.md`](./01-business.md) 第三节。
 
 **Q2：和桌宠怎么选？**
 A：要表情 / 动作陪伴 → [`05-desktop-pet`](../05-desktop-pet/)；要自然语言办事、控设备、多步工具 → 本品类。
@@ -73,6 +73,8 @@ A：记忆挂件偏 [`07-recorder`](../07-recorder/) 边界；若主价值是「
 
 **版本**：千问大模型方案
 **更新日期**：2026-09
+
+[pin]: ../../../awesome/commercial-products/by-category/04-agent-hardware.md
 
 <!-- FOOTER:START -->
 

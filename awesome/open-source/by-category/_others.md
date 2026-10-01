@@ -8,9 +8,9 @@
 
 ### RKNN-Toolkit2（Rockchip）
 
-- **仓库**：https://github.com/airockchip/rknn-toolkit2
+- **仓库**：<https://github.com/airockchip/rknn-toolkit2>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **框架**：Rockchip NPU
 - **状态**：活跃
 - **简介**：瑞芯微 RKNN 模型转换与部署工具链。
@@ -19,9 +19,9 @@
 
 ### MaixPy（Sipeed）
 
-- **仓库**：https://github.com/sipeed/MaixPy
+- **仓库**：<https://github.com/sipeed/MaixPy>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **框架**：Sipeed Maix 系列
 - **状态**：活跃
 - **简介**：端侧 MicroPython AI 开发栈。
@@ -30,7 +30,7 @@
 
 ### AliOS Things
 
-- **仓库**：https://github.com/alibaba/AliOS-Things
+- **仓库**：<https://github.com/alibaba/AliOS-Things>
 - **Star**：以 HTML 大盘为准
 - **License**：Apache-2.0
 - **框架**：多 MCU
@@ -43,7 +43,7 @@
 
 ### llama.cpp
 
-- **仓库**：https://github.com/ggml-org/llama.cpp
+- **仓库**：<https://github.com/ggml-org/llama.cpp>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：跨平台 C/C++
@@ -54,7 +54,7 @@
 
 ### LocalAI
 
-- **仓库**：https://github.com/mudler/LocalAI
+- **仓库**：<https://github.com/mudler/LocalAI>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：自托管（Docker/本地）
@@ -65,9 +65,9 @@
 
 ### ncnn（Tencent）
 
-- **仓库**：https://github.com/Tencent/ncnn
+- **仓库**：<https://github.com/Tencent/ncnn>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **框架**：移动/嵌入式
 - **状态**：活跃
 - **简介**：高性能力端神经网络推理框架。
@@ -76,7 +76,7 @@
 
 ### ONNX Runtime
 
-- **仓库**：https://github.com/microsoft/onnxruntime
+- **仓库**：<https://github.com/microsoft/onnxruntime>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：跨平台
@@ -91,7 +91,7 @@
 
 ### awesome-tinyml
 
-- **仓库**：https://github.com/umitkacar/awesome-tinyml
+- **仓库**：<https://github.com/umitkacar/awesome-tinyml>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **简介**：TinyML 资源合集。
@@ -99,7 +99,7 @@
 
 ### tinyml-papers-and-projects
 
-- **仓库**：https://github.com/gigwegbe/tinyml-papers-and-projects
+- **仓库**：<https://github.com/gigwegbe/tinyml-papers-and-projects>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **简介**：TinyML 论文与项目索引。
@@ -107,9 +107,9 @@
 
 ### awesome-local-ai
 
-- **仓库**：https://github.com/janhq/awesome-local-ai
+- **仓库**：<https://github.com/janhq/awesome-local-ai>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **简介**：本地 AI 工具与项目合集。
 - **HTML 品类**：参考合集
 
@@ -117,7 +117,7 @@
 
 ### PX4-Autopilot
 
-- **仓库**：https://github.com/PX4/PX4-Autopilot
+- **仓库**：<https://github.com/PX4/PX4-Autopilot>
 - **Star**：以 HTML 大盘为准
 - **License**：BSD-3-Clause
 - **框架**：飞控
@@ -127,7 +127,7 @@
 
 ### OpenIPC Firmware
 
-- **仓库**：https://github.com/OpenIPC/firmware
+- **仓库**：<https://github.com/OpenIPC/firmware>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **简介**：IP 摄像头开源固件（亦可对照 IPC 品类）。

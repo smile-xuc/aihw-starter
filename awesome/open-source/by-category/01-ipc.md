@@ -8,7 +8,7 @@
 
 ### Frigate NVR
 
-- **仓库**：https://github.com/blakeblackshear/frigate
+- **仓库**：<https://github.com/blakeblackshear/frigate>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：x86/ARM + Coral TPU
@@ -19,7 +19,7 @@
 
 ### jetson-inference
 
-- **仓库**：https://github.com/dusty-nv/jetson-inference
+- **仓库**：<https://github.com/dusty-nv/jetson-inference>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：NVIDIA Jetson Nano/Xavier/Orin
@@ -30,9 +30,9 @@
 
 ### AI-on-the-edge-device
 
-- **仓库**：https://github.com/jomjol/AI-on-the-edge-device
+- **仓库**：<https://github.com/jomjol/AI-on-the-edge-device>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **框架**：ESP32-CAM / ESP32-S3
 - **状态**：活跃
 - **简介**：用 ESP32 摄像头 + 端侧神经网络数字化模拟仪表读数。
@@ -41,7 +41,7 @@
 
 ### OpenALPR
 
-- **仓库**：https://github.com/openalpr/openalpr
+- **仓库**：<https://github.com/openalpr/openalpr>
 - **Star**：以 HTML 大盘为准
 - **License**：AGPL-3.0
 - **框架**：Linux/Windows + 摄像头
@@ -52,7 +52,7 @@
 
 ### openpilot（comma.ai）
 
-- **仓库**：https://github.com/commaai/openpilot
+- **仓库**：<https://github.com/commaai/openpilot>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：comma 3X（Snapdragon）
@@ -63,7 +63,7 @@
 
 ### ZoneMinder
 
-- **仓库**：https://github.com/ZoneMinder/zoneminder
+- **仓库**：<https://github.com/ZoneMinder/zoneminder>
 - **Star**：以 HTML 大盘为准
 - **License**：GPL-2.0
 - **框架**：x86 Linux
@@ -74,7 +74,7 @@
 
 ### DeepCamera（SharpAI）
 
-- **仓库**：https://github.com/SharpAI/DeepCamera
+- **仓库**：<https://github.com/SharpAI/DeepCamera>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：RPi / Jetson / x86
@@ -85,9 +85,9 @@
 
 ### ESP-WHO（Espressif）
 
-- **仓库**：https://github.com/espressif/esp-who
+- **仓库**：<https://github.com/espressif/esp-who>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **框架**：ESP32-S3 / ESP32
 - **状态**：活跃
 - **简介**：乐鑫官方人脸检测与识别框架，适合低成本摄像头节点。

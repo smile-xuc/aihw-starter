@@ -8,7 +8,7 @@
 
 ### Omi（原 Friend）
 
-- **仓库**：https://github.com/BasedHardware/omi
+- **仓库**：<https://github.com/BasedHardware/omi>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：nRF52840 BLE
@@ -20,7 +20,7 @@
 
 ### whisper.cpp
 
-- **仓库**：https://github.com/ggml-org/whisper.cpp
+- **仓库**：<https://github.com/ggml-org/whisper.cpp>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：跨平台 C/C++（可端侧）
@@ -31,7 +31,7 @@
 
 ### sherpa-onnx（新一代 Kaldi）
 
-- **仓库**：https://github.com/k2-fsa/sherpa-onnx
+- **仓库**：<https://github.com/k2-fsa/sherpa-onnx>
 - **Star**：以 HTML 大盘为准
 - **License**：Apache-2.0
 - **框架**：RPi / ESP32 / 手机 / PC
@@ -42,7 +42,7 @@
 
 ### openWakeWord
 
-- **仓库**：https://github.com/dscripka/openWakeWord
+- **仓库**：<https://github.com/dscripka/openWakeWord>
 - **Star**：以 HTML 大盘为准（HTML 大盘可能未收录，2026-09 核验存在）
 - **License**：Apache-2.0
 - **框架**：Python / ONNX（可端侧）
@@ -53,9 +53,9 @@
 
 ### ADeus
 
-- **仓库**：https://github.com/adamcohenhillel/ADeus
+- **仓库**：<https://github.com/adamcohenhillel/ADeus>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **框架**：Coral AI + Raspberry Pi
 - **状态**：活跃
 - **简介**：开源 AI 可穿戴，持续捕获所说/所听并自托管转写与私有记忆。
@@ -64,9 +64,9 @@
 
 ### HA Voice PE（ESPHome）
 
-- **仓库**：https://github.com/esphome/home-assistant-voice-pe
+- **仓库**：<https://github.com/esphome/home-assistant-voice-pe>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **框架**：ESP32-S3 + XMOS（ESPHome）
 - **状态**：活跃
 - **简介**：Home Assistant Voice 预览版硬件源码，语音助手流水线可参考到纪要前置采集。

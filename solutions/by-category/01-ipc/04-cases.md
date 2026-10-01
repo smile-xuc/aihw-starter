@@ -14,49 +14,67 @@
 
 > 本页收录公开渠道可查证的产品/案例，所有数据来源于厂商官网或公开报道。
 > 案例覆盖 **各家大模型厂商方案 + 品牌自研 AI**，涵盖 **头部品牌、头部方案商、消费级 AI 相机、边缘 AI 部署** 四条主线。
-> 欢迎补充其他公开案例，详见 [`CONTRIBUTING.md`](../../../CONTRIBUTING.md)。
 
 ---
 
-## 1. 头部品牌的 AI 升级套餐
+## 一、收录原则
 
-### 1.1 萤石云（EZVIZ）
+- **只写公开信息**：产品与客户名仅在官网 / 官方商店 / 官方公众号 / 媒体报道已披露时出现
+- **客观陈述**：不评价优劣，只记形态、技术路线、可观察事实；不写「首个 / 最强 / 唯一」
+- **数字有出处**：价格、销量等用公开口径，附链接与查证日期；查不到标「待核实」；不写转化率 / ARPU / 私下报价
+- **与 awesome 的关系**：有商业产品卡的案例用「另见」互链；提交规范见 [CONTRIBUTING.md](../../../CONTRIBUTING.md)
 
-公开渠道：[萤石云官网](https://www.ezviz.com/)
+## 二、头部品牌的 AI 升级套餐
+
+### 案例：萤石云（EZVIZ）
+
+- **公开信息源**：[萤石云官网](https://www.ezviz.com/)
+- **亮点**：待核实
 
 - 旗下 IPC 陆续上线"AI 智能套餐"作为云存增值
 - 公开介绍包括人形识别、宠物识别、事件智能摘要等
 - 套餐分基础版 / AI 版 / AI Pro 版，具体价格以官网为准
+- **可借鉴点**：待核实
+- **另见**：[萤石商业产品卡][ipc]
 
-### 1.2 TP-LINK 安防
+### 案例：TP-LINK 安防（TP-LINK）
 
-公开渠道：[TP-LINK 官网安防频道](https://www.tp-link.com.cn/)
+- **公开信息源**：[TP-LINK 官网安防频道](https://www.tp-link.com.cn/)
+- **亮点**：待核实
 
 - 云存套餐 + AI 升级路径
 - 重点场景：户外门铃、家用 IPC
+- **可借鉴点**：待核实
 
-### 1.3 小米生态链 IPC
+### 案例：小米生态链 IPC（小米）
 
-公开渠道：[小米商城](https://www.mi.com/)
+- **公开信息源**：[小米商城](https://www.mi.com/)
+- **亮点**：待核实
 
 - 米家 IPC 系列、米兔系列多个品牌共享米家云存与 AI 能力
 - AI 升级以"米家会员"形式打包销售
+- **可借鉴点**：待核实
 
-### 1.4 海外品牌参考
+### 案例：海外品牌（Ring / Google Nest / Arlo）
 
+- **公开信息源**：见下列各品牌条目中的链接
+- **亮点**：待核实
 - **Ring**（亚马逊）：Ring Protect 订阅含 AI 事件检测；最低档 Ring Solo 为 $4.99/月或 $49.99/年（[Ring Protect Plans](https://ring.com/plans)，查证 2026-09-30）
 - **Google Nest**（谷歌）：Nest Aware 已更名为 Google Home Premium。美区新购 Standard $10/月（$100/年）、Advanced $20/月（$200/年）（[Google Store](https://store.google.com/us/product/google_home_premium)，查证 2026-09-30）。未迁移的 Nest Aware 1st gen 仍按相机单独订阅，官方帮助页未公布统一标价
 - **Arlo**：Arlo Secure 含 AI 物体检测、活动区域、车牌识别。现价 Smart Aware Single **$9.99/月**起（2026-09 调价，查证 2026-09-30）。来源：[Arlo Secure](https://us.arlo.com/pages/arlo-secure) · [订阅更名说明](https://kb.arlo.com/000063777/Arlo-Subscription-Plan-Changes-September-2026)
+- **可借鉴点**：待核实
+- **另见**：[Ring 商业产品卡][ipc] · [Nest 商业产品卡][ipc]
 
 ---
 
-## 2. 头部方案商 / ODM 的 AI 打包能力
+## 三、头部方案商 / ODM 的 AI 打包能力
 
 头部 IPC ODM 已经把"大模型 AI 服务"打包成方案能力，向 B 端品牌方分润输出。
 
-### 2.1 技威时代 Yoosee
+### 案例：技威时代 Yoosee（技威）
 
-公开渠道：[gwell.cc](https://www.gwell.cc/)
+- **公开信息源**：[gwell.cc](https://www.gwell.cc/) · [Yoosee AI 2.0 战略发布](https://www.gwell.cc/?news_50/317.html) · [通义硬件展合作](https://www.gwell.cc/?news_50/319.html) · [新华网报道](http://www.news.cn/tech/20250728/f0930c8a9fb84d40ae1e76a507024dc1/c.html)
+- **亮点**：待核实
 
 - **规模**：累计用户 1.3 亿+，月活 5000 万，海外收入占比 60%，2024 全球安防 50 强
 - **AI 能力（星瀚 AI 智能云平台 5.0）**：
@@ -68,35 +86,37 @@
   - AI 童话陪伴模式
 - **端侧算法**：自研 AI 灵眸芯片 LM100，覆盖人形/车辆/火焰/宠物/手势/哭声 6 大免费算法
 - **大模型后端**：**双栈**
-  - 火山引擎豆包大模型（2025-06 火山 Force 大会首发"全球首款搭载豆包大模型的 AI 摄像头"）
+  - 火山引擎豆包大模型（2025-06 火山 Force 大会首发，厂商称「全球首款搭载豆包大模型的 AI 摄像头」）
   - 阿里云通义千问（2026-01 通义智能硬件展联合发布"星瀚 AI 大模型"）
 - **售卖方式**：VSaaS（硬件+软件+云服务+运营）；出海推"硬件+服务分润"，配套白牌 App / 自定义流量套餐 / 分润后台
 - **合作品牌**：华为、OPPO、荣耀、WYZE、Roku、Telenor IoT、Verizon、AT&T、T-Mobile 等 200+
-- 参考：[Yoosee AI 2.0 战略发布](https://www.gwell.cc/?news_50/317.html) · [通义硬件展合作](https://www.gwell.cc/?news_50/319.html) · [新华网报道](http://www.news.cn/tech/20250728/f0930c8a9fb84d40ae1e76a507024dc1/c.html)
+- **可借鉴点**：待核实
 
-### 2.2 广州九安 Juan（Juancloud）
+### 案例：广州九安 Juan（Juancloud）
 
-公开渠道：[Juancloud 官网](https://trade.juancloud.com/)
+- **公开信息源**：[Juancloud 官网](https://trade.juancloud.com/) · [招股书申报稿](https://qxb-pdf-osscache.qixin.com/AnBaseinfo/a71b6a0e24aea6b03f44223d8a3b4dc2.pdf) · [证券时报 IPO 报道](https://www.stcn.com/article/detail/3559005.html)
+- **亮点**：待核实
 
 - **规模**：1999 年成立，600+ 员工规模；**2025 深交所创业板 IPO 已受理**（招股书披露财务数据保持增长）
 - **AI 能力**：基础 AI（人形侦测、全景拼接）+ **AI 大模型**——"事件摘要 / 自然语言检索"已搭载**千问大模型**在部分产品中上线
 - **售卖方式**：**ODM + 自主平台运营**——为品牌客户提供 IPC 模组/终端 ODM，同时经营 JuanCloud 平台，把 **数据流量包、云存储、AI 服务、广告服务** 打包成 B2B2C SaaS 订阅
-- 参考：[招股书申报稿](https://qxb-pdf-osscache.qixin.com/AnBaseinfo/a71b6a0e24aea6b03f44223d8a3b4dc2.pdf) · [证券时报 IPO 报道](https://www.stcn.com/article/detail/3559005.html)
+- **可借鉴点**：待核实
 
-### 2.3 深圳乔安 JOOAN
+### 案例：深圳乔安 JOOAN（乔安）
 
-公开渠道：[qacctv.com](http://www.qacctv.com/) · 海外站 [jooancam.com](https://www.jooancam.com/)
+- **公开信息源**：[qacctv.com](http://www.qacctv.com/) · 海外站 [jooancam.com](https://www.jooancam.com/) · [乔安官网](http://www.qacctv.com/) · [JOOANCAM 海外站](https://www.jooancam.com/)
+- **亮点**：待核实
 
 - **定位**：家用视频安防高科技企业，研发/生产/销售/服务一体
 - **产品线**：WiFi IPC、4G 无网远程监控（AOV-4G 三摄太阳能）、**AI 大模型摄像头**（双摄 AI 大模型 / 双向可视）、AI 门锁（双摄人脸掌静脉可视猫眼）、监控套装
 - **AI 能力**：官方产品线已明确标注 **"AI 大模型摄像头"**，具备事件摘要等能力；具体大模型厂商合作官方未公开披露
 - **出海**：亮相第 139 届广交会；海外独立站 JOOANCAM 面向欧美/东南亚市场
 - **荣誉**：入选"2025'物联之星'AIoT 行业年度榜单"·"中国最有创新力视觉物联企业"
-- 参考：[乔安官网](http://www.qacctv.com/) · [JOOANCAM 海外站](https://www.jooancam.com/)
+- **可借鉴点**：待核实
 
 ---
 
-## 3. 商用 IPC / 安防方案商
+## 四、商用 IPC / 安防方案商
 
 商用场景 AI 升级案例受合同约束公开有限，常见组合：
 
@@ -108,13 +128,13 @@
 
 ---
 
-## 4. AI 视觉（可穿戴 / 户外拍摄 / 生活记录）
+## 五、AI 视觉（可穿戴 / 户外拍摄 / 生活记录）
 
-### 4.1 Looki L1 — 首个多模态 AI 穿戴式相机
+### 案例：Looki L1（Looki）— 首个多模态 AI 穿戴式相机
 
-公开渠道：[looki.ai](https://www.looki.ai/) · [Google Play](https://play.google.com/store/apps/details?id=ai.looki.lifelog)
-
+- **公开信息源**：[looki.ai](https://www.looki.ai/) · [Google Play](https://play.google.com/store/apps/details?id=ai.looki.lifelog) · [52audio 首发报道](https://www.52audio.com/archives/251405.html) · [极客公园访谈](https://www.geekpark.net/news/352913)
 - **形态**：30 克磁吸式穿戴，六角恐龙外形，可固定于衣物或背包，实现"无感佩戴"
+- **亮点**：待核实
 - **硬件**：4K 拍照 / 1080p 30fps 录像 / 3 麦克风阵列 + 语音降噪 / 6 轴陀螺仪 / 触控板 AI 对话 / 32GB 存储 / 12 小时续航
 - **主要 AI 功能**：
   - **Story Mode 智能间隔拍摄**：全天候自动捕捉视觉、听觉与环境数据
@@ -124,29 +144,35 @@
   - **AI 滤镜自动美化**
 - **定价**：首发价 US$199（2025 年全球预购，首批 2025-09 发货）→ 现价 US$249（官网，查证 2026-09-30）。来源：[Looki L1 商店](https://www.looki.ai/products/looki-l1) · [52audio](https://www.52audio.com/archives/251405.html) · [AndroidGuys 2026-01-07](https://androidguys.com/news/looki-l1-wearable-debuts-at-ces-2026-as-first-proactive-ai-device-for-199/)
 - **公司背景**：深圳初创，创始团队来自美团，成立半年内完成天使/天使+/Pre-A 三轮融资，累计超 1,000 万美元
-- 参考：[52audio 首发报道](https://www.52audio.com/archives/251405.html) · [极客公园访谈](https://www.geekpark.net/news/352913)
+- **可借鉴点**：待核实
 
-### 4.2 Insta360（影石创新）
+### 案例：Insta360（影石创新）
 
-公开渠道：[Insta360 官网](https://www.insta360.com/)
+- **公开信息源**：[Insta360 官网](https://www.insta360.com/)
+- **亮点**：待核实
 
 - 全景相机厂商，2024 年开始引入 AI 自动剪辑功能
 - AI 能力主要在 App 端，云端推理为主
 - 代表"拍摄设备 + AI 自动剪辑"的方向
+- **可借鉴点**：待核实
 
-### 4.3 GoPro / DJI
+### 案例：GoPro / DJI
 
+- **公开信息源**：待核实（**待补链接**）
+- **亮点**：待核实
 - 海外/国内运动相机龙头
 - AI 自动剪辑作为产品差异化卖点
 - 暂未明确云端 AI 订阅模式
+- **可借鉴点**：待核实
 
 ---
 
-## 5. 边缘 AI 部署方案
+## 六、边缘 AI 部署方案
 
-### 5.1 Anker eufy — HomeBase + N 相机 边缘 AI 架构
+### 案例：Anker eufy（Anker）— HomeBase + N 相机 边缘 AI 架构
 
-公开渠道：[eufy 官网](https://www.eufy.com)
+- **公开信息源**：[eufy 官网](https://www.eufy.com) · [Anker IFA 2025 新闻稿](https://www.globenewswire.com/news-release/2025/09/04/3144218/0/en/eufy-unveils-ai-core-eufycam-s4-and-permanent-outdoor-lights-s4-at-ifa-2025-expanding-its-ai-powered-smart-home-lineup.html) · [HomeBase 3 Self-learning AI FAQ](https://service.eufy.com/article-description/What-is-the-Self-learning-AI-in-HomeBase-3)
+- **亮点**：待核实
 
 **架构定位**：所有 AI 推理、生物特征识别、24/7 录像本地跑在 HomeBase / AI Core 上，主打 **"No Monthly Fee / Local AI"**，与云订阅型对手（Ring / Nest / Arlo / 萤石云）差异化。
 
@@ -187,12 +213,12 @@
 | 效果 | 本地推理延迟低（毫秒级） | 端侧模型能力有天花板，复杂推理仍需云端 |
 | 商业模式 | 无月费卖点，海外市场对抗 Ring/Nest | 一次性硬件价格高（套装 $649+） |
 | 迭代 | — | 新能力需硬件升级或 OTA，节奏慢于云端 |
-
-参考：[Anker IFA 2025 新闻稿](https://www.globenewswire.com/news-release/2025/09/04/3144218/0/en/eufy-unveils-ai-core-eufycam-s4-and-permanent-outdoor-lights-s4-at-ifa-2025-expanding-its-ai-powered-smart-home-lineup.html) · [HomeBase 3 Self-learning AI FAQ](https://service.eufy.com/article-description/What-is-the-Self-learning-AI-in-HomeBase-3)
+- **可借鉴点**：待核实
+- **另见**：[eufy 商业产品卡][ipc]
 
 ---
 
-## 6. 阿里云 OSS AI 内容感知公开案例
+## 七、阿里云 OSS AI 内容感知公开案例
 
 - **产品介绍**：[OSS AI 内容感知产品页](https://help.aliyun.com/zh/oss/user-guide/ai-content-awareness)
 - **产品纪录片**（推荐观看）：[看见生活，懂得守护——通义实验室 x 云存储打造 IPC 行业的智能新标杆](https://www.bilibili.com/video/BV16d6vBAEJt/)
@@ -200,7 +226,7 @@
 
 ---
 
-## 7. 待补充清单
+## 八、待补充清单（欢迎 PR）
 
 欢迎社区贡献以下方向的公开案例：
 
@@ -214,18 +240,7 @@
 
 ---
 
-## 8. 案例提交规范
-
-提交新案例 PR 时请遵守：
-
-1. **公开可查**：必须提供官网 / 公开报道 / 产品页 URL
-2. **数据来源**：所有数字（DAU、订阅数、营收）必须有公开来源
-3. **不得使用**：内部数据、销售口径、未公开的合作信息
-4. **格式统一**：参考本页"头部品牌的 AI 升级套餐"段落结构
-
-详细规范见根目录 [`CONTRIBUTING.md`](../../../CONTRIBUTING.md)。
-
----
+[ipc]: ../../../awesome/commercial-products/by-category/01-ipc.md
 
 **版本**：千问大模型方案
 **更新日期**：2026-07

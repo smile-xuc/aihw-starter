@@ -19,9 +19,10 @@
 
 ## 一、收录原则
 
-- **只写公开信息**：名称仅在官网 / 众筹页 / 媒体报道已披露时出现
-- **客观陈述**：不评价优劣，只记形态、路线、可观察事实
-- **拒绝营销话术**：不写「全球首款」「业界领先」
+- **只写公开信息**：产品与客户名仅在官网 / 官方商店 / 官方公众号 / 媒体报道已披露时出现
+- **客观陈述**：不评价优劣，只记形态、技术路线、可观察事实；不写「首个 / 最强 / 唯一」
+- **数字有出处**：价格、销量等用公开口径，附链接与查证日期；查不到标「待核实」；不写转化率 / ARPU / 私下报价
+- **与 awesome 的关系**：有商业产品卡的案例用「另见」互链；提交规范见 [CONTRIBUTING.md](../../../CONTRIBUTING.md)
 
 ---
 
@@ -50,30 +51,34 @@
 
 ## 三、关键案例速览
 
-### 3.1 Timekettle WT2 Edge / W3 — 双向同传标杆
+### 案例：Timekettle WT2 Edge / W3（时空壶）— 双向同传标杆
 
-- **公开信息源**：https://www.timekettle.co/products/wt2-edge-online-voice-language-translator-earbuds
+- **公开信息源**：[时空壶产品页](https://www.timekettle.co/products/wt2-edge-online-voice-language-translator-earbuds)
 - **亮点**：公开主打双向同时翻译、免提、多人双语模式
 - **可借鉴点**：把「两人各戴一耳」做成明确交互范式；离线语言对可单独包装
+- **另见**：[时空壶同传商业产品卡][ear]
 
-### 3.2 Timekettle M3 — 旅行档走量
+### 案例：Timekettle M3（时空壶）— 旅行档走量
 
-- **公开信息源**：https://www.timekettle.co/products/m3-travel-translator-earbuds
+- **公开信息源**：[时空壶旅行款产品页](https://www.timekettle.co/products/m3-travel-translator-earbuds)
 - **亮点**：翻译 + 音乐 + 通话一体；轮流对话（HyperComm 1.0 公开表述）；可选离线包
 - **可借鉴点**：客单下探到约 $120 档，用「旅行刚需」而非「专业同传」心智
+- **另见**：[时空壶旅行款商业产品卡][ear]
 
-### 3.3 科大讯飞 AI 翻译耳机 — 国内旗舰开放式
+### 案例：科大讯飞 AI 翻译耳机（科大讯飞）— 国内旗舰开放式
 
 - **公开信息源**：IT之家报道预售 ¥2499（2025-11）；官网商城同价量级；量子位发布会报道（60 语、中英首响约 2 秒、骨导+气导等）
-  - https://finance.sina.com.cn/tech/digi/2025-11-19/doc-infxxwtt3492426.shtml
-  - https://www.qbitai.com/2025/10/341663.html
+  - [新浪转载预售报道](https://finance.sina.com.cn/tech/digi/2025-11-19/doc-infxxwtt3492426.shtml)
+  - [量子位发布会报道](https://www.qbitai.com/2025/10/341663.html)
   - [讯飞商城 · AI 翻译耳机](https://www.xunfei.cn/goods?goodsId=2381)
 - **亮点**：通话翻译、面对面无按键、旁听同传、专业词库、音色克隆播报（公开宣称）
 - **可借鉴点**：开放式佩戴适配「长时间会议」；把通话场景做成差异化，而不只做面对面
+- **另见**：[讯飞翻译耳机商业产品卡][ear]
 
-### 3.4 品牌 TWS 系统级翻译
+### 案例：品牌 TWS 系统级翻译（华为 / 三星 / Apple）
 
-- **公开信息源**：各品牌系统更新说明 / 产品页（随版本变化，引用时核对当期文档）
+- **公开信息源**：各品牌系统更新说明 / 产品页（随版本变化，引用时核对当期文档）（**待补链接**）
+- **亮点**：待核实
 - **可借鉴点**：AI 是声学旗舰的附件能力；云端成本通常被生态账号吸收，不适合白牌直接复制「无限用」承诺
 
 ---
@@ -94,9 +99,11 @@
 - [ ] 白牌亚马逊高销量「Translator Earbuds」拆解（须附 listing 链接）
 - [ ] 车载 / 运动场景 AI 耳机公开案例
 
-补充位置：本品类本页，或 [`awesome/commercial-products/by-category/06-ai-earphone.md`](../../../awesome/commercial-products/by-category/06-ai-earphone.md)。
+补充位置：本品类本页，或 [awesome/commercial-products/by-category/06-ai-earphone.md][ear]。
 
 ---
+
+[ear]: ../../../awesome/commercial-products/by-category/06-ai-earphone.md
 
 **版本**：千问大模型方案
 **更新日期**：2026-09

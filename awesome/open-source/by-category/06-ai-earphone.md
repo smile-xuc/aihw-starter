@@ -8,7 +8,7 @@
 
 ### RTranslator
 
-- **仓库**：https://github.com/niedev/RTranslator
+- **仓库**：<https://github.com/niedev/RTranslator>
 - **Star**：以 HTML 大盘为准
 - **License**：Apache-2.0
 - **框架**：Android（可配合蓝牙耳机）
@@ -20,7 +20,7 @@
 
 ### OpenEarable
 
-- **仓库**：https://github.com/OpenEarable/open-earable
+- **仓库**：<https://github.com/OpenEarable/open-earable>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：自定义 PCB + BLE + IMU
@@ -31,9 +31,9 @@
 
 ### esp-adf（Espressif）
 
-- **仓库**：https://github.com/espressif/esp-adf
+- **仓库**：<https://github.com/espressif/esp-adf>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **框架**：ESP32 / ESP32-S3
 - **状态**：活跃
 - **简介**：乐鑫官方音频开发框架，耳机/近耳设备音频流水线参考。
@@ -43,9 +43,9 @@
 
 ### OpenPin
 
-- **仓库**：https://github.com/MaxMaeder/OpenPin
+- **仓库**：<https://github.com/MaxMaeder/OpenPin>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **框架**：Humane AI Pin
 - **状态**：维护中
 - **简介**：让 Humane AI Pin 重新可用的开源项目；近身可穿戴交互可参考。
@@ -54,7 +54,7 @@
 
 ### Pi Pin
 
-- **仓库**：https://github.com/liltom-eth/pi-pin
+- **仓库**：<https://github.com/liltom-eth/pi-pin>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：Raspberry Pi
@@ -65,7 +65,7 @@
 
 ### Omi（另见）
 
-- **仓库**：https://github.com/BasedHardware/omi
+- **仓库**：<https://github.com/BasedHardware/omi>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **简介**：开源 AI 可穿戴录音转写。**主卡在** [`07-recorder.md`](./07-recorder.md)；耳机场景仅作交叉参考。

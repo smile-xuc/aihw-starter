@@ -8,7 +8,7 @@
 
 ### xiaozhi-esp32（小智 AI）
 
-- **仓库**：https://github.com/78/xiaozhi-esp32
+- **仓库**：<https://github.com/78/xiaozhi-esp32>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：ESP32-S3（ESP-IDF）
@@ -20,7 +20,7 @@
 
 ### xiaozhi-esp32-server
 
-- **仓库**：https://github.com/xinnan-tech/xiaozhi-esp32-server
+- **仓库**：<https://github.com/xinnan-tech/xiaozhi-esp32-server>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：Python Server + ESP32
@@ -31,7 +31,7 @@
 
 ### FoloToy Server
 
-- **仓库**：https://github.com/FoloToy/folotoy-server-self-hosting
+- **仓库**：<https://github.com/FoloToy/folotoy-server-self-hosting>
 - **Star**：以 HTML 大盘为准
 - **License**：GPL-3.0
 - **框架**：ESP32（FoloToy Core）+ 自托管服务
@@ -42,9 +42,9 @@
 
 ### ElatoAI
 
-- **仓库**：https://github.com/akdeb/ElatoAI
+- **仓库**：<https://github.com/akdeb/ElatoAI>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **框架**：ESP32-S3（Arduino）
 - **状态**：活跃
 - **简介**：基于 Arduino ESP32 的实时语音 AI，对接 OpenAI Realtime 等模型。
@@ -53,7 +53,7 @@
 
 ### ESP32_AI_LLM
 
-- **仓库**：https://github.com/Explorerlowi/ESP32_AI_LLM
+- **仓库**：<https://github.com/Explorerlowi/ESP32_AI_LLM>
 - **Star**：以 HTML 大盘为准
 - **License**：GPL-3.0
 - **框架**：ESP32 / ESP32-S3
@@ -64,7 +64,7 @@
 
 ### wukong-robot（悟空机器人）
 
-- **仓库**：https://github.com/wzpan/wukong-robot
+- **仓库**：<https://github.com/wzpan/wukong-robot>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：Raspberry Pi
@@ -75,7 +75,7 @@
 
 ### esp-ai
 
-- **仓库**：https://github.com/wangzongming/esp-ai
+- **仓库**：<https://github.com/wangzongming/esp-ai>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：ESP32-S3/C3

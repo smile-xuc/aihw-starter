@@ -10,7 +10,7 @@
 
 ### Open Interpreter 01
 
-- **仓库**：https://github.com/openinterpreter/01
+- **仓库**：<https://github.com/openinterpreter/01>
 - **Star**：以 HTML 大盘为准
 - **License**：AGPL-3.0
 - **框架**：ESP32-S3 / RPi / Desktop
@@ -21,7 +21,7 @@
 
 ### ESP-Claw
 
-- **仓库**：https://github.com/espressif/esp-claw
+- **仓库**：<https://github.com/espressif/esp-claw>
 - **Star**：以 HTML 大盘为准
 - **License**：Apache-2.0
 - **框架**：ESP32-S3/P4/C5
@@ -32,7 +32,7 @@
 
 ### Willow
 
-- **仓库**：https://github.com/HeyWillow/willow
+- **仓库**：<https://github.com/HeyWillow/willow>
 - **Star**：以 HTML 大盘为准
 - **License**：Apache-2.0
 - **框架**：ESP32-S3（ESP-BOX）
@@ -43,7 +43,7 @@
 
 ### OpenEmbodied（机智云）
 
-- **仓库**：https://github.com/gizwits/OpenEmbodied
+- **仓库**：<https://github.com/gizwits/OpenEmbodied>
 - **Star**：以 HTML 大盘为准
 - **License**：MIT
 - **框架**：ESP32-S3
@@ -54,9 +54,9 @@
 
 ### WireClaw
 
-- **仓库**：https://github.com/M64GitHub/WireClaw
+- **仓库**：<https://github.com/M64GitHub/WireClaw>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **框架**：ESP32-C6/S3/C3
 - **状态**：活跃
 - **简介**：低成本 ESP32 上的自主 AI Agent，带持久记忆。
@@ -65,9 +65,9 @@
 
 ### Satellite1-ESPHome
 
-- **仓库**：https://github.com/FutureProofHomes/Satellite1-ESPHome
+- **仓库**：<https://github.com/FutureProofHomes/Satellite1-ESPHome>
 - **Star**：以 HTML 大盘为准
-- **License**：待核
+- **License**：待核实
 - **框架**：ESP32-S3（ESPHome）
 - **状态**：活跃
 - **简介**：开源 AI 语音助手与多传感器卫星节点，适合家庭 Agent 外设。
