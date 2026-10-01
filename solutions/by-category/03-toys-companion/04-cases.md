@@ -141,11 +141,22 @@
 - **可借鉴点**：硬件标价与月费分开；生成 AI 有产品站原文，模型名没有
 - **另见**：[ポケとも商业产品卡][toy]
 
+### 案例：Loona Petbot Premium（KEYi Tech）— 海外轮式家庭 petbot
+
+- **公开信息源**：[产品页](https://keyirobot.com/products/petbot) · [KEYi buying guide](https://keyirobot.com/blogs/buying-guide/loona-robot-price-guide-cost-bundles-and-where-to-buy)（查证 2026-10-01）
+- **形态**：室内轮式家庭 petbot。规格为轮式伺服，另有机身与耳朵伺服；不是四足
+- **技术路线**：产品页写 GPT 对话、人脸 / 手势 / 表情、室内导航、Google Blockly。FAQ 原文为 "ChatGPT 4o"。字面「GPT-4o」待核实（查证 2026-10-01）
+- **亮点**：购买指南写 Premium $499 USD，套装含本体、充电坞、游戏道具套件。产品页 Space Edition $699.00 USD，并写 9 月 19 日开放下单、10 月 17 日起发货，发货年份待核实。购买指南写核心体验目前无强制月订阅。政策可能调整，以官网为准
+- **公开数据**：未见公开销量。产品页写 Space Edition 为 "3,000 numbered explorers"、"No restock"
+- **可借鉴点**：对照 05 的 EMO、Vector，以及本品类已停售的 Moxie。Loona 是官网仍标价的中价位海外轮式 petbot，价位落在这些桌宠与 Moxie 历史硬件价之间
+- **另见**：[Loona Petbot Premium 商业产品卡][toy]
+
 ## 五、待补充清单（欢迎 PR）
 
 - [ ] 火火兔、贝乐虎、奥飞娱乐等传统早教/玩具品牌的 AI 化公开路线
 - [ ] 牛听听、喜马拉雅小雅 nano 等听学产品的公开 AI 能力描述
 - [x] 海外案例：Curio Grem / Gabbo
+- [x] Loona Petbot Premium（KEYi Tech）
 - [ ] Joy For All 等海外案例
 - [ ] 欧洲市场「声音克隆 + 月订阅」模式的可核实案例（此前收录的相关条目因无法核实公司名已移除，欢迎提供公开信源后重新收录）
 
@@ -154,7 +165,7 @@
 [toy]: ../../../awesome/commercial-products/by-category/03-toys-companion.md
 
 **版本**：千问大模型方案
-**更新日期**：2026-09
+**更新日期**：2026-10
 
 <!-- FOOTER:START -->
 

@@ -34,6 +34,7 @@
 | **Pixel Watch 5** | 圆形表，41 mm / 45 mm | Gemini；Health Guardian | 博客 41 mm $399 / 45 mm $429；商店 From $399.99（查证 2026-09-30） | Google Health Premium From $9.99/月；商店页写附 3 个月 |
 | **Galaxy Watch9** | 40 mm / 44 mm，圆形表盘 | Gemini；raise to talk | 美国 40 mm 蓝牙 $379.99、44 mm 蓝牙 $409.99（SammyGuru）；加拿大 44 mm 蓝牙 $559.99 CAD（Aubaine）（查证 2026-09-30） | 未见公开订阅价 |
 | **Amazfit Balance 2** | 运动健康手表 | Zepp Flow；Zepp Coach | $299.99（查证 2026-09-30） | 未见公开订阅价 |
+| **TicNote Watch** | 1.43 英寸圆形 AMOLED | 腕上录音；转写 / 摘要走 App；官网称 120+ 语种、<1.5s | 现价 $199.00 USD（划线价 $249.00 USD）（查证 2026-10-01） | 订阅价待核实 |
 
 ## 三、关键案例速览
 
@@ -91,9 +92,20 @@
 - **可借鉴点**：语音控制和训练计划用两个产品名分开标，底层模型未公开
 - **另见**：[Amazfit Balance 2 商业产品卡][watch]
 
+### 案例：TicNote Watch（TicNote / HK SmartMV Limited）— 腕上 AI 录音和纪要
+
+- **公开信息源**：[TicNote Watch 产品页](https://ticnote.ai/products/ticnote-watch)（查证 2026-10-01）
+- **形态**：1.43 英寸圆形 AMOLED（型号 REW026）。双全向数字硅麦。心率、血氧、睡眠、单频 GPS；FAQ 写 "Not a medical device"
+- **技术路线**：FAQ 写表端可录音、回放；实时转写、翻译、AI 摘要与云同步需要手机上的 TicNote App。产品页写 TicNote Agent，未写底层模型名
+- **亮点**：官网称 "120+ Languages & Dialects | 17 Live Subtitles | ≥98% Accuracy | <1.5s Latency"。CE/FCC 等认证 in progress（以官方 FAQ 为准）；FAQ 同时写 PSE、TELEC 为 in progress，IC/ISED Canada 待定，CMIIT（中国）已获批
+- **公开数据**：现价 $199.00 USD（划线价 $249.00 USD）（查证 2026-10-01）。首发价与订阅价待核实（查证 2026-10-01）。未见公开销量
+- **可借鉴点**：录音放在腕上，本地能录能放；转写和摘要留在 App，健康指标另写非医疗器械
+- **另见**：[TicNote Watch 商业产品卡][watch]
+
 ## 四、待补充清单（欢迎 PR）
 
 - [x] Amazfit Balance 2（Zepp Flow / Zepp Coach）
+- [x] TicNote Watch（腕上 AI 录音和纪要）
 - [ ] Garmin 公开 AI 解读 SKU
 - [ ] 国内医疗级手表注册案例（仅公开）
 
@@ -102,7 +114,7 @@
 [watch]: ../../../awesome/commercial-products/by-category/08-smart-watch.md
 
 **版本**：千问大模型方案
-**更新日期**：2026-09
+**更新日期**：2026-10
 
 <!-- FOOTER:START -->
 
