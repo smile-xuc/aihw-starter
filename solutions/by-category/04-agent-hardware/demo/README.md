@@ -14,7 +14,15 @@
 
 > 本目录存放 Agent 硬件可运行示例。对应技术方案：[`02-solution.md`](../02-solution.md) 意图路由。
 
-## 已提供
+## 参考 demo（品类 × 栈）
+
+按 [demo 统一标准](../../../demo-standard/README.md) 组织：每个栈一个目录，三步跑通，无 Key 自动 mock。
+
+| 栈 | 目录 | 场景 | 状态 |
+|---|---|---|---|
+| 百炼 | [`bailian/`](./bailian/) | 桌面 AI 盒子：端侧规则先执行能做的 → `qwen3.7-flash` Function Calling 多轮编排本地设备与云端服务；语音指令经 `qwen-audio-3.1-asr-flash` 转写；断网降级 | 待真 Key 验证 |
+
+## 专题 demo
 
 ### [`intent-router/`](./intent-router/) — 端侧意图分发（离线可跑）
 

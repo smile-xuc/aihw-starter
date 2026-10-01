@@ -1,0 +1,33 @@
+schema: aihw/solution@0.1
+id: 04-agent-hardware.bailian
+title: Agent 硬件 · 百炼工具编排
+category: 04-agent-hardware
+stack: bailian
+kind: reference
+summary: 桌面 AI 盒子收到一句指令 → 端侧规则能做的直接执行 → 其余由 qwen3.7-flash 用 Function Calling 多轮编排本地设备与云端服务 → 断网时降级到端侧规则
+models:
+  - id: qwen3.7-flash
+    role: 多轮工具编排，默认档（OpenAI 兼容，流式 Function Calling，关闭思考）
+  - id: qwen3.8-flash
+    role: 多轮工具编排，质量档（--quality）
+  - id: qwen-audio-3.1-asr-flash
+    role: 语音指令转写（HTTP 同步，本地 WAV 转 Base64）
+regions: [cn-beijing, ap-southeast-1]
+env: [DASHSCOPE_API_KEY]
+device:
+  inputs: [text, wav, mic]
+  outputs: [console]
+run:
+  setup: 仅标准库，无需安装
+  live: python3 run.py
+  mock: python3 run.py --mock
+metrics:
+  first_token: 说完指令（松开按键 / 提交文本）→ 首个工具调用到达，语音指令含转写
+  cost: 转写 usage + 各轮编排 usage × 模型单价（按地域、按输入分档）；端侧执行不计费
+verification:
+  status: pending-live
+  last_verified: null
+  record: VERIFY.md
+license: MIT
+compliance_tags: []
+maintainers: ["@smile-xuc"]
