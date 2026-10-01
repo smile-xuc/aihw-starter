@@ -114,7 +114,7 @@
 
 ### Galaxy Watch9（Samsung）
 
-- **上市状态**：在售（SammyGuru、AT&T，查证 2026-10-01）
+- **上市状态**：在售（AT&T，查证 2026-10-01）
 - **官网/渠道**：[The Verge 动手体验（2026-07-22）](https://www.theverge.com/tech/968728/samsung-galaxy-watch-9-ultra-2-hands-on-wearables-smartwatches) · [9to5Google（2026-07-22）](https://9to5google.com/2026/07/22/galaxy-watch-9-watch-ultra-2-are-official-as-samsung-makes-the-jump-to-snapdragon/) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · [AT&T 40 mm](https://www.att.com/buy/wearables/samsung-galaxy-watch9-40mm.html) · [AT&T 44 mm](https://www.att.com/buy/wearables/samsung-galaxy-watch9-44mm.html)
 - **形态**：SammyGuru 写圆形表盘。The Verge 写 40 mm / 44 mm；较小尺寸电池约增 20% 至 390 mAh，较大尺寸由 435 mAh 增至 445 mAh；芯片由 Exynos 换为 Snapdragon Wear Elite
 - **定价**：
