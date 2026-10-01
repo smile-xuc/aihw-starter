@@ -3,7 +3,7 @@
 
   python3 solutions/demo-standard/check.py            # 依次跑下面三项
   python3 solutions/demo-standard/check.py secrets    # 密钥扫描：git 跟踪的文件 + 未忽略的新文件
-  python3 solutions/demo-standard/check.py manifests  # solution.yaml、目录结构、公共件与模板一致
+  python3 solutions/demo-standard/check.py manifests  # solution.yaml、目录结构、公共件与模板一致、模型名与接入地址
   python3 solutions/demo-standard/check.py smoke      # 全部 demo 的 mock 冒烟（子进程不带 DASHSCOPE_* 变量）
   python3 solutions/demo-standard/check.py sync       # 改完模板公共件后，同步到同一栈的全部 demo
 
@@ -40,6 +40,23 @@ LEGACY = [
     ("08-smart-watch/demo/metrics-prompt", "python3 health_metrics_prompt.py --metrics sample_day.json"),
     ("09-embodied/demo/vla-intent-router", "python3 vla_intent_router.py"),
 ]
+
+# 2026-10-10 下线、与 AI 硬件 demo 相关的模型（阿里云公告 118177 / 118331 / 118332 / 118344 / 118345 / 118434）。
+# 只列主线名；带日期的快照由 SNAPSHOT 规则统一拦下。
+DEPRECATED_MODELS = {
+    "qwen-turbo", "qwen-turbo-realtime", "qwen-vl-max", "qwen-vl-plus", "qwq-plus", "qvq-max", "qvq-plus",
+    "qwen-coder-turbo", "qwen-coder-plus", "qwen-math-turbo", "qwen-math-plus",
+    "qwen3-max", "qwen3-max-preview", "qwen3.6-max-preview", "qwen3-vl-flash", "qwen3-coder-plus",
+    "qwen-tts", "qwen-tts-realtime", "qwen-voice-design", "gummy-chat-v1", "gummy-realtime-v1",
+    "paraformer-v1", "paraformer-8k-v1", "paraformer-mtl-v1", "paraformer-realtime-v1", "paraformer-realtime-8k-v1",
+    "cosyvoice-v1", "cosyvoice-v3", "cosyvoice-clone-v1", "sensevoice-v1", "fun-asr-mtl", "fun-asr-mtl-realtime",
+    "qwen-omni-turbo", "qwen-omni-turbo-realtime", "qwen3-omni-flash-realtime",
+    "qwen3-livetranslate-flash-realtime", "qwen-mt-turbo", "qwen-image", "qwen-image-edit",
+}
+DEPRECATED_PREFIXES = ("qwen3-tts-", "qwen-omni-turbo-", "qwen-long-")
+SNAPSHOT = re.compile(r"-(?:\d{4}-\d{2}-\d{2}|\d{4}|latest)$")
+MODEL_LITERAL = re.compile(r"""["']((?:qwen|qwq|qvq|cosyvoice|paraformer|fun-asr|gummy|sensevoice)[a-z0-9.\-]*)["']""")
+HARDCODED_HOST = re.compile(r"dashscope(?:-intl)?\.aliyuncs\.com|maas\.aliyuncs\.com")
 
 SECRET_PATTERNS = [
     ("sk- 形态 API Key", re.compile(r"\bsk-[A-Za-z0-9]{20,}")),
@@ -101,6 +118,21 @@ def _load_yaml(path: Path) -> dict:
     return json.loads(json.dumps(yaml.safe_load(path.read_text(encoding="utf-8")), default=str))
 
 
+def _model_problems(model_id: str, snapshot_ok: bool = False) -> list[str]:
+    problems = []
+    if model_id in DEPRECATED_MODELS or model_id.startswith(DEPRECATED_PREFIXES):
+        problems.append(f"{model_id} 在 2026-10-10 下线清单里，换成扫描文档推荐的替代")
+    if not snapshot_ok and SNAPSHOT.search(model_id):
+        problems.append(f"{model_id} 是带日期的快照或 latest 别名，改用主线名")
+    return problems
+
+
+def _py_sources(demo_dir: Path) -> dict[Path, str]:
+    """demo 目录里除公共件外的 Python 源码（不含 out/ 等运行产物）。"""
+    return {p: p.read_text(encoding="utf-8") for p in sorted(demo_dir.rglob("*.py"))
+            if p.name != "demo_kit.py" and "out" not in p.relative_to(demo_dir).parts}
+
+
 def _verify_rows(text: str) -> list[str] | None:
     """返回 VERIFY.md 标准表格里的记录行；没有标准表头时返回 None。"""
     lines = text.splitlines()
@@ -157,11 +189,40 @@ def check_manifests() -> bool:
             copy = demo_dir / name
             if not copy.is_file() or copy.read_bytes() != (TEMPLATE / name).read_bytes():
                 errors.append(f"{name} 与模板 templates/{stack}/{name} 不一致（改模板后再同步）")
+        sources = _py_sources(demo_dir)
+        code = "\n".join(sources.values())
+        for model in data.get("models") or []:
+            model_id = str(model.get("id", ""))
+            errors += _model_problems(model_id)
+            if f'"{model_id}"' not in code and f"'{model_id}'" not in code:
+                errors.append(f"solution.yaml 的模型 {model_id} 没出现在代码里（run.py 常量与清单要一致）")
+        for file, text in sources.items():
+            for lineno, line in enumerate(text.splitlines(), 1):
+                if HARDCODED_HOST.search(line):
+                    errors.append(f"{file.relative_to(demo_dir)}:{lineno} 写死了百炼域名，地址请用 demo_kit.Config 的方法")
+                for literal in MODEL_LITERAL.findall(line):
+                    errors += [f"{file.relative_to(demo_dir)}:{lineno} {p}" for p in _model_problems(literal)]
         print(f"  {'OK  ' if not errors else 'FAIL'} {rel}")
         for err in errors:
             print(f"       - {err}")
         ok &= not errors
-    return ok
+    return check_legacy_models() and ok
+
+
+def check_legacy_models() -> bool:
+    """旧 demo 不强制主线名，但不能再用 2026-10-10 下线的模型。"""
+    findings = []
+    for rel, _ in LEGACY:
+        demo_dir = CATEGORIES / rel
+        for file, text in _py_sources(demo_dir).items():
+            for lineno, line in enumerate(text.splitlines(), 1):
+                for literal in MODEL_LITERAL.findall(line):
+                    findings += [f"{file.relative_to(ROOT).as_posix()}:{lineno} {p}"
+                                 for p in _model_problems(literal, snapshot_ok=True)]
+    print(f"  {'OK  ' if not findings else 'FAIL'} 旧 demo（{len(LEGACY)} 个）未使用下线模型")
+    for item in findings:
+        print(f"       - {item}")
+    return not findings
 
 
 def _run(cwd: Path, command: str, timeout: int = 180) -> tuple[int, str, float]:
