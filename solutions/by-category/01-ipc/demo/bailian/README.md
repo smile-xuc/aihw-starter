@@ -125,4 +125,4 @@ IPC（摄像头 + 本地移动侦测）
 
 套件版「物理世界感知 Agent」的调用示例见专题 demo [`physical-sense/`](../physical-sense/)。
 
-> ⚠️ AI 生成代码，仅作接入参考。接口字段以[视觉理解](https://help.aliyun.com/zh/model-studio/vision)与[结构化输出](https://help.aliyun.com/zh/model-studio/json-mode)文档为准。
+> ⚠️ AI 生成代码，仅作接入参考。接口字段以[视觉理解](https://help.aliyun.com/zh/model-studio/vision)与[结构化输出](https://help.aliyun.com/zh/model-studio/qwen-structured-output)文档为准。
