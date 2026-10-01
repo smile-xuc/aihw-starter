@@ -110,11 +110,11 @@ class MockTts:
                                          "usage": {"characters": self.characters}})
         self.sentences += 1
 
-    def recv(self) -> tuple[bool, object]:
+    def recv(self, timeout: float) -> tuple[bool, object] | None:
         try:
-            return self.queue.get(timeout=10)
+            return self.queue.get(timeout=timeout)
         except queue.Empty:
-            raise RuntimeError("mock：语音合成在等一个不会到来的事件（检查指令顺序）") from None
+            return None
 
     def close(self) -> None:
         pass

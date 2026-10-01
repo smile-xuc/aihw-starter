@@ -20,7 +20,7 @@
 | 镜腿摄像头 | `samples/dish.jpg`：餐桌上的一盘宫保鸡丁，第一视角 | `--camera`：拍一张 640×480；`--realtime` 时每秒拍 1 帧 |
 | 耳机 | 写入 `out/reply_N.wav`（24 kHz）；`--realtime` 写 `out/realtime_reply_N.wav` | 装了 sounddevice 时边收边播 |
 
-量产时把 `Glasses.speak()` 换成蓝牙或开放式耳机的音频输出。
+播放在独立线程里写声卡；量产时把 `Glasses._play_loop()` 里写声卡的一步换成蓝牙或开放式耳机的音频输出。
 
 ## 预期输出（mock）
 
@@ -75,6 +75,7 @@ mock 的回答是固定示意内容，播报用提示音代替真实语音，用
 - 本地音频按官方写法转成 `data:;base64,…` 并注明 `format`；图片、音频、文字放在同一条 user 消息里一次输入
 - Qwen-Audio-TTS 的 HTTP 接口只在北京可用，WebSocket 两地都有，所以播报走 WebSocket；文字边生成边送合成，不用等整段回答
 - `representation_compact` 要在发首段音频之前设置，之后不能再改
+- 每条 WebSocket 只在一个线程里读写：播报连接由后台线程按 20 ms 的节拍交替收发，`--realtime` 一轮先发完再收，播放另开线程。两个线程同时读写同一条 TLS 连接会偶发断连（OpenSSL 连接对象不是线程安全的），固件和 App 里同样要避免
 
 ## 两种模式怎么选
 

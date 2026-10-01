@@ -25,8 +25,10 @@ import argparse
 import base64
 import io
 import json
+import queue
 import sys
 import threading
+import time
 import uuid
 import wave
 from dataclasses import dataclass, field
@@ -94,10 +96,13 @@ def need_websocket():
 # ───────────────────────── 眼镜本体 ─────────────────────────
 
 class Glasses:
-    """眼镜本体：耳机放音。量产时把 speak() 换成蓝牙 / 开放式耳机的音频输出。"""
+    """眼镜本体：耳机放音。播放在独立线程里写声卡，不拖慢网络收发。
+    量产时把 _play_loop() 里写声卡的一步换成蓝牙 / 开放式耳机的音频输出。"""
 
     def __init__(self, play: bool):
         self.speaker = None
+        self._pending: queue.Queue = queue.Queue()
+        self._thread: threading.Thread | None = None
         if play:
             try:
                 import sounddevice as sd
@@ -105,13 +110,22 @@ class Glasses:
                 self.speaker.start()
             except Exception:  # noqa: BLE001 — 没有声卡 / 未装依赖时只写 WAV
                 self.speaker = None
+                return
+            self._thread = threading.Thread(target=self._play_loop, daemon=True)
+            self._thread.start()
+
+    def _play_loop(self) -> None:
+        while (pcm := self._pending.get()) is not None:
+            self.speaker.write(pcm)
 
     def speak(self, pcm: bytes) -> None:
         if self.speaker:
-            self.speaker.write(pcm)
+            self._pending.put(pcm)
 
     def close(self) -> None:
         if self.speaker:
+            self._pending.put(None)
+            self._thread.join(timeout=60)  # 等已收到的回答播完
             self.speaker.stop()
             self.speaker.close()
 
@@ -219,10 +233,16 @@ class TtsWs:
         self.ws = websocket.create_connection(url, header=[f"{k}: {v}" for k, v in headers.items()], timeout=30)
 
     def send(self, message: dict) -> None:
+        self.ws.settimeout(10)
         self.ws.send(json.dumps(message, ensure_ascii=False))
 
-    def recv(self) -> tuple[bool, object]:
-        opcode, data = self.ws.recv_data()
+    def recv(self, timeout: float) -> tuple[bool, object] | None:
+        """收一帧；timeout 秒内没有消息返回 None。帧收到一半超时也没关系，websocket-client 会接着读。"""
+        self.ws.settimeout(timeout)
+        try:
+            opcode, data = self.ws.recv_data()
+        except self.websocket.WebSocketTimeoutException:
+            return None
         if opcode == self.websocket.ABNF.OPCODE_BINARY:
             return True, data
         if opcode != self.websocket.ABNF.OPCODE_TEXT:
@@ -239,9 +259,15 @@ class TtsWs:
 class TtsStream:
     """qwen-audio-3.0-tts-flash 流式合成：run-task → continue-task ×N → finish-task。
 
-    后台线程负责连接、收音频和事件；主线程收到模型文字就 continue-task，服务端自动分句、
-    句子完整即合成。一次任务的三类指令必须用同一个 task_id。
+    同一条 TLS 连接不能由两个线程同时读写（OpenSSL 连接对象不是线程安全的，会偶发断连），
+    所以由一个后台线程独占这条 WebSocket，按固定节拍交替收发：先把主线程排进队列的文字发出去，
+    再最多等一个节拍收事件和音频。主线程只往队列里放文字，播放交给 Glasses 的播放线程。
+    服务端自动分句，句子完整即合成；一次任务的三类指令必须用同一个 task_id。
     """
+
+    TICK = 0.02           # 收发节拍（秒）：文字随时进队列，最多多等一个节拍才发出，取短一些不拖慢首包
+    START_TIMEOUT = 15    # 建连 + run-task → task-started
+    FINISH_TIMEOUT = 60   # finish-task → task-finished
 
     def __init__(self, connect, voice: str, on_audio):
         self.task_id = uuid.uuid4().hex
@@ -250,23 +276,32 @@ class TtsStream:
         self.first_audio_at: float | None = None
         self.characters = 0
         self.error = ""
-        self.t = None
-        self.ready, self.done = threading.Event(), threading.Event()
+        self.outbox: queue.Queue = queue.Queue()
+        self.stop, self.done = threading.Event(), threading.Event()
         threading.Thread(target=self._run, args=(connect,), daemon=True).start()
 
-    def _header(self, action: str) -> dict:
-        return {"action": action, "task_id": self.task_id, "streaming": "duplex"}
+    def _command(self, action: str, payload: dict) -> dict:
+        return {"header": {"action": action, "task_id": self.task_id, "streaming": "duplex"}, "payload": payload}
 
     def _run(self, connect) -> None:
+        transport = None
         try:
-            self.t = connect()
-            self.t.send({"header": self._header("run-task"), "payload": {
+            transport = connect()
+            transport.send(self._command("run-task", {
                 "task_group": "audio", "task": "tts", "function": "SpeechSynthesizer", "model": TTS_MODEL,
                 "parameters": {"text_type": "PlainText", "voice": self.voice, "format": "pcm",
                                "sample_rate": OUT_RATE},
-                "input": {}}})
-            while True:
-                binary, message = self.t.recv()
+                "input": {}}))
+            started, deadline = False, time.monotonic() + self.START_TIMEOUT
+            while not self.stop.is_set():
+                if started:
+                    deadline = self._flush(transport, deadline)
+                frame = transport.recv(self.TICK)
+                if frame is None:
+                    if deadline is not None and time.monotonic() > deadline:
+                        raise CloudError("等待服务端事件超时")
+                    continue
+                binary, message = frame
                 if binary:
                     if self.first_audio_at is None:
                         self.first_audio_at = kit.now_ms()
@@ -278,7 +313,7 @@ class TtsStream:
                 self.characters = int(usage.get("characters") or self.characters)
                 event = header.get("event")
                 if event == "task-started":
-                    self.ready.set()
+                    started, deadline = True, None  # 模型出字期间不限时，发出 finish-task 后再计时
                 elif event == "task-finished":
                     return
                 elif event == "task-failed":
@@ -287,27 +322,36 @@ class TtsStream:
         except Exception as exc:  # noqa: BLE001 — 连接、读写失败都交给主线程报错
             self.error = self.error or str(exc) or type(exc).__name__
         finally:
-            self.ready.set()
+            if transport:
+                transport.close()
             self.done.set()
 
-    def _wait(self, event: threading.Event, what: str, timeout: float) -> None:
-        if not event.wait(timeout):
-            raise CloudError(f"语音合成{what}超时")
+    def _flush(self, transport, deadline: float | None) -> float | None:
+        """把主线程排进队列的指令发出去；发出 finish-task 后开始计结束超时。"""
+        while True:
+            try:
+                action, payload = self.outbox.get_nowait()
+            except queue.Empty:
+                return deadline
+            transport.send(self._command(action, {"input": payload}))
+            if action == "finish-task":
+                deadline = time.monotonic() + self.FINISH_TIMEOUT
+
+    def say(self, text: str) -> None:
+        if self.error:
+            raise CloudError(f"语音合成失败：{self.error}")
+        self.outbox.put(("continue-task", {"text": text}))
+
+    def finish(self) -> None:
+        self.outbox.put(("finish-task", {}))
+        if not self.done.wait(self.START_TIMEOUT + self.FINISH_TIMEOUT):
+            raise CloudError("语音合成结束超时")
         if self.error:
             raise CloudError(f"语音合成失败：{self.error}")
 
-    def say(self, text: str) -> None:
-        self._wait(self.ready, "启动", 15)
-        self.t.send({"header": self._header("continue-task"), "payload": {"input": {"text": text}}})
-
-    def finish(self) -> None:
-        self._wait(self.ready, "启动", 15)
-        self.t.send({"header": self._header("finish-task"), "payload": {"input": {}}})
-        self._wait(self.done, "结束", 60)
-
     def close(self) -> None:
-        if self.t:
-            self.t.close()
+        """出错提前结束时让后台线程自己收尾、关连接（连接只在它的线程里读写）。"""
+        self.stop.set()
 
 
 def ask_once(http, connect, cfg: kit.Config, glasses: Glasses, voice: str, image: bytes, pcm: bytes,
@@ -450,6 +494,9 @@ class Turn:
 
 
 class Session:
+    """Realtime 会话。这条 WebSocket 只在本线程读写：一轮先把音频和画面发完，再收回答；
+    同一条 TLS 连接不能由两个线程同时读写。播放交给 Glasses 的播放线程，不阻塞收事件。"""
+
     def __init__(self, transport, glasses: Glasses):
         self.t = transport
         self.glasses = glasses
