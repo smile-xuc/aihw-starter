@@ -211,6 +211,8 @@ make && ./demo
 - WebSocket 协议要求设备支持 TLS
 - 建议先在 Linux 上跑通逻辑，再移植到 RTOS
 
+可运行参考：[`demo/bailian/`](./demo/bailian/) 用 `qwen3.8-omni-flash` + `qwen-audio-3.0-tts-flash` 跑通「拍照即问」，`--realtime` 用 `qwen3.8-omni-flash-realtime` 跑通「给 AI 打电话」，没有 Key 时自动 mock。
+
 ## 八、能力边界
 
 - **能做**：Android / iOS / Linux / RTOS 全覆盖、全双工对话、拍照视觉问答、同传（音频+字幕双输出）、实时音视频交互、离线/实时转写、可视化配置
