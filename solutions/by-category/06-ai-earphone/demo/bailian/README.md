@@ -93,7 +93,7 @@
 
 ## 地域
 
-| 地域 | `.env` 里的 `DASHSCOPE_REGION` | 同传地址 |
+| 地域 | `.env` 里的 `DASHSCOPE_API_REGION` | 同传地址 |
 |---|---|---|
 | 华北2（北京） | `cn-beijing` | `wss://{业务空间ID}.cn-beijing.maas.aliyuncs.com/api-ws/v1/realtime` |
 | 新加坡 | `ap-southeast-1` | `wss://{业务空间ID}.ap-southeast-1.maas.aliyuncs.com/api-ws/v1/realtime` |
@@ -102,7 +102,7 @@
 
 ## 常见问题
 
-- **提示缺少 `DASHSCOPE_WORKSPACE_ID`**：在百炼控制台「业务空间详情」复制 ID 填入 `.env`
+- **提示缺少 `DASHSCOPE_WORKSPACE_ID`**：在百炼控制台「业务空间管理」页的 API Host 列复制业务空间 ID（形如 `llm-xxx`）填入 `.env`
 - **连接时报 401 / 403**：Key 与地域不一致（例如北京的 Key 配了 `ap-southeast-1`），或业务空间 ID 不属于这个 Key
 - **连上了但一直没有字幕**：确认 WAV 里有人声；推流要接近实时节奏（官方示例同样是 100 ms 一包、每包间隔 0.1 秒）
 - **最后一句没有翻译**：必须发 `session.finish` 并等到 `session.finished`；中途按 Ctrl+C 会丢最后一句
