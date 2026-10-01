@@ -19,16 +19,23 @@
     # 3. 执行：
     python test_physical_sense.py                       # 用默认在线测试图片
     python test_physical_sense.py /path/to/local.jpg    # 传入本地图片
+    python test_physical_sense.py --mock                # 离线 mock：不联网、不需要 Key
 """
 
 import os
 import sys
 import json
-import requests
-from dotenv import load_dotenv
+
+try:
+    import requests
+    from dotenv import load_dotenv
+except ImportError:  # 仅 --mock 时允许缺少依赖
+    requests = None
+    load_dotenv = None
 
 # 加载环境变量（override=True 确保 .env 文件优先）
-load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'), override=True)
+if load_dotenv:
+    load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'), override=True)
 
 # ============================================================
 # 配置区 —— 运行前请填好以下三项
@@ -240,14 +247,37 @@ def parse_result(result: dict) -> dict:
         return {"raw_text": text}
 
 
+MOCK_RESULT = {
+    "title": "女孩在户外抚摸小狗",
+    "object": ["女孩", "小狗", "沙滩"],
+    "action": ["抚摸", "坐着"],
+    "event": ["人宠互动"],
+    "description": "（mock 固定回放）一名女孩坐在沙滩上，正与一只小狗互动，画面无异常。",
+}
+
+
+def run_mock(reason: str) -> None:
+    print(f"[MOCK] 离线模拟（{reason}），不联网、不需要 Key")
+    print("请求结构：model=multimodal-dialog，agent_command → physical_sense / scene=ipc")
+    print("\n--- 结构化解析结果（mock）---")
+    for key in ("title", "object", "action", "event", "description"):
+        print(f"{key}: {MOCK_RESULT[key]}")
+
+
 def main():
     """主函数 - 使用示例图片进行测试"""
     print("=" * 60)
     print("  物理世界感知智能体 - 摄像头画面洞察 Demo")
     print("=" * 60)
+    argv = [a for a in sys.argv[1:] if a != "--mock"]
+    if "--mock" in sys.argv or not API_KEY:
+        run_mock("--mock" if "--mock" in sys.argv else "未检测到 DASHSCOPE_API_KEY")
+        return
+    if requests is None:
+        sys.exit("live 模式需要依赖：pip install -r requirements.txt")
     print(f"\nApp ID: {APP_ID or '(未填写)'}")
     print(f"Workspace ID: {WORKSPACE_ID or '(未填写)'}")
-    print(f"API Key: {API_KEY[:10]}...{API_KEY[-4:]}" if API_KEY else "未设置")
+    print("API Key: 已设置")
 
     # 测试图片 - 使用公开可访问的示例图片
     test_images = [
@@ -258,8 +288,8 @@ def main():
     ]
 
     # 如果命令行传入了本地图片路径
-    if len(sys.argv) > 1:
-        local_path = sys.argv[1]
+    if argv:
+        local_path = argv[0]
         if os.path.exists(local_path):
             test_images = [{"name": "本地图片", "url": local_path}]
             print(f"\n使用本地图片: {local_path}")

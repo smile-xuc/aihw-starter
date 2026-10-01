@@ -26,6 +26,9 @@ python voice_clone_story.py --voice-id cosyvoice-v3-5-flash-parent-xxxx
 
 # 自定义故事文本
 python voice_clone_story.py --voice-id xxx --text "从前有一只小兔子……"
+
+# 离线 mock：不联网、不需要 Key（未设置 DASHSCOPE_API_KEY 时自动进入），只演示流程
+python voice_clone_story.py --mock
 ```
 
 ## 关键坑位（详见 [02-solution.md 第五节](../../02-solution.md)）

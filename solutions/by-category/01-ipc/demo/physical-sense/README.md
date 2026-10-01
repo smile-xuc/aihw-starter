@@ -37,7 +37,12 @@ python test_physical_sense.py
 
 # 传入本地图片
 python test_physical_sense.py /path/to/your/event.jpg
+
+# 离线 mock：不联网、不需要 Key（未设置 DASHSCOPE_API_KEY 时自动进入）
+python test_physical_sense.py --mock
 ```
+
+运行时只显示「API Key: 已设置」，不打印 Key 的任何片段。
 
 ## 预期输出
 

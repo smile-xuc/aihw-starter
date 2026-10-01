@@ -21,6 +21,8 @@ python glasses_omni_realtime.py --audio question.wav
 
 输入要求：wav 为 16k 采样、16bit、单声道。输出：终端实时打印识别与回复文本，回复音频存为 `omni_reply.pcm`（24k）。
 
+离线体验：`python glasses_omni_realtime.py --mock`（不联网、不需要 Key；未设置 `DASHSCOPE_API_KEY` 时自动进入），只演示流程，不生成音频。
+
 ## 要点
 
 - **帧率即成本**：视频帧按约 1 fps 推送已可支撑「看见你所见」，帧率翻倍成本近似翻倍

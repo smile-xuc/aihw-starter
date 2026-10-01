@@ -21,6 +21,8 @@ python glasses_kit_chat.py --image sign.jpg --question "这个招牌写的什么
 
 输出：终端打印 AI 回答文本 + 生成 `glasses_reply.mp3`（模拟眼镜播报）。
 
+离线体验：`python glasses_kit_chat.py --mock`（不联网、不需要 Key；未设置 `DASHSCOPE_API_KEY` 时自动进入），只演示流程，不生成音频。
+
 ## 要点
 
 - 提示词约束了「3 句话以内、口语化、无 markdown」——语音播报场景的回答风格与屏幕问答不同
