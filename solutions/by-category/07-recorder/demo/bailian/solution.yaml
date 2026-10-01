@@ -1,0 +1,33 @@
+schema: aihw/solution@0.1
+id: 07-recorder.bailian
+title: 录音卡 / 会议盒子 · 百炼录音纪要
+category: 07-recorder
+stack: bailian
+kind: reference
+summary: 录音卡会后上传录音 → qwen-audio-3.1-asr-flash 转写并分离说话人 → qwen3.8-flash 流式生成结构化纪要卡片
+models:
+  - id: qwen-audio-3.1-asr-flash
+    role: 同步转写 + 说话人分离（本地文件 Base64，≤5 分钟）
+  - id: qwen-audio-3.1-asr-flash-filetrans
+    role: 异步转写 + 说话人分离（--audio-url，公网 URL，≤12 小时）
+  - id: qwen3.8-flash
+    role: 结构化纪要（OpenAI 兼容，流式 JSON）
+regions: [cn-beijing, ap-southeast-1]
+env: [DASHSCOPE_API_KEY]
+device:
+  inputs: [mp3, wav, mic, url]
+  outputs: [markdown, json, console]
+run:
+  setup: 仅标准库，无需安装
+  live: python3 run.py
+  mock: python3 run.py --mock
+metrics:
+  first_token: 录音结束（开始上传）→ 纪要首个 token，含转写耗时
+  cost: 转写 usage + 纪要 usage × 模型单价（按地域）
+verification:
+  status: pending-live
+  last_verified: null
+  record: VERIFY.md
+license: MIT
+compliance_tags: [recording-consent]
+maintainers: ["@smile-xuc"]

@@ -1,0 +1,70 @@
+{
+  "engine": "Kokoro-82M (Apache-2.0)",
+  "duration_ms": 54800,
+  "sentences": [
+    {
+      "speaker": "说话人1",
+      "speaker_id": 0,
+      "voice": "zm_yunjian",
+      "begin_time": 0,
+      "end_time": 7600,
+      "text": "开个短会，今天就两件事：一是新款录音卡的试产排期，二是下周的客户拜访。"
+    },
+    {
+      "speaker": "说话人2",
+      "speaker_id": 1,
+      "voice": "zf_xiaoxiao",
+      "begin_time": 8050,
+      "end_time": 15150,
+      "text": "先说拜访。星云科技下周二见面，他们想先试点两百台，报价单我来准备。"
+    },
+    {
+      "speaker": "说话人1",
+      "speaker_id": 0,
+      "voice": "zm_yunjian",
+      "begin_time": 15600,
+      "end_time": 20625,
+      "text": "好，报价单周五前发给我。试产那边进度怎么样？"
+    },
+    {
+      "speaker": "说话人3",
+      "speaker_id": 2,
+      "voice": "zm_yunxi",
+      "begin_time": 21075,
+      "end_time": 29575,
+      "text": "模具已经签字了，十月十二号试产，二十八号小批量。不过麦克风阵列的供应商，交期可能要晚一周。"
+    },
+    {
+      "speaker": "说话人1",
+      "speaker_id": 0,
+      "voice": "zm_yunjian",
+      "begin_time": 30025,
+      "end_time": 35800,
+      "text": "那这个先列为风险，麦克风阵列的交期，周三前要确认。"
+    },
+    {
+      "speaker": "说话人3",
+      "speaker_id": 2,
+      "voice": "zm_yunxi",
+      "begin_time": 36250,
+      "end_time": 39525,
+      "text": "没问题，我周三前给结论。"
+    },
+    {
+      "speaker": "说话人2",
+      "speaker_id": 1,
+      "voice": "zf_xiaoxiao",
+      "begin_time": 39975,
+      "end_time": 45225,
+      "text": "还有一件事，包装上的德语文案，翻译供应商还没定。"
+    },
+    {
+      "speaker": "说话人1",
+      "speaker_id": 0,
+      "voice": "zm_yunjian",
+      "begin_time": 45675,
+      "end_time": 54350,
+      "text": "德语翻译先记为待定，下次再议。那就这么定：十月十二号按计划试产，拜访由销售牵头。散会。"
+    }
+  ]
+}
