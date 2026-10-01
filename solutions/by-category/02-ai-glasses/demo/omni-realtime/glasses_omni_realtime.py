@@ -18,7 +18,7 @@ qwen3.5-omni-flash-realtime：连续音频流 + 视频帧的全双工实时交�
   python glasses_omni_realtime.py --mock
 
 ⚠️ AI 生成代码，仅作接入参考。realtime 协议与 SDK 接口以官方文档为准：
-   https://help.aliyun.com/zh/model-studio/omni-realtime
+   https://help.aliyun.com/zh/model-studio/realtime
 """
 
 from __future__ import annotations

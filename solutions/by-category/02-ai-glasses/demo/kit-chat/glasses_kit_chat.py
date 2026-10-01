@@ -25,8 +25,8 @@ import base64
 import os
 import sys
 
-VL_MODEL = "qwen-vl-plus"           # 性价比档；追求效果可换 qwen-vl-max
-TTS_MODEL = "cosyvoice-v3.5-flash"
+VL_MODEL = "qwen3.7-flash"          # 性价比档；追求效果可换 qwen3.7-plus
+TTS_MODEL = "cosyvoice-v3-flash"    # cosyvoice-v3.5-* 没有系统音色，用系统音色时选 v3-flash
 TTS_VOICE = "longanyang"            # 阳光男声，可按产品人设更换
 
 SYSTEM_PROMPT = (
@@ -64,6 +64,7 @@ def ask_vl(image_uri: str, question: str, api_key: str) -> str:
                 ],
             },
         ],
+        extra_body={"enable_thinking": False},  # Qwen3.7 默认开思考，语音播报场景要关掉
     )
     return response.choices[0].message.content.strip()
 

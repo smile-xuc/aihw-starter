@@ -26,7 +26,7 @@ import wave
 from dataclasses import dataclass, field
 
 
-MODEL = "qwen3.5-livetranslate-flash-realtime-2026-05-19"
+MODEL = "qwen3.5-livetranslate-flash-realtime"  # 用主线名：带日期的快照下线只提前 30 天通知
 CHUNK_MS = 100
 
 

@@ -29,4 +29,4 @@ python glasses_omni_realtime.py --audio question.wav
 - **会话时长即成本**：产品交互用「按住通话/通话计时」明示用户，避免无感长连接
 - **服务端 VAD**：`enable_turn_detection` 开启后自动断句，端侧无需自行判停
 
-> ⚠️ AI 生成代码，仅作接入参考。realtime 协议与 SDK 接口以 [官方文档](https://help.aliyun.com/zh/model-studio/omni-realtime) 为准。
+> ⚠️ AI 生成代码，仅作接入参考。realtime 协议与 SDK 接口以 [官方文档](https://help.aliyun.com/zh/model-studio/realtime) 为准。
