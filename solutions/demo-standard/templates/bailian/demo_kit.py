@@ -199,17 +199,20 @@ Cost = Optional[Union[float, Tuple[float, float]]]  # 单次成本：确定值�
 
 
 def fmt_cny(value: Cost) -> str:
-    """金额显示：≥ 0.01 元保留 3 位小数，更小的保留 2 位有效数字（定点小数，不用科学计数法）。
+    """金额显示：≥ 0.01 元保留 3 位小数，更小的保留 2 位有效数字（始终是定点小数，不出现 9.8e-05）。
     传入（下限, 上限）时显示区间，用于接口未返回用量、只能按官方口径估算的情况。"""
     if isinstance(value, tuple):
         low, high = value
         return fmt_cny(low) if abs(high - low) < 1e-9 else f"{fmt_cny(low)}–{fmt_cny(high)}"
     if value is None:
         return "—"
-    if value >= 0.01 or value <= 0:
-        return f"{max(value, 0.0):.3f}"
-    rounded = float(f"{value:.2g}")
-    return f"{rounded:.{max(3, 1 - math.floor(math.log10(rounded)))}f}"
+    if value >= 0.01:
+        return f"{value:.3f}"
+    text = f"{value:.2g}"
+    if "e" not in text:
+        return text
+    rounded = float(text)
+    return f"{rounded:.{1 - math.floor(math.log10(rounded))}f}".rstrip("0")
 
 
 def verify_row(cfg: Config, models: list[str], first_ms: float | None, cost: Cost,
