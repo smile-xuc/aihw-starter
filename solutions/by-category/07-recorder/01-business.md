@@ -54,7 +54,7 @@
 | 产品 / 套餐 | 公开价 | 来源 |
 |---|---|---|
 | Plaud Note | $159 USD，含 Starter 300 min/mo | [Plaud Note 产品页](https://www.plaud.ai/products/plaud-note-ai-voice-recorder) |
-| Plaud Note Pro | $189 USD | [Plaud Note Pro](https://www.plaud.ai/products/plaud-note-pro) |
+| Plaud Note Pro | 首发价 US$179（2025-08）→ 现价 US$189（查证 2026-09-30） | [Plaud Note Pro](https://www.plaud.ai/products/plaud-note-pro) · [TechCrunch 2025-08-27](https://techcrunch.com/2025/08/27/plaud-launches-a-new-ai-hardware-notetaker-the-179-note-pro/) |
 | Plaud Pro Plan（年付折月） | ~$8.33/mo（$99.99/yr），1200 min/mo | [Plaud AI Plan Pricing](https://www.plaud.ai/pages/plaud-ai-plan-pricing) |
 | Plaud Unlimited（年付折月） | ~$19.99/mo（$239.99/yr），至 24h/天 | 同上 |
 | Notta Memo | $149 USD，含 Starter 300 min/mo（公开表述） | [Notta Memo](https://www.notta.ai/en/hardware/memo) / [商店](https://shop.notta.ai/en-us/products/notta-memo) |

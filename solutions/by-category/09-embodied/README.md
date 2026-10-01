@@ -41,7 +41,7 @@
 
 ## 成本与计费
 
-- **本体**：协作臂单元约数万～数十万；四足约 $1.6k–$4.5k 起；人形 G1 官宣约 $13.5k 起（未含税运）
+- **本体**：协作臂单元约数万～数十万；四足约 $1.6k–$4.5k 起；人形 G1 首发价 $16K / 现价约 $13.5K 起（未含税运，[PR Newswire 2024-05-15](https://www.prnewswire.com/news-releases/unitree-robotics-introduces-g1-humanoid-agent-ai-avatar-302146198.html) · [官方商店](https://shop.unitree.com/products/unitree-g1)，查证 2026-09-30）
 - **边缘算力**：RK3588～Jetson Orin 量级；云端抓取规划约元级/百次
 - **结论**：回本看工位替代与运转时长，不看 token
 

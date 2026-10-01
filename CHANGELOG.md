@@ -104,7 +104,6 @@
 
 ### 案例
 
-- `solutions/by-category/05-desktop-pet/04-cases.md`：Looi 大模型方案更新为千问实时多模态（同时使用 qwen3.5-omni-plus-realtime 与 qwen-audio-3.0-realtime-flash）
 - `solutions/by-category/03-toys-companion/04-cases.md`：新增公开案例 Mooni M1（听力熊 Teeni.AI × 阿里云通义联名随身 AI 对话智能体，信源为极客公园等公开报道）
 
 ## [2.1.1] - 2026-08-20

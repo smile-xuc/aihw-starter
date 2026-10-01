@@ -46,7 +46,7 @@
 
 - **Ring**（亚马逊）：Ring Protect 订阅含 AI 事件检测；最低档 Ring Solo 为 $4.99/月或 $49.99/年（[Ring Protect Plans](https://ring.com/plans)，查证 2026-09-30）
 - **Google Nest**（谷歌）：Nest Aware 已更名为 Google Home Premium。美区新购 Standard $10/月（$100/年）、Advanced $20/月（$200/年）（[Google Store](https://store.google.com/us/product/google_home_premium)，查证 2026-09-30）。未迁移的 Nest Aware 1st gen 仍按相机单独订阅，官方帮助页未公布统一标价
-- **Arlo**：Arlo Secure 含 AI 物体检测、活动区域、车牌识别，月费 $7.99 起
+- **Arlo**：Arlo Secure 含 AI 物体检测、活动区域、车牌识别。现价 Smart Aware Single **$9.99/月**起（2026-09 调价，查证 2026-09-30）。来源：[Arlo Secure](https://us.arlo.com/pages/arlo-secure) · [订阅更名说明](https://kb.arlo.com/000063777/Arlo-Subscription-Plan-Changes-September-2026)
 
 ---
 
@@ -122,7 +122,7 @@
   - **一键生成 Vlog**：提取主题事件与高光瞬间，自动剪辑每日 vlog
   - **语义检索与问答**：对拍摄内容进行自然语言搜索与对话
   - **AI 滤镜自动美化**
-- **定价**：199 美元（约 1,400 元 RMB），首批 2025-09 发货
+- **定价**：首发价 US$199（2025 年全球预购，首批 2025-09 发货）→ 现价 US$249（官网，查证 2026-09-30）。来源：[Looki L1 商店](https://www.looki.ai/products/looki-l1) · [52audio](https://www.52audio.com/archives/251405.html) · [AndroidGuys 2026-01-07](https://androidguys.com/news/looki-l1-wearable-debuts-at-ces-2026-as-first-proactive-ai-device-for-199/)
 - **公司背景**：深圳初创，创始团队来自美团，成立半年内完成天使/天使+/Pre-A 三轮融资，累计超 1,000 万美元
 - 参考：[52audio 首发报道](https://www.52audio.com/archives/251405.html) · [极客公园访谈](https://www.geekpark.net/news/352913)
 

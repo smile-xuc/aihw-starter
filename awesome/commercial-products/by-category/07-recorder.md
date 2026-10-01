@@ -25,15 +25,15 @@
 
 - **官网/渠道**：<https://www.plaud.ai/products/plaud-note-pro>
 - **形态**：Plaud 卡片生态旗舰硬件（同属 Note 产品线，规格以官网为准）
-- **定价**：$189 USD
+- **定价**：首发价 **US$179 / £169**（2025-08）→ 现价 **US$189**（查证 2026-09-30）
 - **目标市场**：更高频录音的专业用户（销售、咨询、内容等）
 - **AI 能力**：与 Plaud Intelligence 同生态（转写、摘要、Ask、多端管理）
 - **大模型方案**：同 Plaud 订阅体系（多模型，以套餐页为准）
 - **公开数据**：相对 Note 提升硬件档位与标价；软件能力主要仍由 Membership 解锁
 - **关键差异化**：在已验证的「卡片机 + 订阅」模型上做硬件升级，而不是另起软件闭环
-- **商业模式**：硬件 $189 + 同上 AI 套餐（设备通常仍含 Starter 时长，以购买页说明为准）
+- **商业模式**：硬件现价 US$189（首发价 US$179，2025-08；查证 2026-09-30）+ 同上 AI 套餐（设备通常仍含 Starter 时长，以购买页说明为准）
 
-> 来源：[Plaud Note Pro](https://www.plaud.ai/products/plaud-note-pro) · [套餐定价](https://www.plaud.ai/pages/plaud-ai-plan-pricing)
+> 来源：[Plaud Note Pro](https://www.plaud.ai/products/plaud-note-pro) · [PR Newswire 2025-08-27](https://www.prnewswire.com/news-releases/plaud-launches-plaud-note-pro-the-worlds-first-ai-note-taker-enabling-real-time-human-ai-alignment-302539908.html) · [TechCrunch 2025-08-27](https://techcrunch.com/2025/08/27/plaud-launches-a-new-ai-hardware-notetaker-the-179-note-pro/) · [套餐定价](https://www.plaud.ai/pages/plaud-ai-plan-pricing)
 
 **Plaud 订阅公开价（年付折月，官网）**：Pro **~$8.33/mo**（$99.99/yr，1200 min/mo）；Unlimited **~$19.99/mo**（$239.99/yr，至 24h/天）；Team 另有席位价。详见 [plaud-ai-plan-pricing](https://www.plaud.ai/pages/plaud-ai-plan-pricing)。
 

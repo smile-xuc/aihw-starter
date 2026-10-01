@@ -30,7 +30,7 @@
 | 名称 | 厂商 / 方 | 形态 | 大模型（公开） | 核心能力 | 参考价（公开） |
 |---|---|---|---|---|---|
 | **Go2** | 宇树 | 四足 | 可部署 Qwen-RobotNav（公开演示） | 运动控制 + 寻物导航 | $1,600–$4,500 档起 |
-| **G1** | 宇树 | 人形 | UnifoLM 等公开表述 | 仿生运动 / 科研二次开发 | $13,500 起；EDU 报价 |
+| **G1** | 宇树 | 人形 | UnifoLM 等公开表述 | 仿生运动 / 科研二次开发 | 首发价 US$16K（2024-05）→ 现价 US$13,500（查证 2026-09-30）；基础版不支持二次开发，EDU 询价 |
 | **UR e-Series** | Universal Robots | 协作臂 | 多为第三方视觉 / VLA 集成 | 产线抓取装配生态 | UR7e 经销商约 $38k+ |
 | **AUBO-i5 级** | 遨博 | 协作臂 | 方案商集成 | 性价比协作抓取 | 公开估算约 $6k–$10k |
 | **Qwen-Robot Suite** | 阿里通义 | 模型套件 | RobotNav / Manip / World | 语言优先工具接口 | 以官方发布为准 |
@@ -62,7 +62,7 @@
 ### 3.2 宇树 G1
 
 - **公开信息源**：https://www.unitree.com/g1/
-- **亮点**：可购消费/科研人形入口；EDU 支持二次开发；官网标价约 $13.5K 起
+- **亮点**：可购消费/科研人形入口；商店说明基础版不支持二次开发，二次开发需选 EDU 版；首发价 US$16K（2024-05）→ 现价 US$13,500（查证 2026-09-30，未含税运）。来源：[Unitree G1](https://www.unitree.com/g1/) · [官方商店](https://shop.unitree.com/products/unitree-g1) · [PR Newswire 2024-05-15](https://www.prnewswire.com/news-releases/unitree-robotics-introduces-g1-humanoid-agent-ai-avatar-302146198.html)
 - **可借鉴点**：人形适合演示与算法平台，不宜默认当作已跑通的家庭管家 SKU
 
 ### 3.3 协作臂语言抓取（UR / 遨博路线）

@@ -29,9 +29,9 @@
 
 | 产品 | 厂商 | 形态 | 大模型（公开） | 核心交互 | 参考价（公开） |
 |---|---|---|---|---|---|
-| **Looi** | Looi Robotics | 充电头机器人，手机作屏 | 千问实时多模态（qwen3.5-omni-plus-realtime + qwen-audio-3.0-realtime-flash） | 语音 + 肢体 + 手机屏表情 | 众筹约 $199 |
-| **EMO** | Living.AI | 桌面双足 | 自研情感引擎 + GPT 对话（公开表述） | 表情屏 + 语音 + 自主巡游 + 面部识别 | 约 $299 |
-| **Vector 2.0** | Digital Dream Labs | 履带桌面机器人 | 云端 NLP（自研栈为主） | 语音指令 + 触摸 + 悬崖检测 + 自主探索 | 约 $349 |
+| **Looi** | TangibleFuture | 充电头机器人，手机作屏 | App 集成 LLM / GPT 向对话（公开表述） | 语音 + 肢体 + 手机屏表情 | 众筹早鸟首发价 US$119；现价 LOOI Solo US$239（官网划线价 US$259，查证 2026-09-30） |
+| **EMO** | Living.AI | 桌面双足 | 自研情感引擎 + GPT 对话（公开表述） | 表情屏 + 语音 + 自主巡游 + 面部识别 | 现价 [US$279](https://living.ai/emo/)（美国官网，查证 2026-09-30）；首发价待核实 |
+| **Vector 2.0** | Digital Dream Labs | 履带桌面机器人 | 云端 NLP（自研栈为主） | 语音指令 + 触摸 + 悬崖检测 + 自主探索 | 现价 [US$249.99](https://www.digitaldreamlabs.com/products/vector-robot) 起（官方店，查证 2026-09-30）；首发价待核实 |
 | **Eilik** | Energize Lab | 桌面情感机器人 | 本地规则为主（无 LLM 亦可成立） | 触摸 + 表情 + 多机互动 | 约 $149 |
 | **小智 AI** | 开源社区 | ESP32 + 屏 + 舵机 | 千问 / DeepSeek / ChatGPT 等可选 | 语音 + 表情屏 + 舵机 | BOM 约数十元级 |
 
@@ -56,9 +56,8 @@
 
 ### 3.1 Looi — 充电头上的灵魂
 
-- **公开信息源**：产品众筹与公开报道；模型方案以厂商公开披露为准
+- **公开信息源**：[LOOI 官网商店](https://looirobot.com/products/looi-robot) · [服务条款](https://looirobot.com/policies/terms-of-service) · [Kickstarter](https://www.kickstarter.com/projects/tangiblefuture/looi-robot-turn-your-smartphone-into-a-desktop-robot) · [Hackster](https://www.hackster.io/news/tangiblefuture-s-looi-turns-smartphones-into-ambulatory-companion-robots-with-chatgpt-support-fddc772c62b2)（查证 2026-09-30）
 - **亮点**：硬件极简，体验由软件与手机屏定义
-- **模型**：公开信息称已迁移至千问实时多模态链路，同时使用 qwen3.5-omni-plus-realtime 与 qwen-audio-3.0-realtime-flash
 - **可借鉴点**：轻 BOM 下「软件 > 堆料」；Realtime 适合作为高体验旗舰选项，而不是白牌标配
 
 ### 3.2 EMO — 桌面情感宠物标杆

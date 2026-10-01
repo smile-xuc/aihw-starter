@@ -26,14 +26,14 @@
 
 - **官网/报道**：产品已停售；见 Reuters / The Verge / TechCrunch 报道
 - **形态**：胸针可穿戴，投影 + 语音
-- **定价**：约 $499 + 约 $24/月订阅（历史公开价）
+- **定价**：首发价 **US$699**（2024-04）→ 2024-10 降至 **US$499**（Eclipse）+ **US$24/月**（历史公开价；2025-02 已停售，查证 2026-09-30）
 - **目标市场**：曾主打「少用手机」
 - **AI 能力**：CosmOS + 云端查询；断服后核心 AI 不可用
 - **公开数据**：2025-02 停售；资产约 $116M 售予 HP；云服务关闭
 - **关键差异化（教训）**：① 强制订阅；② 强云依赖；③ 断服即变砖
 - **商业模式**：硬件 + 订阅（已失败退出）
 
-> 来源：[Reuters](https://www.reuters.com/markets/deals/ai-startup-humane-wind-down-wearable-pin-business-sell-assets-hp-2025-02-19/) · [The Verge](https://www.theverge.com/news/614883/humane-ai-hp-acquisition-pin-shutdown)
+> 来源：[The Verge 2024-10-23 降价](https://www.theverge.com/2024/10/23/24277964/humane-slashes-ai-pin-price-weak-sales) · [TechCrunch 2024-10-23](https://techcrunch.com/2024/10/23/beleaguered-startup-humane-drops-ai-pin-price-by-200/) · [Reuters](https://www.reuters.com/markets/deals/ai-startup-humane-wind-down-wearable-pin-business-sell-assets-hp-2025-02-19/) · [The Verge 停售](https://www.theverge.com/news/614883/humane-ai-hp-acquisition-pin-shutdown)（查证 2026-09-30）
 
 ---
 
