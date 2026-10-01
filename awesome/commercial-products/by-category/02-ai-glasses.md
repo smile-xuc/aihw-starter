@@ -51,13 +51,13 @@
 
 ### Ray-Ban Meta Gen 2（Meta）
 
-- **上市状态**：在售（官网，查证日期待核实）
+- **上市状态**：在售（Meta 官网，查证 2026-10-01）
 
-- **官网/渠道**：<https://www.meta.com/ai-glasses/> · 博客 <https://www.meta.com/blog/ray-ban-meta-gen-2-now-available-ai-glasses-extended-battery-life-3k-video/>
+- **官网/渠道**：<https://www.meta.com/ai-glasses/> · [Gen 2 产品页](https://www.meta.com/ai-glasses/ray-ban-meta-skyler-shiny-black-clear-gen-2/) · 博客 <https://www.meta.com/blog/ray-ban-meta-gen-2-now-available-ai-glasses-extended-battery-life-3k-video/>
 - **形态**：雷朋经典镜框 + 开放式扬声器 + 12MP 超广角相机；Gen 2 宣称最长约 8 小时续航、3K 视频
 - **定价**：
   - 首发价：待核实
-  - 现价：美区公开。Gen 2 **自 $379 起**（镜片/镜框配置可至 $459+）；Gen 1 仍有约 $299 起售信息
+  - 现价：Gen 2 自 $379 USD 起 · 美国 · [产品页](https://www.meta.com/ai-glasses/ray-ban-meta-skyler-shiny-black-clear-gen-2/) · [博客](https://www.meta.com/blog/ray-ban-meta-gen-2-now-available-ai-glasses-extended-battery-life-3k-video/) · 查证 2026-10-01。Gen 1 待核实
   - MSRP：待核实
 - **目标市场**：全球时尚消费 + Meta AI 生态用户
 - **AI 能力**：Meta AI 语音助手、实景问答（Live AI）、实时翻译、通话/消息、免提拍照录像
@@ -72,13 +72,13 @@
 
 ### Oakley Meta HSTN（Meta × Oakley）
 
-- **上市状态**：在售（官网，查证日期待核实）
+- **上市状态**：在售（Meta 官网，查证 2026-10-01）
 
-- **官网/渠道**：<https://www.oakley.com/en-us/l/oakley-meta> · Meta 运动场景页 <https://www.meta.com/ai-glasses/sports/> · 博客 <https://www.meta.com/blog/oakley-meta-ai-glasses-sports-wearables-hstn/>
+- **官网/渠道**：<https://www.oakley.com/en-us/l/oakley-meta> · [Meta 产品页](https://www.meta.com/ai-glasses/oakley-meta-hstn/) · Meta 运动场景页 <https://www.meta.com/ai-glasses/sports/> · 博客 <https://www.meta.com/blog/oakley-meta-ai-glasses-sports-wearables-hstn/>
 - **形态**：无显示的相机 + 开放式音频眼镜，采用 Oakley HSTN 运动镜框；IPX4（汗水与溅水）。六款镜框/镜片组合均支持处方，含 PRIZM、Transitions 与透明镜片；Oakley 产品页标出的验配范围约为 -6.00 至 +4.00（以结账页为准）。官方称典型使用最长约 8 小时、待机最长约 19 小时，约 20 分钟可充至 50%；随附充电盒最长约可再提供 48 小时。视频官方称 Ultra HD（3K），高于 1080p
 - **定价**：
   - 首发价：待核实
-  - 现价：美区公开。常规款 **自 $399 起**；限量版（金色点缀 + 24K PRIZM 偏光）**$499**。Transitions 等镜片配置标价更高，以 Meta Store / Oakley 当前页面为准。2025-08-26 起开售
+  - 现价：自 $399 USD 起 · 美国 · [产品页](https://www.meta.com/ai-glasses/oakley-meta-hstn/) · [博客](https://www.meta.com/blog/oakley-meta-ai-glasses-sports-wearables-hstn/) · 查证 2026-10-01。2025-08-26 开售（同博客）。限量版（金色点缀 + 24K PRIZM 偏光）$499 USD（同博客）。Transitions 等镜片配置标价更高，以 Meta Store / Oakley 当前页面为准
   - MSRP：待核实
 - **目标市场**：运动与日常运动佩戴（公开物料涉及高尔夫、滑板、冲浪等）；首发覆盖美国、加拿大、英国、爱尔兰、法国、意大利、西班牙、奥地利、比利时、澳大利亚、德国、瑞典、挪威、芬兰、丹麦。官方称后续推进墨西哥、印度、阿联酋
 - **AI 能力**：内置 Meta AI，语音唤醒「Hey Meta」；免提拍照/录像并发布到 Stories；可询问风力、浪况一类问题。通过 Meta AI app 与手机蓝牙配对后，可语音通话、发消息、拍摄（与 Ray-Ban Meta 同一应用入口，能力以官方说明页为准）
@@ -87,7 +87,7 @@
 - **关键差异化**：① Oakley HSTN 运动镜框，搭配 PRIZM / Transitions，面向运动与户外佩戴；② 官方称续航较此前约长 40%（典型使用最长约 8 小时），视频为 3K、高于 1080p；③ IPX4，公开定位覆盖出汗与小雨溅水
 - **商业模式**：硬件销售 + Meta 账号 / Meta AI app 生态（订阅策略以当地披露为准）
 
-> 来源：[Meta Quest Blog · Oakley Meta HSTN](https://www.meta.com/blog/oakley-meta-ai-glasses-sports-wearables-hstn/) · [Oakley 新闻稿 2025-06-20](https://oakley-media-hub.prezly.com/introducing-oakley-meta-glasses-amplifying-human-potential) · [Oakley Meta 产品页](https://www.oakley.com/en-us/l/oakley-meta)
+> 来源：[Meta 产品页](https://www.meta.com/ai-glasses/oakley-meta-hstn/) · [Meta Quest Blog · Oakley Meta HSTN](https://www.meta.com/blog/oakley-meta-ai-glasses-sports-wearables-hstn/) · [Oakley 新闻稿 2025-06-20](https://oakley-media-hub.prezly.com/introducing-oakley-meta-glasses-amplifying-human-potential) · [Oakley Meta 产品页](https://www.oakley.com/en-us/l/oakley-meta)（产品页与博客查证 2026-10-01）
 
 ---
 

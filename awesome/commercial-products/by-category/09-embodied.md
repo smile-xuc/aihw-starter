@@ -136,25 +136,25 @@
 - **官网/渠道**：<https://www.agibot.com/products/A2>；中文介绍 <https://www.agibot.com.cn/article/188/detail/107.html>
 - **形态**：全尺寸交互服务人形。英文页规格：身高 169 cm、体重 69 kg、电池 700 Wh、续航 2 h、可换电、主动自由度 40+。中文页写灵巧手 19 个自由度
 - **定价**：
-  - 首发价：待核实
-  - 现价：待核实（A2 单款未见公开标价）。官方中文页写远征系列售价 ¥168,000 CNY 起，这是系列口径
+  - 首发价：A2 青春版开售价 ¥168,000 CNY（2025-08-18）· [界面新闻](https://m.jiemian.com/article/13195641.html)。旗舰版待核实
+  - 现价：待核实
   - MSRP：待核实
 - **目标市场**：导览、迎宾、讲解等交互服务。中文页写应用场景包括工业、商业、家庭
 - **AI 能力**：英文页原文 "Powered by large language models … full-duplex conversation, and edge deployment"，并写结合 RAG 做企业知识库
 - **大模型方案**：英文页写 large language models 与 RAG，未写具体模型名。官网未公开具体基座模型（非千问默认绑定）
-- **公开数据**：A2 单款销量未见。中文页写 2024-08-18 发布、2024-12-16 量产，并写远征系列累计出货约 1,000 台，与系列售价同为系列口径
+- **公开数据**：A2 单款销量未见。中文页写 2024-08-18 发布、2024-12-16 量产，并写远征系列累计出货约 1,000 台（系列口径）
 - **关键差异化**：① 英文页写大模型、全双工对话和端侧部署；② 结合 RAG 做企业知识库；③ 中文页写灵巧手 19 个自由度
-- **商业模式**：硬件交付；单款标价未公开
+- **商业模式**：硬件交付。旗舰版与现价待核实
 - **另见**：[公开案例](../../../solutions/by-category/09-embodied/04-cases.md)
 
-> 来源：[远征 A2 英文产品页](https://www.agibot.com/products/A2) · [官方中文介绍](https://www.agibot.com.cn/article/188/detail/107.html)（均查证 2026-09-30）
+> 来源：[远征 A2 英文产品页](https://www.agibot.com/products/A2) · [官方中文介绍](https://www.agibot.com.cn/article/188/detail/107.html)（均查证 2026-09-30） · [界面新闻（2025-08-18）](https://m.jiemian.com/article/13195641.html)
 
 ---
 
 ## 待补充清单
 
 - [x] 工业四足产品（云深处绝影 X30）
-- [ ] 工业四足公开项目价 / 标案（宇树 B2/A2 等；仍待补）
+- [x] 工业四足公开项目价 / 标案：宇树 B2-W-pro 成交单价 ¥450,000 CNY（中国政府采购网成交公告，2026-06-26）· [成交公告](http://www.ccgp.gov.cn/cggg/dfgg/cjgg/202606/t20260626_26820485.htm)
 - [ ] Figure / Apptronik 等海外人形试点公开合同
 - [ ] 节卡 / 法奥等国内协作臂卡片
 

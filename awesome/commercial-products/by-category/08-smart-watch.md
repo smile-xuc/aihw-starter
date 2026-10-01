@@ -114,8 +114,8 @@
 
 ### Galaxy Watch9（Samsung）
 
-- **上市状态**：待核实（查证 2026-09-30）
-- **官网/渠道**：[The Verge 动手体验（2026-07-22）](https://www.theverge.com/tech/968728/samsung-galaxy-watch-9-ultra-2-hands-on-wearables-smartwatches) · [9to5Google（2026-07-22）](https://9to5google.com/2026/07/22/galaxy-watch-9-watch-ultra-2-are-official-as-samsung-makes-the-jump-to-snapdragon/) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/)
+- **上市状态**：在售（SammyGuru、AT&T，查证 2026-10-01）
+- **官网/渠道**：[The Verge 动手体验（2026-07-22）](https://www.theverge.com/tech/968728/samsung-galaxy-watch-9-ultra-2-hands-on-wearables-smartwatches) · [9to5Google（2026-07-22）](https://9to5google.com/2026/07/22/galaxy-watch-9-watch-ultra-2-are-official-as-samsung-makes-the-jump-to-snapdragon/) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · [AT&T 40 mm](https://www.att.com/buy/wearables/samsung-galaxy-watch9-40mm.html) · [AT&T 44 mm](https://www.att.com/buy/wearables/samsung-galaxy-watch9-44mm.html)
 - **形态**：SammyGuru 写圆形表盘。The Verge 写 40 mm / 44 mm；较小尺寸电池约增 20% 至 390 mAh，较大尺寸由 435 mAh 增至 445 mAh；芯片由 Exynos 换为 Snapdragon Wear Elite
 - **定价**：
   - 首发价：待核实
@@ -123,16 +123,16 @@
   - 现价：$409.99 USD · 美国 · 44 mm 蓝牙 · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · 查证 2026-09-30
   - 现价：$559.99 CAD · 加拿大 · 44 mm 蓝牙 · [Aubaine](https://aubaine.ca/en/blog/apple-watch-vs-galaxy-watch-which-smartwatch-should-you-buy-in-2026) · 查证 2026-09-30
   - MSRP：待核实
-  - LTE 款：待核实
+  - LTE 款：$429.99（40 mm）/ $459.99（44 mm）USD · 美国 · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · [AT&T 40 mm](https://www.att.com/buy/wearables/samsung-galaxy-watch9-40mm.html) · [AT&T 44 mm](https://www.att.com/buy/wearables/samsung-galaxy-watch9-44mm.html) · 查证 2026-10-01
 - **目标市场**：待核实（查证 2026-09-30）
 - **AI 能力**：The Verge 写 Wear OS 7 可以不说 Gemini 唤醒词就 raise to talk，并写抬腕看时间不会误触发。同文写 Heart Health Score：按约 8 天睡眠均值、中高强度活动、BMI 和血管负荷，每天给出 100 分制分数。Daily Cardio Load 按训练强度、最大训练负荷和实时心率，用来看训练与恢复是否平衡。Fitness Index 用雷达图比较力量、柔韧性、耐力、心肺和体成分
 - **大模型方案**：The Verge 写 Gemini（非千问默认绑定）
-- **公开数据**：未见公开销量。The Verge（2026-07-22）写当天开始预购，预计 2026-08-07 起发货。9to5Google 写 2026-08-07 起在店面上架。SammyGuru 写 2026-08-07 起在售。开售日待核实（查证 2026-09-30）
+- **公开数据**：未见公开销量。The Verge（2026-07-22）写当天开始预购，预计 2026-08-07 起发货。美国开售日 2026-08-07 · [9to5Google（2026-07-22）](https://9to5google.com/2026/07/22/galaxy-watch-9-watch-ultra-2-are-official-as-samsung-makes-the-jump-to-snapdragon/) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/)
 - **关键差异化**：① 不说 Gemini 唤醒词即可 raise to talk；② Heart Health Score 把睡眠、活动和体成分收成每日分数；③ Fitness Index 与 Daily Cardio Load 分别看相对水平和训练负荷
 - **商业模式**：硬件销售。未见公开订阅价
 - **另见**：[公开案例](../../../solutions/by-category/08-smart-watch/04-cases.md)
 
-> 来源：[The Verge（2026-07-22）](https://www.theverge.com/tech/968728/samsung-galaxy-watch-9-ultra-2-hands-on-wearables-smartwatches) · [9to5Google（2026-07-22）](https://9to5google.com/2026/07/22/galaxy-watch-9-watch-ultra-2-are-official-as-samsung-makes-the-jump-to-snapdragon/) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · [Aubaine](https://aubaine.ca/en/blog/apple-watch-vs-galaxy-watch-which-smartwatch-should-you-buy-in-2026)（均查证 2026-09-30）
+> 来源：[The Verge（2026-07-22）](https://www.theverge.com/tech/968728/samsung-galaxy-watch-9-ultra-2-hands-on-wearables-smartwatches) · [9to5Google（2026-07-22）](https://9to5google.com/2026/07/22/galaxy-watch-9-watch-ultra-2-are-official-as-samsung-makes-the-jump-to-snapdragon/) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · [Aubaine](https://aubaine.ca/en/blog/apple-watch-vs-galaxy-watch-which-smartwatch-should-you-buy-in-2026)（均查证 2026-09-30） · [AT&T 40 mm](https://www.att.com/buy/wearables/samsung-galaxy-watch9-40mm.html) · [AT&T 44 mm](https://www.att.com/buy/wearables/samsung-galaxy-watch9-44mm.html)（查证 2026-10-01）
 
 ---
 

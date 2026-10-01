@@ -36,7 +36,7 @@
 | **铠盒 AIBOX-A1** | 铠盒智能 | 桌面 Agent 盒 | 本地轻量 + 云端千问等 | 常开盒子 / OpenClaw | **¥1,199 CNY** · [产品页](https://agentaibox.com/products/a1) · 查证 2026-09-30 | 公开在售页 |
 | **SwitchBot AI Hub** | SwitchBot | 桌面家庭中枢 | 商品页写 Vision Language Model，未写模型名 | 摄像头理解后联动设备 | **$259.99 USD** · [美国商品页](https://us.switch-bot.com/products/switchbot-ai-hub) · 查证 2026-09-30 | 在售（美国官方商店、欧盟官方商店、英国官方商店，查证 2026-09-30） |
 | **Sandbar Stream** | Sandbar | 语音戒指 | 未公开 | 按住说话 | 预购价 **$249 USD** · [官方商店](https://shop.sandbar.com/) · 查证 2026-09-30 | 预售（官方商店，查证 2026-09-30） |
-| **Pebble Index 01** | Core Devices / Pebble | 语音备忘戒指 | 博客写端侧大模型，未写模型名 | 一键录音，手机上选动作 | 预购价 **$75 USD** · [产品页](https://repebble.com/index) · 查证 2026-09-30 | 待核实（查证 2026-09-30） |
+| **Pebble Index 01** | Core Devices / Pebble | 语音备忘戒指 | 博客写端侧大模型，未写模型名 | 一键录音，手机上选动作 | 预购价 **$75 USD** · [产品页](https://repebble.com/index) · 查证 2026-09-30 | 预售（官网；新订单 1–2 个月发货，查证 2026-10-01） |
 
 ### 形态路线图
 
@@ -91,11 +91,11 @@
 
 ### 案例：Pebble Index 01（Core Devices / Pebble）— 端侧意图路由
 
-- **公开信息源**：[产品页](https://repebble.com/index) · [发布博客](https://repebble.com/blog/meet-pebble-index-01-external-memory-for-your-brain)（查证 2026-09-30）
+- **公开信息源**：[产品页](https://repebble.com/index) · [发布博客](https://repebble.com/blog/meet-pebble-index-01-external-memory-for-your-brain)（查证 2026-09-30） · [量产博客](https://repebble.com/blog/index-01-is-in-mass-production)（查证 2026-10-01）
 - **形态**：戒指，一个按键加麦克风。产品页写电池可用数年、不用充电，防水 1 m
 - **技术路线**：博客写录音传到手机后，用开源语音转文字，再由端侧大模型选择动作（建笔记、加提醒等）。另有可选云端语音转文字。博客写 Pebble App 开源
 - **亮点**：博客写支持 iPhone 与 Android。产品页写 no subscription
-- **公开数据**：产品页写预购价 $75 USD，并写 "After pre-orders, price will go up to $99"。规格表写 "Starts shipping March 2026"。发货状态待核实（查证 2026-09-30）
+- **公开数据**：产品页写预购价 $75 USD，并写 "After pre-orders, price will go up to $99"。规格表写 "Starts shipping March 2026"。产品页写 "New orders ship in 1-2 months"。已开始发货。官方博客写首批订单 2026-07 底发货 · [量产博客](https://repebble.com/blog/index-01-is-in-mass-production)（查证 2026-10-01）
 - **可借鉴点**：动作选择放在手机端侧。本仓 [`demo/intent-router/`](./demo/intent-router/) 是离线分流示例
 - **另见**：[Pebble Index 01 商业产品卡][hw]
 
