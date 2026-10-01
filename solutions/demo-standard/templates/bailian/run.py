@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """百炼参考 demo 模板：复制本目录到 solutions/by-category/<品类>/demo/bailian/ 后改成自己的场景
 
-最小链路：设备发来一句话（已转成文字）→ qwen3.8-flash 流式回答 → 设备播报
+最小链路：设备发来一句话（已转成文字）→ qwen3.7-flash 流式回答 → 设备播报
 保留四件事：--mock 回退、[设备]/[云端] 日志、首字延迟、按 usage 算单次成本（kit.finish 打印验证记录）
+模型名用主线名，不用带日期的快照（快照下线只提前 30 天通知）。
 
 一条命令：
   python3 run.py           有 DASHSCOPE_API_KEY 就真跑；没有就自动 mock
@@ -17,9 +18,9 @@ from pathlib import Path
 import demo_kit as kit
 
 DEMO_DIR = Path(__file__).resolve().parent
-MODEL = "qwen3.8-flash"
-# 元 / 百万 Token。来源：https://help.aliyun.com/zh/model-studio/model-pricing（查证 2026-10-01）
-PRICES = {"cn-beijing": (0.8, 2.7), "ap-southeast-1": (1.094, 3.427)}
+MODEL = "qwen3.7-flash"
+# 元 / 百万 Token，单次输入 ≤32K 档。来源：https://help.aliyun.com/zh/model-studio/model-pricing（查证 2026-10-01）
+PRICES = {"cn-beijing": (0.2, 0.8), "ap-southeast-1": (0.225, 0.974)}
 SYSTEM = "你是一台 AI 硬件的语音助手。用口语化中文回答，两句话以内，不用列表和符号。"
 MOCK_REPLY = ["现在是", "模拟回答：", "设备已经连上云端，", "换成真 Key 就能听到模型的回答。"]
 

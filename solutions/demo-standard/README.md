@@ -137,19 +137,20 @@ python3 run.py --region ap-southeast-1   # 临时切地域
 
 ## 九、百炼能力速查（查证 2026-10-01）
 
-参考 demo 默认选用下表的「推荐」列；换模型时改 `run.py` 顶部常量与 `solution.yaml` 的 `models`。价格单位：元 / 百万 Token，或注明的单位；「京 / 新」= 北京 / 新加坡。
+参考 demo 默认选用下表的「推荐」列；换模型时改 `run.py` 顶部常量、`solution.yaml` 的 `models` 与 README 价格表。模型一律用主线名，不用带日期的快照：快照下线只提前 30 天通知，主线提前 3 个月（[模型下线机制](https://help.aliyun.com/zh/model-studio/model-depreciation)）。2026-10-10 将下线 `qwen-vl-plus` / `qwen-vl-max`、`qwen3-vl-flash`、`qwen3-omni-flash-realtime`、`gummy-*-v1` 等，新 demo 不要再用。价格单位：元 / 百万 Token，或注明的单位；「京 / 新」= 北京 / 新加坡。
 
 | 能力 | 推荐模型 | 接入 | 价格（京 / 新） | 来源 |
 |---|---|---|---|---|
-| 实时音视频对话（语音进语音出、看图、工具调用、MCP） | `qwen3.8-omni-flash-realtime` | WebSocket / WebRTC，业务空间专属域名 | 音频入 6 / 6.781，音频出 12 / 13.636，文本图片入 1.5 / 1.677，文本出 4.5 / 5.104 | [模型页](https://help.aliyun.com/zh/model-studio/qwen3-8-omni-flash-realtime) |
-| 实时语音对话（纯音频） | `qwen-audio-3.1-realtime-plus`；成本敏感用 `qwen-audio-3.0-realtime-flash`（单价与 `qwen3.8-omni-flash-realtime` 相同） | WebSocket | 3.1-plus：文本入 5、音频入 40、文本出 40、音频出 150（北京）；音频按每秒 12.5 Token 折算 | [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing)「实时语音对话」节 |
-| 文件转写 + 说话人分离（≤5 分钟） | `qwen-audio-3.1-asr-flash` | HTTP 同步，本地文件可 Base64；`speaker_diarization_enabled` | 入 0.8 / 1.094，出 2.7 / 3.427（官方未写每秒音频折合多少 Token） | [HTTP API](https://help.aliyun.com/en/model-studio/fun-asr-flash-recorded-speech-recognition-http-api) |
+| 实时音视频对话（语音进语音出、看图、工具调用、MCP） | `qwen3.8-omni-flash-realtime` | WebSocket / WebRTC / AOQ，业务空间专属域名 | 音频入 6 / 6.781，音频出 12 / 13.636，文本图片入 1.5 / 1.677，文本出 4.5 / 5.104；音频入每秒 7 Token、出每秒 12.5 Token（空间音频输入翻倍） | [模型页](https://help.aliyun.com/zh/model-studio/qwen3-8-omni-flash-realtime) · [Realtime](https://help.aliyun.com/zh/model-studio/realtime) |
+| 实时语音对话（纯音频） | `qwen-audio-3.0-realtime-flash`（单价与 `qwen3.8-omni-flash-realtime` 相同）；效果优先用 `qwen-audio-3.1-realtime-plus` | WebSocket | 3.1-plus：文本入 5、音频入 40、文本出 40、音频出 150（北京）；音频收发都按每秒 12.5 Token 折算 | [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing)「实时语音对话」节 |
+| 短录音转写 + 说话人分离（官方 ≤5 分钟） | `qwen-audio-3.1-asr-flash` | HTTP 同步，本地文件可 Base64；`speaker_diarization_enabled`；单次最多输出 1,024 Token，密集讲话建议 ≤3 分钟 | 入 0.8 / 1.094，出 2.7 / 3.427（官方未写每秒音频折合多少 Token） | [HTTP API](https://help.aliyun.com/en/model-studio/fun-asr-flash-recorded-speech-recognition-http-api) |
 | 长录音转写 + 说话人分离（≤12 小时） | `qwen-audio-3.1-asr-flash-filetrans`；按秒计费可选 `fun-asr`（0.00022 / 0.00026 元 / 秒） | HTTP 异步任务；公网 URL 或 `oss://` 临时 URL；`diarization_enabled` | 同上 | [非实时语音识别](https://www.alibabacloud.com/help/zh/model-studio/non-realtime-speech-recognition-user-guide) · [录音文件识别 HTTP API](https://help.aliyun.com/zh/model-studio/fun-asr-recorded-speech-recognition-http-api) |
-| 流式转写 | `qwen-audio-3.1-asr-flash-streaming` | 任务制 WebSocket（`run-task`） | 入 6 / 6.781，出 4.5 / 5.104 | [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing) |
+| 流式转写 | `qwen-audio-3.0-asr-flash-streaming`（支持热词、Prompt 上下文）；备选 `fun-asr-realtime` | 任务制 WebSocket（`run-task`）/ AOQ | 0.00033 / 0.00066 元 / 秒；`qwen-audio-3.1-asr-flash-streaming` 按 Token 计（入 6、出 4.5） | [语音识别](https://help.aliyun.com/zh/model-studio/asr-model) · [模型价格](https://help.aliyun.com/zh/model-studio/model-pricing) |
 | 语音合成 | `qwen-audio-3.0-tts-flash` / `-plus`（两地，含童声如 `longpaopao_v3.6`）；`cosyvoice-v3-flash`（两地，童声 `longhuhu_v3`）；`qwen-audio-3.1-tts-flash`（仅北京）；`cosyvoice-v3.5-*` 仅北京且没有系统音色，只能用复刻音色 | 任务制 WebSocket（两地）/ HTTP（仅北京） | 3.0-flash 1 / 1.124 元 / 万字符；3.0-plus 1.4 / 1.499；cosyvoice-v3-flash 1 / 0.954；3.1-flash 入 1.5、出 12（北京）。按字符计费时一个汉字算 2 个字符 | [语音合成](https://help.aliyun.com/zh/model-studio/tts-model) · 模型价格 |
 | 同声传译 | `qwen3.8-livetranslate-flash-realtime` | Realtime WebSocket（业务空间专属域名）；RPM 10 | 音频入 40 / 54.688，图片入 3.3 / 4.01，文本出 100 / 145.835，音频出 160 / 218.752；音频入每秒 7 Token、出每秒 12.5 Token | [模型页](https://help.aliyun.com/zh/model-studio/qwen3-8-livetranslate-flash-realtime) |
-| 图片理解 | `qwen3.7-flash`（低价原生多模态，两地支持 Function Calling）；`qwen3-vl-flash`；`qwen3.7-plus` / `qwen3.8-omni-flash`（综合） | OpenAI 兼容；本地图 Base64 Data URI | `qwen3.7-flash` ≤32K 入 0.2、出 0.8；`qwen3-vl-flash` 入 0.15、出 1.5（≤32K，北京）；`qwen3.8-omni-flash` 入 0.8 / 1.094、出 2.7 / 3.427 | [视觉理解](https://help.aliyun.com/zh/model-studio/vision) · 模型价格 |
-| 文本 / 工具调用 | `qwen3.8-flash`；`qwen3.7-flash`（更便宜）；`qwen3.7-plus`；`qwen3.8-max` | OpenAI 兼容，Function Calling；以上四个默认开思考，延迟敏感时传 `enable_thinking: false` | flash 入 0.8 / 1.094、出 2.7 / 3.427；plus 入 2 / 2.998、出 8 / 11.991；max 入 12 / 14.988、出 36 / 44.965 | [Function Calling](https://help.aliyun.com/zh/model-studio/qwen-function-calling) · 模型价格 |
+| 拍照问答 / 图片理解 | `qwen3.7-flash`（原生多模态，两地支持 Function Calling）；带语音提问时用 `qwen3.8-omni-flash`（音频 + 图片一次输入）；效果档 `qwen3.7-plus` | OpenAI 兼容；本地图 Base64 Data URI；每 32×32 像素约 1 Token | `qwen3.7-flash` ≤32K 入 0.2 / 0.225、出 0.8 / 0.974；`qwen3.8-omni-flash` 入 0.8 / 1.094、出 2.7 / 3.427 | [视觉理解](https://help.aliyun.com/zh/model-studio/vision) · 模型价格 |
+| 文本对话 / 摘要 | `qwen3.7-flash`；质量档 `qwen3.8-flash` | OpenAI 兼容；两者默认开思考，传 `enable_thinking: false` | `qwen3.7-flash` 按单次输入分档：≤32K 0.2 / 0.8、32K–256K 0.6 / 2.4（北京）；`qwen3.8-flash` 0.8 / 2.7（不分档） | 模型价格 |
+| 工具调用 / 多轮编排 | `qwen3.8-flash`；备选 `qwen3.7-plus`（`qwen3.8-max` 为旗舰） | OpenAI 兼容 Function Calling；默认开思考，传 `enable_thinking: false` | flash 入 0.8 / 1.094、出 2.7 / 3.427；plus 入 2 / 2.998、出 8 / 11.991；max 入 12 / 14.988、出 36 / 44.965 | [Function Calling](https://help.aliyun.com/zh/model-studio/qwen-function-calling) · 模型价格 |
 
 几条容易踩的坑：
 

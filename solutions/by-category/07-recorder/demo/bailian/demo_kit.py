@@ -108,7 +108,10 @@ class Config:
         return self.http_root() + "/api/v1"
 
     def ws_inference(self) -> str:
-        """DashScope 原生 WebSocket（流式 ASR / TTS 等）。"""
+        """任务制 WebSocket（run-task：流式 ASR / TTS 等）；与 http_root 一样，填了业务空间 ID 就走专属域名。"""
+        if self.workspace_id:
+            host = REGIONS[self.region]["workspace_host"].format(workspace=self.workspace_id)
+            return f"wss://{host}/api-ws/v1/inference"
         return REGIONS[self.region]["ws"] + "/api-ws/v1/inference"
 
     def realtime_url(self, model: str) -> str:

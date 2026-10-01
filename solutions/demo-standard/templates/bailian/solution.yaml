@@ -7,7 +7,7 @@ stack: bailian
 kind: reference
 summary: 一句话说清「设备输入 → 模型 → 设备输出」   # 改
 models:
-  - id: qwen3.8-flash                   # 改：实际调用的模型 ID，一个模型一项
+  - id: qwen3.7-flash                   # 改：实际调用的模型 ID（主线名，不用带日期的快照），一个模型一项
     role: 这个模型在链路里做什么
 regions: [cn-beijing, ap-southeast-1]   # 只写两地都核实过可用的地域
 env: [DASHSCOPE_API_KEY]                # 必须走业务空间专属域名时加 DASHSCOPE_WORKSPACE_ID
