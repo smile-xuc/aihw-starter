@@ -269,6 +269,8 @@ def run_cloud(http, cfg: kit.Config, model: str, box: Box, task: Task, now: dt.d
                 args = None
             result = box.act(call["name"], args) if isinstance(args, dict) else {
                 "ok": False, "error": "arguments 不是 JSON 对象"}
+            if not result.get("ok"):
+                kit.say("设备", f"拒绝 {call['name']}（{call['arguments']}）：{result.get('error')} → 回传给模型修正")
             task.tool_calls += 1
             messages.append({"role": "tool", "tool_call_id": call["id"],
                              "content": json.dumps(result, ensure_ascii=False)})
@@ -437,9 +439,12 @@ def stats_line(index: int, task: Task, cfg: kit.Config, model: str) -> str:
     if task.route == "offline":
         return f"指令 {index} · 断网降级 · 本地完成 {task.tool_calls} 项、{len(task.pending)} 项待联网 · ¥0"
     asr_cost = task.asr_cost(cfg.region)
-    first = f"{task.first_ms:.0f} ms" if cfg.live and task.first_ms is not None else "—（mock 不计时）"
-    if cfg.live and task.asr_ms is not None:
-        first += f"（含转写 {task.asr_ms:.0f} ms）"
+    if not cfg.live:
+        first = "—（mock 不计时）"
+    elif task.first_ms is None:
+        first = "—（本条没有调用工具）"
+    else:
+        first = f"{task.first_ms:.0f} ms" + (f"（含转写 {task.asr_ms:.0f} ms）" if task.asr_ms is not None else "")
     split = f"转写 ¥{kit.fmt_cny(asr_cost)} + 编排 ¥{kit.fmt_cny(task.llm_cost)}；" if asr_cost else ""
     estimated = "；转写用量按时长估算" if task.asr_estimated else ""
     return (f"指令 {index} · 云端 {task.rounds} 轮 · 工具 {task.tool_calls} 次 · 说完指令 → 首个工具调用 {first}"
