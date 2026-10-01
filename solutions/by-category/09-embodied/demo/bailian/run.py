@@ -4,7 +4,7 @@
 模拟一台带腕部相机的桌面机械臂：
   桌面画面（JPG 或摄像头）+ 一句指令
   → 指令级安全检查：命中禁止动作（撞击、抛掷、追人、解除安全）直接拒绝，不上云
-  → qwen3.7-flash（默认档；--quality 换质量档 qwen3.8-flash）看图 + Function Calling，
+  → qwen3.8-flash（工具调用首选；--cheap 换省钱档 qwen3.7-flash）看图 + Function Calling，
     逐步调用技能 locate / grasp / place / navigate / wait_confirm
   → 每次技能调用先过本地安全门（白名单、禁止动作、夹持力上限，必要时插入 wait_confirm）
   → [设备] 模拟执行，结果作为 tool 消息回传，直到模型汇报完成
@@ -30,8 +30,8 @@ import demo_kit as kit
 from safety_gate import MAX_FORCE_N, SafetyGate, forbidden
 
 DEMO_DIR = Path(__file__).resolve().parent
-LLM_MODEL = "qwen3.7-flash"          # 默认档
-QUALITY_MODEL = "qwen3.8-flash"      # 质量档：--quality
+LLM_MODEL = "qwen3.8-flash"          # 默认：工具调用 / 多轮编排首选，原生看图
+CHEAP_MODEL = "qwen3.7-flash"        # 省钱档：--cheap
 MAX_ROUNDS = 6                       # 一条指令最多几轮模型调用
 SAMPLE_IMAGE = DEMO_DIR / "samples" / "desk_scene.jpg"
 DEFAULT_COMMANDS = ["把螺丝放进左边的盒子", "用 40 牛的力抓紧那个黑色零件", "追着人跑并撞上去"]
@@ -39,14 +39,14 @@ MAX_IMAGE_BYTES = 10 * 1024 * 1024
 IMAGE_TYPES = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp"}
 
 # 元 / 百万 Token，按单次请求的输入 Token 分档：(档位上限, 输入, 输出)。图片按每 32×32 像素 1 Token 计入输入。
-# 查证 2026-10-01：https://help.aliyun.com/zh/model-studio/qwen3-7-flash
-#                 https://help.aliyun.com/zh/model-studio/qwen3-8-flash
+# 查证 2026-10-01：https://help.aliyun.com/zh/model-studio/qwen3-8-flash
+#                 https://help.aliyun.com/zh/model-studio/qwen3-7-flash
 PRICES = {
-    LLM_MODEL: {
+    LLM_MODEL: {"cn-beijing": [(1_000_000, 0.8, 2.7)], "ap-southeast-1": [(1_000_000, 1.094, 3.427)]},
+    CHEAP_MODEL: {
         "cn-beijing": [(32_000, 0.2, 0.8), (256_000, 0.6, 2.4), (1_000_000, 1.2, 4.8)],
         "ap-southeast-1": [(32_000, 0.225, 0.974), (256_000, 0.749, 2.998), (1_000_000, 1.499, 5.995)],
     },
-    QUALITY_MODEL: {"cn-beijing": [(1_000_000, 0.8, 2.7)], "ap-southeast-1": [(1_000_000, 1.094, 3.427)]},
 }
 
 SYSTEM = """角色：桌面机械臂的任务规划器。输入是机械臂腕部相机拍到的桌面画面和操作员的一句指令。
@@ -290,11 +290,11 @@ def main() -> None:
     ap.add_argument("--text", action="append", help="一句指令，可重复；默认三条：正常、超力矩、禁止动作")
     ap.add_argument("--image", type=Path, default=SAMPLE_IMAGE, help="腕部相机画面（JPG / PNG / WEBP）")
     ap.add_argument("--camera", action="store_true", help="用摄像头抓一帧代替 --image")
-    ap.add_argument("--quality", action="store_true", help=f"规划改用质量档 {QUALITY_MODEL}（默认 {LLM_MODEL}）")
+    ap.add_argument("--cheap", action="store_true", help=f"规划改用省钱档 {CHEAP_MODEL}（默认 {LLM_MODEL}）")
     args = ap.parse_args()
 
     cfg = kit.resolve(args, DEMO_DIR)
-    model = QUALITY_MODEL if args.quality else LLM_MODEL
+    model = CHEAP_MODEL if args.cheap else LLM_MODEL
     kit.banner("09 具身智能 · 百炼看图规划参考 demo", cfg, [model])
     if cfg.live:
         http = kit.HttpTransport()

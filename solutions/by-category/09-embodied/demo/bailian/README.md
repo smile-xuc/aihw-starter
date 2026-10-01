@@ -1,8 +1,8 @@
 # 09 具身智能 · 百炼看图规划参考 demo
 
-一台带腕部相机的桌面机械臂：桌面画面 + 一句指令交给 `qwen3.7-flash`，模型看图后用 Function Calling 逐步调用技能（`locate` / `grasp` / `place` / `navigate` / `wait_confirm`）；每次调用先过本地安全门，再由机械臂执行，执行结果回传给模型，直到模型汇报完成。JPG 或电脑摄像头模拟腕部相机，控制台 `[设备]` 日志模拟相机定位、夹爪和机械臂动作。
+一台带腕部相机的桌面机械臂：桌面画面 + 一句指令交给 `qwen3.8-flash`，模型看图后用 Function Calling 逐步调用技能（`locate` / `grasp` / `place` / `navigate` / `wait_confirm`）；每次调用先过本地安全门，再由机械臂执行，执行结果回传给模型，直到模型汇报完成。JPG 或电脑摄像头模拟腕部相机，控制台 `[设备]` 日志模拟相机定位、夹爪和机械臂动作。
 
-模型分两档：默认档 `qwen3.7-flash`，`--quality` 换质量档 `qwen3.8-flash` 对比规划效果与成本。两者都原生支持看图和 Function Calling，都是混合思考模型、默认开思考，demo 显式传 `enable_thinking=false`。
+模型：默认 `qwen3.8-flash`（百炼「工具调用 / 多轮编排」的首选），`--cheap` 换省钱档 `qwen3.7-flash`（单价约四分之一），可对比规划效果与成本。两者都原生支持看图和 Function Calling，都是混合思考模型、默认开思考，demo 显式传 `enable_thinking=false`。
 
 > **状态：待真 Key 验证**（目前只通过 mock 冒烟）。验证记录见 [VERIFY.md](./VERIFY.md)，标准见 [demo-standard](../../../../demo-standard/README.md)。
 
@@ -29,7 +29,7 @@
 ```text
 [设备] 腕部相机 ← desk_scene.jpg（21 KB）
 [设备] 操作员指令：把螺丝放进左边的盒子
-[云端] qwen3.7-flash 看图规划（Function Calling，流式）……
+[云端] qwen3.8-flash 看图规划（Function Calling，流式）……
 [云端] 第 1 轮 → locate {"object": "螺丝"}
 [设备] 相机：定位「螺丝」→ (-60, 30) mm
 [云端] 第 2 轮 → locate {"object": "左边的蓝色盒子"}
@@ -39,9 +39,9 @@
 [云端] 第 4 轮 → place {"target": "左边的蓝色盒子"}
 [设备] 机械臂：把「螺丝」移到「左边的蓝色盒子」上方 → 松开夹爪
 [机械臂] 螺丝已经放进左边的蓝色盒子。
-[统计] 指令 1 · 5 轮 · 执行技能 4 次 · 安全门 allow 4 / rewrite 0 / reject 0 · 下达指令 → 首个技能调用 —（mock 不计时） · ¥0.0011（输入 5104 / 输出 106 Token）
+[统计] 指令 1 · 5 轮 · 执行技能 4 次 · 安全门 allow 4 / rewrite 0 / reject 0 · 下达指令 → 首个技能调用 —（mock 不计时） · ¥0.0044（输入 5104 / 输出 106 Token）
 [设备] 操作员指令：用 40 牛的力抓紧那个黑色零件
-[云端] qwen3.7-flash 看图规划（Function Calling，流式）……
+[云端] qwen3.8-flash 看图规划（Function Calling，流式）……
 [云端] 第 1 轮 → locate {"object": "黑色零件"}
 [设备] 相机：定位「黑色零件」→ (70, 10) mm
 [云端] 第 2 轮 → grasp {"object": "黑色零件", "max_force_n": 40.0}
@@ -49,7 +49,7 @@
 [设备] 暂停，等待现场确认：操作员要求 40 N，超过 20 N 上限 → 已确认（demo 自动确认；量产用实体按键或 App）
 [设备] 夹爪：抓取「黑色零件」，夹持力上限 20 N
 [机械臂] 已抓住黑色零件，夹持力按安全门上限 20 牛执行，等待下一步指令。
-[统计] 指令 2 · 3 轮 · 执行技能 2 次 · 安全门 allow 1 / rewrite 1 / reject 0 · 下达指令 → 首个技能调用 —（mock 不计时） · ¥0.00062（输入 2752 / 输出 90 Token）
+[统计] 指令 2 · 3 轮 · 执行技能 2 次 · 安全门 allow 1 / rewrite 1 / reject 0 · 下达指令 → 首个技能调用 —（mock 不计时） · ¥0.0024（输入 2752 / 输出 90 Token）
 [设备] 操作员指令：追着人跑并撞上去
 [设备] 安全门 reject：指令含禁止动作「撞击」→ 不上云、不执行
 [机械臂] 这个动作不安全，已拒绝执行。
@@ -64,7 +64,7 @@ mock 按固定剧本回放（只覆盖前两条指令），用量是示意值；
 腕部相机（JPG / 摄像头）+ 操作员指令
   ├─ 指令级检查 forbidden()：撞击、抛掷、追人、解除安全 → 直接拒绝，不上云
   └─ POST {base}/compatible-mode/v1/chat/completions（每轮一次，最多 6 轮）
-       model=qwen3.7-flash（--quality：qwen3.8-flash），stream=true，enable_thinking=false
+       model=qwen3.8-flash（--cheap：qwen3.7-flash），stream=true，enable_thinking=false
        messages=[system, user: [image_url(data:image/jpeg;base64,…), text]]，tools=[5 个技能]
        流式 delta.tool_calls → 按 index 拼接 arguments
        → 安全门 SafetyGate.check()：allow / rewrite（改参数，必要时先插 wait_confirm）/ reject
@@ -96,21 +96,21 @@ mock 按固定剧本回放（只覆盖前两条指令），用量是示意值；
 |---|---|
 | `--text "把支架放进右边的盒子"` | 换指令，可重复 |
 | `--image my.jpg` / `--camera` | 换画面 / 用摄像头抓一帧 |
-| `--quality` | 规划改用质量档 `qwen3.8-flash` |
+| `--cheap` | 规划改用省钱档 `qwen3.7-flash` |
 | `--region ap-southeast-1` | 临时切到新加坡（Key 也要换成新加坡的） |
 | `--record` | 真跑成功后把一行验证记录追加到 `VERIFY.md` |
 
 ## 计费与延迟口径
 
-单价（元 / 百万 Token，查证 2026-10-01，[qwen3.7-flash 模型页](https://help.aliyun.com/zh/model-studio/qwen3-7-flash)、[qwen3.8-flash 模型页](https://help.aliyun.com/zh/model-studio/qwen3-8-flash)）：
+单价（元 / 百万 Token，查证 2026-10-01，[qwen3.8-flash 模型页](https://help.aliyun.com/zh/model-studio/qwen3-8-flash)、[qwen3.7-flash 模型页](https://help.aliyun.com/zh/model-studio/qwen3-7-flash)）：
 
 | 模型 | 华北2（北京）输入 / 输出 | 新加坡 输入 / 输出 |
 |---|---|---|
-| `qwen3.7-flash`（单次输入 ≤32K；32K–256K 为 0.6 / 2.4） | 0.2 / 0.8 | 0.225 / 0.974 |
-| `qwen3.8-flash`（`--quality`，不分档） | 0.8 / 2.7 | 1.094 / 3.427 |
+| `qwen3.8-flash`（默认，不分档） | 0.8 / 2.7 | 1.094 / 3.427 |
+| `qwen3.7-flash`（`--cheap`；单次输入 ≤32K，32K–256K 为 0.6 / 2.4） | 0.2 / 0.8 | 0.225 / 0.974 |
 
 - 图片按每 32×32 像素 1 个 Token、另加 2 个计入输入：640×480 约 302 Token（[图像与视频理解](https://help.aliyun.com/zh/model-studio/vision)）
-- 多轮规划时，画面、系统提示、技能定义和历史每一轮都重新计入输入。样本指令 5 轮约 5,000 输入 Token：默认档约 ¥0.0011，质量档约 ¥0.0045
+- 多轮规划时，画面、系统提示、技能定义和历史每一轮都重新计入输入。样本指令 5 轮约 5,000 输入 Token：默认约 ¥0.0045，`--cheap` 约 ¥0.0011
 - 省钱的办法：画面先缩到 640×480 左右；技能定义写短；能一次规划多步的任务，可以让模型先输出完整计划再逐步执行
 - 指令级拒绝不上云、不计费；免费额度只在北京地域发放
 - 首字延迟 = 下达指令 → 首个技能调用到达（流式里第一个带函数名的 `tool_calls` 块）
