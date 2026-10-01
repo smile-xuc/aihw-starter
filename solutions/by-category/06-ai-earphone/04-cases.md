@@ -67,7 +67,7 @@
 - **公开信息源**：IT之家报道预售 ¥2499（2025-11）；官网商城同价量级；量子位发布会报道（60 语、中英首响约 2 秒、骨导+气导等）
   - https://finance.sina.com.cn/tech/digi/2025-11-19/doc-infxxwtt3492426.shtml
   - https://www.qbitai.com/2025/10/341663.html
-  - https://www.xunfei.cn/（商城商品页）
+  - [讯飞商城 · AI 翻译耳机](https://www.xunfei.cn/goods?goodsId=2381)
 - **亮点**：通话翻译、面对面无按键、旁听同传、专业词库、音色克隆播报（公开宣称）
 - **可借鉴点**：开放式佩戴适配「长时间会议」；把通话场景做成差异化，而不只做面对面
 

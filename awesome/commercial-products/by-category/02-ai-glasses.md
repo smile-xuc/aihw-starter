@@ -8,7 +8,7 @@
 ### Even Realities G1 / G2（逸文科技）
 
 - **官网/渠道**：<https://www.evenrealities.com>；全球 40+ 国家销售，300+ 欧洲光学门店
-- **形态**：日常佩戴型 AI 显示眼镜，无摄像头、无扬声器，单片绿色 Micro LED 浮动显示屏（640×200）；支持处方镜片；G2 增加 HAO™ 显示技术升级
+- **形态**：日常佩戴型 AI 显示眼镜，无摄像头、无扬声器；G1 为双目绿色 microLED + 光波导（640×200）；支持处方镜片；G2 增加 HAO™ 显示技术升级
 - **定价**：$599（G1，约 ¥4,300）
 - **目标市场**：全球商务/日常佩戴人群，强调隐私（无摄像头）和"看起来像普通眼镜"
 - **AI 能力**：自研 Even LLM（长期记忆 + 主动式 AI 提示）+ ChatGPT / Perplexity 联网检索；支持多轮对话、实时翻译（22+ 语言）、日程提醒、语音唤醒（"Hey Even"）
@@ -19,7 +19,7 @@
 - **配件生态**：Even R1 智能指环（隐蔽控制、滚动导航）
 - **创始团队**：CEO 王骁逸（前 Apple Watch / Anker / OPPO / 坚果投影）、CTO 欧阳剑（前多代 iPhone 主摄设计）、首席设计师胡丹（前飞利浦 / Shokz 前五代产品设计）；另聘 LINDBERG 前 CMO 及 MYKITA / ic! berlin 联合创始人
 
-> 来源：[Even Realities 官网](https://www.evenrealities.com/zh-Hans-HK/ai-glasses) · [逸文科技为何受资本争抢](https://jishuzhan.baijing.cn/article/2610) · [FINDIT 百镜大战](https://findit.org.tw/tw/Res/2459)
+> 来源：[Even Realities 官网](https://www.evenrealities.com/zh-Hans-HK/ai-glasses) · [MicroLED-Info · G1 双目 JBD microLED](https://www.microled-info.com/even-realities-launch-new-ar-smart-glasses-powered-jbd-monochrome-microled) · [逸文科技为何受资本争抢](https://jishuzhan.baijing.cn/article/2610) · [FINDIT 百镜大战](https://findit.org.tw/tw/Res/2459)
 
 ---
 
@@ -67,7 +67,7 @@
 
 ### Rokid AI Glasses Style
 
-- **官网**：<https://rokid.com/>（以官网/Amazon 当前 listing 为准）
+- **官网**：<https://global.rokid.com/>（以官网/Amazon 当前 listing 为准）
 - **形态**：**无显示** AI 音频/摄像眼镜；公开规格约 38.5g、约 12 小时续航、12MP 相机
 - **定价（2026 公开）**：上市促销约 **$299**，MSRP 报道约 **$349**
 - **目标市场**：希望多模型可选、非 Meta 生态绑定的日常佩戴用户
