@@ -7,7 +7,7 @@
 
 ### 萌小译 PettiChat（杭州萌小译）
 
-- **上市状态**：预售（2026-05-24 启动预售，是否已开售待核实；[新浪财经](https://finance.sina.com.cn/tech/discovery/2026-05-17/doc-inhyerim1837213.shtml)）
+- **上市状态**：预售（2026-05-24 启动预售，是否已开售待核实；[新浪财经](https://finance.sina.com.cn/tech/discovery/2026-05-17/doc-inhyerim1837213.shtml)，查证日期待核实）
 - **官网/渠道**：2026 年 5 月发布（公开报道）（**待补链接**）
 - **形态**：宠物项圈穿戴设备，约 27 克；多模态采集声音 / 姿态 / 运动轨迹 / 面部微表情
 - **定价**：
@@ -69,7 +69,7 @@
 
 ### Moxie（Embodied）〔已停售·已断服〕
 
-- **上市状态**：已关闭服务（2024-12 Embodied 宣布倒闭，核心功能依赖云端，服务停止后设备无法正常使用；[Ars Technica 2024-12-20](https://arstechnica.com/gadgets/2024/12/800-kids-robot-due-for-bricking-sees-potential-open-source-second-life/)）
+- **上市状态**：已关闭服务（2024-12 Embodied 宣布倒闭，核心功能依赖云端，服务停止后设备无法正常使用；[Ars Technica 2024-12-20](https://arstechnica.com/gadgets/2024/12/800-kids-robot-due-for-bricking-sees-potential-open-source-second-life/)，查证日期待核实）
 - **官网/渠道**：产品已停售；见来源行报道
 - **形态**：儿童社交情绪陪伴机器人（约 5–10 岁定位）
 - **定价**：

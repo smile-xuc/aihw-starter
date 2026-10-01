@@ -138,7 +138,7 @@
 
 ### Limitless Pendant（Limitless → Meta）〔已停售〕
 
-- **上市状态**：停售新客（2025-12 Meta 收购后停售新客，存量免费 Unlimited；[TechCrunch](https://techcrunch.com/2025/12/05/meta-acquires-ai-device-startup-limitless/)）
+- **上市状态**：停售新客（2025-12 Meta 收购后停售新客，存量免费 Unlimited；[TechCrunch](https://techcrunch.com/2025/12/05/meta-acquires-ai-device-startup-limitless/)，查证日期待核实）
 - **官网/渠道**：<https://www.limitless.ai/>
 - **形态**：记忆挂件（常开麦）
 - **定价**：

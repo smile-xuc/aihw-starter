@@ -7,7 +7,7 @@
 
 ### Even Realities G1 / G2（逸文科技）
 
-- **上市状态**：在售（原卡写一代现官网已售罄，另一代有现价；查证 2026-09-30）
+- **上市状态**：在售（官网，查证 2026-09-30）
 
 - **官网/渠道**：<https://www.evenrealities.com>；全球 40+ 国家销售，300+ 欧洲光学门店
 - **形态**：日常佩戴型 AI 显示眼镜，无摄像头、无扬声器；G1 为双目绿色 microLED + 光波导（640×200）；支持处方镜片；G2 增加 HAO™ 显示技术升级
@@ -30,7 +30,7 @@
 
 ### Halliday G2（Halliday）
 
-- **上市状态**：在售（订购页有标价；查证 2026-09-29）
+- **上市状态**：在售（官网，查证 2026-09-29）
 
 - **官网/渠道**：<https://www.hallidayglobal.com/> · 订购页 <https://www.hallidayglobal.com/purchase> · 设计页 <https://www.hallidayglobal.com/design>
 - **形态**：无摄像头的双目光波导显示眼镜。官网规格表（首页与订购页一致，查证 2026-09-29）：双 MicroLED 光机，显示颜色绿色，单眼 600×300，视场角 25.2°，峰值亮度最高 1,600 nits，镜片透光率 98%；整机 49g；开放式扬声器；四麦阵列（设计页写 2 米拾音，并可识别佩戴者人声）；电池 210 mAh，常规使用 12 小时，磁吸充电；IP54。处方范围规格表为 SPH -9.00 D 至 +2.00 D、CYL -3.00 D 至 3.00 D。设计页文案写「from -9.00 to +3.00 SPH」，与规格表的正球镜上限不一致，卡片以规格表为准
@@ -51,7 +51,7 @@
 
 ### Ray-Ban Meta Gen 2（Meta）
 
-- **上市状态**：在售（原卡按美区公开价收录，查证日期待核实）
+- **上市状态**：在售（官网，查证日期待核实）
 
 - **官网/渠道**：<https://www.meta.com/ai-glasses/> · 博客 <https://www.meta.com/blog/ray-ban-meta-gen-2-now-available-ai-glasses-extended-battery-life-3k-video/>
 - **形态**：雷朋经典镜框 + 开放式扬声器 + 12MP 超广角相机；Gen 2 宣称最长约 8 小时续航、3K 视频
@@ -72,7 +72,7 @@
 
 ### Oakley Meta HSTN（Meta × Oakley）
 
-- **上市状态**：在售（开售日期见定价；查证日期待核实）
+- **上市状态**：在售（官网，查证日期待核实）
 
 - **官网/渠道**：<https://www.oakley.com/en-us/l/oakley-meta> · Meta 运动场景页 <https://www.meta.com/ai-glasses/sports/> · 博客 <https://www.meta.com/blog/oakley-meta-ai-glasses-sports-wearables-hstn/>
 - **形态**：无显示的相机 + 开放式音频眼镜，采用 Oakley HSTN 运动镜框；IPX4（汗水与溅水）。六款镜框/镜片组合均支持处方，含 PRIZM、Transitions 与透明镜片；Oakley 产品页标出的验配范围约为 -6.00 至 +4.00（以结账页为准）。官方称典型使用最长约 8 小时、待机最长约 19 小时，约 20 分钟可充至 50%；随附充电盒最长约可再提供 48 小时。视频官方称 Ultra HD（3K），高于 1080p
@@ -101,7 +101,7 @@
   - 首发价：**US$299**（2026-01-19 全球开售）
   - 现价：**US$299**
   - MSRP：待核实
-  - 划线价：官网划线价（Regular）**US$399**。查证 2026-09-30
+  - 划线价：官网划线价 **US$399**。查证 2026-09-30
 - **目标市场**：希望多模型可选、非 Meta 生态绑定的日常佩戴用户
 - **AI 能力**：公开材料称可选 ChatGPT / Gemini / Qwen / DeepSeek 等；翻译与语音助手
 - **大模型方案**：待核实

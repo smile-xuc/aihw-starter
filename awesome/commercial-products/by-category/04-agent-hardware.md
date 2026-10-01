@@ -28,7 +28,7 @@
 
 ### Humane AI Pin（Humane → HP 资产收购）〔已停售·已断服〕
 
-- **上市状态**：已关闭服务（2025-02 停售，资产售予 HP，云服务关闭；[The Verge](https://www.theverge.com/news/614883/humane-ai-hp-acquisition-pin-shutdown)）
+- **上市状态**：已关闭服务（2025-02 停售，资产售予 HP，云服务关闭；[The Verge](https://www.theverge.com/news/614883/humane-ai-hp-acquisition-pin-shutdown)，查证日期待核实）
 - **官网/渠道**：产品已停售；见 The Verge / TechCrunch 报道
 - **形态**：胸针可穿戴，投影 + 语音
 - **定价**：

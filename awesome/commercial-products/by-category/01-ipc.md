@@ -99,7 +99,6 @@
   - 首发价：待核实
   - 现价：$119.98 USD · 美国 · [官方商店](https://www.wyze.com/products/wyze-duo-cam-doorbell) · 查证 2026-09-30。加电池款 $138.98 USD（同页划线 $142.97 USD）
   - MSRP：待核实
-  - 划线价：同现价（同页划线价与 Deal 均为 $119.98 USD）
   - 订阅：Cam Unlimited Pro $19.99 USD/月或 $199.99 USD/年，覆盖全部摄像头；含最多 60 天云录像、Descriptive Alerts、AI Video Search · [订阅页](https://www.wyze.com/products/cam-unlimited-pro) · 查证 2026-09-30
 - **目标市场**：家用门铃与包裹看护
 - **AI 能力**：商品页写实时 AI 检测与告警。订阅页 Descriptive Alerts 举例原文 "Black bear in trash bin detected at 9:12 PM."；AI Video Search 可按相关度或日期排序。订阅页写 Cam Unlimited Pro 兼容除 Wyze Cam v1、Wyze Video Doorbell v1、Wyze Cam Outdoor v1/v2 以外的 Wyze Cams
