@@ -7,9 +7,10 @@
 
 ### 新增
 
-- `solutions/demo-standard/`：百炼参考 demo 统一标准 v0.1（目录按「品类 × 栈」、统一 `.env.example`、一条启动命令、README「三步跑通」、无 Key 自动 mock、`solution.yaml` 最小清单与 schema、`VERIFY.md` 验证记录格式）、百炼模板、`check.py` 自检、离线语音样本合成工具
-- `03-toys-companion/demo/bailian/`：毛绒玩具实时语音试点（`qwen3.8-omni-flash-realtime`，按键说话 + 看图 + Function Calling 控制动作灯光），待真 Key 验证
-- `07-recorder/demo/bailian/`：录音卡纪要试点（`qwen-audio-3.1-asr-flash` 转写 + 说话人分离 → `qwen3.7-flash` 纪要；长录音自动经百炼临时存储走 `qwen-audio-3.1-asr-flash-filetrans` 异步转写），待真 Key 验证
+- `solutions/demo-standard/`：百炼参考 demo 统一标准 v0.2（目录按「品类 × 栈」、统一 `.env.example`、一条启动命令、README「三步跑通」、无 Key 自动 mock、`solution.yaml` 最小清单与 schema、`VERIFY.md` 验证记录格式）、百炼模板、`check.py` 自检、离线语音样本合成工具
+  - v0.2：填了 `DASHSCOPE_WORKSPACE_ID` 时，全部 HTTP / WebSocket（含流式 ASR、TTS）都走业务空间专属域名；文本模型分默认档 `qwen3.7-flash` / 质量档 `qwen3.8-flash`；成本可写区间，`VERIFY.md` 增加「待实测」；`check.py` 拦下 10-10 下线模型、快照名和写死的域名
+- `03-toys-companion/demo/bailian/`：毛绒玩具实时语音试点（`qwen3.8-omni-flash-realtime`，按键说话 + 看图 + Function Calling 控制动作灯光；示意用量按官方音频输入 7、输出 12.5 Token / 秒折算），待真 Key 验证
+- `07-recorder/demo/bailian/`：录音卡纪要试点（`qwen-audio-3.1-asr-flash` 转写 + 说话人分离 → `qwen3.7-flash` 纪要，`--quality` 用 `qwen3.8-flash`；长录音一律经百炼临时存储走 `qwen-audio-3.1-asr-flash-filetrans` 异步转写，同步结果疑似截断时提示），待真 Key 验证
 - `.github/workflows/demo-smoke.yml`：全部 demo 在无 Key 的 mock / 离线模式下冒烟 + 密钥扫描 + 清单校验（Python 3.9 / 3.12）
 - `awesome/open-source/by-category/`：从 HTML 大盘挑真实仓库填充分册卡片（去空壳占位；01–09 + `_others`）
 - `.github/PULL_REQUEST_TEMPLATE.md`：对齐 CONTRIBUTING §七字段
@@ -19,6 +20,7 @@
 
 - 旧 demo `01 physical-sense`、`02 kit-chat`、`02 omni-realtime`、`03 voice-clone`：补 `--mock`（无 Key 时自动进入），live 依赖改为按需导入；`physical-sense` 不再打印 Key 片段
 - 旧 demo `02 kit-chat`：视觉模型 `qwen-vl-plus`（2026-10-10 下线）换成 `qwen3.7-flash` 并关闭思考；播报从没有系统音色的 `cosyvoice-v3.5-flash` 换成 `cosyvoice-v3-flash`；`06 livetranslate-ws` 改用主线模型名
+- 旧 demo `02 kit-chat`、`02 omni-realtime`、`03 voice-clone`、`06 livetranslate-ws`：DashScope SDK 依赖升到 `dashscope>=1.26.5`
 - `awesome/open-source/README.md`：写清 HTML 大盘 vs MD 品类入口双轨与主品类映射
 - 根 `README.md`：Discussions 未开启时入口改为 Issue，消除空转承诺
 - 第 3 批：内容模板规范 v1 写入 `CONTRIBUTING.md`（商业产品卡、04-cases 条目、开源卡、内容格式通则）。公开标价保留，并区分首发价 / 现价 / MSRP；品类内其他模型改写入现有 `02-solution.md` 的小节
