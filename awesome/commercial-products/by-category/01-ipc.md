@@ -8,14 +8,14 @@
 
 ### 萤石 EZVIZ（海康旗下 C2C）
 
-- **上市状态**：在售（原卡按在售产品收录，查证日期待核实）
+- **上市状态**：在售（CloudPlay 页有标价，查证 2026-09-30）
 - **官网/渠道**：<https://www.ezviz.com/>；CloudPlay <https://www.ezviz.com/cloudplay>
 - **形态**：家用 Wi-Fi / 电池摄像机 + App 云回看；多数机型支持 microSD 本地录像
 - **定价**：
   - 首发价：待核实
   - 现价：待核实
   - MSRP：待核实
-  - 订阅：CloudPlay 单机示例约 $3.99 USD/月（7 天事件）/ $6.99 USD/月（30 天）；另有多机档；AI Edition（自然语言搜片 / 日更摘要）在 App 内单独标价
+  - 订阅：CloudPlay 单机 7 天 $3.99 USD/月（$39.99 USD/年）、30 天 $6.99 USD/月（$69.99 USD/年）；双机 7 天 $5.99 USD/月、30 天 $10.99 USD/月 · [CloudPlay](https://www.ezviz.com/cloudplay) · 查证 2026-09-30。AI Edition 标价待核实
 - **目标市场**：全球家用安防；国内亦有萤石云体系
 - **AI 能力**：人形/车辆等检测 + 云存；CloudPlay AI 向自然语言检索与关键事件摘要演进
 - **大模型方案**：待核实
@@ -23,20 +23,20 @@
 - **关键差异化**：① 本地卡录像可不订阅；② 云存与 AI 增值分层；③ 与海康供应链协同
 - **商业模式**：硬件销售 + 云存 / AI 订阅
 
-> 来源：[EZVIZ CloudPlay](https://www.ezviz.com/cloudplay) · [CloudPlay 订阅条款](https://www.ezviz.com/legal/cloudplay-paid-subscription-terms)
+> 来源：[EZVIZ CloudPlay](https://www.ezviz.com/cloudplay) · [CloudPlay 订阅条款](https://www.ezviz.com/legal/cloudplay-paid-subscription-terms)（查证 2026-09-30）
 
 ---
 
 ### Ring（Amazon）
 
-- **上市状态**：在售（原卡写美区公开价；查证日期未精确到日，待核实）
+- **上市状态**：在售（订阅页有标价，查证 2026-09-30）
 - **官网/渠道**：<https://ring.com/>；订阅页 <https://ring.com/plans>
 - **形态**：视频门铃 + 室内外相机 + Alarm 套装
 - **定价**：
   - 首发价：待核实
   - 现价：待核实
   - MSRP：待核实
-  - 订阅：美区公开，2026。Solo $4.99 USD/月或 $49.99 USD/年（单设备，最长约 180 天事件回看）；Multi $9.99 USD/月或 $99.99 USD/年（单地址全设备）；Pro $19.99 USD/月或 $199.99 USD/年（含智能描述 / 专业值守等）；更高档 Virtual Security Guard $99 USD/月
+  - 订阅：美区公开，查证 2026-09-30。Solo $4.99 USD/月或 $49.99 USD/年（单设备，最长约 180 天事件回看）；Multi $9.99 USD/月或 $99.99 USD/年（单地址全设备）；Pro $19.99 USD/月或 $199.99 USD/年（含智能描述 / 专业值守等）；更高档 Virtual Security Guard $99 USD/月 · [Ring Protect Plans](https://ring.com/plans)
 - **目标市场**：北美为主的家用安防
 - **AI 能力**：人/包裹/车辆告警；Pro 档含 Video Descriptions、Familiar Faces（区域受限）、Video Search 等
 - **大模型方案**：待核实
@@ -44,13 +44,13 @@
 - **关键差异化**：① 门铃场景心智强；② 订阅解锁完整录像；③ 与 Amazon / Alexa 生态绑定
 - **商业模式**：硬件 + Ring Protect 订阅（无订阅仍可部分实时查看，录像能力受限）
 
-> 来源：[Ring Protect Plans](https://ring.com/plans)
+> 来源：[Ring Protect Plans](https://ring.com/plans)（查证 2026-09-30）
 
 ---
 
 ### Google Nest Cam / Google Home Premium（Google）
 
-- **上市状态**：在售（查证日期见定价）
+- **上市状态**：在售（查证 2026-09-30）
 - **官网/渠道**：<https://store.google.com/us/product/google_home_premium>
 - **形态**：Nest 室内外相机 / 门铃，深度接入 Google Home
 - **定价**：
@@ -71,14 +71,14 @@
 
 ### eufy Security（Anker）
 
-- **上市状态**：在售（查证日期见定价）
+- **上市状态**：在售（查证 2026-09-30）
 - **官网/渠道**：<https://www.eufy.com/>
 - **形态**：家用相机 / 门铃，强调本地存储（HomeBase / 机内）
 - **定价**：
   - 首发价：待核实
   - 现价：待核实（原卡写硬件买断，未列硬件标价）
   - MSRP：待核实
-  - 订阅：可选云存储 Basic 单机 $3.99 USD/月、$39.99 USD/年（2025-04-01 起，查证 2026-09-30）；核心录像可不订阅
+  - 订阅：可选云存储 Basic 单机 $3.99 USD/月、$39.99 USD/年；2 台 $7.99 USD/月；3 台 $11.99 USD/月；Plus 不限台数 $13.99 USD/月、$139.99 USD/年（2025-04-01 起，[帮助中心](https://service.eufy.com/article-description/Introducing-Cloud-Storage?urlName=Introducing-Cloud-Storage)，查证 2026-09-30）；核心录像可不订阅
 - **目标市场**：厌恶强制云订阅的家用用户
 - **AI 能力**：端侧 / 基站侧人车宠物检测（机型差异大）
 - **大模型方案**：待核实

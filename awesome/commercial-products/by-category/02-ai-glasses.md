@@ -7,7 +7,7 @@
 
 ### Even Realities G1 / G2（逸文科技）
 
-- **上市状态**：在售（原卡写一代现官网已售罄，另一代有现价；查证日期见定价）
+- **上市状态**：在售（原卡写一代现官网已售罄，另一代有现价；查证 2026-09-30）
 
 - **官网/渠道**：<https://www.evenrealities.com>；全球 40+ 国家销售，300+ 欧洲光学门店
 - **形态**：日常佩戴型 AI 显示眼镜，无摄像头、无扬声器；G1 为双目绿色 microLED + 光波导（640×200）；支持处方镜片；G2 增加 HAO™ 显示技术升级
@@ -24,13 +24,13 @@
 - **配件生态**：Even R1 智能指环（隐蔽控制、滚动导航）
 - **创始团队**：CEO 王骁逸（前 Apple Watch / Anker / OPPO / 坚果投影）、CTO 欧阳剑（前多代 iPhone 主摄设计）、首席设计师胡丹（前飞利浦 / Shokz 前五代产品设计）；另聘 LINDBERG 前 CMO 及 MYKITA / ic! berlin 联合创始人
 
-> 来源：[Even Realities 官网](https://www.evenrealities.com/zh-Hans-HK/ai-glasses) · [官网 Store](https://www.evenrealities.com/store)（查证 2026-09-30）· [PR Newswire · G1 2024-06](https://www.prnewswire.com/news-releases/even-realities-unveils-g1-digital-glasses-seamlessly-blending-beautiful-aesthetics-with-everyday-functionality-302182962.html) · [MicroLED-Info · G1 双目 JBD microLED](https://www.microled-info.com/even-realities-launch-new-ar-smart-glasses-powered-jbd-monochrome-microled) · [逸文科技为何受资本争抢](https://jishuzhan.baijing.cn/article/2610) · [FINDIT 百镜大战](https://findit.org.tw/tw/Res/2459)
+> 来源：[Even Realities 官网](https://www.evenrealities.com/zh-Hans-HK/ai-glasses) · [官网 Store](https://www.evenrealities.com/store)（查证 2026-09-30）· [PR Newswire · G1 2024-06](https://www.prnewswire.com/news-releases/even-realities-unveils-g1-digital-glasses-seamlessly-blending-beautiful-aesthetics-with-everyday-functionality-302182962.html) · [MicroLED-Info · G1 双目 JBD microLED](https://www.microled-info.com/even-realities-launch-new-ar-smart-glasses-powered-jbd-monochrome-microled) · [逸文科技为何受资本争抢](https://jishuzhan.baijing.cn/article/2610) · [FINDIT 百镜大战](https://findit.sme.gov.tw/tw/Res/2459)（查证 2026-09-30）
 
 ---
 
 ### Halliday G2（Halliday）
 
-- **上市状态**：在售（订购页有标价；查证日期见定价）
+- **上市状态**：在售（订购页有标价；查证 2026-09-29）
 
 - **官网/渠道**：<https://www.hallidayglobal.com/> · 订购页 <https://www.hallidayglobal.com/purchase> · 设计页 <https://www.hallidayglobal.com/design>
 - **形态**：无摄像头的双目光波导显示眼镜。官网规格表（首页与订购页一致，查证 2026-09-29）：双 MicroLED 光机，显示颜色绿色，单眼 600×300，视场角 25.2°，峰值亮度最高 1,600 nits，镜片透光率 98%；整机 49g；开放式扬声器；四麦阵列（设计页写 2 米拾音，并可识别佩戴者人声）；电池 210 mAh，常规使用 12 小时，磁吸充电；IP54。处方范围规格表为 SPH -9.00 D 至 +2.00 D、CYL -3.00 D 至 3.00 D。设计页文案写「from -9.00 to +3.00 SPH」，与规格表的正球镜上限不一致，卡片以规格表为准
@@ -93,7 +93,7 @@
 
 ### Rokid AI Glasses Style（Rokid）
 
-- **上市状态**：在售（查证日期见定价）
+- **上市状态**：在售（查证 2026-09-30）
 
 - **官网/渠道**：<https://global.rokid.com/>（以官网/Amazon 当前 listing 为准）
 - **形态**：**无显示** AI 音频/摄像眼镜；公开规格约 38.5g、约 12 小时续航、12MP 相机
@@ -115,7 +115,7 @@
 
 ### RayNeo iO / GT 系列（雷鸟）
 
-- **上市状态**：在售（查证日期见定价）
+- **上市状态**：在售（查证 2026-09-30）
 
 - **官网/渠道**：<https://www.rayneo.com/>
 - **形态**：iO = AI 助手眼镜；GT / GT Max = 显示向 AR 眼镜；另有 Pocket TV 等配件
@@ -124,12 +124,13 @@
   - 现价：iO **US$449**（套装 **US$499**）/ GT Max **US$429** / GT **US$299**。查证 2026-09-30
   - MSRP：iO **US$499**（套装 **US$549**）/ GT Max **US$429** / GT **US$329**
   - 促销价：2026-09-04 开售首发优惠 −US$30。官方稿的 −US$30 与官网 iO 现价（较 MSRP 低 US$50）不一致，现价以官网为准
+  - 订阅：iO VIP $9.99 USD/月 · [官网博客](https://www.rayneo.com/blogs/news/latest-smart-glasses-2026-rayneo-io-gt) · 查证 2026-09-30。博客写该订阅解锁 Claude、GPT、DeepSeek、Kimi、Qwen；RayNeo AI 与 Gemini 3.1 Flash Lite 不另收费
 - **目标市场**：全球消费级 AI/AR 眼镜
 - **AI 能力**：iO 侧重语音助手与日常信息；GT 系列侧重虚屏影音办公
 - **大模型方案**：待核实
 - **公开数据**：待核实
 - **关键差异化**：① AI 镜与显示镜分产品线；② 自现价 US$299 的 GT 切入显示档；③ 处方与 HSA/FSA 等区域政策（以当地为准）
-- **商业模式**：硬件销售
+- **商业模式**：硬件销售；iO 另有 VIP 订阅（见定价）
 
 > 来源：[PR Newswire · IFA 2026](https://www.prnewswire.com/news-releases/rayneo-showcases-next-generation-cinematic-ar-and-ai-smart-glasses-at-ifa-2026-with-dolby-and-bang--olufsen-302870052.html) · [RayNeo 官网博客](https://www.rayneo.com/blogs/news/latest-smart-glasses-2026-rayneo-io-gt) · [iO](https://www.rayneo.com/products/rayneo-io-ai-glasses) · [GT Max](https://www.rayneo.com/products/rayneo-gt-max-ar-glasses) · [GT](https://www.rayneo.com/products/rayneo-gt-ar-glasses)（查证 2026-09-30）
 

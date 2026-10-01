@@ -32,7 +32,7 @@
 |---|---|---|---|---|---|
 | **Plaud Note** | Plaud | 超薄卡片录音 | 多模型摘要（官网列 GPT / Gemini / Claude 等） | 双模式录音 + 转写 + 模板摘要 | [$159](https://www.plaud.ai/products/plaud-note-ai-voice-recorder)（含 300 min/mo） |
 | **Plaud Note Pro** | Plaud | 卡片旗舰 | 同上 + 更强硬件规格（以官网为准） | 同生态，更高硬件档 | 首发价 US$179（2025-08）→ 现价 [US$189](https://www.plaud.ai/products/plaud-note-pro)（查证 2026-09-30） |
-| **Notta Memo** | Notta | 口袋卡片 + 磁吸 | Notta App AI 转写 / 摘要 / 翻译 | 4 MEMS + 骨传导，58 语种 | [$149](https://shop.notta.ai/en-us/products/notta-memo) |
+| **Notta Memo** | Notta | 口袋卡片 + 磁吸 | Notta App AI 转写 / 摘要 / 翻译 | 4 MEMS + 骨传导，58 语种 | 套装 [$152.39](https://shop.notta.ai/en-us/products/notta-memo)（查证 2026-09-30） |
 | **讯飞 SR502 星火版** | 科大讯飞 | 带屏录音笔 | 讯飞星火 / 听见转写 | 离线转写、OCR、会议向 | [¥2499 官网标价](https://www.iflytekrecord.com/Goods_parms/1/511.html) |
 | **HiDock H1 Lite** | HiDock | USB-C 桌面扬声器电话 | HiNotes；产品页列 GPT-5.4 / Claude 4.6 / Gemini 3.1 Pro | BlueCatch 双端录音，无会议 bot；Call / Room | [官网 $189](https://www.hidock.com/products/hidock-h1-lite)；[Amazon $189.99](https://www.amazon.com/HiDock-Conference-Speakerphone-Noise-Canceling-Transcription/dp/B0GZ3GZ3DT) |
 | **Limitless Pendant** | Limitless（Meta 收购后公开停售） | 挂件可穿戴 | 云端转写 + 日记式检索 | 持续录音、隐私声明 | 历史公开约 $99；[官网说明停售](https://www.limitless.ai/) |
@@ -71,7 +71,7 @@
 
 ### 案例：Notta Memo（Notta）— 同形态竞争者
 
-- **公开信息源**：[Notta Memo](https://www.notta.ai/en/hardware/memo) · [商店 $149](https://shop.notta.ai/en-us/products/notta-memo)
+- **公开信息源**：[Notta Memo](https://www.notta.ai/en/hardware/memo) · [商店套装 $152.39](https://shop.notta.ai/en-us/products/notta-memo)（查证 2026-09-30）
 - **亮点**：4 MEMS + 骨传导、通话/现场双模式、App 侧转写摘要翻译
 - **可借鉴点**：麦阵列与通话模式是卡片机硬件差异化；软件侧仍靠转写分钟订阅
 - **另见**：[Notta 商业产品卡][rec]

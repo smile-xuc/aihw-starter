@@ -33,7 +33,7 @@
 | **Rabbit R1** | rabbit inc. | 口袋助手 | rabbitOS / LAM + 第三方 Agent | 语音 + 触屏 + 推送说话 | **$199 / 无订阅** | 在售（官网） |
 | **Humane AI Pin** | Humane | 胸针可穿戴 | CosmOS + 云端 AI | 投影 + 语音 | 首发价 US$699（2024-04）→ 2024-10 降至 US$499（Eclipse）+ US$24/月 | **2025-02 停售** |
 | **Limitless Pendant** | Limitless（Meta 收购） | 记忆挂件 | 云端转录 / 记忆 | 常开麦 | 硬件加订阅，另见 [Limitless 主卡][pendant] | **2025-12 停售新客** |
-| **铠盒 AIBOX-A1** | 铠盒智能 | 桌面 Agent 盒 | 本地轻量 + 云端千问等 | 常开盒子 / OpenClaw | 约 **¥999** | 公开在售页 |
+| **铠盒 AIBOX-A1** | 铠盒智能 | 桌面 Agent 盒 | 本地轻量 + 云端千问等 | 常开盒子 / OpenClaw | **¥1,199 CNY** · [产品页](https://agentaibox.com/products/a1) · 查证 2026-09-30 | 公开在售页 |
 
 ### 形态路线图
 
@@ -50,14 +50,14 @@
 
 ### 案例：Rabbit R1（rabbit inc.）— 无订阅口袋助手
 
-- **公开信息源**：[rabbit.tech](https://www.rabbit.tech/)；第三方评测（2026）仍报 $199 / no subscription
+- **公开信息源**：[Rabbit R1](https://www.rabbit.tech/rabbit-r1) · [2024 Q1 更新](https://www.rabbit.tech/newsroom/quarterly-update-2024-q1)（查证 2026-09-30）。产品页写 $199、no subscription。Q1 更新写售出超过 10 万台
 - **亮点**：Teenage Engineering 工业设计；语音入口；后续加入第三方 Agent / DLAM 等能力
 - **可借鉴点**：「硬件买断 + 无聊天月费」是本品类少数仍在公开售卖的清晰叙事；进阶能力可 BYOK
 - **另见**：[Rabbit 商业产品卡][hw]
 
 ### 案例：Humane AI Pin（Humane）— 强制订阅失败样本〔已停售〕
 
-- **公开信息源**：[Reuters](https://www.reuters.com/markets/deals/ai-startup-humane-wind-down-wearable-pin-business-sell-assets-hp-2025-02-19/)、[The Verge](https://www.theverge.com/news/614883/humane-ai-hp-acquisition-pin-shutdown)、[TechCrunch](https://techcrunch.com/2025/02/18/humanes-ai-pin-is-dead-as-hp-buys-startups-assets-for-116m/)
+- **公开信息源**：[The Verge](https://www.theverge.com/news/614883/humane-ai-hp-acquisition-pin-shutdown)、[TechCrunch](https://techcrunch.com/2025/02/18/humanes-ai-pin-is-dead-as-hp-buys-startups-assets-for-116m/)
 - **亮点**：2025-02 停售；资产约 $116M 售予 HP；设备云服务关闭后核心 AI 能力不可用
 - **可借鉴点**：高客单 + 强制月费 + 云依赖，断服即变砖；做 Agent 硬件必须设计离线降级与退出策略
 - **另见**：[Humane 商业产品卡][hw]
@@ -71,8 +71,8 @@
 
 ### 案例：铠盒 AIBOX-A1（铠盒智能）— 国内桌面盒公开 SKU
 
-- **公开信息源**：[agentaibox.com/products/a1](https://agentaibox.com/products/a1)
-- **亮点**：RK3576、约 6 TOPS、4GB/64GB、宣传零售 ¥999；本地轻量模型 + 云端大模型；常开低功耗
+- **公开信息源**：[产品页](https://agentaibox.com/products/a1)（查证 2026-09-30）
+- **亮点**：RK3576、约 6 TOPS、4GB/64GB、零售 ¥1,199 CNY（[产品页](https://agentaibox.com/products/a1)，查证 2026-09-30）；本地轻量模型 + 云端大模型；常开低功耗
 - **可借鉴点**：桌面中枢叙事（7×24、隐私、开箱即用）比「替代手机」更容易落地
 - **另见**：[铠盒商业产品卡][hw]
 

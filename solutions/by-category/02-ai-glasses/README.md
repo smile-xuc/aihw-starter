@@ -24,7 +24,7 @@
 | **📷 拍照眼镜** | + 摄像头，无显示 | 1500–2500 元 | 雷鸟 V4、小米 AI 眼镜、Ray-Ban Meta |
 | **🟢 AI 显示眼镜** | + 单绿光波导显示（单眼增加约 500 元成本） | 2500–4000 元 | Rokid Glasses、千问 AI 眼镜 S1 |
 
-三档的 AI 能力栈相同（语音 + 视觉 + 翻译），差异在输出通道：音频眼镜靠「说」，显示眼镜多一条「看」的通道（字幕、导航、提词）。显示方案分两档：**单绿光波导**是当前的主流选择，在成本、功耗、重量间平衡（Rokid Glasses 49g）；**全彩显示**是更高端的路线，Meta Ray-Ban Display 采用单眼全彩 LCoS 光机 + 几何反射光波导，定价约 799 美元。
+三档的 AI 能力栈相同（语音 + 视觉 + 翻译），差异在输出通道：音频眼镜靠「说」，显示眼镜多一条「看」的通道（字幕、导航、提词）。显示方案分两档：**单绿光波导**是当前的主流选择，在成本、功耗、重量间平衡（Rokid Glasses 49g）；**全彩显示**是更高端的路线。Meta 新闻稿称 Meta Ray-Ban Display 为单眼全彩高分辨率 in-lens 显示（原文 "full-color, high-resolution display"），起价 $799 USD，含 Meta Neural Band（[新闻稿](https://about.fb.com/news/2025/09/meta-ray-ban-display-ai-glasses-emg-wristband/)）。新闻稿没有写 LCoS 或几何反射光波导。
 
 ## 二、Wow Feature 清单（2026 版）
 

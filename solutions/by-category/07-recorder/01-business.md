@@ -57,7 +57,7 @@
 | Plaud Note Pro | 首发价 US$179（2025-08）→ 现价 US$189（查证 2026-09-30） | [Plaud Note Pro](https://www.plaud.ai/products/plaud-note-pro) · [TechCrunch 2025-08-27](https://techcrunch.com/2025/08/27/plaud-launches-a-new-ai-hardware-notetaker-the-179-note-pro/) |
 | Plaud Pro Plan（年付折月） | ~$8.33/mo（$99.99/yr），1200 min/mo | [Plaud AI Plan Pricing](https://www.plaud.ai/pages/plaud-ai-plan-pricing) |
 | Plaud Unlimited（年付折月） | ~$19.99/mo（$239.99/yr），至 24h/天 | 同上 |
-| Notta Memo | $149 USD，含 Starter 300 min/mo（公开表述） | [Notta Memo](https://www.notta.ai/en/hardware/memo) / [商店](https://shop.notta.ai/en-us/products/notta-memo) |
+| Notta Memo | 套装 $152.39 USD，产品页含 Starter 300 min（查证 2026-09-30） | [Notta Memo](https://www.notta.ai/en/hardware/memo) / [商店](https://shop.notta.ai/en-us/products/notta-memo) |
 | 讯飞 SR502 星火版 | 官网标价 ¥2499（促销常见浮动） | [讯飞录音笔官网参数页](https://www.iflytekrecord.com/Goods_parms/1/511.html) |
 
 ### 1.3 下一阶段：跨会议检索与工作流，才是留存

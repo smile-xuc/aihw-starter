@@ -8,28 +8,28 @@
 
 ### Rabbit R1（rabbit inc.）
 
-- **上市状态**：在售（仍在官网售卖，年份见公开数据与来源行；查证日期未精确到日，待核实）
-- **官网/渠道**：<https://www.rabbit.tech/>
+- **上市状态**：在售（产品页有标价，查证 2026-09-30）
+- **官网/渠道**：<https://www.rabbit.tech/rabbit-r1>
 - **形态**：口袋 AI 助手（2.88″ 屏 + 推送说话 + 滚轮），非手机替代叙事
 - **定价**：
   - 首发价：待核实
-  - 现价：$199 USD；官网公开 no subscription
+  - 现价：$199 USD · 页面写 no subscription、powered by rabbit OS3 · [产品页](https://www.rabbit.tech/rabbit-r1) · 查证 2026-09-30
   - MSRP：待核实
 - **目标市场**：全球早期采用者 / Agent 爱好者
-- **AI 能力**：rabbitOS；语音助手；第三方 Agent（Hermes / Claude Code / OpenClaw 等，需用户自建）；DLAM 控电脑（公开报道存在 BYOK）
+- **AI 能力**：rabbitOS；语音助手；第三方 Agent（Hermes / Claude Code / OpenClaw 等，需自建）；DLAM 控电脑（公开报道存在 BYOK）
 - **大模型方案**：自研栈 + 可接第三方；国内大模型方案未作为默认卖点披露
-- **公开数据**：2024 众筹/预售阶段曾披露约 10 万+ 量级订单口径（以当时公开报道为准）；2026 仍在官网售卖
+- **公开数据**：官方 2024 Q1 更新写售出超过 10 万台 · [Q1 更新](https://www.rabbit.tech/newsroom/quarterly-update-2024-q1) · 查证 2026-09-30
 - **关键差异化**：① 无强制聊天月费；② 工业设计辨识度高；③ 向 Agent 平台持续 OTA
 - **商业模式**：硬件买断（进阶能力可 BYOK）
 
-> 来源：[rabbit.tech](https://www.rabbit.tech/) · 公开评测汇总（2026）
+> 来源：[Rabbit R1](https://www.rabbit.tech/rabbit-r1) · [2024 Q1 更新](https://www.rabbit.tech/newsroom/quarterly-update-2024-q1)（查证 2026-09-30）
 
 ---
 
 ### Humane AI Pin（Humane → HP 资产收购）〔已停售·已断服〕
 
 - **上市状态**：已关闭服务（2025-02 停售，资产售予 HP，云服务关闭；[The Verge](https://www.theverge.com/news/614883/humane-ai-hp-acquisition-pin-shutdown)）
-- **官网/渠道**：产品已停售；见 Reuters / The Verge / TechCrunch 报道
+- **官网/渠道**：产品已停售；见 The Verge / TechCrunch 报道
 - **形态**：胸针可穿戴，投影 + 语音
 - **定价**：
   - 首发价：$699 USD（2024-04）
@@ -44,18 +44,18 @@
 - **关键差异化（教训）**：① 强制订阅；② 强云依赖；③ 断服即变砖
 - **商业模式**：硬件 + 订阅（已失败退出）
 
-> 来源：[The Verge 2024-10-23 降价](https://www.theverge.com/2024/10/23/24277964/humane-slashes-ai-pin-price-weak-sales) · [TechCrunch 2024-10-23](https://techcrunch.com/2024/10/23/beleaguered-startup-humane-drops-ai-pin-price-by-200/) · [Reuters](https://www.reuters.com/markets/deals/ai-startup-humane-wind-down-wearable-pin-business-sell-assets-hp-2025-02-19/) · [The Verge 停售](https://www.theverge.com/news/614883/humane-ai-hp-acquisition-pin-shutdown)（查证 2026-09-30）
+> 来源：[The Verge 2024-10-23 降价](https://www.theverge.com/2024/10/23/24277964/humane-slashes-ai-pin-price-weak-sales) · [TechCrunch 2024-10-23](https://techcrunch.com/2024/10/23/beleaguered-startup-humane-drops-ai-pin-price-by-200/) · [The Verge 停售](https://www.theverge.com/news/614883/humane-ai-hp-acquisition-pin-shutdown)（查证 2026-09-30）
 
 ---
 
 ### 铠盒 AIBOX-A1（铠盒智能）
 
-- **上市状态**：在售（产品页公开价，查证日期待核实）
+- **上市状态**：在售（产品页标价 ¥1,199 CNY，查证 2026-09-30）
 - **官网/渠道**：<https://agentaibox.com/products/a1>
 - **形态**：桌面常开 Agent 盒（RK3576，约 6 TOPS，4GB/64GB）
 - **定价**：
   - 首发价：待核实
-  - 现价：约 ¥999 CNY（产品页公开；口径未区分首发价 / MSRP）
+  - 现价：¥1,199 CNY · [产品页](https://agentaibox.com/products/a1) · 查证 2026-09-30
   - MSRP：待核实
 - **目标市场**：家庭中枢 / 个人助理 / 本地 Agent
 - **AI 能力**：本地轻量模型 + 云端通义千问等；宣传预装 OpenClaw
@@ -64,7 +64,7 @@
 - **关键差异化**：① 低功耗常开；② 开箱即用叙事；③ 隐私本地优先
 - **商业模式**：硬件买断（本地模型零 Token 叙事）
 
-> 来源：[agentaibox.com/products/a1](https://agentaibox.com/products/a1)
+> 来源：[agentaibox.com/products/a1](https://agentaibox.com/products/a1)（查证 2026-09-30）
 
 ---
 

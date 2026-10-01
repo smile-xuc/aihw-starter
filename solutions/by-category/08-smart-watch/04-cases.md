@@ -27,15 +27,15 @@
 
 | 产品 | 形态 | AI / 解读（公开） | 参考价 | 订阅（公开） |
 |---|---|---|---|---|
-| **Oura Ring 5** | 指环 | Oura Advisor 等会员洞察 | 约 $399 起 | $5.99/月或 $69.99/年 |
+| **Oura Ring 5** | 指环 | Oura Advisor 等会员洞察 | Silver $399（查证 2026-09-30） | $5.99/月或 $69.99/年 |
 | **WHOOP 5.0 / MG** | 无屏腕带 | AI coach / 恢复与健康跨度 | 硬件含于会员 | $199–$359/年 |
-| **HUAWEI WATCH 6 Pro** | 旗舰表 | AI 健康洞察 / 小艺 | 约 ¥3499 起 | 活力人生 15 元/月等 |
-| **Apple Watch Ultra 3/4** | 旗舰运动表 | Workout Buddy / Health 洞察等 | 约 $799 起 | Fitness+ $9.99/月（生态） |
+| **HUAWEI WATCH 6 Pro** | 旗舰表 | AI 健康洞察 / 小艺 | ¥3,499 CNY 起（查证 2026-09-30） | 活力人生连续包月 ¥15 CNY、年卡 ¥208 CNY |
+| **Apple Watch Ultra 3/4** | 旗舰运动表 | Workout Buddy；Health Age 在 iPhone「健康」App | $799 起（查证 2026-09-30） | Fitness+ $9.99/月或 $79.99/年 |
 
 ## 三、关键案例速览
 
 ### 案例：Oura（Oura）
-- **公开信息源**：[ouraring.com/membership](https://ouraring.com/membership)、支持文
+- **公开信息源**：[Silver 商店](https://ouraring.com/store/rings/oura-ring-5/silver) · [会员页](https://ouraring.com/membership)（查证 2026-09-30）
 - **亮点**：待核实
 - **可借鉴点**：低价可选会员 + 硬件溢价；基础分与深度洞察分层
 - **另见**：[Oura 商业产品卡][watch]
@@ -47,7 +47,7 @@
 - **另见**：[WHOOP 商业产品卡][watch]
 
 ### 案例：华为 WATCH 6 Pro（华为）
-- **公开信息源**：[产品页](https://consumer.huawei.com/cn/wearables/watch-6-pro/)、[活力人生价格](https://consumer.huawei.com/cn/support/content/zh-cn15839131/)
+- **公开信息源**：[产品页](https://consumer.huawei.com/cn/wearables/watch-6-pro/) · [活力人生价格](https://consumer.huawei.com/cn/support/content/zh-cn15838909/)（查证 2026-09-30）
 - **亮点**：待核实
 - **可借鉴点**：硬件旗舰 + App 会员增值；新机赠会员促活
 - **另见**：[华为手表商业产品卡][watch]

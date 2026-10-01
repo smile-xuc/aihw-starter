@@ -39,7 +39,7 @@
 | 屏（若有） | 40–120 | 口袋助手常见 2.8″ 级 |
 | **合计（典型）** | **约 150–600** | 不含认证与包装 |
 
-公开锚点：铠盒 AIBOX-A1 宣传页给出 RK3576 + 4GB + 64GB、零售约 **¥999**（[agentaibox.com/products/a1](https://agentaibox.com/products/a1)）；Rabbit R1 公开零售 **$199 / 无订阅**（[rabbit.tech](https://www.rabbit.tech/)）。
+公开锚点：铠盒 AIBOX-A1 产品页给出 RK3576 + 4GB + 64GB、零售 **¥1,199 CNY**（[产品页](https://agentaibox.com/products/a1)，查证 2026-09-30）；Rabbit R1 公开零售 **$199 / 无订阅**（[rabbit.tech](https://www.rabbit.tech/)）。
 
 ---
 
