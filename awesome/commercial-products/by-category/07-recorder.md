@@ -29,7 +29,7 @@
 
 ### Plaud Note Pro（Plaud）
 
-- **上市状态**：在售（查证 2026-09-30）
+- **上市状态**：在售（官网，查证 2026-09-30）
 
 - **官网/渠道**：<https://www.plaud.ai/products/plaud-note-pro>
 - **形态**：Plaud 卡片生态旗舰硬件（同属 Note 产品线，规格以官网为准）
@@ -138,7 +138,7 @@
 
 ### Limitless Pendant（Limitless → Meta）〔已停售〕
 
-- **上市状态**：停售新客（2025-12 Meta 收购后停售新客，存量免费 Unlimited；[TechCrunch](https://techcrunch.com/2025/12/05/meta-acquires-ai-device-startup-limitless/)）
+- **上市状态**：停售新客（2025-12 Meta 收购后停售新客，存量免费 Unlimited；[TechCrunch](https://techcrunch.com/2025/12/05/meta-acquires-ai-device-startup-limitless/)，查证日期待核实）
 - **官网/渠道**：<https://www.limitless.ai/>
 - **形态**：记忆挂件（常开麦）
 - **定价**：

@@ -7,7 +7,7 @@
 
 ### 萌小译 PettiChat（杭州萌小译）
 
-- **上市状态**：预售（2026-05-24 启动预售，是否已开售待核实；[新浪财经](https://finance.sina.com.cn/tech/discovery/2026-05-17/doc-inhyerim1837213.shtml)）
+- **上市状态**：预售（2026-05-24 启动预售，是否已开售待核实；[新浪财经](https://finance.sina.com.cn/tech/discovery/2026-05-17/doc-inhyerim1837213.shtml)，查证日期待核实）
 - **官网/渠道**：2026 年 5 月发布（公开报道）（**待补链接**）
 - **形态**：宠物项圈穿戴设备，约 27 克；多模态采集声音 / 姿态 / 运动轨迹 / 面部微表情
 - **定价**：
@@ -69,7 +69,7 @@
 
 ### Moxie（Embodied）〔已停售·已断服〕
 
-- **上市状态**：已关闭服务（2024-12 Embodied 宣布倒闭，核心功能依赖云端，服务停止后设备无法正常使用；[Ars Technica 2024-12-20](https://arstechnica.com/gadgets/2024/12/800-kids-robot-due-for-bricking-sees-potential-open-source-second-life/)）
+- **上市状态**：已关闭服务（2024-12 Embodied 宣布倒闭，核心功能依赖云端，服务停止后设备无法正常使用；[Ars Technica 2024-12-20](https://arstechnica.com/gadgets/2024/12/800-kids-robot-due-for-bricking-sees-potential-open-source-second-life/)，查证日期待核实）
 - **官网/渠道**：产品已停售；见来源行报道
 - **形态**：儿童社交情绪陪伴机器人（约 5–10 岁定位）
 - **定价**：
@@ -119,8 +119,9 @@
 - **定价**：
   - 首发价：待核实
   - 现价：Miko Mini $149.00 USD · 美国 · [产品页](https://miko.ai/products/miko-mini) · 查证 2026-09-30。Miko 3 $299.00 USD · [产品页](https://miko.ai/products/miko-3) · 查证 2026-09-30
-  - MSRP：Miko Mini $199.00 USD（同页 Regular price）；Miko 3 同现价
-  - 订阅：Miko Max 现价 $89.00 USD/年（Regular price $99.00 USD），月付 $14.99 USD · [Miko Max](https://miko.ai/products/miko-max) · 查证 2026-09-30
+  - MSRP：待核实
+  - 划线价：Miko Mini $199.00 USD（同页划线价）；Miko 3 同现价
+  - 订阅：Miko Max 现价 $89.00 USD/年（划线价 $99.00 USD），月付 $14.99 USD · [Miko Max](https://miko.ai/products/miko-max) · 查证 2026-09-30
 - **目标市场**：儿童对话式学习。Google Cloud 案例写受众为 4 至 12 岁
 - **AI 能力**：FAQ 写 GPT-powered 对话式学习。Google Cloud 案例章节 "Building smarter, safer bots with Gemini" 引用负责人原话，称 Gemini 是实现安全、可靠、符合文化情境的儿童交互的关键；结果栏写加快发布周期，并写识别与减少幻觉
 - **大模型方案**：FAQ 写 GPT-powered，未写具体型号。官网未公开具体基座模型（非千问默认绑定）。Google Cloud 案例把 Gemini 写在安全相关章节，不是对话主模型的型号说明

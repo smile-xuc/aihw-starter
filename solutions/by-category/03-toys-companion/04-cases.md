@@ -127,7 +127,7 @@
 - **形态**：带屏的小型桌面儿童陪伴机器人
 - **技术路线**：FAQ 称 Miko Mini 为 "GPT-powered conversational learning robot"，未写具体型号。Google Cloud 案例把 Gemini 写在儿童交互安全一节，结果栏写加快发布周期，并写识别与减少幻觉
 - **亮点**：硬件与 Miko Max 订阅分开标价
-- **公开数据**：Miko Mini 现价 $149.00 USD（Regular price $199.00 USD）；Miko 3 $299.00 USD；Miko Max $89.00 USD/年（Regular price $99.00 USD），月付 $14.99 USD。首发价待核实（查证 2026-09-30）
+- **公开数据**：Miko Mini 现价 $149.00 USD（划线价 $199.00 USD）；Miko 3 $299.00 USD；Miko Max $89.00 USD/年（划线价 $99.00 USD），月付 $14.99 USD。首发价待核实，MSRP 待核实（查证 2026-09-30）
 - **可借鉴点**：对话方案和安全层分别有公开出处，不要合成成一个模型名
 - **另见**：[Miko Mini 商业产品卡][toy]
 
