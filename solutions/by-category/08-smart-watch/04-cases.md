@@ -98,7 +98,7 @@
 - **形态**：1.43 英寸圆形 AMOLED（型号 REW026）。双全向数字硅麦。心率、血氧、睡眠、单频 GPS；FAQ 写 "Not a medical device"
 - **技术路线**：FAQ 写表端可录音、回放；实时转写、翻译、AI 摘要与云同步需要手机上的 TicNote App。产品页写 TicNote Agent，未写底层模型名
 - **亮点**：官网称 "120+ Languages & Dialects | 17 Live Subtitles | ≥98% Accuracy | <1.5s Latency"。CE/FCC 等认证 in progress（以官方 FAQ 为准）；FAQ 同时写 PSE、TELEC 为 in progress，IC/ISED Canada 待定，CMIIT（中国）已获批
-- **公开数据**：Sale price $199.00 USD，Regular price $249.00 USD（查证 2026-10-01）。首发价与订阅价待核实（查证 2026-10-01）。未见公开销量
+- **公开数据**：现价 $199.00 USD（划线价 $249.00 USD）（查证 2026-10-01）。首发价与订阅价待核实（查证 2026-10-01）。未见公开销量
 - **可借鉴点**：录音放在腕上，本地能录能放；转写和摘要留在 App，健康指标另写非医疗器械
 - **另见**：[TicNote Watch 商业产品卡][watch]
 
