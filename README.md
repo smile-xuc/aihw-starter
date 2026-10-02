@@ -124,6 +124,7 @@ solutions/by-category/0X-xxxx/
 ├── 04-cases.md      # 脱敏案例与公开案例
 ├── 05-faq.md        # 客户高频问答
 └── demo/            # 最小可跑 demo（Python）
+    └── bailian/     # 百炼参考 demo：python3 run.py，无 Key 自动 mock
 ```
 
 ---
@@ -153,7 +154,7 @@ solutions/by-category/0X-xxxx/
 2. 选定方案后回到具体品类的 [demo/](./solutions/by-category/01-ipc/demo/)
 3. 跑通示例 → 改造成自家产品
 4. 做实时语音机器人？看 [Omni 实时端到端 · Runtime Host](./solutions/by-solution/01-qwen/omni-realtime/)
-5. 百炼参考 demo：填自己的 Key 三步跑通，标准见 [demo-standard](./solutions/demo-standard/README.md)（试点 [03](./solutions/by-category/03-toys-companion/demo/bailian/) · [07](./solutions/by-category/07-recorder/demo/bailian/)）
+5. 百炼参考 demo：9 个品类各一个，填自己的 Key 三步跑通、没有 Key 自动走 mock，入口见下方[百炼参考 demo](#百炼参考-demo)，标准见 [demo-standard](./solutions/demo-standard/README.md)
 
 </td>
 <td width="33%" valign="top">
@@ -183,6 +184,24 @@ solutions/by-category/0X-xxxx/
 
 ---
 
+## 百炼参考 demo
+
+9 个品类各有一个百炼参考 demo，路径统一为 `solutions/by-category/<品类>/demo/bailian/`。在 `.env` 填好 Key 后运行 `python3 run.py`（Windows 用 `python run.py`）；没有 Key 时同一条命令自动进入 mock，离线回放、不联网、不计费。目前均为「待真 Key 验证」，统一标准见 [demo-standard](./solutions/demo-standard/README.md)。
+
+| 品类 | 入口 | 跑通的链路 |
+|---|---|---|
+| 📷 01 IPC | [`01-ipc/demo/bailian/`](./solutions/by-category/01-ipc/demo/bailian/) | 事件抓拍 → `qwen3.7-flash` 看图生成事件卡 → 自然语言检索 → 看护日报 |
+| 👓 02 AI 眼镜 | [`02-ai-glasses/demo/bailian/`](./solutions/by-category/02-ai-glasses/demo/bailian/) | 拍照即问：`qwen3.8-omni-flash` 看图听问 + `qwen-audio-3.0-tts-flash` 播报；`--realtime` 用 `qwen3.8-omni-flash-realtime` 给 AI 打电话 |
+| 🧸 03 玩具 / 陪伴 | [`03-toys-companion/demo/bailian/`](./solutions/by-category/03-toys-companion/demo/bailian/) | 按键说话 + 眼睛摄像头 → `qwen3.8-omni-flash-realtime` 实时语音回复，Function Calling 控制动作与灯光 |
+| 🤖 04 Agent 硬件 | [`04-agent-hardware/demo/bailian/`](./solutions/by-category/04-agent-hardware/demo/bailian/) | 端侧规则先执行 → `qwen3.8-flash` Function Calling 多轮编排本地设备与云端服务，断网降级到端侧规则 |
+| 🪴 05 桌宠 | [`05-desktop-pet/demo/bailian/`](./solutions/by-category/05-desktop-pet/demo/bailian/) | `qwen3.8-omni-flash-realtime` 实时语音 + 表情动作工具；结束时 `qwen3.7-flash` 写陪伴日记、提炼记忆 |
+| 🎧 06 AI 耳机 | [`06-ai-earphone/demo/bailian/`](./solutions/by-category/06-ai-earphone/demo/bailian/) | `qwen3.8-livetranslate-flash-realtime` 实时同传：英文字幕 + 译音，自动区分说话人 |
+| 🎙️ 07 录音卡 | [`07-recorder/demo/bailian/`](./solutions/by-category/07-recorder/demo/bailian/) | `qwen-audio-3.1-asr-flash` 转写 + 说话人分离 → `qwen3.7-flash` 结构化纪要卡片 |
+| ⌚ 08 智能手表 | [`08-smart-watch/demo/bailian/`](./solutions/by-category/08-smart-watch/demo/bailian/) | 本地红线规则先判 → `qwen3.7-flash` 健康日报 → 表盘卡片，可选抬腕语音播报 |
+| 🦾 09 具身智能 | [`09-embodied/demo/bailian/`](./solutions/by-category/09-embodied/demo/bailian/) | 腕部相机画面 + 指令 → `qwen3.8-flash` 看图逐步调用技能，每次调用先过本地安全门 |
+
+---
+
 ## 仓库结构
 
 ```
@@ -200,7 +219,8 @@ aihw-starter/
 │   │   ├── 07-recorder/       # 录音卡 / 会议盒子
 │   │   ├── 08-smart-watch/    # 智能手表 / 健康可穿戴
 │   │   └── 09-embodied/       # 具身智能
-│   └── by-solution/           # 方案总览（开发者视角：千问 / 小智 …）
+│   ├── by-solution/           # 方案总览（开发者视角：千问 / 小智 …）
+│   └── demo-standard/         # 参考 demo 统一标准、模板与 CI 自检
 ├── awesome/
 │   ├── open-source/           # 开源项目索引（137+ 项目，15 品类）
 │   └── commercial-products/   # 在售商业化产品案例
