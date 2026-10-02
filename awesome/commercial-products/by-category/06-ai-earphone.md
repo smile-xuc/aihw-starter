@@ -132,6 +132,49 @@
 
 ---
 
+### OpenFit 2 AI（韶音 / Shokz）
+
+- **上市状态**：待核实（渠道待核实，查证 2026-10-02）
+- **官网/渠道**：<https://www.shokz.com.cn/OpenFit2AI> 官网产品页
+- **形态**：开放式耳挂耳机；21×11 mm 复合振膜 + 5.5 mm 平板单元；四麦阵列通话降噪；蓝牙 5.4（AAC / SBC），支持双设备连接；单耳电池 56 mAh，充电盒 600 mAh，支持无线充电；耳机单次 11 h，配合充电盒 48 h（官网，厂商称）
+- **定价**：
+  - 首发价：待核实（查证 2026-10-02）
+  - 现价：待核实（查证 2026-10-02）
+  - MSRP：待核实（查证 2026-10-02）
+- **目标市场**：商务通话、线上会议、讲座记录的职场用户；开放式佩戴人群
+- **AI 能力**：
+  - AI 功能：单只耳机、充电盒、Shokz App 三处都能发起录音（8 小时双耳录音，5 米录音距离），转写时区分发言人；转写覆盖 30 类语种和 19 种方言（官网标题合称「49种语言」），内置 12 个行业热词库；会后用 19 种行业模板生成 AI 总结；支持通话翻译、同声传译、面对面翻译、音视频字幕四种翻译模式，语音互译 11 类语种。实现方式：基于千问大模型的联网云端服务（官网注明总结和实时翻译需联网）（[韶音官网产品页](https://www.shokz.com.cn/OpenFit2AI)，查证 2026-10-02）
+- **大模型方案**：千问大模型（官网）
+- **公开数据**：未见公开销量；官网写 Shokz App 通过等保三级测评，软件服务体系通过 SOC2 Type 1 审计（厂商称）
+- **关键差异化**：① 开放式耳机头部品牌转向「耳边生产力」，补上 06 里翻译以外的场景；② 充电盒也能发起录音，形态向录音笔靠拢（可另见 07）；③ 千问为默认模型
+- **商业模式**：硬件销售；转写 / 云同步是否收费待核实
+- **另见**：07 录音（耳机录音形态对照）
+
+> 来源：[韶音 OpenFit 2 AI 官网](https://www.shokz.com.cn/OpenFit2AI) · [IT之家（2026-08-24）](https://www.ithome.com/0/993/557.htm)（均查证 2026-10-02）
+
+---
+
+### Kieslect AI Earbuds Open2（Kieslect）
+
+- **上市状态**：在售（Kieslect 美国官方商店，查证 2026-10-02）
+- **官网/渠道**：<https://us.kieslect.com/products/kieslect-ai-earbuds-open2> 美国官方商店；<https://www.kieslect.com/product/kieslect-ai-earbuds-open2/> 品牌官网产品页
+- **形态**：开放式耳夹（Floating Clip-On），单耳 5.1 g，钛振膜，60 ms 低延迟游戏模式，触控 + 实体按键，10 h 播放（官方商店，厂商称）
+- **定价**：
+  - 首发价：待核实（查证 2026-10-02）
+  - 现价：$49 USD（Sale price）· 美国 · [Kieslect 美国官方商店](https://us.kieslect.com/products/kieslect-ai-earbuds-open2)（查证 2026-10-02）
+  - MSRP：$69 USD（Regular price）· 美国 · [Kieslect 美国官方商店](https://us.kieslect.com/products/kieslect-ai-earbuds-open2)（查证 2026-10-02）
+- **目标市场**：海外旅行、通勤、运动用户
+- **AI 能力**：
+  - AI 功能：通过 Ear Dance App 做 164 种语言实时翻译（自由对话、翻译模式、语音笔记、拍照翻译）；集成 ChatGPT 语音助手，可免手动语音控制和快速问答；AI-ENC 算法做通话环境降噪。实现方式：手机 App 侧的翻译服务 + ChatGPT 助手，翻译引擎没有公开（[Kieslect 美国官方商店](https://us.kieslect.com/products/kieslect-ai-earbuds-open2)，查证 2026-10-02）
+- **大模型方案**：官方商店写 "ChatGPT Integration"（非千问默认绑定）；翻译引擎未公开
+- **公开数据**：未见公开销量
+- **关键差异化**：① <$100 档的品牌 AI 耳机，可对照 Timekettle $119.99 起的翻译耳机；② 开放式耳夹兼顾运动；③ 翻译和助手都在 App 里实现，硬件本身是普通 TWS
+- **商业模式**：硬件销售；App 功能是否收费待核实
+
+> 来源：[Kieslect 美国官方商店](https://us.kieslect.com/products/kieslect-ai-earbuds-open2) · [Kieslect 官网产品页](https://www.kieslect.com/product/kieslect-ai-earbuds-open2/)（均查证 2026-10-02）
+
+---
+
 ## 待补充清单
 
 ### 品牌 TWS + 系统翻译
