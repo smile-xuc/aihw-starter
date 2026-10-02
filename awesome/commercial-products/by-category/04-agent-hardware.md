@@ -179,6 +179,7 @@
 ## 待补充清单
 
 - [ ] DFRobot AI 智能体盒子正式定价后补卡
+- [ ] Muse Charm（Meta）：2026-09-23 在 Meta Connect 2026 发布，未开售；正式定价或开售后补卡 · 官方来源 [The Biggest News From Connect 2026（2026-09-24）](https://about.fb.com/news/2026/09/the-biggest-news-from-connect-2026/)（查证 2026-10-02）
 - [ ] 更多国内桌面 Agent 盒公开 SKU
 - [x] SwitchBot AI Hub
 - [x] Sandbar Stream
