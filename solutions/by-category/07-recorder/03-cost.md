@@ -44,12 +44,12 @@
 |---|---|---|
 | ASR（Paraformer 文件版等） | 1–3 分钟 | ¥0.29–0.79 |
 | 说话人分离 | 30–60 秒 | 计算可忽略或并入 ASR |
-| LLM 摘要（qwen-plus Map-Reduce） | 20–60 秒 | 约 ¥0.03 |
+| LLM 摘要（qwen3.7-flash Map-Reduce） | 20–60 秒 | 约 ¥0.01 |
 | **合计** | **2–5 分钟** | **约 ¥0.3–0.8 / 小时** |
 
 > 计费页以官方为准：https://help.aliyun.com/zh/model-studio/model-pricing
 >
-> ASR 单价查证 2026-10-02：`paraformer-v2` 0.00008 元 / 秒（约 ¥0.29 / 小时，较早一代，官方建议迁移）；`fun-asr`、`qwen-audio-3.0-asr-flash-filetrans` 0.00022 元 / 秒（约 ¥0.79 / 小时）。LLM 摘要按 1 小时逐字稿约 1–2 万 token、Map-Reduce 合计输入约 2–3 万 / 输出约 5 千 token 估算：`qwen-plus`（输入 0.8、输出 2 元 / 百万 token）约 ¥0.03，升到 `qwen3.8-max`（12 / 36）约 ¥0.5。[参考 demo](./demo/bailian/) 用 `qwen-audio-3.1-asr-flash-filetrans` 转写 + `qwen3.7-flash` 纪要，1 小时会议约 ¥0.06–0.11（3.1 按 token 计费，音频折算率官方未公布，按区间估算）。
+> ASR 单价查证 2026-10-02：`paraformer-v2` 0.00008 元 / 秒（约 ¥0.29 / 小时，较早一代，官方建议迁移）；`fun-asr`、`qwen-audio-3.0-asr-flash-filetrans` 0.00022 元 / 秒（约 ¥0.79 / 小时）。LLM 摘要按 1 小时逐字稿约 1–2 万 token、Map-Reduce 合计输入约 2–3 万 / 输出约 5 千 token 估算：`qwen3.7-flash`（单次输入 ≤32K 时输入 0.2、输出 0.8 元 / 百万 token）约 ¥0.01，质量档 `qwen3.8-flash`（0.8 / 2.7）约 ¥0.03–0.04。[参考 demo](./demo/bailian/) 用 `qwen-audio-3.1-asr-flash-filetrans` 转写 + `qwen3.7-flash` 纪要，1 小时会议约 ¥0.06–0.11（3.1 按 token 计费，音频折算率官方未公布，按区间估算）。
 
 实时流式 ASR 单位时长通常略高于文件版；纪要仍在会后用 LLM 生成。
 
@@ -68,7 +68,7 @@
 ### 2.3 优化杠杆
 
 1. **VAD 预过滤**：沉默不送 ASR，常见可省 30–50% 时长
-2. **分级摘要**：默认 qwen-flash/plus；用户点「深度分析」再升 max
+2. **分级摘要**：默认 qwen3.7-flash；用户点「深度分析」再升 qwen3.8-flash
 3. **结果缓存**：同一录音不重复摘要
 4. **对象存储生命周期**：转写后限期删原音（注意合规留存要求）
 

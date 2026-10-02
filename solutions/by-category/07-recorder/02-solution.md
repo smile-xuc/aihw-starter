@@ -35,7 +35,7 @@
 | 输入方式 | 音频上传 OSS → 公网 URL 调用 | WebSocket 流式推送 PCM 帧 |
 | 说话人分离 | `--diarization` 参数，自动返回 speaker_id | CAM++ 后处理 / 流式 diarization |
 | 端到端时延 | 1 小时音频 → 2–5 分钟出纪要 | 首字 <500ms，结束后 5–15 秒出纪要 |
-| 成本（1h 参考） | ¥0.3–1.3（ASR + LLM 摘要） | 略高（实时资源占用 + LLM） |
+| 成本（1h 参考） | ¥0.3–0.8（ASR + LLM 摘要） | 略高（实时资源占用 + LLM） |
 | 适用场景 | 会议录音笔、录音卡（录完回看） | 会议盒子、实时字幕设备 |
 | 硬约束 | 仅支持公网 URL（不支持 Base64/二进制流） | 端侧需持续推帧，空帧浪费配额 |
 
@@ -173,12 +173,12 @@ recognition.send_audio_frame(audio_chunk)
 |---|---|---|
 | ASR（Paraformer 文件版） | 1–3 分钟 | ¥0.29（换 fun-asr 约 ¥0.79） |
 | 说话人分离（CAM++ 等） | 30–60 秒 | 计算可忽略 |
-| LLM 摘要（qwen-plus/max） | 20–60 秒 | ¥0.03–0.5 |
-| **合计** | **2–5 分钟** | **¥0.3–1.3 / 小时** |
+| LLM 摘要（qwen3.7-flash；质量档 qwen3.8-flash） | 20–60 秒 | ¥0.01 |
+| **合计** | **2–5 分钟** | **¥0.3–0.8 / 小时** |
 
 实时模式：首字 <500ms，纪要在结束后 5–15 秒生成。
 
-> 单价查证 2026-10-02（[模型价格](https://help.aliyun.com/zh/model-studio/model-pricing)）：`paraformer-v2` 0.00008 元 / 秒，是较早一代，官方建议迁移到 Fun-ASR 或 Qwen-ASR；`fun-asr`、`qwen-audio-3.0-asr-flash-filetrans` 都是 0.00022 元 / 秒。LLM 摘要按 1 小时逐字稿约 1–2 万 token、Map-Reduce 合计输入约 2–3 万 / 输出约 5 千 token 估算：`qwen-plus`（输入 0.8、输出 2 元 / 百万 token）约 ¥0.03，`qwen3.8-max`（12 / 36）约 ¥0.5。[参考 demo](./demo/bailian/) 用 `qwen-audio-3.1-asr-flash-filetrans` 转写 + `qwen3.7-flash` 纪要，1 小时会议约 ¥0.06–0.11（3.1 按 token 计费，音频折算率官方未公布，按区间估算）。
+> 单价查证 2026-10-02（[模型价格](https://help.aliyun.com/zh/model-studio/model-pricing)）：`paraformer-v2` 0.00008 元 / 秒，是较早一代，官方建议迁移到 Fun-ASR 或 Qwen-ASR；`fun-asr`、`qwen-audio-3.0-asr-flash-filetrans` 都是 0.00022 元 / 秒。LLM 摘要按 1 小时逐字稿约 1–2 万 token、Map-Reduce 合计输入约 2–3 万 / 输出约 5 千 token 估算：`qwen3.7-flash`（单次输入 ≤32K 时输入 0.2、输出 0.8 元 / 百万 token）约 ¥0.01，质量档 `qwen3.8-flash`（0.8 / 2.7）约 ¥0.03–0.04。[参考 demo](./demo/bailian/) 用 `qwen-audio-3.1-asr-flash-filetrans` 转写 + `qwen3.7-flash` 纪要，1 小时会议约 ¥0.06–0.11（3.1 按 token 计费，音频折算率官方未公布，按区间估算）。
 
 > 数字仅作量级参考，实际请以官方计费页面与客户场景实测为准。
 
