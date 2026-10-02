@@ -14,7 +14,7 @@
 | 04 | [🔊 Talk-to-Fengge（开源案例）](./04-talk-to-fengge.md) | 📖 架构启发 | WebRTC 实时语音 + 声音克隆 + 人格注入 | 玩具陪伴 / 桌宠 / 耳机 |
 | 05 | [🦾 千问具身智能方案（Qwen-Robot Suite）](./05-qwen-robot.md) | 📖 架构参考 | RobotManip / RobotNav / RobotWorld 三模型矩阵 | 具身智能（机械臂 / 四足 / 人形） |
 | 06 | [📶 端侧 / 混合方案（端云协同）](./06-edge-hybrid.md) | 📖 架构导读 | 离线唤醒 + 本地命令 + 云增强 / NAS 私有化；**切分原则见 [primer/06](../../primer/06-edge-cloud.md)** | 全品类（按薄终端→厚边缘分档） |
-| 07 | [🗣️ Qwen Audio Agent（开源实时语音 harness）](./07-qwen-audio-agent.md) | 🧩 开源 harness | Realtime 前台对话（默认 Qwen-Audio-3.0-Realtime，可换 Omni / 第三方 / 本地）+ 后台 Agent 异步委派；Gateway 自托管 | 本仓品类暂无 demo；上游示例为桌面办公、智能座舱、ESP32-C3 语音卡片（半双工）；最适合 Agent 硬件 |
+| 08 | [🗣️ Qwen Audio Agent（开源实时语音 harness）](./08-qwen-audio-agent.md) | 🧩 开源 harness | Realtime 前台对话（默认 Qwen-Audio-3.0-Realtime，可换 Omni / 第三方 / 本地）+ 后台 Agent 异步委派；Gateway 自托管 | 本仓品类暂无 demo；上游示例为桌面办公、智能座舱、ESP32-C3 语音卡片（半双工）；最适合 Agent 硬件 |
 
 > 千问方案的子形态：[Omni 实时端到端 · Runtime Host 中间层](./01-qwen/omni-realtime/) — Qwen-Omni-Realtime 端到端实时语音 + 自建宿主，适合桌面 / 伴随机器人等对首字延迟和拟人度要求高的高价值单品。可视化架构页：<https://smile-xuc.github.io/aihw-starter/omni-runtime-host.html>
 
@@ -88,11 +88,11 @@
 3. 在对应品类现有 `02-solution.md` 的『其他模型方案』小节补充（可选）
 4. 提 PR
 
-**开源 harness / Agent 框架**：能被 AI 硬件直接拿来用的开源运行框架（例：[07 Qwen Audio Agent](./07-qwen-audio-agent.md)），总览表「状态」列标 `🧩 开源 harness`，方案页开头先写清五项：
+**开源 harness / Agent 框架**：能被 AI 硬件直接拿来用的开源运行框架（例：[08 Qwen Audio Agent](./08-qwen-audio-agent.md)），总览表「状态」列标 `🧩 开源 harness`，方案页开头先写清五项：
 
 - **许可**：License 与商用限制
 - **维护活跃度**：最近提交、最近发版日期，注明查证日期
-- **支持的模型与价格口径**：默认模型与可换模型；成本按 [07 第 5.2 节](./07-qwen-audio-agent.md#52-同口径对照)的同口径与已有方案对照
+- **支持的模型与价格口径**：默认模型与可换模型；成本按 [08 第 5.2 节](./08-qwen-audio-agent.md#52-同口径对照)的同口径与已有方案对照
 - **端云部署形态**：宿主跑在哪，哪些部分可以本地化
 - **硬件接入方式**：设备协议、参考硬件、半双工还是全双工
 

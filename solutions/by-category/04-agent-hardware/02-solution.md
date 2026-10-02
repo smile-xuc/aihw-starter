@@ -112,7 +112,7 @@ else:
 ## 八、与相邻方案的关系
 
 - Omni Realtime 全双工：见 [`../../by-solution/01-qwen/omni-realtime/`](../../by-solution/01-qwen/omni-realtime/)
-- 开源实时语音 harness（Realtime 前台对话 + 后台 Agent 异步办事，Gateway 自托管）：见 [`../../by-solution/07-qwen-audio-agent.md`](../../by-solution/07-qwen-audio-agent.md)
+- 开源实时语音 harness（Realtime 前台对话 + 后台 Agent 异步办事，Gateway 自托管）：见 [`../../by-solution/08-qwen-audio-agent.md`](../../by-solution/08-qwen-audio-agent.md)
 - 延迟横评：见 [`../../benchmark/`](../../benchmark/)
 - 具身 / 机器人调度：见 [`../../by-solution/05-qwen-robot.md`](../../by-solution/05-qwen-robot.md)（勿与本品类混为一谈）
 

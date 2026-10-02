@@ -29,7 +29,7 @@
 - **简介**：实时语音 Agent 运行框架：Realtime 模型在前台对话，需要工具或长时间处理的任务异步交给后台 Agent，默认前台为百炼 `qwen-audio-3.0-realtime-plus`。
 - **关键特性**：全双工打断；`smart_turn` 语义轮次；后台委派（ACP / A2A / 自定义 Adapter）；单 WebSocket 客户端协议；人格与长期记忆；可选本地语音前台
 - **HTML 品类**：—（外链补录，已核验）
-- **另见**：选型、计费对照见 [`solutions/by-solution/07-qwen-audio-agent.md`](../../../solutions/by-solution/07-qwen-audio-agent.md)
+- **另见**：选型、计费对照见 [`solutions/by-solution/08-qwen-audio-agent.md`](../../../solutions/by-solution/08-qwen-audio-agent.md)
 
 ### ESP-Claw
 
