@@ -19,6 +19,18 @@
 - **关键特性**：语音控制；代码执行；LLM Agent；多模态
 - **HTML 品类**：语音 AI
 
+### Qwen Audio Agent
+
+- **仓库**：<https://github.com/QwenAudio/qwen-audio-agent>
+- **Star**：以仓库为准（2026-10-02 核验；HTML 大盘未收录）
+- **License**：Apache-2.0
+- **框架**：Node.js Gateway（桌面 / 服务器）；ESP32-C3 参考终端经局域网转发接入
+- **状态**：活跃
+- **简介**：实时语音 Agent 运行框架：Realtime 模型在前台对话，需要工具或长时间处理的任务异步交给后台 Agent，默认前台为百炼 `qwen-audio-3.0-realtime-plus`。
+- **关键特性**：全双工打断；`smart_turn` 语义轮次；后台委派（ACP / A2A / 自定义 Adapter）；单 WebSocket 客户端协议；人格与长期记忆；可选本地语音前台
+- **HTML 品类**：—（外链补录，已核验）
+- **另见**：选型、计费对照见 [`solutions/by-solution/07-qwen-audio-agent.md`](../../../solutions/by-solution/07-qwen-audio-agent.md)
+
 ### ESP-Claw
 
 - **仓库**：<https://github.com/espressif/esp-claw>

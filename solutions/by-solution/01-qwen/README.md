@@ -210,6 +210,7 @@ Realtime 协议下目前有三条模型线：**Qwen-Omni-Realtime**（全模态�
 | 海外 / 多云对照 | 见 [主流大模型对照](../03-mainstream-llms.md) |
 | 端侧推理 | Qwen 开源系列 + Hugging Face / Ollama；规格见 [primer/02](../../../primer/02-model-size-chips.md) |
 | 开源全栈参考 | 见 [Talk-to-Fengge 架构启发](../04-talk-to-fengge.md) |
+| 开源 Realtime 宿主（前台对话 + 后台 Agent 委派） | 见 [Qwen Audio Agent](../07-qwen-audio-agent.md)，与自建 [Runtime Host](./omni-realtime/) 对照 |
 
 ---
 
