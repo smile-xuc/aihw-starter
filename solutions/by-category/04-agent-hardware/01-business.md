@@ -61,6 +61,26 @@ Agent 硬件的购买心智是：**少掏手机、少切 App、把重复任务�
 
 **逻辑链**：路由保底线 → 工具可恢复做活人感 → 本地隐私做信任 → 才可能谈「备份 / 多设备同步」类年费。在此之前推「聊天月费」，公开市场已有失败样本。
 
+### 1.4 维护者判断（2026-10）：端侧推理产品的放量窗口
+
+> 本节是本仓库维护者在 2026-10 的观点记录，不是已核实的市场事实。下表公开信息只用来说明判断依据和反向信号，建议 2027-07 前后复盘。
+
+**观点**（维护者原话）：「随着 200B 以下的模型越来越强，这类端侧推理产品预计会在明年（2027 年）中旬爆发」。「这类产品」指以本地统一推理调度为核心、与 Agent 硬件契合的端侧推理产品；调度层的位置见 [`06-edge-hybrid.md` §2.1](../../by-solution/06-edge-hybrid.md#21-端侧统一推理调度层)，开源参考见 [Lemonade 主卡](../../../awesome/open-source/by-category/04-agent-hardware.md#lemonade)。
+
+| 类型 | 公开信息（厂商或机构自述，查证 2026-10-02） | 与判断的关系 |
+|---|---|---|
+| 模型 | OpenAI gpt-oss-120b（总参 116.8B、激活 5.1B）开放权重，厂商称准确率接近 o4-mini，MXFP4 量化后单张 80 GB GPU 可运行；gpt-oss-20b 可在 16 GB 内存的设备上运行（[模型卡](https://arxiv.org/abs/2508.10925)，2025-08-08） | 支撑：100B 级开放权重模型进入单机可跑范围 |
+| 模型 | Qwen3.6-35B-A3B（总参 35B、激活 3B）开放权重，厂商称其编程 Agent 能力可与 Qwen3.5-27B、Gemma4-31B 等稠密模型相当（[官方博客](https://www.alibabacloud.com/blog/603043)，2026-04-17） | 支撑：小激活 MoE 降低端侧算力门槛 |
+| 硬件 | NVIDIA DGX Spark 配 128 GB 统一内存，厂商称可在本地推理最高 200B 参数的模型（[新闻稿](https://nvidianews.nvidia.com/news/nvidia-dgx-spark-arrives-for-worlds-ai-developers)，2025-10-13） | 支撑：「200B 以下」与桌面级设备的内存上限吻合 |
+| 硬件 | AMD Ryzen AI Max+ 395（128 GB），厂商称可运行最高 128B 参数的 4-bit 模型（[AMD 博客](https://www.amd.com/en/blogs/2025/faqs-amd-variable-graphics-memory-vram-ai-model-sizes-quantization-mcp-more.html)，2025-07-29） | 支撑：x86 AI PC / Mini PC 同样进入该区间 |
+| 市场 | Gartner 预计到 2026 年底 DRAM 与 SSD 合计涨价约 130%，2026 年 PC 出货下降 10.4%，AI PC 普及放缓至 2027 年，50% 渗透率推迟到 2028 年（[新闻稿](https://www.gartner.com/en/newsroom/press-releases/2026-02-26-gartner-says-surging-memory-costs-will-reduce-global-pc-and-smartphone-shipments-in-2026)，2026-02-26） | 反向信号：大内存是端侧推理的主要成本，内存涨价可能推迟放量 |
+
+不确定性：
+
+- 模型能力数据均为厂商自测；端侧实际速度受内存带宽约束（见 [primer/02](../../../primer/02-model-size-chips.md)），128 GB 设备跑 100B 以上模型通常要 4-bit 量化，留给上下文的余量有限
+- 端侧 NPU 生态仍分散：Lemonade 的 NPU 后端只覆盖 AMD XDNA2，Qualcomm、Intel 方向尚未完成，也未覆盖瑞芯微等国产 SoC。本品类常见的 RK 级桌面盒（BOM 150–400 元）内存装不下 100B 级模型，判断即使成立，也更可能先体现在 AI PC、Mini PC、家庭中枢等大内存形态
+- 「爆发」没有量化口径。复盘时建议看三项：64 GB 以上统一内存设备的价格带、主流端侧推理运行时的 NPU 覆盖、内存价格走势
+
 ---
 
 ## 二、形态与客户画像
