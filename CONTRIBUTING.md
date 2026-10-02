@@ -356,7 +356,7 @@ U11 的「主要形态和用途」按下面的顺序判断：先看形态是否�
 4. **还判断不了的**，按 U11 以最先收录它的品类为准，在其他品类写一行「另见」
 5. **新开类目的门槛**：现有品类都装不下；至少 3 款公开在售的产品；需要独立的 01-business、02-solution 和 demo。工具链目前只认 01–09（写死在 schema 与注册表生成器里），新开类目前维护者要先放宽这个限制，否则注册表会静默跳过新目录，目录下的 demo 也过不了 schema 校验
 
-**示例**：Muse Charm（Meta），2026-09-23 发布，未开售。官方介绍写它是用来和个人 AI Agent Muse 说话、互动的口袋设备（原文 "built for you to talk and interact with your Muse"）。口袋不是自带品类的形态，看主用途：官方定位和主要交互都是对 Muse 说话，归 04。媒体报道的拓麻歌子式外形和前后摄像头，按第 3 条不改变主用途。开售前不建卡，先记在 04 [公开案例](./solutions/by-category/04-agent-hardware/04-cases.md)的待补充清单。来源：[The Biggest News From Connect 2026（2026-09-24）](https://about.fb.com/news/2026/09/the-biggest-news-from-connect-2026/) · [Meta 新闻稿：Muse（2026-09-08）](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/) · 媒体报道 [The Verge（2026-09-24）](https://www.theverge.com/tech/999750/muse-charm-meta-ai-hardware)（均查证 2026-10-02）
+**示例**：Muse Charm（Meta），2026-09-23 发布，未开售。官方介绍写它是用来和个人 AI Agent Muse 说话、互动的口袋设备（原文 "built for you to talk and interact with your Muse"）。口袋不是自带品类的形态，看主用途：官方定位和主要交互都是对 Muse 说话，归 04。媒体报道提到的拓麻歌子式外形和摄像头，按第 3 条不改变主用途。开售前不建卡，先记在 04 [公开案例](./solutions/by-category/04-agent-hardware/04-cases.md)的待补充清单。来源：[The Biggest News From Connect 2026（2026-09-24）](https://about.fb.com/news/2026/09/the-biggest-news-from-connect-2026/) · [Meta 新闻稿：Muse（2026-09-08）](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/) · 媒体报道 [Engadget（2026-09-23）](https://www.engadget.com/2267229/meta-put-muse-in-a-tamagotchi-like-charm-device/) · [The Verge（2026-09-24）](https://www.theverge.com/tech/999750/muse-charm-meta-ai-hardware)（均查证 2026-10-02）
 
 **已收录的先例**：
 
