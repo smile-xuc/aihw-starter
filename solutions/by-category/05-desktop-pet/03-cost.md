@@ -62,19 +62,21 @@ TTS：20–60 字
 
 ### 2.2 三段式链路（主流）
 
-> 口径：ASR → LLM → 情感 TTS。目录价随官方调整，下表只给量级。计费页：https://help.aliyun.com/zh/model-studio/billing-of-model-studio
+> 口径：ASR → LLM → 情感 TTS。目录价随官方调整，下表只给量级。计费页：https://help.aliyun.com/zh/model-studio/model-pricing
+>
+> 重算（北京目录价，查证 2026-10-02）：每轮按说话 3–5 秒（流式 ASR 0.00033 元 / 秒）和 2.1 的 token、TTS 字数估算。TTS 按字符计费，一个汉字算 2 个字符，约占每轮成本的八成；换 `cosyvoice-v3-plus`（2 元 / 万字符）TTS 翻倍。不带后缀的 `cosyvoice-v3` 将于 2026-10-10 下线。
 
 | 日均轮次 | 模型组合 | 月成本 / 台量级 | 适用 |
 |---|---|---|---|
-| ~5（轻度） | qwen-flash + cosyvoice flash | 0.3–1 元 | 工位伴侣、低频互动 |
-| ~20（中度） | qwen-plus + cosyvoice v3 | 1–4 元 | 主流桌宠 |
-| ~50（重度） | qwen-plus + cosyvoice v3 | 3–10 元 | 高活跃潮玩；需评估是否切 Realtime |
+| ~5（轻度） | qwen-flash + cosyvoice-v3-flash | 1–2 元 | 工位伴侣、低频互动 |
+| ~20（中度） | qwen-plus + cosyvoice-v3-flash | 3–9 元 | 主流桌宠 |
+| ~50（重度） | qwen-plus + cosyvoice-v3-flash | 8–21 元 | 高活跃潮玩；需评估是否切 Realtime |
 
-按 **2 年摊销** 计入硬件售价时：中度用户约 **25–100 元/台** 量级的云端预提——在 399–699 元零售档可吸收。
+按 **2 年摊销** 计入硬件售价时：中度用户约 **75–200 元/台** 量级的云端预提——在 399–699 元零售档已不算轻，需配合轮次管控，或评估 2.3 的 3.8 代 Realtime。
 
 ### 2.3 Realtime 链路（旗舰可选）
 
-Qwen-Omni-Realtime / Qwen-Audio-3.0-Realtime 按音频时长计费，单位时长成本显著高于三段式。适合：
+Qwen-Omni-Realtime / Qwen-Audio-3.0-Realtime 按音频时长计费。3.5 代 Omni 和 Qwen-Audio 的 Plus 档单位时长成本显著高于三段式；2026-09 上架的 `qwen3.8-omni-flash-realtime`（与 `qwen-audio-3.0-realtime-flash` 同价）按目录价首轮约 ¥0.004、聊到第 10 轮约 ¥0.008（[参考 demo](./demo/bailian/)），已与三段式持平或更低，成本随系统提示和历史上下文增长。按 3.5 代 / Plus 档的成本，适合：
 
 - 客单 ≥ 800 元、对话是主体验
 - 需要语义打断与拟人节奏

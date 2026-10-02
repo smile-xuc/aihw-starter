@@ -47,24 +47,29 @@
 > - Token 换算：[实时语音翻译接入](https://help.aliyun.com/zh/model-studio/qwen3-5-livetranslate-flash-realtime)
 > - 华北 2（北京）原价量级：输入音频 **40 元/百万 tokens**，输出音频 **160 元/百万 tokens**，输出文本 **100 元/百万 tokens**
 > - 消耗规则（Qwen3.5）：输入音频约 **7 tokens/秒**，输出音频约 **12.5 tokens/秒**
+> - 2026-10-01 复核：单价不变；`qwen3.8-livetranslate-flash-realtime` 北京同价（[模型页](https://help.aliyun.com/zh/model-studio/qwen3-8-livetranslate-flash-realtime)）
 
 粗算（仅音频、忽略源语言识别文本；**双向各说各听且近满负荷**时量级更高）：
 
 | 场景 | 假设 | 成本量级 / 小时 |
 |---|---|---|
-| 单向听译（只听不说） | 输入满负荷 1h + 输出译文音频约 0.6–1h | 约 **1–8 元** 量级 |
-| 双向同传 | 两路接近满负荷 | 约 **数元～十余元** 量级 |
-| 轻度旅游（日均 20 分钟有效同传） | 按上表比例折算 | 约 **1–5 元/天** 量级 |
+| 单向听译（只听不说） | 输入满负荷 1h + 输出译文音频约 0.6–1h | 约 **5–8 元** 量级 |
+| 双向同传 | 两路接近满负荷 | 约 **10–16 元** 量级 |
+| 轻度旅游（日均 20 分钟有效同传） | 按上表比例折算 | 约 **2–3 元/天** 量级 |
 
-> ⚠️ 上表是**量级示意**，用于售价与时长包设计，不是报价单。活动价、免费额度、识别文本计费都会改变结果。以控制台与官方计费页为准：https://help.aliyun.com/zh/model-studio/billing-of-model-studio
+按分钟和[参考 demo](./demo/bailian/) 同一口径：带译音约 ¥0.14 / 分钟，加字幕文本约 ¥0.16 / 分钟，只出字幕约 ¥0.04 / 分钟（北京）。
+
+> ⚠️ 上表是**量级示意**，用于售价与时长包设计，不是报价单。活动价、免费额度、识别文本计费都会改变结果。以控制台与官方计费页为准：https://help.aliyun.com/zh/model-studio/model-pricing
 
 ### 2.2 三段式对话（ASR + LLM + TTS）
 
 | 日均轮次 | 模型组合 | 月成本 / 台量级 | 适用 |
 |---|---|---|---|
-| ~10（轻度助手） | ASR + qwen-flash + cosyvoice flash | 1–3 元 | 白牌 / 轻量卖点 |
-| ~30（中度） | ASR + qwen-plus + cosyvoice | 3–10 元 | 品牌 TWS AI |
-| Omni-Realtime | 按音频时长 / token | 显著更高 | 仅旗舰全双工 |
+| ~10（轻度助手） | ASR + qwen-flash + cosyvoice flash | 3–4 元 | 白牌 / 轻量卖点 |
+| ~30（中度） | ASR + qwen-plus + cosyvoice | 10–12 元 | 品牌 TWS AI |
+| Omni-Realtime | 按 token（音频按时长折算） | 3.8-Omni-Flash-Realtime 日均 30 轮约 4–7 元；3.5 代约 16 元起 | 全双工（3.5 代只适合旗舰） |
+
+> 口径（北京目录价，2026-10-01）：每轮用户说 5 秒、回复约 50 字（10 秒语音）、系统提示约 1,000 tokens，TTS 按 cosyvoice flash 档（约 1 元 / 万字符）。三段式每轮约 ¥0.010–0.013，TTS 约占八成；`qwen3.8-omni-flash-realtime` 首轮约 ¥0.004，聊到第 10 轮约 ¥0.008（历史音频逐轮重复计入输入）；`qwen3.5-omni-flash-realtime` 每轮约 ¥0.018。对照见 [omni-realtime §9](../../by-solution/01-qwen/omni-realtime/README.md)。
 
 ### 2.3 与录音转写对照
 
@@ -119,7 +124,7 @@
 ---
 
 **版本**：千问大模型方案
-**更新日期**：2026-09
+**更新日期**：2026-10
 
 <!-- FOOTER:START -->
 
