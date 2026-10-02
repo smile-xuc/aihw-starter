@@ -181,7 +181,7 @@
 
 ### 智能憨憨（华为 / WIKO）〔已停售〕
 
-- **上市状态**：停售（华为商城已下架，查证 2026-10-02）；下架日期待核实；页面不一致：WIKO 产品页仍列有京东店铺入口（[华为商城原商品页](https://www.vmall.com/product/comdetail/index.html?prdId=10086028470700) · [WIKO 憨憨产品页](https://www.wiko.com/ai_toys/hanhan)）
+- **上市状态**：停售（华为商城已下架，查证 2026-10-02）；下架日期待核实；页面不一致：WIKO 产品页仍列有京东店铺入口（华为商城原商品页（已下架） · [WIKO 憨憨产品页](https://www.wiko.com/ai_toys/hanhan)）
 - **官网/渠道**：<https://www.wiko.com/ai_toys/hanhan> WIKO 产品页
 - **形态**：毛绒电子宠物，可触摸、摇晃互动。WIKO 页：型号 FZ1012，毛绒织物 + 硅胶 + 塑料，支持 Wi-Fi 和 4G。页面不一致：媒体写型号 FZ1001，且没有提 4G，卡片取 WIKO 页
 - **定价**：
@@ -197,7 +197,7 @@
 - **关键差异化**：① 手机大厂生态（小艺）进入 AI 毛绒；② 内置 4G，可脱离手机在户外使用（WIKO 页）；③ 社交「碰一碰」玩法
 - **商业模式**：硬件销售；WIKO 页写「SVIP 畅聊权益」，并写「我们可能向用户收取一定4G网络费用」，金额待核实
 
-> 来源：[WIKO 憨憨产品页](https://www.wiko.com/ai_toys/hanhan) · [华为商城原商品页（已下架）](https://www.vmall.com/product/comdetail/index.html?prdId=10086028470700) · [IT之家（2025-11-26）](https://m.ithome.com/html/900499.htm) · [36氪 / 中新经纬（2026-01-23）](https://eu.36kr.com/de/p/3651724667134081)（均查证 2026-10-02）
+> 来源：[WIKO 憨憨产品页](https://www.wiko.com/ai_toys/hanhan) · 华为商城原商品页（已下架） · [IT之家（2025-11-26）](https://m.ithome.com/html/900499.htm) · [36氪 / 中新经纬（2026-01-23）](https://eu.36kr.com/de/p/3651724667134081)（均查证 2026-10-02）
 
 ---
 
