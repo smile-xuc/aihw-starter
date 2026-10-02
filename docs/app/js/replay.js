@@ -55,9 +55,12 @@ export class Stage {
 
   setInputs(inputs) {
     for (const f of inputs) this.files.set(f.path, { ...f, role: 'input' });
-    const shown = inputs.filter((f) => this.url(f) && /^(image|audio)\//.test(f.media_type));
-    const images = shown.filter((f) => f.media_type.startsWith('image/'));
+    const isImage = (f) => f.media_type.startsWith('image/');
+    const shown = inputs.filter((f) => this.url(f) && /^(image|audio)\//.test(f.media_type))
+      .sort((a, b) => Number(isImage(b)) - Number(isImage(a)));
+    const images = shown.filter(isImage);
     this.media.hidden = !shown.length;
+    this.media.classList.toggle('stacked', images.length === 1);
     mount(this.media, shown.map((f) => {
       const src = this.url(f);
       const name = f.path.split('/').pop();

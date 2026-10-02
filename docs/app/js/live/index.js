@@ -30,6 +30,9 @@ export function browserSupport(reg, sol, variant) {
     const notOk = runner.services.filter((id) => serviceOf(stack, id)?.browser !== 'ok');
     if (!notOk.length) return { status: 'runnable', note: runner.note, services: runner.services };
   }
+  if (Array.isArray(variant.services) && !variant.services.length) {
+    return { status: 'none', reason: '这个玩法不调用云端，回放就是完整过程。' };
+  }
   const blocked = variant.browser?.blocked_by || [];
   if (blocked.length) {
     const why = blocked.map((id) => {

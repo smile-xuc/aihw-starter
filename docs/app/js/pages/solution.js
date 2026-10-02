@@ -65,7 +65,7 @@ function hardwareSection(reg, sol) {
   const run = sol.run || {};
   const pending = sol.verification?.pending_checks || [];
   return html`
-    <div class="parts">${(hw.parts || []).map((p) => html`<div class="part"><strong>${p.label || label(reg.labels.parts, p.part)}</strong><small>${p.role || ''}${p.simulated_by ? `；demo 用 ${p.simulated_by} 模拟` : ''}</small></div>`)}
+    <div class="parts">${(hw.parts || []).map((p) => html`<div class="part"><strong>${p.label || label(reg.labels.parts, p.part)}</strong><small>${p.role || ''}</small>${p.simulated_by ? html`<small class="sim">demo 里：${p.simulated_by}</small>` : ''}</div>`)}
       <div class="part"><strong>联网</strong><small>Wi-Fi / 4G，或经手机 App 中转；模型在云端</small></div>
     </div>
     <p class="info-note">${icon('info')}<span>芯片与板卡：${[...(hw.chips || []), ...(hw.boards || [])].join('、') || '还没有数据，接入芯片验证后在这里显示'}。</span></p>
