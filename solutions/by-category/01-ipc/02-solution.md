@@ -573,7 +573,7 @@ client = OpenAI(
 )
 
 response = client.chat.completions.create(
-    model="qwen-vl-plus",
+    model="qwen3.7-flash",          # qwen-vl-plus 将于 2026-10-10 下线；效果优先用 qwen3.7-plus
     messages=[{
         "role": "user",
         "content": [
@@ -581,6 +581,7 @@ response = client.chat.completions.create(
             {"type": "text", "text": "画面中有几个人？是否有异常行为？"},
         ],
     }],
+    extra_body={"enable_thinking": False},  # Qwen3.7 默认开思考，实时分析要关掉
 )
 ```
 

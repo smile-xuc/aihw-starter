@@ -31,11 +31,11 @@
 
 | 维度 | 文件转写模式 | 实时流式模式 |
 |---|---|---|
-| ASR 模型 | Paraformer-v2 | Gummy / Paraformer-realtime / fun-asr |
+| ASR 模型 | Paraformer-v2 | qwen-audio-3.0-asr-flash-streaming / fun-asr-realtime / Paraformer-realtime（Gummy 将于 2026-10-10 下线） |
 | 输入方式 | 音频上传 OSS → 公网 URL 调用 | WebSocket 流式推送 PCM 帧 |
 | 说话人分离 | `--diarization` 参数，自动返回 speaker_id | CAM++ 后处理 / 流式 diarization |
 | 端到端时延 | 1 小时音频 → 2–5 分钟出纪要 | 首字 <500ms，结束后 5–15 秒出纪要 |
-| 成本（1h 参考） | ¥1–4（ASR + LLM 摘要） | 略高（实时资源占用 + LLM） |
+| 成本（1h 参考） | ¥0.6–2.8（ASR + LLM 摘要） | 略高（实时资源占用 + LLM） |
 | 适用场景 | 会议录音笔、录音卡（录完回看） | 会议盒子、实时字幕设备 |
 | 硬约束 | 仅支持公网 URL（不支持 Base64/二进制流） | 端侧需持续推帧，空帧浪费配额 |
 
@@ -75,12 +75,12 @@
 | 模式 | 模型 | 适用 |
 |---|---|---|
 | 文件转写 | Paraformer-v2 | 录完一段后批量处理 |
-| 实时流式 | Gummy / Paraformer-realtime | 边录边转，首字 < 500ms |
+| 实时流式 | qwen-audio-3.0-asr-flash-streaming / fun-asr-realtime / Paraformer-realtime | 边录边转，首字 < 500ms |
 
 ### 2.3 说话人分离
 
 - 文件版可叠加 `--diarization` 参数，自动返回 `speaker_id`
-- 实时版可走 fun-asr 流式 + CAM++ 后处理
+- 实时版可走 fun-asr-realtime 流式 + CAM++ 后处理
 - 准确率与录音质量强相关，多人混杂、背景噪音大的场景建议先做降噪
 
 ## 三、接入步骤
@@ -129,18 +129,17 @@ sentences = result.output.results[0]["sentences"]
 }
 ```
 
-实时流式（fun-asr，WebSocket）：
+实时流式（fun-asr-realtime，WebSocket）：
 
 ```python
 from dashscope.audio.asr import Recognition
 
 recognition = Recognition(
-    model="fun-asr",
+    model="fun-asr-realtime",       # fun-asr 是文件转写模型
     format="pcm",
     sample_rate=16000,
     callback=on_recognition_result,
-    diarization=True,
-    language="zh",
+    language_hints=["zh"],          # 流式接口没有说话人分离参数，分离见 2.3
 )
 recognition.start()
 recognition.send_audio_frame(audio_chunk)
@@ -164,20 +163,22 @@ recognition.send_audio_frame(audio_chunk)
 | 模型 | 适用 | RTF | 备注 |
 |---|---|---|---|
 | Paraformer-v2 | 标准会议录音 | ~0.05 | 性价比最高，文件转写默认推荐 |
-| fun-asr / SenseVoice | 多语种+情感 | ~0.07 | 50+ 语种，开源可私有化 |
-| Qwen3-ASR | 复杂口音/术语 | 0.1–0.3 | LLM 驱动，热词效果最好 |
+| fun-asr / SenseVoice | 多语种+情感 | ~0.07 | 50+ 语种，开源可私有化；云端 `sensevoice-v1` 将于 2026-10-10 下线，云端用 fun-asr |
+| Qwen-Audio-ASR（3.0 / 3.1） | 复杂口音/术语 | 待实测 | LLM 驱动，支持热词与 Prompt 上下文；[参考 demo](./demo/bailian/) 用 3.1。Qwen3-ASR 不支持热词 |
 | 通义听悟 SaaS | 开箱即用 | 分钟级 | 录音纪要 Agent 内置 |
 
 ### 4.2 端到端成本与时延（1 小时音频，参考量级）
 
 | 环节 | 时延 | 成本（参考值） |
 |---|---|---|
-| ASR（Paraformer 文件版） | 1–3 分钟 | ¥0.5–1.5 |
+| ASR（Paraformer 文件版） | 1–3 分钟 | ¥0.29（换 fun-asr 约 ¥0.79） |
 | 说话人分离（CAM++ 等） | 30–60 秒 | 计算可忽略 |
 | LLM 摘要（qwen-plus/max） | 20–60 秒 | ¥0.3–2.0 |
-| **合计** | **2–5 分钟** | **¥1–4 / 小时** |
+| **合计** | **2–5 分钟** | **¥0.6–2.8 / 小时** |
 
 实时模式：首字 <500ms，纪要在结束后 5–15 秒生成。
+
+> 单价查证 2026-10-02（[模型价格](https://help.aliyun.com/zh/model-studio/model-pricing)）：`paraformer-v2` 0.00008 元 / 秒，是较早一代，官方建议迁移到 Fun-ASR 或 Qwen-ASR；`fun-asr`、`qwen-audio-3.0-asr-flash-filetrans` 都是 0.00022 元 / 秒。[参考 demo](./demo/bailian/) 用 `qwen-audio-3.1-asr-flash-filetrans` 转写 + `qwen3.7-flash` 纪要，1 小时会议约 ¥0.06–0.11（3.1 按 token 计费，音频折算率官方未公布，按区间估算）。
 
 > 数字仅作量级参考，实际请以官方计费页面与客户场景实测为准。
 
@@ -219,9 +220,9 @@ recognition.send_audio_frame(audio_chunk)
 ## 六、官方文档与 SDK 链接
 
 - 录音纪要 Agent 实践：https://help.aliyun.com/zh/model-studio/recording-summary-agent-tutorial
-- Paraformer-v2 文件转写：https://help.aliyun.com/zh/model-studio/paraformer
+- Paraformer-v2 文件转写：https://help.aliyun.com/zh/model-studio/asr-model
 - bailian-cli（本地 mp3 直传）：https://bailian.aliyun.com/cli/install.md
-- Model Studio 计费总览：https://help.aliyun.com/zh/model-studio/billing-of-model-studio
+- Model Studio 计费总览：https://help.aliyun.com/zh/model-studio/model-pricing
 - 控制台计费入口：https://bailian.console.aliyun.com/?productCode=p_efm#/billing
 
 ---
