@@ -26,7 +26,7 @@ export default async function run(x) {
   const calls = [];
   for (const [i, frame] of manifest.frames.entries()) {
     const data = await x.asset(`samples/${frame.file}`);
-    x.say('设备', `${frame.camera} · ${frame.trigger} → 抓拍 1 帧（${Math.floor(data.byteLength / 1024)} KB）· 上传云端`);
+    x.say('设备', `${frame.camera} · ${frame.trigger} → 抓拍 1 帧 ${frame.file.split('/').pop()}（${Math.floor(data.byteLength / 1024)} KB）· 上传云端`);
     x.say('云端', `事件理解 ${model}（看图 · JSON）……`);
     const t0 = x.now();
     const meta = `时间 ${frame.time}；位置 ${frame.camera}；触发 ${frame.trigger}`;
