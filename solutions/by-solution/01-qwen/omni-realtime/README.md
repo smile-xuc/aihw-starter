@@ -10,7 +10,7 @@
 
 一个 Realtime 模型只会输出三样东西：文本、音频、`function_call`。要把它变成一台**能动、能看、有记忆、有时间感**的设备，靠的是模型与硬件之间那一层宿主。
 
-这套方案适用于对首字延迟和拟人度要求高的高价值单品——桌面机器人、伴随机器人、带屏陪伴设备。已知落地项目反馈：换成端到端实时链路后，用户单日活跃时长出现数量级增长（约 10 倍量级）。代价同样明确：**单位时长成本显著高于 ASR → LLM → TTS 三段式**，见第 9 节。
+这套方案适用于对首字延迟和拟人度要求高的高价值单品——桌面机器人、伴随机器人、带屏陪伴设备。已知落地项目反馈：换成端到端实时链路后，用户单日活跃时长出现数量级增长（约 10 倍量级）。代价要按代际看：3.5 代**单位时长成本显著高于 ASR → LLM → TTS 三段式**；2026-09 上架的 `qwen3.8-omni-flash-realtime` 按目录价每轮已与三段式持平或更低，成本大头转为首包与历史上下文，见第 9 节。
 
 | 该选它 | 不该选它 |
 |---|---|
@@ -240,12 +240,13 @@ input_audio_buffer.append …                (持续送 base64 音频)
 
 | 模型 | 音频最大轮次 | 音频最大时长 | 视频最大轮次 | 视频最大时长 |
 |---|---|---|---|---|
+| qwen3.8-omni-flash-realtime | 100 轮 | 600 秒 | 50 轮 | 240 秒 |
 | qwen3.5-omni-plus-realtime | 100 轮 | 600 秒 | 50 轮 | 240 秒 |
 | qwen3.5-omni-flash-realtime | 80 轮 | 480 秒 | 50 轮 | 120 秒 |
 
 超出后自动丢弃更早历史。宿主要在逼近上限前主动开新会话、重发全量 `session.update`、用「上轮会话」槽位续上，不要等服务端踢。同一会话长期不关会让上下文无限累积。
 
-> 模型线补充：音频专用的 **Qwen-Audio-3.0-Realtime（Plus / Flash）** 走同一套 Realtime WebSocket 协议，纯语音产品可优先评估——没有视觉负担，成本优于 Omni 线。轮次控制在其上多出语义轮次（`smart_turn`）与按键说话（push-to-talk）两档，并原生支持音色复刻与说话人增强。上下文上限以官方文档为准。
+> 模型线补充：音频专用的 **Qwen-Audio-3.0-Realtime（Plus / Flash）** 走同一套 Realtime WebSocket 协议，纯语音产品可优先评估——没有视觉负担；Flash 单价与 `qwen3.8-omni-flash-realtime` 相同、低于 3.5 Omni 线，但音频收发都按每秒 12.5 Token 折算（3.8 Omni 输入按每秒 7 Token），多轮历史会更贵。轮次控制在其上多出语义轮次（`smart_turn`）与按键说话（push-to-talk）两档，并原生支持音色复刻与说话人增强。上下文上限为 50 轮 / 300 秒音频（默认 20 轮）。
 
 ### 人设热切换的两条路
 
@@ -274,7 +275,7 @@ input_audio_buffer.append …                (持续送 base64 音频)
 
 **反直觉的地方**：配置 B 把工具数砍掉一半以上（129 → 62），tools 段确实省了约 31%，但 instructions 因为话术分支写细涨了约 40%，首包总量反而略增。
 
-结论：**首包预算要按「工具定义 + 提示词」合并管理**，只砍工具数不看提示词膨胀等于白砍。而首包是每次建会话都要重发一遍的，会话滚动越频繁，这笔钱付得越多。
+结论：**首包预算要按「工具定义 + 提示词」合并管理**，只砍工具数不看提示词膨胀等于白砍。而且按官方计费说明，每次生成响应都会把上下文窗口内的全部内容计为输入：首包不只在建会话时付一次，每一轮都在计费；会话滚动越频繁，重建的次数也越多。
 
 两条可直接执行的裁剪动作：
 
@@ -283,9 +284,9 @@ input_audio_buffer.append …                (持续送 base64 音频)
 
 ---
 
-## 9. 成本结构：为什么比三段式贵
+## 9. 成本结构：和三段式怎么比
 
-计费口径以[百炼定价页](https://help.aliyun.com/zh/model-studio/billing-of-model-studio)为准，这里只讲结构差异。
+计费口径以[百炼定价页](https://help.aliyun.com/zh/model-studio/model-pricing)为准，这里先讲结构差异，再给一组按目录价的单轮估算。
 
 | | 三段式（ASR → LLM → TTS） | Omni Realtime 端到端 |
 |---|---|---|
@@ -293,12 +294,23 @@ input_audio_buffer.append …                (持续送 base64 音频)
 | 语音进模型前 | 先转成文本，模型只吃文本 token | 音频直接进模型，按音频 token 计 |
 | 静默与附和 | 被 VAD 挡在 ASR 之前，几乎不计费 | 进入上下文即计费 |
 | 上下文累积 | 只累积文本 | 累积音频轮次，长会话单轮成本随历史增长 |
-| 首包 | 只在 LLM 一段计一次系统提示 | 每次建会话重发全份 instructions + tools |
+| 首包 | 系统提示只进 LLM 一段，按文本 token 计 | instructions + tools 每轮都计入输入，建会话时整份重发 |
+
+单轮估算（北京目录价，2026-10 查证；用户说 5 秒、回复约 10 秒语音、系统提示约 1,000 token、首轮）：
+
+| 链路 | 单轮 | 大头 |
+|---|---|---|
+| 三段式：`fun-asr-realtime` + `qwen-flash` + `cosyvoice-v3.5-flash` | 约 ¥0.010 | TTS 约占八成 |
+| `qwen3.5-omni-plus-realtime` | 约 ¥0.05 | 音频输出 300 元 / 百万 token |
+| `qwen3.5-omni-flash-realtime` | 约 ¥0.018 | 音频输出 107 元 / 百万 token |
+| `qwen3.8-omni-flash-realtime` | 约 ¥0.004；第 10 轮约 ¥0.006–0.008 | 音频输出 12 元 / 百万 token；instructions 与历史音频逐轮累计 |
+
+所以 3.5 代确实比三段式贵；从 3.8-Omni-Flash 起，单位时长不再是劣势，要管的是首包和历史。第 8 节那种约 4 万 token 的首包，在 3.8-Flash 上每轮多约 ¥0.06，在 3.5-Plus 上每轮多约 ¥0.40。
 
 四条降本手段，按性价比排序：
 
-1. **优先 flash 档**。官方实测口径下 flash 比 plus 快约 0.7 秒，价格档位也更低；复杂推理需求不强的陪伴场景优先 flash。
-2. **控制首包与会话滚动频率**。见第 8 节；滚动越频繁，首包成本乘以次数。
+1. **优先 flash 档**。官方实测口径下 flash 比 plus 快约 0.7 秒，价格档位也更低；`qwen3.8-omni-flash-realtime` 的音频单价又比 3.5-Flash 低一个数量级。复杂推理需求不强的陪伴场景优先 flash。
+2. **控制首包体积与会话滚动频率**。见第 8 节；首包每轮都计费，滚动越频繁还要再乘以重建次数。
 3. **裁上下文而不是等它自己丢**。逼近轮次上限前主动压缩成「上轮会话」文本，用文本 token 替代音频 token 携带历史。
 4. **场景分流**。闲聊、情绪陪伴走 Realtime；长文任务（讲故事、生成纪要、复杂搜索总结）切到文本链路再用 TTS 播报，两条链路共用同一套记忆。
 
@@ -369,7 +381,7 @@ input_audio_buffer.append …                (持续送 base64 音频)
 - 服务端事件：<https://help.aliyun.com/zh/model-studio/server-events>
 - Realtime Function Calling：<https://help.aliyun.com/zh/model-studio/qwen-function-calling>
 - 声音复刻：<https://help.aliyun.com/zh/model-studio/qwen-omni-voice-cloning>
-- 计费：<https://help.aliyun.com/zh/model-studio/billing-of-model-studio>
+- 计费：<https://help.aliyun.com/zh/model-studio/model-pricing>
 
 > 内容来源说明：本页结论基于两份真实项目的 `session` 配置快照做架构反推，已移除全部客户标识、人设名称、音色 ID 与业务话术；能力清单为通用形态，不代表任何具体产品的功能范围。
 
