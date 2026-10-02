@@ -1,6 +1,6 @@
-# 商业产品 · Agent 硬件 / 桌面盒子
+# 商业产品 · Agent 硬件 / 口袋助手 / 桌面盒子
 
-> 本页收录 Agent 硬件 / 桌面盒子方向已上市或公开众筹达成的产品。
+> 本页收录 Agent 硬件方向已上市或公开众筹达成的产品，形态包括口袋助手、桌面盒子、家庭中枢，以及胸针、语音戒指等。
 > 文件名编号与 [`solutions/by-category/`](../../../solutions/by-category/) 对齐。
 > 精选横评见 [`solutions/by-category/04-agent-hardware/04-cases.md`](../../../solutions/by-category/04-agent-hardware/04-cases.md)。
 
