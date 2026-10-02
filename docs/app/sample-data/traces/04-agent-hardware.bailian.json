@@ -1,0 +1,102 @@
+{
+ "schema": "aihw-app/sample-trace@temp",
+ "solution": "04-agent-hardware.bailian",
+ "command": "python3 run.py --mock",
+ "mode": "mock",
+ "title": "04 Agent 硬件 · 百炼工具编排参考 demo",
+ "banner_mode": "MOCK 离线模拟（--mock）",
+ "region": "cn-beijing",
+ "models": [
+  "qwen3.8-flash",
+  "qwen-audio-3.1-asr-flash"
+ ],
+ "events": [
+  {
+   "tag": "设备",
+   "text": "连接本地 mock 云端（按官方响应结构回放，不联网）"
+  },
+  {
+   "tag": "设备",
+   "text": "指令（文本）：把客厅灯关掉"
+  },
+  {
+   "tag": "设备",
+   "text": "端侧规则：本地关键词「关掉」 → 本地执行，不上云"
+  },
+  {
+   "tag": "设备",
+   "text": "灯光：客厅 → 关"
+  },
+  {
+   "tag": "盒子",
+   "text": "好的，客厅的灯已关闭。"
+  },
+  {
+   "tag": "统计",
+   "text": "指令 1 · 端侧执行 · 工具 1 次 · 不上云 · ¥0"
+  },
+  {
+   "tag": "设备",
+   "text": "麦克风 ← cmd_morning.wav（7.0 s）· 松开按键"
+  },
+  {
+   "tag": "云端",
+   "text": "转写 qwen-audio-3.1-asr-flash……"
+  },
+  {
+   "tag": "云端",
+   "text": "听到：明早七点叫我，顺便查一下杭州天气，要是下雨就提前半小时。（mock 不计时）"
+  },
+  {
+   "tag": "云端",
+   "text": "多步线索「查一下」 → qwen3.8-flash 编排（Function Calling，流式）"
+  },
+  {
+   "tag": "云端",
+   "text": "第 1 轮 → 调用 get_weather"
+  },
+  {
+   "tag": "云端",
+   "text": "天气服务（示例数据）：杭州 明天 小雨 18–23℃，降水概率 70%"
+  },
+  {
+   "tag": "云端",
+   "text": "第 2 轮 → 调用 set_alarm"
+  },
+  {
+   "tag": "设备",
+   "text": "闹钟：明天 06:30「起床」"
+  },
+  {
+   "tag": "盒子",
+   "text": "杭州明天小雨，18–23 度。闹钟已改到明早 06:30，出门记得带伞。"
+  },
+  {
+   "tag": "统计",
+   "text": "指令 2 · 云端 3 轮 · 工具 2 次 · 说完指令 → 首个工具调用 —（mock 不计时） · ¥0.0023（转写 ¥0.00022 + 编排 ¥0.0021；编排共 2201 / 110 Token）"
+  },
+  {
+   "tag": "设备",
+   "text": "盒子状态：灯 客厅关 · 闹钟 「起床」明天 06:30 · 音量 40"
+  }
+ ],
+ "finish": {
+  "models": [
+   "qwen-audio-3.1-asr-flash",
+   "qwen3.8-flash"
+  ],
+  "first_token": "—",
+  "cost_cny": 0.0023,
+  "cost_text": "0.0023",
+  "sample": "文本「把客厅灯关掉」 + cmd_morning.wav",
+  "note": "mock 用量为示意值；2 条指令：端侧 1、云端 1、断网降级 0；成本为云端任务均值；首字=说完指令→首个工具调用（含转写）"
+ },
+ "inputs": [
+  {
+   "path": "samples/cmd_morning.wav",
+   "type": "audio/wav",
+   "bytes": 223278
+  }
+ ],
+ "outputs": []
+}

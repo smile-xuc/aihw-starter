@@ -1,0 +1,75 @@
+{
+ "schema": "aihw-app/sample-trace@temp",
+ "solution": "02-ai-glasses.bailian",
+ "command": "python3 run.py --mock",
+ "mode": "mock",
+ "title": "02 AI 眼镜 · 百炼「一看即懂」参考 demo（拍照即问）",
+ "banner_mode": "MOCK 离线模拟（--mock）",
+ "region": "cn-beijing",
+ "models": [
+  "qwen3.8-omni-flash",
+  "qwen-audio-3.0-tts-flash"
+ ],
+ "events": [
+  {
+   "tag": "设备",
+   "text": "开机，连接本地 mock 云端（按官方响应与事件顺序回放，不联网）"
+  },
+  {
+   "tag": "设备",
+   "text": "按住镜腿 · 拍照 + 收音"
+  },
+  {
+   "tag": "设备",
+   "text": "麦克风 ← ask_dish.wav（3.1 s）"
+  },
+  {
+   "tag": "设备",
+   "text": "镜腿摄像头 ← dish.jpg（54 KB）"
+  },
+  {
+   "tag": "设备",
+   "text": "松开镜腿 → 上传照片和提问，同时连好播报通道"
+  },
+  {
+   "tag": "云端",
+   "text": "看图听问 qwen3.8-omni-flash（流式文字）→ 播报 qwen-audio-3.0-tts-flash（WebSocket · longanhuan_v3.6）"
+  },
+  {
+   "tag": "眼镜",
+   "text": "这是宫保鸡丁，鸡丁配花生米、干辣椒和葱段，微辣带一点甜。怕辣的话把干辣椒拨到一边，配米饭正好。"
+  },
+  {
+   "tag": "设备",
+   "text": "耳机 → out/reply_1.wav（0.7 s）"
+  },
+  {
+   "tag": "统计",
+   "text": "第 1 问 · 松开镜腿 → 首字 —（mock 不计时） · 首包语音 —（mock 不计时） · ¥0.0093（看图听问 ¥0.00048：输入 444 / 输出 47 Token；播报 ¥0.0088：88 字符）"
+  }
+ ],
+ "finish": {
+  "models": [
+   "qwen3.8-omni-flash",
+   "qwen-audio-3.0-tts-flash"
+  ],
+  "first_token": "—",
+  "cost_cny": 0.0093,
+  "cost_text": "0.0093",
+  "sample": "ask_dish.wav + dish.jpg",
+  "note": "mock 用量为示意值；1 问均值；首字=松开镜腿→首包语音；看图听问 ¥0.00048 + 播报 ¥0.0088"
+ },
+ "inputs": [
+  {
+   "path": "samples/dish.jpg",
+   "type": "image/jpeg",
+   "bytes": 56283
+  },
+  {
+   "path": "samples/ask_dish.wav",
+   "type": "audio/wav",
+   "bytes": 100878
+  }
+ ],
+ "outputs": []
+}
