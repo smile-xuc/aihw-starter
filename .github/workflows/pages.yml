@@ -1,0 +1,51 @@
+name: pages
+
+# GitHub Pages 仍是「从分支部署」（master 的 /docs，Jekyll 构建），合并即上线，不需要改仓库设置。
+# 这个 workflow 在 PR 和 master 上把 Pages 会发布的内容先检查一遍：
+#   - docs/app 自检：live-data/ 与各 demo 的 run.py 一致；注册表与回放轨迹（docs/app/data/）引用齐全
+#   - 用 Pages 同款的 Jekyll 构建 docs/，确认站点能构建
+#   - 网页 APP 冒烟测试：无头 Chrome 打开全部页面；浏览器真跑对着各 demo 的 mock.py 跑一遍
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    paths:
+      - "docs/**"
+      - "solutions/by-category/*/demo/bailian/**"
+      - "solutions/demo-standard/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: App self-check
+        run: python docs/app/tools/build.py --check
+
+      - name: Jekyll build (same as Pages)
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./docs
+          destination: ./_site
+
+      - name: App smoke test
+        run: |
+          npm install --no-save --no-audit --no-fund --prefix "$RUNNER_TEMP/pw" playwright-core@1.63.0
+          PLAYWRIGHT_CORE="$RUNNER_TEMP/pw/node_modules/playwright-core/index.mjs" \
+          CHROME="$(command -v google-chrome)" \
+          node docs/app/tools/smoke.mjs

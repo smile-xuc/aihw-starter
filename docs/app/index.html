@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; media-src 'self' blob: https://*.aliyuncs.com; connect-src 'self' https://dashscope.aliyuncs.com https://dashscope-intl.aliyuncs.com https://*.cn-beijing.maas.aliyuncs.com https://*.ap-southeast-1.maas.aliyuncs.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f7f7fa" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#18171c" media="(prefers-color-scheme: dark)">
+<meta name="description" content="AI 硬件 9 个品类的参考方案：看回放、算单次成本、看要什么硬件和合规义务；填自己的百炼 Key 可在浏览器里真跑。">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="AIHW">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>AIHW · AI 硬件方案</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="css/app.css">
+<script type="module" src="js/main.js"></script>
+</head>
+<body>
+<div class="shell">
+  <main id="view" class="view" tabindex="-1">
+    <noscript><p class="boot-note">这个页面需要开启 JavaScript。</p></noscript>
+    <p class="boot-note" id="boot-note">正在加载方案数据……</p>
+  </main>
+  <nav class="bottom-nav" aria-label="主导航">
+    <a class="nav-item" href="#/" data-nav="home"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg><span>方案</span></a>
+    <a class="nav-item" href="#/me" data-nav="me"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.3"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg><span>我的</span></a>
+  </nav>
+</div>
+<div class="toast-host" aria-live="polite"></div>
+</body>
+</html>

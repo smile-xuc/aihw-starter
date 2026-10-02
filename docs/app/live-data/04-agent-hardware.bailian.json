@@ -1,0 +1,285 @@
+{
+ "solution": "04-agent-hardware.bailian",
+ "source": "solutions/by-category/04-agent-hardware/demo/bailian",
+ "LLM_MODEL": "qwen3.8-flash",
+ "CHEAP_MODEL": "qwen3.7-flash",
+ "ASR_MODEL": "qwen-audio-3.1-asr-flash",
+ "MAX_ROUNDS": 4,
+ "SYSTEM": "角色：桌面 AI 盒子的语音助手，用工具完成用户的一句话指令。\n- 本地设备：set_light 开关灯，set_alarm 设闹钟，set_volume 调音量；云端服务：get_weather 查天气，add_calendar 记日程\n- 需要先查信息再决定的（例如「要是下雨就提前」），先调用查询工具，拿到结果再操作设备\n- 时间一律用 24 小时制 HH:MM；日期写「今天」「明天」或 YYYY-MM-DD\n- 工具返回 ok=false 时按 error 修正参数再试一次；门锁、支付、删除这类操作没有对应工具，说明需要在手机 App 上确认\n- 全部完成后用一两句口语回复，适合语音播报，不用列表和符号\n当前时间：{now}",
+ "TOOLS": [
+  {
+   "type": "function",
+   "function": {
+    "name": "set_light",
+    "description": "开关指定房间的灯（本地设备）",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "room": {
+       "type": "string",
+       "enum": [
+        "客厅",
+        "卧室",
+        "书房",
+        "厨房",
+        "全部"
+       ]
+      },
+      "on": {
+       "type": "boolean"
+      }
+     },
+     "required": [
+      "room",
+      "on"
+     ]
+    }
+   }
+  },
+  {
+   "type": "function",
+   "function": {
+    "name": "set_alarm",
+    "description": "设置闹钟（本地设备）；同一 label 再次设置会覆盖",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "time": {
+       "type": "string",
+       "description": "24 小时制 HH:MM"
+      },
+      "date": {
+       "type": "string",
+       "description": "今天 / 明天 / YYYY-MM-DD"
+      },
+      "label": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "time"
+     ]
+    }
+   }
+  },
+  {
+   "type": "function",
+   "function": {
+    "name": "set_volume",
+    "description": "调节盒子音量（本地设备）",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "level": {
+       "type": "integer",
+       "description": "0–100"
+      }
+     },
+     "required": [
+      "level"
+     ]
+    }
+   }
+  },
+  {
+   "type": "function",
+   "function": {
+    "name": "get_weather",
+    "description": "查询城市天气（云端服务）",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "city": {
+       "type": "string"
+      },
+      "date": {
+       "type": "string",
+       "description": "今天 / 明天 / YYYY-MM-DD"
+      }
+     },
+     "required": [
+      "city"
+     ]
+    }
+   }
+  },
+  {
+   "type": "function",
+   "function": {
+    "name": "add_calendar",
+    "description": "在日程里添加一项（云端服务）",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "title": {
+       "type": "string"
+      },
+      "start": {
+       "type": "string",
+       "description": "YYYY-MM-DD HH:MM"
+      },
+      "minutes": {
+       "type": "integer"
+      }
+     },
+     "required": [
+      "title",
+      "start"
+     ]
+    }
+   }
+  }
+ ],
+ "PRICES": {
+  "qwen3.8-flash": {
+   "cn-beijing": [
+    [
+     1000000,
+     0.8,
+     2.7
+    ]
+   ],
+   "ap-southeast-1": [
+    [
+     1000000,
+     1.094,
+     3.427
+    ]
+   ]
+  },
+  "qwen3.7-flash": {
+   "cn-beijing": [
+    [
+     32000,
+     0.2,
+     0.8
+    ],
+    [
+     256000,
+     0.6,
+     2.4
+    ],
+    [
+     1000000,
+     1.2,
+     4.8
+    ]
+   ],
+   "ap-southeast-1": [
+    [
+     32000,
+     0.225,
+     0.974
+    ],
+    [
+     256000,
+     0.749,
+     2.998
+    ],
+    [
+     1000000,
+     1.499,
+     5.995
+    ]
+   ]
+  },
+  "qwen-audio-3.1-asr-flash": {
+   "cn-beijing": [
+    [
+     1000000,
+     0.8,
+     2.7
+    ]
+   ],
+   "ap-southeast-1": [
+    [
+     1000000,
+     1.094,
+     3.427
+    ]
+   ]
+  }
+ },
+ "WEEKDAYS": "一二三四五六日",
+ "DEFAULT_SESSION": [
+  [
+   "text",
+   "把客厅灯关掉"
+  ],
+  [
+   "audio",
+   "samples/cmd_morning.wav"
+  ]
+ ],
+ "LOCAL_PATTERNS": [
+  [
+   "关灯",
+   "device_control"
+  ],
+  [
+   "开灯",
+   "device_control"
+  ],
+  [
+   "关掉",
+   "device_control"
+  ],
+  [
+   "打开空调",
+   "device_control"
+  ],
+  [
+   "关闭空调",
+   "device_control"
+  ],
+  [
+   "分钟后",
+   "timer"
+  ],
+  [
+   "提醒我",
+   "timer"
+  ],
+  [
+   "设个闹钟",
+   "timer"
+  ],
+  [
+   "星期几",
+   "local_fact"
+  ],
+  [
+   "几点了",
+   "local_fact"
+  ],
+  [
+   "叫我",
+   "timer"
+  ],
+  [
+   "闹钟",
+   "timer"
+  ],
+  [
+   "音量",
+   "device_control"
+  ]
+ ],
+ "HYBRID_PATTERNS": [
+  "然后",
+  "并且",
+  "同时",
+  "查一下",
+  "帮我订",
+  "发邮件",
+  "汇总",
+  "顺便"
+ ],
+ "ROOMS": [
+  "客厅",
+  "卧室",
+  "书房",
+  "厨房",
+  "全部"
+ ]
+}

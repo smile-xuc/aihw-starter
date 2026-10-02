@@ -48,6 +48,9 @@ jobs:
           format: markdown
           # The list goes through --files-from, not args: the action eval's
           # args in bash, and file names come from the PR.
+          # GitHub answers bursts of anonymous requests to its own blob/tree
+          # pages with 503, so links to this repo's master are checked against
+          # the checkout instead (missing files still fail).
           args: >-
             --verbose
             --no-progress
@@ -56,6 +59,7 @@ jobs:
             --retry-wait-time 5
             --timeout 30
             --accept 200,204,206,429
+            --remap '^https://github\.com/smile-xuc/aihw-starter/(?:blob|tree)/master/(.*)$ file://${{ github.workspace }}/$1'
             --files-from ${{ runner.temp }}/changed-files.txt
 
       # Renaming or deleting a file can break links in files the PR didn't
@@ -95,6 +99,8 @@ jobs:
           # Globs must be single-quoted. The action eval's args in bash, and
           # bash does not enable globstar, so an unquoted ** only matches one
           # directory level. Quoted patterns are expanded by lychee itself.
+          # Links to this repo's master are checked against the checkout (see
+          # the PR job above for why).
           args: >-
             --verbose
             --no-progress
@@ -103,6 +109,7 @@ jobs:
             --retry-wait-time 5
             --timeout 30
             --accept 200,204,206,429
+            --remap '^https://github\.com/smile-xuc/aihw-starter/(?:blob|tree)/master/(.*)$ file://${{ github.workspace }}/$1'
             README.md CONTRIBUTING.md faq.md CHANGELOG.md
             'awesome/**/*.md'
             'awesome/open-source/*.html'

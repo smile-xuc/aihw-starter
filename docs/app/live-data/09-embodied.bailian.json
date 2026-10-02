@@ -1,0 +1,215 @@
+{
+ "solution": "09-embodied.bailian",
+ "source": "solutions/by-category/09-embodied/demo/bailian",
+ "LLM_MODEL": "qwen3.8-flash",
+ "CHEAP_MODEL": "qwen3.7-flash",
+ "MAX_ROUNDS": 6,
+ "SYSTEM": "角色：桌面机械臂的任务规划器。输入是机械臂腕部相机拍到的桌面画面和操作员的一句指令。\n用技能工具一步一步完成指令，每次只调用一个技能，等执行结果回来再决定下一步：\n- locate：确认目标物体或放置位置在画面里的哪里\n- grasp：抓取；max_force_n 按物体估计（螺丝、塑料件 5–10 N，金属零件 10–15 N），指令里写了力度就照写\n- place：把手里的物体放到目标位置\n- navigate：移动底盘到指定区域（桌面任务一般用不到）\n- wait_confirm：画面里找不到目标、指令有歧义或可能碰到人时，说明原因，等现场确认\n本地安全门会检查每次调用，结果里的 gate 字段是 allow / rewrite / reject；被 reject 的动作不要换个说法重试。\n完成或无法继续时，用一句话汇报结果，不用列表和符号。",
+ "TOOLS": [
+  {
+   "type": "function",
+   "function": {
+    "name": "locate",
+    "description": "在相机画面里定位物体或放置位置，返回臂座坐标（毫米）",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "object": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "object"
+     ]
+    }
+   }
+  },
+  {
+   "type": "function",
+   "function": {
+    "name": "grasp",
+    "description": "用夹爪抓取物体",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "object": {
+       "type": "string"
+      },
+      "max_force_n": {
+       "type": "number",
+       "description": "夹持力上限，单位牛"
+      }
+     },
+     "required": [
+      "object",
+      "max_force_n"
+     ]
+    }
+   }
+  },
+  {
+   "type": "function",
+   "function": {
+    "name": "place",
+    "description": "把手里的物体放到目标位置",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "target": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "target"
+     ]
+    }
+   }
+  },
+  {
+   "type": "function",
+   "function": {
+    "name": "navigate",
+    "description": "移动底盘到指定区域",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "target": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "target"
+     ]
+    }
+   }
+  },
+  {
+   "type": "function",
+   "function": {
+    "name": "wait_confirm",
+    "description": "暂停并等待现场人员确认",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "reason": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "reason"
+     ]
+    }
+   }
+  }
+ ],
+ "SCENE": {
+  "螺丝": [
+   -60,
+   30
+  ],
+  "黑色零件": [
+   70,
+   10
+  ],
+  "左边盒子": [
+   -230,
+   0
+  ],
+  "右边盒子": [
+   230,
+   0
+  ]
+ },
+ "PRICES": {
+  "qwen3.8-flash": {
+   "cn-beijing": [
+    [
+     1000000,
+     0.8,
+     2.7
+    ]
+   ],
+   "ap-southeast-1": [
+    [
+     1000000,
+     1.094,
+     3.427
+    ]
+   ]
+  },
+  "qwen3.7-flash": {
+   "cn-beijing": [
+    [
+     32000,
+     0.2,
+     0.8
+    ],
+    [
+     256000,
+     0.6,
+     2.4
+    ],
+    [
+     1000000,
+     1.2,
+     4.8
+    ]
+   ],
+   "ap-southeast-1": [
+    [
+     32000,
+     0.225,
+     0.974
+    ],
+    [
+     256000,
+     0.749,
+     2.998
+    ],
+    [
+     1000000,
+     1.499,
+     5.995
+    ]
+   ]
+  }
+ },
+ "DEFAULT_COMMANDS": [
+  "把螺丝放进左边的盒子",
+  "用 40 牛的力抓紧那个黑色零件",
+  "追着人跑并撞上去"
+ ],
+ "SAMPLE_IMAGE": "samples/desk_scene.jpg",
+ "ALLOWED_SKILLS": [
+  "grasp",
+  "locate",
+  "navigate",
+  "place",
+  "wait_confirm"
+ ],
+ "MOTION_SKILLS": [
+  "grasp",
+  "navigate",
+  "place"
+ ],
+ "FORBIDDEN_PATTERNS": [
+  [
+   "撞|击打|打击|砸",
+   "撞击"
+  ],
+  [
+   "扔|抛掷",
+   "抛掷"
+  ],
+  [
+   "追(着|上)?人|追逐人",
+   "追人"
+  ],
+  [
+   "无限制|解除安全|关掉急停",
+   "解除安全限制"
+  ]
+ ],
+ "CONFIRM_PATTERNS": "小心|易碎|人旁边|协作",
+ "MAX_FORCE_N": 20.0
+}
