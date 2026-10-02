@@ -12,7 +12,7 @@
 | 方案 2 · 千问大模型串接（流式） | [scripts/method2_streaming_sdk.py](./scripts/method2_streaming_sdk.py) | ASR + LLM 流式 + TTS 流式输入 |
 | 方案 3 · Qwen-Omni 端到端（HTTP 流式） | [scripts/method3_omni_sdk.py](./scripts/method3_omni_sdk.py) / [scripts/method3_omni_cli.sh](./scripts/method3_omni_cli.sh) | 一个模型同时吞音频吐音频 |
 | 方案 3b · Qwen-Omni Realtime（WebSocket 双工） | [scripts/method3_omni_realtime_sdk.py](./scripts/method3_omni_realtime_sdk.py) | `qwen3.5-omni-flash-realtime`，体感延迟约 350ms |
-| 方案 4 · 百炼多模态交互开发套件（push2talk） | [scripts/method4_duplex_sdk.py](./scripts/method4_duplex_sdk.py) | WebSocket 接入 multimodal-dialog，从 StopSpeech 到首帧 TTS |
+| 方案 4 · 百炼硬件 Agent 开发平台（Agent Studio for Hardware，原多模态交互开发套件，push2talk） | [scripts/method4_duplex_sdk.py](./scripts/method4_duplex_sdk.py) | WebSocket 接入 multimodal-dialog，从 StopSpeech 到首帧 TTS |
 
 > 待补：Qwen-Audio-3.0-Realtime 实测、端云协同方案、套件全双工（非 push2talk）对照。
 
@@ -139,7 +139,7 @@ CLI 版适合快速验证 `bl` 命令是否可用，SDK 版才能精细拆分 AS
 
 WebSocket 双工协议 + server_vad，体感延迟 ≈ 330～394ms，比 HTTP 流式再快 3 倍。支持语义打断和连续多轮对话。需配置 `DASHSCOPE_WORKSPACE_ID` 环境变量。
 
-### 方案 4 · 百炼多模态交互开发套件（全双工套件方案）
+### 方案 4 · 百炼硬件 Agent 开发平台（全双工套件方案）
 
 | 级别 | 体感延迟 |
 |---|---:|

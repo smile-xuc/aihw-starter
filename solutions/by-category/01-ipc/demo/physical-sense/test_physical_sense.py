@@ -2,7 +2,7 @@
 物理世界感知智能体 · IPC 摄像头画面洞察 Demo
 ================================================
 
-基于阿里云百炼「多模态交互开发套件」 + 「物理世界感知 Agent · IPC 场景」，
+基于「百炼硬件 Agent 开发平台（Agent Studio for Hardware，原多模态交互开发套件）」 + 「物理世界感知 Agent · IPC 场景」，
 对摄像头事件帧 / 图片进行结构化描述（object / action / event / description / title）。
 
 > ⚠️ 本脚本由 AI 生成（aihw-starter 项目示例代码）。

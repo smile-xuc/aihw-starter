@@ -1,4 +1,4 @@
-"""方案 4：百炼多模态交互开发套件（全双工套件方案）
+"""方案 4：百炼硬件 Agent 开发平台（Agent Studio for Hardware，原多模态交互开发套件，全双工）
 
 链路：PCM 音频 → WebSocket (push2talk) → multimodal-dialog → 流式音频输出
 体感延迟 = 从 StopSpeech 发出到收到第一帧 TTS 音频 binary 的时间
@@ -255,7 +255,7 @@ def run_one(sample_id: str) -> dict:
 
 
 def main():
-    print("[方案4] 百炼多模态交互开发套件（push2talk）")
+    print("[方案4] 百炼硬件 Agent 开发平台（push2talk）")
     print(f"协议: WebSocket ({WS_URL})\n")
 
     results = []

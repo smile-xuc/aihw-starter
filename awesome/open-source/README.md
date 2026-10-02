@@ -5,7 +5,7 @@
 
 ## 1. 综合索引（HTML 大盘）
 
-完整项目集（137+ 项目，15 个品类）：[`ai-hardware-projects.html`](./ai-hardware-projects.html)
+完整项目集（138+ 项目，15 个品类）：[`ai-hardware-projects.html`](./ai-hardware-projects.html)
 
 可在浏览器打开 HTML 进行搜索、分类筛选、Star 数排序。**HTML 是浏览/检索大盘**，按能力轴分类（语音 AI、视觉 AI、机器人、可穿戴、芯片平台等）。
 

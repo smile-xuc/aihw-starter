@@ -8,7 +8,7 @@
 
 | | 成套产品 | 原子能力 |
 |---|---|---|
-| 代表 | **百炼 · 多模态交互开发套件** | **百炼 CLI + DashScope API** |
+| 代表 | **百炼硬件 Agent 开发平台（Agent Studio for Hardware，原多模态交互开发套件）** | **百炼 CLI + DashScope API** |
 | 定位 | 端到端打包，低代码上线 | 按需组合，灵活度最高 |
 | 适合 | 快速 POC / 品牌商 / 算法资源有限的团队 | 自研栈成熟、需精细调优的开发者 |
 | 交付物 | 端侧 SDK + 云端全链路 + 可视化管理平台 | 单个 API / CLI 命令 |
@@ -16,7 +16,7 @@
 
 ---
 
-### 1.1 成套产品：百炼 · 多模态交互开发套件
+### 1.1 成套产品：百炼硬件 Agent 开发平台
 
 > 文档入口：<https://help.aliyun.com/zh/model-studio/multimodal-products-overview>
 
@@ -175,7 +175,7 @@ Realtime 协议下目前有三条模型线：**Qwen-Omni-Realtime**（全模态�
 
 ```
 成套产品路径（推荐品牌商 / 快速 POC）：
-   百炼控制台 → 多模态交互开发套件 → 集成端侧 SDK → 上线
+   百炼控制台 → 百炼硬件 Agent 开发平台 → 集成端侧 SDK → 上线
                        ↓
             可视化配置：模型 / 提示词 / 知识库 / Agent
 
