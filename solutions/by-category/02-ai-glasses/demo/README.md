@@ -14,7 +14,15 @@
 
 > 本目录存放 AI 眼镜品类的可运行示例代码，与 [`02-solution.md`](../02-solution.md) 的两条路线对应。
 
-## 已有 demo
+## 参考 demo（品类 × 栈）
+
+按 [demo 统一标准](../../../demo-standard/README.md) 组织：每个栈一个目录，三步跑通，无 Key 自动 mock。
+
+| 栈 | 目录 | 场景 | 状态 |
+|---|---|---|---|
+| 百炼 | [`bailian/`](./bailian/) | 按住镜腿拍照提问 → `qwen3.8-omni-flash` 看图听问 + `qwen-audio-3.0-tts-flash` 流式播报；`--realtime` 用 `qwen3.8-omni-flash-realtime` 给 AI 打电话（画面 1 帧/秒） | 待真 Key 验证 |
+
+## 专题 demo
 
 | Demo | 路线 | 说明 |
 |---|---|---|
