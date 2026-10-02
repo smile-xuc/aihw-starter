@@ -1,0 +1,159 @@
+{
+ "schema": "aihw/trace@0.1",
+ "solution": "03-toys-companion.bailian",
+ "variant": "default",
+ "mode": "mock",
+ "kit": "0.3",
+ "args": [
+  "--mock"
+ ],
+ "title": "03 AI 玩具 / 陪伴 · 百炼实时语音参考 demo",
+ "region": "cn-beijing",
+ "models": [
+  "qwen3.8-omni-flash-realtime"
+ ],
+ "timing": "none",
+ "events": [
+  {
+   "i": 0,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "开机，连接本地 mock 云端（按官方事件顺序回放，不联网）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 1,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "会话就绪：音色 longanlingxin · 按键说话（Manual） · 已注册 toy_action",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 2,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "按键按下 · 灯光：蓝光（聆听中）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 3,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "麦克风 ← kid_ask_story.wav（2.3 s）",
+   "lines": [],
+   "assets": [
+    "samples/kid_ask_story.wav"
+   ]
+  },
+  {
+   "i": 4,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "眼睛摄像头 ← toy_cam.jpg（30 KB）",
+   "lines": [],
+   "assets": [
+    "samples/toy_cam.jpg"
+   ]
+  },
+  {
+   "i": 5,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "按键松开 → 提交本轮",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 6,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "听到：帮我讲一个关于恐龙的小故事。",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 7,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "动作：挥挥手 · 灯光：彩虹灯（toy_action）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 8,
+   "t_ms": null,
+   "tag": "玩具",
+   "kind": "result",
+   "text": "哇，小手里举着一只绿色的剑龙呀！它背上那排橙色的骨板，像一串小帆。从前，有只小剑龙叫阿绿，每天早上背着骨板去晒太阳。有一天，它听见草丛里有小三角龙在哭，原来是找不到妈妈了。阿绿让小三角龙跟着自己骨板上的光，一起找到了妈妈。小朋友觉得阿绿勇敢吗？",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 9,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "扬声器 → out/reply_1.wav（2.1 s）",
+   "lines": [],
+   "assets": [
+    "out/reply_1.wav"
+   ]
+  },
+  {
+   "i": 10,
+   "t_ms": null,
+   "tag": "统计",
+   "kind": "stats",
+   "text": "第 1 轮 · 首包音频 —（mock 不计时） · ¥0.0067（输入 1582 / 输出 420 Token）",
+   "lines": [],
+   "assets": []
+  }
+ ],
+ "result": {
+  "models": [
+   "qwen3.8-omni-flash-realtime"
+  ],
+  "first_token_ms": null,
+  "cost": {
+   "low": 0.006657,
+   "high": 0.006657
+  },
+  "sample": "kid_ask_story.wav + toy_cam.jpg",
+  "note": "mock 用量为示意值；1 轮均值；首字=松开按键→首包音频；含 toy_action"
+ },
+ "inputs": [
+  {
+   "path": "samples/kid_ask_story.wav",
+   "media_type": "audio/wav",
+   "bytes": 74318,
+   "asset": "assets/03-toys-companion.bailian/samples/kid_ask_story.wav"
+  },
+  {
+   "path": "samples/toy_cam.jpg",
+   "media_type": "image/jpeg",
+   "bytes": 31044,
+   "asset": "assets/03-toys-companion.bailian/samples/toy_cam.jpg"
+  }
+ ],
+ "outputs": [
+  {
+   "path": "out/reply_1.wav",
+   "media_type": "audio/wav",
+   "bytes": 100844,
+   "text": null,
+   "asset": "assets/03-toys-companion.bailian/outputs/default/reply_1.wav"
+  }
+ ],
+ "error": null
+}

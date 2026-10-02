@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/smile-xuc/aihw-starter/blob/master/solutions/demo-standard/stack.schema.json",
+  "title": "aihw-starter 栈声明 aihw/stack@0.1",
+  "description": "一个栈要用户自己填的凭证与接入点，以及接入点的推导规则。字段说明见 solutions/demo-standard/README.md「APP 数据」一节。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "name", "vendor", "docs", "storage", "fields", "endpoints", "auth", "security_advice"],
+  "properties": {
+    "schema": {"const": "aihw/stack@0.1"},
+    "id": {"enum": ["bailian", "xiaozhi", "tuyaopen", "volcengine", "agora", "tencent"]},
+    "name": {"type": "string", "minLength": 2},
+    "vendor": {"type": "string"},
+    "docs": {"type": "array", "items": {"$ref": "#/$defs/link"}},
+    "storage": {"const": "local-only"},
+    "fields": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["key", "group", "label", "input", "required", "default", "options", "placeholder", "pattern", "help", "link"],
+        "properties": {
+          "key": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"},
+          "group": {"enum": ["credential", "endpoint"]},
+          "label": {"type": "string"},
+          "input": {"enum": ["secret", "text", "select", "url"]},
+          "required": {"type": "boolean"},
+          "default": {"type": ["string", "null"]},
+          "options": {
+            "type": ["array", "null"],
+            "items": {"type": "object", "additionalProperties": false, "required": ["value", "label"],
+                      "properties": {"value": {"type": "string"}, "label": {"type": "string"}}}
+          },
+          "placeholder": {"type": ["string", "null"]},
+          "pattern": {"type": ["string", "null"]},
+          "help": {"type": "string"},
+          "link": {"oneOf": [{"$ref": "#/$defs/link"}, {"type": "null"}]}
+        },
+        "allOf": [{"if": {"properties": {"input": {"const": "select"}}},
+                   "then": {"properties": {"options": {"type": "array", "minItems": 1}}}}]
+      }
+    },
+    "endpoints": {
+      "type": "object", "additionalProperties": false, "required": ["roots", "services"],
+      "properties": {
+        "roots": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["when", "label", "http", "ws"],
+            "properties": {
+              "when": {"type": "object", "additionalProperties": {"type": "string"}},
+              "label": {"type": "string"},
+              "http": {"type": ["string", "null"], "pattern": "^https://"},
+              "ws": {"type": ["string", "null"], "pattern": "^wss://"}
+            }
+          }
+        },
+        "services": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["id", "label", "url", "browser", "browser_note"],
+            "properties": {
+              "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+              "label": {"type": "string"},
+              "url": {"type": "string", "pattern": "^\\{(http|ws)\\}"},
+              "browser": {"enum": ["ok", "blocked", "untested"]},
+              "browser_note": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "auth": {
+      "type": "object", "additionalProperties": false, "required": ["type", "header", "value"],
+      "properties": {"type": {"enum": ["bearer", "header", "none"]}, "header": {"type": ["string", "null"]},
+                     "value": {"type": ["string", "null"]}}
+    },
+    "security_advice": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {
+    "link": {"type": "object", "additionalProperties": false, "required": ["title", "url"],
+             "properties": {"title": {"type": "string"}, "url": {"type": ["string", "null"], "pattern": "^https://"}}}
+  }
+}

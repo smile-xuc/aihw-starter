@@ -5,7 +5,6 @@
 """
 from __future__ import annotations
 
-import datetime as dt
 import json
 import re
 from pathlib import Path
@@ -84,7 +83,7 @@ def save_memory(path: Path, memory: dict, diary: dict, name: str, today: str) ->
 def write(http, cfg: kit.Config, *, model: str, name: str, history: list[tuple[str, str]], memory: dict,
           turns: int, favorite: str) -> tuple[dict, tuple[int, int]]:
     """流式请求日记 JSON，返回（日记, (输入 Token, 输出 Token)）。"""
-    facts = {"date": dt.date.today().isoformat(), "turns": turns, "favorite_action": favorite,
+    facts = {"date": kit.today(cfg).isoformat(), "turns": turns, "favorite_action": favorite,
              "known_memories": [m.get("content") for m in (memory.get("memories") or [])[-RECALL_MEMORIES:]]}
     log = "\n".join(f"{who}：{text}" for who, text in history)
     payload = {

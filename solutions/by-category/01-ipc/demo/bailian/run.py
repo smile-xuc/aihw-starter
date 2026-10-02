@@ -307,7 +307,8 @@ def main() -> None:
     camera, events, calls = Camera(), [], []
     try:
         for index, frame in enumerate(frames, 1):
-            kit.say("设备", f"{frame.camera} · {frame.trigger} → 抓拍 1 帧（{len(frame.data) // 1024} KB）· 上传云端")
+            kit.say("设备", f"{frame.camera} · {frame.trigger} → 抓拍 1 帧 {Path(frame.image).name}"
+                            f"（{len(frame.data) // 1024} KB）· 上传云端")
             kit.say("云端", f"事件理解 {model}（看图 · JSON）……")
             card, call = describe(http, cfg, model, frame)
             event = {"id": index, "time": frame.time.strftime(TIME_FMT), "camera": frame.camera,

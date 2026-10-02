@@ -1,0 +1,222 @@
+{
+ "schema": "aihw/trace@0.1",
+ "solution": "08-smart-watch.bailian",
+ "variant": "default",
+ "mode": "mock",
+ "kit": "0.3",
+ "args": [
+  "--mock"
+ ],
+ "title": "08 智能手表 · 百炼健康日报参考 demo",
+ "region": "cn-beijing",
+ "models": [
+  "qwen3.7-flash"
+ ],
+ "timing": "none",
+ "events": [
+  {
+   "i": 0,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "连接本地 mock 云端（按官方响应结构回放，不联网）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 1,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "手表 → 手机 App 同步完成：day_normal.json（11 项聚合指标，不含原始波形）",
+   "lines": [],
+   "assets": [
+    "samples/day_normal.json"
+   ]
+  },
+  {
+   "i": 2,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "本地红线：未触发",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 3,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "日报 qwen3.7-flash（流式 · JSON Schema）……",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 4,
+   "t_ms": null,
+   "tag": "手表",
+   "kind": "result",
+   "text": "表盘卡片：",
+   "lines": [
+    "╭────────────────────────────╮",
+    "│ 今日健康            需关注 │",
+    "│ 恢复偏慢，今晚早点睡       │",
+    "│ ────────────────────────── │",
+    "│ 黄 夜间血氧最低 93%，低于  │",
+    "│    94% 参考值              │",
+    "│ 黄 静息心率 72，比 7 日均  │",
+    "│    值高 10                 │",
+    "│ 黄 总睡眠 5 小时 40 分，不 │",
+    "│    足 6 小时               │",
+    "│ > 今晚提前 30 分钟上床     │",
+    "│ > 白天补 20 分钟轻松步行   │",
+    "│ ────────────────────────── │",
+    "│ 以上为 AI 健康参考，不替代 │",
+    "│ 专业医疗意见。             │",
+    "╰────────────────────────────╯"
+   ],
+   "assets": []
+  },
+  {
+   "i": 5,
+   "t_ms": null,
+   "tag": "App",
+   "kind": "result",
+   "text": "推送日报 → out/report_day_normal.json",
+   "lines": [],
+   "assets": [
+    "out/report_day_normal.json"
+   ]
+  },
+  {
+   "i": 6,
+   "t_ms": null,
+   "tag": "统计",
+   "kind": "stats",
+   "text": "day_normal.json · 同步完成 → 首字 —（mock 不计时） · ¥0.00038（输入 790 / 输出 279 Token）",
+   "lines": [],
+   "assets": [
+    "samples/day_normal.json"
+   ]
+  },
+  {
+   "i": 7,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "手表 → 手机 App 同步完成：day_alert.json（11 项聚合指标，不含原始波形）",
+   "lines": [],
+   "assets": [
+    "samples/day_alert.json"
+   ]
+  },
+  {
+   "i": 8,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "本地红线 ×1 → 震动 2 次 + 表盘弹窗：血氧最低 87%，低于 90%",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 9,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "日报 qwen3.7-flash（流式 · JSON Schema）……",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 10,
+   "t_ms": null,
+   "tag": "手表",
+   "kind": "result",
+   "text": "表盘卡片：",
+   "lines": [
+    "╭────────────────────────────╮",
+    "│ 今日健康          红线提醒 │",
+    "│ 血氧触发红线，今天多休息   │",
+    "│ ────────────────────────── │",
+    "│ 红 血氧最低 87%，低于 90%  │",
+    "│ 黄 静息心率 84，比 7 日均  │",
+    "│    值高 22                 │",
+    "│ 黄 深睡 41 分钟，偏少      │",
+    "│ > 今天避免剧烈运动和饮酒   │",
+    "│ > 红线反复出现请咨询医生   │",
+    "│ ────────────────────────── │",
+    "│ 以上为 AI 健康参考，不替代 │",
+    "│ 专业医疗意见。             │",
+    "╰────────────────────────────╯"
+   ],
+   "assets": []
+  },
+  {
+   "i": 11,
+   "t_ms": null,
+   "tag": "App",
+   "kind": "result",
+   "text": "推送日报 → out/report_day_alert.json",
+   "lines": [],
+   "assets": [
+    "out/report_day_alert.json"
+   ]
+  },
+  {
+   "i": 12,
+   "t_ms": null,
+   "tag": "统计",
+   "kind": "stats",
+   "text": "day_alert.json · 同步完成 → 首字 —（mock 不计时） · ¥0.00038（输入 806 / 输出 268 Token）",
+   "lines": [],
+   "assets": [
+    "samples/day_alert.json"
+   ]
+  }
+ ],
+ "result": {
+  "models": [
+   "qwen3.7-flash"
+  ],
+  "first_token_ms": null,
+  "cost": {
+   "low": 0.000378,
+   "high": 0.000378
+  },
+  "sample": "day_normal.json + day_alert.json",
+  "note": "mock 用量为示意值；2 份日报均值；首字=数据同步完成→日报首个 token"
+ },
+ "inputs": [
+  {
+   "path": "samples/day_alert.json",
+   "media_type": "application/json",
+   "bytes": 199,
+   "asset": "assets/08-smart-watch.bailian/samples/day_alert.json"
+  },
+  {
+   "path": "samples/day_normal.json",
+   "media_type": "application/json",
+   "bytes": 199,
+   "asset": "assets/08-smart-watch.bailian/samples/day_normal.json"
+  }
+ ],
+ "outputs": [
+  {
+   "path": "out/report_day_alert.json",
+   "media_type": "application/json",
+   "bytes": 1016,
+   "text": "{\n  \"model\": \"qwen3.7-flash\",\n  \"input\": {\n    \"gender\": \"女\",\n    \"age\": 32,\n    \"bmi\": 21.5,\n    \"rhr\": 84,\n    \"rhr_avg7\": 62,\n    \"spo2\": 95.0,\n    \"spo2_min\": 87.0,\n    \"deep_sleep_min\": 41,\n    \"total_sleep_min\": 362,\n    \"steps\": 3100,\n    \"cal\": 1420\n  },\n  \"local_red_lines\": [\n    {\n      \"metric\": \"spo2\",\n      \"text\": \"血氧最低 87%，低于 90%\"\n    }\n  ],\n  \"report\": {\n    \"summary\": \"血氧触发红线，今天多休息\",\n    \"alerts\": [\n      {\n        \"level\": \"red\",\n        \"metric\": \"spo2\",\n        \"text\": \"血氧最低 87%，低于 90%\"\n      },\n      {\n        \"level\": \"yellow\",\n        \"metric\": \"rhr\",\n        \"text\": \"静息心率 84，比 7 日均值高 22\"\n      },\n      {\n        \"level\": \"yellow\",\n        \"metric\": \"sleep\",\n        \"text\": \"深睡 41 分钟，偏少\"\n      }\n    ],\n    \"advice\": [\n      \"今天避免剧烈运动和饮酒\",\n      \"红线反复出现请咨询医生\"\n    ],\n    \"disclaimer\": \"以上为 AI 健康参考，不替代专业医疗意见。\"\n  }\n}\n",
+   "asset": null
+  },
+  {
+   "path": "out/report_day_normal.json",
+   "media_type": "application/json",
+   "bytes": 955,
+   "text": "{\n  \"model\": \"qwen3.7-flash\",\n  \"input\": {\n    \"gender\": \"女\",\n    \"age\": 32,\n    \"bmi\": 21.5,\n    \"rhr\": 72,\n    \"rhr_avg7\": 62,\n    \"spo2\": 97.0,\n    \"spo2_min\": 93.0,\n    \"deep_sleep_min\": 48,\n    \"total_sleep_min\": 340,\n    \"steps\": 4200,\n    \"cal\": 1600\n  },\n  \"local_red_lines\": [],\n  \"report\": {\n    \"summary\": \"恢复偏慢，今晚早点睡\",\n    \"alerts\": [\n      {\n        \"level\": \"yellow\",\n        \"metric\": \"spo2\",\n        \"text\": \"夜间血氧最低 93%，低于 94% 参考值\"\n      },\n      {\n        \"level\": \"yellow\",\n        \"metric\": \"rhr\",\n        \"text\": \"静息心率 72，比 7 日均值高 10\"\n      },\n      {\n        \"level\": \"yellow\",\n        \"metric\": \"sleep\",\n        \"text\": \"总睡眠 5 小时 40 分，不足 6 小时\"\n      }\n    ],\n    \"advice\": [\n      \"今晚提前 30 分钟上床\",\n      \"白天补 20 分钟轻松步行\"\n    ],\n    \"disclaimer\": \"以上为 AI 健康参考，不替代专业医疗意见。\"\n  }\n}\n",
+   "asset": null
+  }
+ ],
+ "error": null
+}

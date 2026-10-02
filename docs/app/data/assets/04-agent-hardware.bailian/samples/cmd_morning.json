@@ -1,0 +1,14 @@
+{
+  "engine": "Kokoro-82M (Apache-2.0)",
+  "duration_ms": 6975,
+  "sentences": [
+    {
+      "speaker": "",
+      "speaker_id": 0,
+      "voice": "zf_xiaoxiao",
+      "begin_time": 0,
+      "end_time": 6525,
+      "text": "明早七点叫我，顺便查一下杭州天气，要是下雨就提前半小时。"
+    }
+  ]
+}

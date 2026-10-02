@@ -1,8 +1,8 @@
-# 百炼参考 demo 统一标准 v0.2
+# 百炼参考 demo 统一标准 v0.3
 
 > 目标：9 个品类各有一个「百炼参考 demo」——填入自己的百炼 Key，在本机用文件或麦克风 / 摄像头模拟设备，真实跑通一次；没有 Key 时自动 mock，供 CI 和快速体验。以后接入小智、TuyaOpen、火山等栈，按同一结构并列放置。
 >
-> 试点：[03 AI 玩具 / 陪伴（实时语音）](../by-category/03-toys-companion/demo/bailian/) · [07 录音卡（非实时）](../by-category/07-recorder/demo/bailian/)。模板：[`templates/bailian/`](./templates/bailian/)。v0.2 相对 v0.1 的变化见文末「十四、版本」。
+> 试点：[03 AI 玩具 / 陪伴（实时语音）](../by-category/03-toys-companion/demo/bailian/) · [07 录音卡（非实时）](../by-category/07-recorder/demo/bailian/)。模板：[`templates/bailian/`](./templates/bailian/)。配套网页 APP 读的注册表、回放轨迹和凭证声明见「十四、APP 数据」；各版本的变化见文末「十五、版本」。
 
 ## 一、目录：品类 × 栈
 
@@ -40,6 +40,7 @@ solutions/by-category/<品类>/demo/
 | `AIHW_VERIFIED_BY` | 否 | 验证人 GitHub ID，`--record` 时写入 |
 
 - Key、地域、业务空间三者必须属于同一地域，否则接口返回 401
+- 变量名与栈声明 [`stacks/bailian.yaml`](./stacks/bailian.yaml) 一致（`check.py` 校验）：配套 APP 的填写表单用同一套名字，填好的值可以直接导出成 `.env`
 - `.env` 可放在 demo 目录或仓库根目录；根目录放一份，全部 demo 共用。`.env` 已被 `.gitignore` 忽略
 - 只读取 `DASHSCOPE_*` / `AIHW_*` 变量；空值、`xxx` / `your` 之类占位符一律视为未填
 - 有 Key 但缺必需的业务空间 ID 时直接报错退出，不静默降级成 mock
@@ -52,11 +53,13 @@ python3 run.py            # 有 Key：真跑；没有 Key：自动 mock，并在
 python3 run.py --mock     # 强制 mock（CI 用）
 python3 run.py --record   # 真跑成功后把一行验证记录追加到 VERIFY.md
 python3 run.py --region ap-southeast-1   # 临时切地域
+python3 run.py --trace out/trace.json    # 把这次运行写成回放轨迹，可在配套 APP 里打开（见「十四、APP 数据」）
 ```
 
 - `--mock` 只用标准库，不联网、不读写云端；live 依赖在 live 分支里才导入
 - mock 必须走与 live 相同的协议代码：只把传输层换成 `mock.py` 里的假实现（WebSocket 事件或 HTTP 响应），按官方文档的事件顺序和字段回放
-- 输出统一用 `[设备]`（模拟硬件动作）、`[云端]`（接口事件）、`[玩具]` / `[App]` 等（用户看到或听到的结果）、`[统计]`（延迟与成本）四类日志行，让硬件场景一眼可见
+- mock 输出必须可复现：同一份代码在不同日期、不同机器、Python 3.9 与 3.12 下逐字相同。要用日期时间时调 `demo_kit.today(cfg)` / `demo_kit.now(cfg)`（mock 固定为 2026-10-01 上午 9 点），不用 `date.today()`、随机数和真实耗时。注册表的回放轨迹由 mock 输出生成，CI 逐字节比对
+- 输出统一用 `[设备]`（模拟硬件动作）、`[云端]`（接口事件）、`[玩具]` / `[App]` 等（用户看到或听到的结果）、`[统计]`（延迟与成本）四类日志行，让硬件场景一眼可见；多行内容（表盘卡片、字符画、纪要）缩进写在所属日志行下面，回放轨迹会把它们归到同一条
 - 结束时调用 `demo_kit.finish()` 打印一行 VERIFY.md 格式的验证记录；mock 的记录只打印、不写入
 
 ## 四、README「三步跑通」
@@ -74,22 +77,40 @@ python3 run.py --region ap-southeast-1   # 临时切地域
 
 ## 五、`solution.yaml`（最小清单）
 
-完整约束见 [`solution.schema.json`](./solution.schema.json)，示例见两个试点。
+完整约束见 [`solution.schema.json`](./solution.schema.json)，示例见两个试点。v0.3 起用 `aihw/solution@0.2`：在 @0.1 上只加字段，`reference` 方案要填 `features`、`experience`、`hardware` 和 `metrics.unit`。
 
 | 字段 | 说明 |
 |---|---|
-| `schema` | 固定 `aihw/solution@0.1` |
+| `schema` | `aihw/solution@0.2`；旧的 `@0.1` 清单仍能通过校验，新字段只对 @0.2 的 `reference` 方案强制 |
 | `id` | `<品类目录>.<栈>`，如 `03-toys-companion.bailian`；必须与所在目录一致 |
 | `title` / `summary` | 名称；一句话「设备输入 → 模型 → 设备输出」 |
 | `category` / `stack` / `kind` | 品类目录名；栈；`reference`（本仓可运行）或 `pointer`（只指向上游，此时必填 `upstream`） |
-| `models[]` | 实际调用的模型 ID 与用途，一个模型一项 |
-| `regions` | 两地都核实过可用的地域 |
-| `env` | 真跑必需的环境变量 |
+| `models[]` | 实际调用的模型 ID 与用途，一个模型一项；某个模型只在部分地域可用时加 `regions`（如 08 的播报只写 `[cn-beijing]`） |
+| `regions` | 主链路两地都核实过可用的地域 |
+| `env` | 真跑必需的变量，只能用栈声明 `stacks/<栈>.yaml` 里的字段 |
+| `features` | 能力标签（`voice-input` `vision` `tool-calling` `offline-fallback` 等），配套 APP 按它筛选 |
+| `experience` | `archetype`：回放舞台（`realtime-voice` / `vision` / `recorder` / `tools`）；`cover`：卡片封面图（`samples/` 下的文件，可空）；`variants`：玩法列表，第一个必须是 `id: default`、`args: []`，其余如 `--realtime`、`--offline` 各一项，每项写 `title`、`args` 和用到的接入点 `services`（`compatible` / `api` / `ws-inference` / `realtime`），舞台不同时另写 `archetype`。每个玩法生成一份回放轨迹 |
+| `hardware` | `parts`：做成产品要的硬件部件，每项 `{part, role, simulated_by}`；`chips` / `boards`：验证过的芯片与板卡，没有就写 `[]` |
 | `device.inputs` / `device.outputs` | 模拟方式，如 `wav` `mp3` `mic` `jpg` `camera` `url` / `speaker` `wav` `markdown` `json` `console` |
 | `run.setup` / `run.live` / `run.mock` | 安装命令；真跑命令；mock 命令（CI 执行它） |
-| `metrics.first_token` / `metrics.cost` | 本 demo 首字延迟的起止点；成本算法 |
-| `verification` | `status`：`pending-live` / `live-verified`；`last_verified`；`record`（默认 `VERIFY.md`） |
-| `license` / `compliance_tags` / `maintainers` | 许可；合规标签（`minors` `anthropomorphic` `recording-consent` `health` `camera-privacy` 等）；维护者 |
+| `metrics.first_token` / `metrics.cost` / `metrics.unit` | 首字延迟的起止点；成本算法；「一次」指什么（如「每轮对话」「每份日报」） |
+| `verification` | `status`：`pending-live` / `live-verified`；`last_verified`；`record`（默认 `VERIFY.md`）；可选 `level`（芯片与固件维度的 L0–L4）与 `evidence`（证据链接） |
+| `license` / `compliance_tags` / `maintainers` | 许可；合规标签（见下表）；维护者 |
+
+### 词表与合规标签
+
+`features`、`experience.archetype`、`hardware.parts[].part`、`compliance_tags` 只能用 [`vocab.yaml`](./vocab.yaml) 里的 id（`check.py` 校验）；要新增词条，维护者改 `vocab.yaml`。每个合规标签在 demo README 的「合规提示」一节至少要写到：
+
+| 标签 | 一句话义务 | README 至少写 |
+|---|---|---|
+| `minors` | 面向未成年人不得提供虚拟亲属、虚拟伴侣；要有未成年人模式与时长提醒；不满十四周岁的个人信息要取得监护人同意 | 提示词怎么避免扮演家人或恋人；未成年人模式与时长提醒在哪一层实现；监护人同意 |
+| `anthropomorphic` | 持续性情感陪伴适用拟人化互动办法：提示 AI 身份与使用时长、防止依赖、极端情绪干预、交互数据可删除 | AI 身份与时长提醒的位置；防沉迷与极端情绪的处理；数据存在哪、怎么删 |
+| `camera-privacy` | 画面属于个人信息：告知同意、保存期限；拍到他人要有提示、不偷拍、不识别身份 | 告知方式与保存期限；他人入镜的处理；是否做人脸识别 |
+| `recording-consent` | 录音、同传会录到旁人：使用前告知并取得同意，转写与纪要设保存期限 | 设备上的录音提示；录音与转写存在哪、存多久 |
+| `health` | 不做医疗诊断；健康数据属于敏感个人信息，要单独同意 | 免责声明由哪一层固定追加；上传哪些数据；单独同意与保存期限 |
+| `safety-critical` | 急停、限速、力矩限制必须在控制器和硬件层实现，软件安全门只是额外一层 | 安全门在哪一层、拦什么；哪些限制必须在硬件层；现场怎么叫停 |
+
+另有一条对所有 demo 都适用：本仓 demo 是开发者参考实现，面向公众上线前要完成生成式 AI 服务登记 / 备案与内容标识。法规原文与来源见 `vocab.yaml`。
 
 ## 六、验证记录：`VERIFY.md`
 
@@ -104,10 +125,15 @@ python3 run.py --region ap-southeast-1   # 临时切地域
   - 实时语音：松开按键（`input_audio_buffer.commit`）或 VAD 判停 → 首包音频
   - 非实时（录音、图片）：输入完成（开始上传）→ 第一个输出 token，含转写 / 上传耗时
 - **单次成本**：一次交互的接口 `usage` × `run.py` 里的单价表（单价旁注明官方链接与查证日期）
+  - 「一次」只算主交互，写在 `metrics.unit`（如 05 是每轮对话、01 是每个事件）；同一次运行里的其他环节（05 的记忆日记、08 的播报、01 的检索与日报）单独算，写进「备注」，不加进这一列
   - 接口不返回用量、官方又没公布折算率时，按能查到的口径给区间：`demo_kit.finish(cost=(下限, 上限))`，记录里显示为 `0.0015–0.0023`，备注写明估算依据（例：07 的异步转写按每秒 7–25 Token）
   - 不要把未公布的折算率写成确定值
 - **环境**：自动填系统与 Python 版本；网络环境（家庭宽带 / 4G 热点 / 机房）写进「备注」
-- **待实测**：官方文档没写清、只能靠真跑核对的点，写成表格上方的清单（例：07 同步转写是否截断、03 的 Token 折算）。真跑后把结论写进「备注」，再改 README 和 `run.py` 里的常量
+- **待实测**：官方文档没写清、只能靠真跑核对的点，写成表格上方的清单，每项 `- [ ] **标题**：说明`（例：07 同步转写是否截断、03 的 Token 折算）。真跑后把结论写进「备注」，再改 README 和 `run.py` 里的常量，并把该项勾掉。注册表会把没勾掉的标题列给配套 APP。几条通用项，用到对应能力的 demo 都应列上：
+  - 首字 / 首包延迟（官方多数只给图表）
+  - 按 `usage` 算出的单次成本是否落在 README 的估算里
+  - 业务空间专属域名在北京、新加坡是否都连得通
+  - TTS 的 `usage.characters` 是否按「一个汉字 2 个字符」返回（02、08 用到）
 - 至少一条真跑记录后，把 `solution.yaml` 的 `verification.status` 改成 `live-verified`、填 `last_verified`，README 状态行同步更新
 
 ## 七、设备模拟
@@ -115,7 +141,11 @@ python3 run.py --region ap-southeast-1   # 临时切地域
 - 默认输入放 `samples/`，必须可随仓库分发：本仓自制、AI 生成，或用 [`tools/make_speech_sample.py`](./tools/make_speech_sample.py) 离线合成（Kokoro-82M，Apache-2.0；同时输出每句起止时间，可直接当 mock 的标准答案）。不放来源不明的录音和照片，不放可识别的人脸
 - 真设备是可选项：`requirements-device.txt` 里放 `sounddevice`（麦克风 / 扬声器）、`opencv-python`（摄像头），用 `--mic` / `--camera` 打开
 - 音频统一转 16 kHz 单声道 16-bit PCM（`demo_kit.read_wav` 自动重采样）；图片按接口要求压缩（如 Realtime 要求 JPG、编码前 ≤190 KB）
+- 多轮看图任务（如 09 的多轮规划、Realtime 每轮都带画面）里，画面每一轮都会重新计入输入：画面分辨率直接决定成本，按每 32×32 像素约 1 Token 估算，能缩就缩
 - 设备动作（电机、灯光、屏幕）用 `[设备]` 日志模拟，量产时替换成驱动调用的位置要在代码里一眼能找到（如 03 的 `Toy.act()`）
+- 实时连接（WebSocket）的两条约束：
+  - 同一条连接只在一个线程里读写；要边推流边收事件时，用一个线程按固定节拍交替收发（06 每 100 ms、02 播报每 20 ms），播放另开线程。OpenSSL 连接对象不是线程安全的，一个线程收、另一个线程同时发，会在首包后被误判断开（06 本地仿真一到三成会话复现）
+  - 握手失败（401 / 403、网络不通）时打印一行可读的 `[云端] 连接失败：…`，提示检查 Key、业务空间与地域，不抛 traceback
 
 ## 八、地域
 
@@ -190,6 +220,7 @@ python3 run.py --region ap-southeast-1   # 临时切地域
 - `qwen3.8-omni-flash`（非实时）只输出文本，默认开思考（`reasoning_effort` 默认 `xhigh`），设备场景传 `reasoning_effort: "none"`；音频按每秒 7 Token 计
 - Function Calling：默认只返回一个工具调用，要多个时传 `parallel_tool_calls: true`；`tool_choice` 不支持 `"required"`，思考模式下也不能用对象形式强制调用
 - Realtime 工具调用不支持 `tool_choice` / `parallel_tool_calls`，且不能与 `enable_search` 同时开
+- Realtime 的 `usage` 只拆文本和音频两类，画面 Token 计在 `text_tokens` 里；对比 `representation_compact` 等画面压缩的效果，要看 `input_tokens` 总数（待真 Key 核对）
 - 同传 3.8 与 3.5 的事件名不同（3.8 用 `response.text.delta` / `response.audio_transcript.delta`）；音频发完要先发 `session.finish`、等到 `session.finished` 再断开，否则最后一段会丢
 - 异步转写的 `parameters` 必须传，没有参数也传 `{}`；`oss://` 地址要加请求头 `X-DashScope-OssResourceResolve: enable`，官方 SDK 不支持自定义请求头，只能直接调 HTTP
 
@@ -199,6 +230,7 @@ python3 run.py --region ap-southeast-1   # 临时切地域
 - 量产设备不放长期 Key：由业务服务端调用 `POST …/api/v1/tokens?expire_in_seconds=…` 换取临时 Key（北京示例为 `https://dashscope.aliyuncs.com`，新加坡用业务空间专属域名），设备拿临时 Key 连 Realtime / HTTP。临时 Key 以 `st-` 开头，默认 60 秒，可设 1–1,800 秒，继承原 Key 的全部权限，不能提前作废；见[生成临时 API Key](https://help.aliyun.com/zh/model-studio/generate-temporary-api-key)
 - 临时 Key 能否用于业务空间专属域名上的 Realtime 连接，官方没有写明，量产前要实测
 - 录音、图片等文件在量产中走自己的 OSS + STS 上传；百炼「临时存储」（`oss://`，48 小时）官方注明不用于生产
+- 配套 APP 和网页由用户自己填 Key 和接入点（2026-10-02 决定）：只存用户本机，直连平台，不设代持 Key 的后端。要填哪些字段、地址怎么推导，由栈声明 `stacks/<栈>.yaml` 给出，见「十四、APP 数据」
 
 ## 十一、CI 与自检
 
@@ -206,8 +238,9 @@ python3 run.py --region ap-southeast-1   # 临时切地域
 
 ```bash
 pip install pyyaml jsonschema              # 只有检查工具需要
-python3 solutions/demo-standard/check.py   # = secrets + manifests + smoke
+python3 solutions/demo-standard/check.py   # = secrets + manifests + smoke + registry
 python3 solutions/demo-standard/check.py sync   # 改完模板公共件后同步到各 demo
+python3 solutions/demo-standard/build_registry.py   # 改了 demo、清单、样本、词表或栈声明后，重新生成 docs/app/data/
 ```
 
 - **secrets**：扫描 git 跟踪的文件与未忽略的新文件，发现 `sk-` 形态 Key、阿里云 AccessKey、GitHub Token、私钥或提交了 `.env` 即失败；`sk-xxxx`、`sk-your-…` 等占位符放行
@@ -216,22 +249,30 @@ python3 solutions/demo-standard/check.py sync   # 改完模板公共件后同步
   - 模型不得在 2026-10-10 下线清单里（`check.py` 的 `DEPRECATED_MODELS`），也不得用带日期的快照或 `-latest` 别名
   - `.py`（`demo_kit.py` 除外）不得写死百炼域名，地址走 `Config` 的方法
   - 旧 demo（`LEGACY`）只查下线模型，允许快照名
+- **manifests**（v0.3 新增）：
+  - `features`、`experience.archetype`、`hardware.parts`、`compliance_tags` 只用 `vocab.yaml` 里的 id
+  - 玩法列表第一个是 `default`、`args` 为空，id 不重复；`cover` 指向的文件存在；`models[].regions` 是方案 `regions` 的子集
+  - `env` 只用栈声明里的字段，`services` 只用栈声明里的接入点
+  - 栈声明过 `stack.schema.json`；`templates/bailian/.env.example` 的变量与声明的字段一致；按声明推导出的地址与 `demo_kit.Config` 算出的逐个相同（北京 / 新加坡 × 填与不填业务空间 ID）
 - **smoke**：模板 + 每个 `solution.yaml` 的 `run.mock` + 旧 demo 清单（`check.py` 里的 `LEGACY`），在不带任何 `DASHSCOPE_*` 变量的子进程里运行，必须退出 0；新标准 demo 还必须打印 MOCK 标识和验证记录
+- **registry**（v0.3 新增）：用 `build_registry.py` 在临时目录重新生成注册表、全部玩法的回放轨迹和资源副本，过 `registry.schema.json` / `trace.schema.json`，再与提交的 `docs/app/data/` 逐字节比对。不一致时按提示运行 `build_registry.py` 后提交
 
 ## 十二、新增一个百炼 demo
 
 1. `cp -r solutions/demo-standard/templates/bailian solutions/by-category/<品类>/demo/bailian`
-2. 改 `solution.yaml`（带「改」的字段）、`run.py`、`mock.py`、README、VERIFY.md 标题；README 里指向本标准的相对链接改为 `../../../../demo-standard/README.md`
+2. 改 `solution.yaml`（带「改」的字段，含 `features`、`experience`、`hardware`、`metrics.unit`）、`run.py`、`mock.py`、README、VERIFY.md 标题；README 里指向本标准的相对链接改为 `../../../../demo-standard/README.md`
 3. 准备 `samples/` 与 `samples/README.md`（来源与许可）
 4. 在品类的 `demo/README.md` 索引里加一行
-5. `python3 solutions/demo-standard/check.py` 全绿后提交；有 Key 时 `python3 run.py --record` 补验证记录
+5. `python3 solutions/demo-standard/build_registry.py` 生成回放轨迹和注册表，连同 `docs/app/data/` 的变化一起提交；新方案会自动出现在配套 APP 里
+6. `python3 solutions/demo-standard/check.py` 全绿后提交；有 Key 时 `python3 run.py --record` 补验证记录（之后再跑一次 `build_registry.py`，实测值会进注册表）
 
 ## 十三、共享文件与改动边界
 
 | 文件 | 谁来改 | 规则 |
 |---|---|---|
 | `demo-standard/templates/bailian/demo_kit.py`、`.env.example` | 维护者，单独 PR | 改后运行 `check.py sync` 同步到全部百炼 demo，同一个 PR 提交 |
-| `demo-standard/check.py`、`solution.schema.json`、`.github/workflows/demo-smoke.yml` | 维护者，单独 PR | 品类 PR 不改；需要新字段 / 新检查时先提议 |
+| `demo-standard/check.py`、`build_registry.py`、`*.schema.json`、`vocab.yaml`、`stacks/`、`.github/workflows/demo-smoke.yml` | 维护者，单独 PR | 品类 PR 不改；需要新字段、新词条、新检查时先提议 |
+| `docs/app/data/` | 谁改了数据源谁重新生成 | 生成物，不手改；品类 PR 只会改到自己方案的 `traces/<id>/`、`assets/<id>/` 和 `registry.json` 里自己的那一项 |
 | `check.py` 的 `LEGACY` 清单 | 迁移旧 demo 的那个 PR | 只删自己品类的条目 |
 | 品类目录 `by-category/<品类>/demo/bailian/`、该品类 `demo/README.md` | 负责该品类的人 | 互不交叉 |
 | 根 `README.md`、`CHANGELOG.md`、`solutions/README.md` | 维护者合并后统一更新 | 品类 PR 不改，避免冲突 |
@@ -240,9 +281,33 @@ python3 solutions/demo-standard/check.py sync   # 改完模板公共件后同步
 
 1. `git fetch origin <基线分支>`，`git rebase origin/<基线分支>`（公共件只会在基线里改，正常不会冲突）
 2. `python3 solutions/demo-standard/check.py sync`，单独提交一次「同步 demo 标准 v0.x 公共件」
-3. `python3 solutions/demo-standard/check.py` 全绿后推送（rebase 过的分支用 `git push --force-with-lease`）
+3. `python3 solutions/demo-standard/build_registry.py`；`registry.json` 有冲突时不用手工合并，rebase 后直接重新生成即可
+4. `python3 solutions/demo-standard/check.py` 全绿后推送（rebase 过的分支用 `git push --force-with-lease`）
 
-## 十四、版本
+## 十四、APP 数据：注册表、回放轨迹、凭证声明
+
+配套网页 APP（`docs/app/`，Pages 上的静态网页）不按方案写代码，只读这里生成的数据：新增一个 `solution.yaml`，CI 通过后它就出现在 APP 里。
+
+| 数据 | 位置 | 格式 | 从哪来 |
+|---|---|---|---|
+| 方案注册表 | `docs/app/data/registry.json` | `aihw/registry@0.1`，[`registry.schema.json`](./registry.schema.json) | 各 `solution.yaml`、VERIFY.md（实测值与「待实测」）、`solutions/by-category/README.md` 的两张品类表、`vocab.yaml`、栈声明 |
+| 回放轨迹 | `docs/app/data/traces/<方案 id>/<玩法 id>.json` | `aihw/trace@0.1`，[`trace.schema.json`](./trace.schema.json) | 每个玩法的 `run.py --mock --trace`（在 demo 目录的干净副本里运行） |
+| 资源副本 | `docs/app/data/assets/<方案 id>/samples/…`、`…/outputs/<玩法 id>/…` | 原文件 | `samples/` 全部文件；mock 生成的二进制产出（如回复音频）。文本产出直接写进轨迹 |
+| 凭证声明 | `solutions/demo-standard/stacks/<栈>.yaml`，生成时并入注册表 | `aihw/stack@0.1`，[`stack.schema.json`](./stack.schema.json) | 维护者手写，每个栈一份 |
+
+- **注册表**每个方案回答四个问题：效果（玩法与回放轨迹）、单次成本（mock 估算；有真跑记录时给实测值和日期）、硬件部件（`hardware.parts`）、合规义务（标签 → 一句话义务 → 品类 FAQ）；另有验证状态、模型、三步跑通命令和文档链接
+- **回放轨迹**：`demo_kit` 的 `--trace <文件>` 记录 demo 打印的每一行，`[标签] 文字` 一行一条事件，后面缩进的续行归到同一条；横幅和验证记录不进事件，结构化地放进顶层字段和 `result`；结束时列出用到的样本和产出文件。用户在自己电脑上真跑时也能加 `--trace`，得到同样格式、带真实耗时的本地轨迹
+- **凭证声明**：每个栈声明用户要自己填的字段（凭证与接入点）、接入点的推导规则（`endpoints.roots` 按顺序匹配，`services` 列出各接入点及能否从浏览器直连）、鉴权方式和安全建议。APP 和网页按它渲染填写表单，只存本机、直连平台；以后接小智、火山、TuyaOpen 各写一份，APP 不用改代码。百炼的声明是 `DASHSCOPE_API_KEY`、`DASHSCOPE_API_REGION`、`DASHSCOPE_WORKSPACE_ID`，与 `.env.example` 和 `demo_kit` 的地址表一致（`check.py` 校验）
+- 兼容约定：同一个 `@0.x` 版本内只加字段；APP 要忽略不认识的字段和词表值；破坏性修改升版本号，并在过渡期同时生成新旧两种格式
+
+## 十五、版本
+
+- **v0.3（2026-10-02）**：
+  - 配套 APP 数据：`build_registry.py` 生成方案注册表、回放轨迹和资源副本，CI 逐字节校验；栈声明 `stacks/bailian.yaml`；词表 `vocab.yaml`；三个新 schema
+  - `demo_kit`：`--trace` 写回放轨迹；`today()` / `now()` 让 mock 输出可复现；缺业务空间 ID 时的提示改为「业务空间管理」页 API Host 列
+  - `solution.yaml` 升 `aihw/solution@0.2`：`features`、`experience`（回放舞台、封面、玩法与接入点）、`hardware`、`metrics.unit`、`models[].regions`、`verification.level` / `evidence`
+  - 写进标准的约定：合规标签表与 README 至少要写的内容；单次成本只算主交互；多轮看图时画面每轮重复计费；实时连接单线程收发、握手失败给可读报错；Realtime `usage` 不单列画面 Token；「待实测」的通用项
+  - 向后兼容：`Config` 与 `finish()` 的签名不变，品类 demo 只需 `check.py sync`；mock 输出除 05 的日期改为固定值外逐字不变
 
 - **v0.2（2026-10-01）**：
   - 地址：填了 `DASHSCOPE_WORKSPACE_ID` 时，`demo_kit` 的全部 HTTP / WebSocket 地址（OpenAI 兼容、DashScope 原生 HTTP、任务制 WebSocket 的流式 ASR / TTS、Realtime）都走业务空间专属域名；新增 `Config.ws_root()` / `workspace_host()` / `shared_api_base()`；`realtime_url()` 没填业务空间 ID 时改走通用域名（必须专属域名的模型仍由 `need_workspace=True` 拦下）

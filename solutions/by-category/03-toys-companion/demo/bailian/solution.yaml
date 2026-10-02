@@ -1,4 +1,4 @@
-schema: aihw/solution@0.1
+schema: aihw/solution@0.2
 id: 03-toys-companion.bailian
 title: AI 玩具 / 陪伴 · 百炼实时语音
 category: 03-toys-companion
@@ -10,6 +10,37 @@ models:
     role: 实时语音对话 + 看图 + 工具调用（内置输入转写 qwen3-asr-flash-realtime）
 regions: [cn-beijing, ap-southeast-1]
 env: [DASHSCOPE_API_KEY, DASHSCOPE_WORKSPACE_ID]
+features: [voice-input, voice-output, vision, tool-calling]
+experience:
+  archetype: realtime-voice
+  cover: samples/toy_cam.jpg
+  variants:
+    - id: default
+      title: 按键说话 + 看图
+      args: []
+      services: [realtime]
+hardware:
+  parts:
+    - part: button
+      role: 按住说话，松开提交
+      simulated_by: 自动按下 · --mic 时按回车
+    - part: mic
+      role: 小朋友说话
+      simulated_by: samples/kid_ask_story.wav · --mic
+    - part: camera
+      role: 眼睛摄像头看小朋友手里的东西
+      simulated_by: samples/toy_cam.jpg · --camera
+    - part: speaker
+      role: 播放回答
+      simulated_by: out/reply_1.wav · 可选扬声器
+    - part: motor
+      role: 挥手、点头等动作（toy_action 工具）
+      simulated_by: 控制台「[设备]」行
+    - part: led
+      role: 聆听、回答时的灯光（toy_action 工具）
+      simulated_by: 控制台「[设备]」行
+  chips: []
+  boards: []
 device:
   inputs: [wav, mic, jpg, camera]
   outputs: [speaker, wav, console]
@@ -20,6 +51,7 @@ run:
 metrics:
   first_token: 松开按键（input_audio_buffer.commit）→ 首个 response.audio.delta，含工具调用往返
   cost: 一轮 response.done.usage 之和 × 模型单价（按地域）
+  unit: 每轮对话
 verification:
   status: pending-live
   last_verified: null

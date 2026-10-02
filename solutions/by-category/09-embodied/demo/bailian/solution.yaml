@@ -1,4 +1,4 @@
-schema: aihw/solution@0.1
+schema: aihw/solution@0.2
 id: 09-embodied.bailian
 title: 具身智能 · 百炼看图规划
 category: 09-embodied
@@ -12,6 +12,31 @@ models:
     role: 看图 + Function Calling 技能规划，省钱档（--cheap）
 regions: [cn-beijing, ap-southeast-1]
 env: [DASHSCOPE_API_KEY]
+features: [vision, tool-calling, safety-gate, on-device-rules]
+experience:
+  archetype: tools
+  cover: samples/desk_scene.jpg
+  variants:
+    - id: default
+      title: 看图规划 + 本地安全门
+      args: []
+      services: [compatible]
+hardware:
+  parts:
+    - part: camera
+      role: 腕部相机看桌面
+      simulated_by: samples/desk_scene.jpg · --camera
+    - part: arm
+      role: 移动到目标上方
+      simulated_by: 控制台「[设备]」行
+    - part: gripper
+      role: 抓取与放下，夹持力受安全门限制
+      simulated_by: 控制台「[设备]」行
+    - part: button
+      role: 现场确认与叫停
+      simulated_by: demo 自动确认（量产用实体按键或 App）
+  chips: []
+  boards: []
 device:
   inputs: [jpg, camera, text]
   outputs: [console]
@@ -22,6 +47,7 @@ run:
 metrics:
   first_token: 下达指令 → 首个技能调用到达
   cost: 各轮 usage × 模型单价（按地域、按输入分档；画面每轮计入输入）；指令级拒绝不计费
+  unit: 每条上云指令
 verification:
   status: pending-live
   last_verified: null

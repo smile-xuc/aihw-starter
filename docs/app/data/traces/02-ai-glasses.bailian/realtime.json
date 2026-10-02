@@ -1,0 +1,151 @@
+{
+ "schema": "aihw/trace@0.1",
+ "solution": "02-ai-glasses.bailian",
+ "variant": "realtime",
+ "mode": "mock",
+ "kit": "0.3",
+ "args": [
+  "--mock",
+  "--realtime"
+ ],
+ "title": "02 AI 眼镜 · 百炼「给 AI 打电话」参考 demo（--realtime）",
+ "region": "cn-beijing",
+ "models": [
+  "qwen3.8-omni-flash-realtime"
+ ],
+ "timing": "none",
+ "events": [
+  {
+   "i": 0,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "开机，连接本地 mock 云端（按官方事件顺序回放，不联网）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 1,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "会话就绪：音色 Tina · 按住镜腿说话（Manual）· 画面 1 帧/秒 · representation_compact=normal",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 2,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "镜腿摄像头 ← dish.jpg（每秒推 1 帧，模拟一直看着同一处）",
+   "lines": [],
+   "assets": [
+    "samples/dish.jpg"
+   ]
+  },
+  {
+   "i": 3,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "按住镜腿 · 拍照 + 收音",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 4,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "麦克风 ← ask_dish.wav（3.1 s）",
+   "lines": [],
+   "assets": [
+    "samples/ask_dish.wav"
+   ]
+  },
+  {
+   "i": 5,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "松开镜腿 → 提交本轮（3.1 s 语音 + 4 帧画面）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 6,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "听到：这是什么菜？辣不辣？",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 7,
+   "t_ms": null,
+   "tag": "眼镜",
+   "kind": "result",
+   "text": "这是宫保鸡丁，鸡丁配花生米、干辣椒和葱段，微辣带一点甜。怕辣的话把干辣椒拨到一边，配米饭正好。",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 8,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "耳机 → out/realtime_reply_1.wav（1.8 s）",
+   "lines": [],
+   "assets": [
+    "out/realtime_reply_1.wav"
+   ]
+  },
+  {
+   "i": 9,
+   "t_ms": null,
+   "tag": "统计",
+   "kind": "stats",
+   "text": "第 1 轮 · 松开镜腿 → 首包语音 —（mock 不计时） · ¥0.0023（输入 293（音频 23）/ 输出 178 Token；画面 4 帧，聚合 normal）",
+   "lines": [],
+   "assets": []
+  }
+ ],
+ "result": {
+  "models": [
+   "qwen3.8-omni-flash-realtime"
+  ],
+  "first_token_ms": null,
+  "cost": {
+   "low": 0.002327,
+   "high": 0.002327
+  },
+  "sample": "ask_dish.wav + dish.jpg",
+  "note": "mock 用量为示意值；--realtime；1 轮均值；首字=松开镜腿→首包音频；representation_compact=normal"
+ },
+ "inputs": [
+  {
+   "path": "samples/ask_dish.wav",
+   "media_type": "audio/wav",
+   "bytes": 100878,
+   "asset": "assets/02-ai-glasses.bailian/samples/ask_dish.wav"
+  },
+  {
+   "path": "samples/dish.jpg",
+   "media_type": "image/jpeg",
+   "bytes": 56283,
+   "asset": "assets/02-ai-glasses.bailian/samples/dish.jpg"
+  }
+ ],
+ "outputs": [
+  {
+   "path": "out/realtime_reply_1.wav",
+   "media_type": "audio/wav",
+   "bytes": 84044,
+   "text": null,
+   "asset": "assets/02-ai-glasses.bailian/outputs/realtime/realtime_reply_1.wav"
+  }
+ ],
+ "error": null
+}

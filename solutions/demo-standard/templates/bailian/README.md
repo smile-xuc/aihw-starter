@@ -38,6 +38,7 @@
 | `--mock` | 强制离线 mock |
 | `--region ap-southeast-1` | 临时切到新加坡 |
 | `--record` | 真跑成功后把一行验证记录追加到 `VERIFY.md` |
+| `--trace out/trace.json` | 把这次运行写成回放轨迹（`aihw/trace@0.1`），可在配套 APP 里打开 |
 
 ## 计费与延迟口径
 

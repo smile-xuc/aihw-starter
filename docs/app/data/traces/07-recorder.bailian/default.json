@@ -1,0 +1,192 @@
+{
+ "schema": "aihw/trace@0.1",
+ "solution": "07-recorder.bailian",
+ "variant": "default",
+ "mode": "mock",
+ "kit": "0.3",
+ "args": [
+  "--mock"
+ ],
+ "title": "07 录音卡 / 会议盒子 · 百炼录音纪要参考 demo",
+ "region": "cn-beijing",
+ "models": [
+  "qwen-audio-3.1-asr-flash",
+  "qwen3.7-flash"
+ ],
+ "timing": "none",
+ "events": [
+  {
+   "i": 0,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "连接本地 mock 云端（回放 samples/meeting.json，不联网）",
+   "lines": [],
+   "assets": [
+    "samples/meeting.json"
+   ]
+  },
+  {
+   "i": 1,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "录音卡 · 会议录音 ← meeting.mp3（54.8 s，214 KB）",
+   "lines": [],
+   "assets": [
+    "samples/meeting.mp3"
+   ]
+  },
+  {
+   "i": 2,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "录音结束 → 经手机 App 上传云端",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 3,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "转写 qwen-audio-3.1-asr-flash（同步 · 说话人分离）……",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 4,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "转写完成 · 8 句 · 3 位说话人 · mock 不计时",
+   "lines": [
+    "[00:00] 说话人1：开个短会，今天就两件事：一是新款录音卡的试产排期，二是下周的客户拜访。",
+    "[00:08] 说话人2：先说拜访。星云科技下周二见面，他们想先试点两百台，报价单我来准备。",
+    "[00:15] 说话人1：好，报价单周五前发给我。试产那边进度怎么样？",
+    "[00:21] 说话人3：模具已经签字了，十月十二号试产，二十八号小批量。不过麦克风阵列的供应商，交期可能要晚一周。",
+    "[00:30] 说话人1：那这个先列为风险，麦克风阵列的交期，周三前要确认。",
+    "[00:36] 说话人3：没问题，我周三前给结论。",
+    "[00:39] 说话人2：还有一件事，包装上的德语文案，翻译供应商还没定。",
+    "[00:45] 说话人1：德语翻译先记为待定，下次再议。那就这么定：十月十二号按计划试产，拜访由销售牵头。散会。"
+   ],
+   "assets": []
+  },
+  {
+   "i": 5,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "纪要 qwen3.7-flash（流式）……",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 6,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "纪要完成 · 首字 —（mock 不计时） · 2 条待办",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 7,
+   "t_ms": null,
+   "tag": "App",
+   "kind": "result",
+   "text": "推送纪要卡片 → out/minutes.md（另存 minutes.json、transcript.txt）",
+   "lines": [
+    "# 新款录音卡试产排期与客户拜访",
+    "",
+    "> 录音 55 秒 · 3 位说话人 · 由 qwen-audio-3.1-asr-flash + qwen3.7-flash 生成，请人工核对",
+    "",
+    "新款录音卡十月十二号按计划试产、二十八号小批量；星云科技下周二拜访由销售牵头。麦克风阵列交期可能晚一周，列为风险跟进；德语包装文案的翻译供应商待定。",
+    "",
+    "## 议题",
+    "- 新款录音卡试产排期",
+    "- 下周星云科技客户拜访",
+    "",
+    "## 决策",
+    "- 十月十二号按计划试产，二十八号小批量（说话人1）",
+    "- 星云科技拜访由销售牵头（说话人1）",
+    "",
+    "## 待办",
+    "- [ ] 准备星云科技报价单，发给说话人1 · 说话人2 · 周五前",
+    "- [ ] 与麦克风阵列供应商确认交期 · 说话人3 · 周三前",
+    "",
+    "## 待定",
+    "- 德语包装文案的翻译供应商待定，下次再议",
+    "",
+    "## 风险",
+    "- 麦克风阵列供应商交期可能晚一周，影响试产"
+   ],
+   "assets": [
+    "out/minutes.json",
+    "out/minutes.md",
+    "out/transcript.txt"
+   ]
+  },
+  {
+   "i": 8,
+   "t_ms": null,
+   "tag": "统计",
+   "kind": "stats",
+   "text": "录音结束 → 纪要首字 —（mock 不计时） · ¥0.0023（转写 ¥0.0017 + 纪要 ¥0.00054）",
+   "lines": [],
+   "assets": []
+  }
+ ],
+ "result": {
+  "models": [
+   "qwen-audio-3.1-asr-flash",
+   "qwen3.7-flash"
+  ],
+  "first_token_ms": null,
+  "cost": {
+   "low": 0.00229,
+   "high": 0.00229
+  },
+  "sample": "meeting.mp3（55 s）",
+  "note": "mock 用量为示意值；首字=录音结束→纪要首字"
+ },
+ "inputs": [
+  {
+   "path": "samples/meeting.json",
+   "media_type": "application/json",
+   "bytes": 2116,
+   "asset": "assets/07-recorder.bailian/samples/meeting.json"
+  },
+  {
+   "path": "samples/meeting.mp3",
+   "media_type": "audio/mpeg",
+   "bytes": 219825,
+   "asset": "assets/07-recorder.bailian/samples/meeting.mp3"
+  }
+ ],
+ "outputs": [
+  {
+   "path": "out/minutes.json",
+   "media_type": "application/json",
+   "bytes": 1077,
+   "text": "{\n  \"title\": \"新款录音卡试产排期与客户拜访\",\n  \"summary\": \"新款录音卡十月十二号按计划试产、二十八号小批量；星云科技下周二拜访由销售牵头。麦克风阵列交期可能晚一周，列为风险跟进；德语包装文案的翻译供应商待定。\",\n  \"agenda\": [\n    \"新款录音卡试产排期\",\n    \"下周星云科技客户拜访\"\n  ],\n  \"decisions\": [\n    {\n      \"content\": \"十月十二号按计划试产，二十八号小批量\",\n      \"owner\": \"说话人1\"\n    },\n    {\n      \"content\": \"星云科技拜访由销售牵头\",\n      \"owner\": \"说话人1\"\n    }\n  ],\n  \"action_items\": [\n    {\n      \"task\": \"准备星云科技报价单，发给说话人1\",\n      \"owner\": \"说话人2\",\n      \"due\": \"周五前\"\n    },\n    {\n      \"task\": \"与麦克风阵列供应商确认交期\",\n      \"owner\": \"说话人3\",\n      \"due\": \"周三前\"\n    }\n  ],\n  \"open_questions\": [\n    \"德语包装文案的翻译供应商待定，下次再议\"\n  ],\n  \"risks\": [\n    \"麦克风阵列供应商交期可能晚一周，影响试产\"\n  ]\n}\n",
+   "asset": null
+  },
+  {
+   "path": "out/minutes.md",
+   "media_type": "text/markdown",
+   "bytes": 896,
+   "text": "# 新款录音卡试产排期与客户拜访\n\n> 录音 55 秒 · 3 位说话人 · 由 qwen-audio-3.1-asr-flash + qwen3.7-flash 生成，请人工核对\n\n新款录音卡十月十二号按计划试产、二十八号小批量；星云科技下周二拜访由销售牵头。麦克风阵列交期可能晚一周，列为风险跟进；德语包装文案的翻译供应商待定。\n\n## 议题\n- 新款录音卡试产排期\n- 下周星云科技客户拜访\n\n## 决策\n- 十月十二号按计划试产，二十八号小批量（说话人1）\n- 星云科技拜访由销售牵头（说话人1）\n\n## 待办\n- [ ] 准备星云科技报价单，发给说话人1 · 说话人2 · 周五前\n- [ ] 与麦克风阵列供应商确认交期 · 说话人3 · 周三前\n\n## 待定\n- 德语包装文案的翻译供应商待定，下次再议\n\n## 风险\n- 麦克风阵列供应商交期可能晚一周，影响试产\n",
+   "asset": null
+  },
+  {
+   "path": "out/transcript.txt",
+   "media_type": "text/plain",
+   "bytes": 893,
+   "text": "[00:00] 说话人1：开个短会，今天就两件事：一是新款录音卡的试产排期，二是下周的客户拜访。\n[00:08] 说话人2：先说拜访。星云科技下周二见面，他们想先试点两百台，报价单我来准备。\n[00:15] 说话人1：好，报价单周五前发给我。试产那边进度怎么样？\n[00:21] 说话人3：模具已经签字了，十月十二号试产，二十八号小批量。不过麦克风阵列的供应商，交期可能要晚一周。\n[00:30] 说话人1：那这个先列为风险，麦克风阵列的交期，周三前要确认。\n[00:36] 说话人3：没问题，我周三前给结论。\n[00:39] 说话人2：还有一件事，包装上的德语文案，翻译供应商还没定。\n[00:45] 说话人1：德语翻译先记为待定，下次再议。那就这么定：十月十二号按计划试产，拜访由销售牵头。散会。\n",
+   "asset": null
+  }
+ ],
+ "error": null
+}

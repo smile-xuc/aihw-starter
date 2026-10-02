@@ -1,4 +1,4 @@
-schema: aihw/solution@0.1
+schema: aihw/solution@0.2
 id: 04-agent-hardware.bailian
 title: Agent 硬件 · 百炼工具编排
 category: 04-agent-hardware
@@ -14,6 +14,35 @@ models:
     role: 语音指令转写（HTTP 同步，本地 WAV 转 Base64）
 regions: [cn-beijing, ap-southeast-1]
 env: [DASHSCOPE_API_KEY]
+features: [voice-input, tool-calling, on-device-rules, offline-fallback]
+experience:
+  archetype: tools
+  cover: null
+  variants:
+    - id: default
+      title: 端侧规则 + 云端多轮编排
+      args: []
+      services: [api, compatible]
+    - id: offline
+      title: 断网降级
+      args: [--offline]
+      services: []
+hardware:
+  parts:
+    - part: button
+      role: 按住说话
+      simulated_by: 自动按下 · --mic 时按回车
+    - part: mic
+      role: 收语音指令
+      simulated_by: samples/cmd_morning.wav · --mic
+    - part: speaker
+      role: 播报回复
+      simulated_by: 控制台「[盒子]」行（demo 不做语音合成）
+    - part: iot
+      role: 联动家里的灯、闹钟和音量
+      simulated_by: 控制台「[设备]」行
+  chips: []
+  boards: []
 device:
   inputs: [text, wav, mic]
   outputs: [console]
@@ -24,6 +53,7 @@ run:
 metrics:
   first_token: 说完指令（松开按键 / 提交文本）→ 首个工具调用到达，语音指令含转写
   cost: 转写 usage + 各轮编排 usage × 模型单价（按地域、按输入分档）；端侧执行不计费
+  unit: 每个云端任务
 verification:
   status: pending-live
   last_verified: null

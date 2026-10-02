@@ -1,14 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/smile-xuc/aihw-starter/blob/master/solutions/demo-standard/solution.schema.json",
-  "title": "aihw-starter solution.yaml v0.1",
-  "description": "一个「品类 × 栈」方案的最小清单。字段说明见 solutions/demo-standard/README.md。",
+  "title": "aihw-starter solution.yaml v0.2",
+  "description": "一个「品类 × 栈」方案的最小清单。字段说明见 solutions/demo-standard/README.md。@0.2 在 @0.1 上只加字段；reference 方案要填 experience、hardware、features 和 metrics.unit。词表（archetype、features、parts、compliance_tags）见 vocab.yaml。",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema", "id", "title", "category", "stack", "kind", "summary", "models", "regions", "env",
                "device", "run", "metrics", "verification", "license", "maintainers"],
   "properties": {
-    "schema": {"const": "aihw/solution@0.1"},
+    "schema": {"enum": ["aihw/solution@0.1", "aihw/solution@0.2"]},
     "id": {"type": "string", "pattern": "^0[1-9]-[a-z0-9-]+\\.[a-z0-9-]+$", "description": "<category>.<stack>"},
     "title": {"type": "string", "minLength": 4},
     "category": {"enum": ["01-ipc", "02-ai-glasses", "03-toys-companion", "04-agent-hardware", "05-desktop-pet",
@@ -21,17 +21,63 @@
       "type": "array", "minItems": 1,
       "items": {
         "type": "object", "additionalProperties": false, "required": ["id", "role"],
-        "properties": {"id": {"type": "string"}, "role": {"type": "string"}}
+        "properties": {
+          "id": {"type": "string"},
+          "role": {"type": "string"},
+          "regions": {"$ref": "#/$defs/regions", "description": "该模型只在部分地域可用时填写，须是方案 regions 的子集"}
+        }
       }
     },
-    "regions": {"type": "array", "minItems": 1, "uniqueItems": true,
-                "items": {"type": "string", "pattern": "^[a-z]{2}-[a-z]+(-[0-9]+)?$"}},
-    "env": {"type": "array", "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"}},
+    "regions": {"$ref": "#/$defs/regions"},
+    "env": {"type": "array", "items": {"$ref": "#/$defs/env"}},
+    "features": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/word"},
+                 "description": "能力标签，取自 vocab.yaml 的 features"},
+    "experience": {
+      "type": "object", "additionalProperties": false, "required": ["archetype", "variants"],
+      "properties": {
+        "archetype": {"$ref": "#/$defs/word", "description": "默认玩法的回放舞台，取自 vocab.yaml 的 archetypes"},
+        "cover": {"type": ["string", "null"], "pattern": "^samples/", "description": "卡片封面图，demo 目录下的相对路径"},
+        "variants": {
+          "type": "array", "minItems": 1,
+          "description": "玩法；第一个必须是 id 为 default、args 为空的默认玩法。每个玩法生成一份回放轨迹",
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["id", "title", "args", "services"],
+            "properties": {
+              "id": {"$ref": "#/$defs/word"},
+              "title": {"type": "string", "minLength": 2},
+              "args": {"type": "array", "items": {"type": "string", "pattern": "^--[a-z0-9-]+"}},
+              "archetype": {"$ref": "#/$defs/word", "description": "与默认玩法的舞台不同时填写"},
+              "services": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/word"},
+                           "description": "该玩法调用的接入点 id，取自 stacks/<栈>.yaml 的 endpoints.services"},
+              "env": {"type": "array", "items": {"$ref": "#/$defs/env"}, "description": "与方案级 env 不同时填写"}
+            }
+          }
+        }
+      }
+    },
+    "hardware": {
+      "type": "object", "additionalProperties": false, "required": ["parts"],
+      "properties": {
+        "parts": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["part", "role"],
+            "properties": {
+              "part": {"$ref": "#/$defs/word", "description": "取自 vocab.yaml 的 parts"},
+              "role": {"type": "string", "minLength": 2, "description": "这个部件在产品里做什么"},
+              "simulated_by": {"type": "string", "description": "demo 里用什么模拟"}
+            }
+          }
+        },
+        "chips": {"type": "array", "items": {"type": "string"}},
+        "boards": {"type": "array", "items": {"type": "string"}}
+      }
+    },
     "device": {
       "type": "object", "additionalProperties": false, "required": ["inputs", "outputs"],
       "properties": {
-        "inputs": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^[a-z0-9-]+$"}},
-        "outputs": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^[a-z0-9-]+$"}}
+        "inputs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/word"}},
+        "outputs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/word"}}
       }
     },
     "run": {
@@ -44,23 +90,39 @@
     },
     "metrics": {
       "type": "object", "additionalProperties": false, "required": ["first_token", "cost"],
-      "properties": {"first_token": {"type": "string"}, "cost": {"type": "string"}}
+      "properties": {
+        "first_token": {"type": "string"},
+        "cost": {"type": "string"},
+        "unit": {"type": "string", "description": "单次成本里的「一次」指什么；多环节的 demo 只算主交互"}
+      }
     },
     "verification": {
       "type": "object", "additionalProperties": false, "required": ["status", "last_verified", "record"],
       "properties": {
         "status": {"enum": ["pending-live", "live-verified"]},
         "last_verified": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
-        "record": {"type": "string"}
+        "record": {"type": "string"},
+        "level": {"enum": ["L0", "L1", "L2", "L3", "L4", null], "description": "芯片与固件维度的验证等级，见愿景评估"},
+        "evidence": {"type": "array", "items": {"type": "string"}}
       }
     },
     "license": {"type": "string"},
-    "compliance_tags": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9-]+$"}},
+    "compliance_tags": {"type": "array", "items": {"$ref": "#/$defs/word"}},
     "maintainers": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^@[A-Za-z0-9-]+$"}}
   },
   "allOf": [
     {"if": {"properties": {"kind": {"const": "pointer"}}}, "then": {"required": ["upstream"]}},
     {"if": {"properties": {"verification": {"properties": {"status": {"const": "live-verified"}}}}},
-     "then": {"properties": {"verification": {"properties": {"last_verified": {"type": "string"}}}}}}
-  ]
+     "then": {"properties": {"verification": {"properties": {"last_verified": {"type": "string"}}}}}},
+    {"if": {"required": ["schema", "kind"],
+            "properties": {"schema": {"const": "aihw/solution@0.2"}, "kind": {"const": "reference"}}},
+     "then": {"required": ["experience", "hardware", "features"],
+              "properties": {"metrics": {"required": ["first_token", "cost", "unit"]}}}}
+  ],
+  "$defs": {
+    "word": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "env": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"},
+    "regions": {"type": "array", "minItems": 1, "uniqueItems": true,
+                "items": {"type": "string", "pattern": "^[a-z]{2}-[a-z]+(-[0-9]+)?$"}}
+  }
 }

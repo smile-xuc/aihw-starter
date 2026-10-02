@@ -1,5 +1,6 @@
 # 复制后逐项改写；带「改」的字段必须换成真实值，否则 CI 的 schema 校验会失败
-schema: aihw/solution@0.1
+# 词表（features / archetype / parts / compliance_tags）见 solutions/demo-standard/vocab.yaml
+schema: aihw/solution@0.2
 id: 0X-category.bailian                 # 改：<品类目录名>.bailian，如 06-ai-earphone.bailian
 title: 品类名 · 百炼场景名               # 改
 category: 0X-category                   # 改：01-ipc … 09-embodied
@@ -11,6 +12,22 @@ models:
     role: 这个模型在链路里做什么
 regions: [cn-beijing, ap-southeast-1]   # 只写两地都核实过可用的地域
 env: [DASHSCOPE_API_KEY]                # 必须走业务空间专属域名时加 DASHSCOPE_WORKSPACE_ID
+features: [voice-output]                # 改：能力标签，取自 vocab.yaml 的 features
+experience:
+  archetype: tools                      # 改：回放舞台 realtime-voice / vision / recorder / tools
+  cover: null                           # 有图片样本时写 samples/xxx.jpg，作配套 APP 的卡片封面
+  variants:                             # 第一个必须是 default；其余玩法各写一项，各生成一份回放轨迹
+    - id: default
+      title: 默认玩法名                  # 改
+      args: []
+      services: [compatible]            # 用到的接入点：compatible / api / ws-inference / realtime（stacks/bailian.yaml）
+hardware:
+  parts:                                # 改：做成产品要的硬件部件，取自 vocab.yaml 的 parts
+    - part: mic
+      role: 这个部件在产品里做什么
+      simulated_by: demo 里用什么模拟，如 samples/xxx.wav · --mic
+  chips: []
+  boards: []
 device:
   inputs: [text]                        # 如 wav / mic / jpg / camera / mp3 / url / json
   outputs: [console]                    # 如 speaker / wav / markdown / json / console
@@ -21,10 +38,11 @@ run:
 metrics:
   first_token: 发出请求 → 首个 token     # 改：写清从哪个设备动作开始计时
   cost: usage × 模型单价（按地域）
+  unit: 每次交互                         # 改：单次成本里的「一次」指什么；多环节的 demo 只算主交互
 verification:
   status: pending-live                  # 真跑并写入 VERIFY.md 后改为 live-verified
   last_verified: null                   # 真跑日期，如 2026-10-08
   record: VERIFY.md
 license: MIT
-compliance_tags: []                     # 如 minors / anthropomorphic / health / recording-consent / camera-privacy
+compliance_tags: []                     # 取自 vocab.yaml 的 compliance：minors / anthropomorphic / camera-privacy / recording-consent / health / safety-critical
 maintainers: ["@smile-xuc"]

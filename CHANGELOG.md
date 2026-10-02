@@ -9,6 +9,8 @@
 
 - `solutions/demo-standard/`：百炼参考 demo 统一标准 v0.2（目录按「品类 × 栈」、统一 `.env.example`、一条启动命令、README「三步跑通」、无 Key 自动 mock、`solution.yaml` 最小清单与 schema、`VERIFY.md` 验证记录格式）、百炼模板、`check.py` 自检、离线语音样本合成工具
   - v0.2：填了 `DASHSCOPE_WORKSPACE_ID` 时，全部 HTTP / WebSocket（含流式 ASR、TTS）都走业务空间专属域名；文本模型分默认档 `qwen3.7-flash` / 质量档 `qwen3.8-flash`；成本可写区间，`VERIFY.md` 增加「待实测」；`check.py` 拦下 10-10 下线模型、快照名和写死的域名
+  - v0.3：给配套网页 APP 用的数据——`build_registry.py` 从 9 个 `solution.yaml` 生成方案注册表 `docs/app/data/registry.json`，从各玩法的 `run.py --mock --trace` 生成回放轨迹，并复制样本与 mock 产出，CI 逐字节校验；栈声明 `stacks/bailian.yaml` 写明用户要填的凭证与接入点；词表 `vocab.yaml`（回放舞台、硬件部件、能力、合规标签）；`solution.yaml` 升 `aihw/solution@0.2`（`features`、`experience`、`hardware`、`metrics.unit`、`models[].regions`）；`demo_kit` 增加 `--trace` 与可复现的 `today()` / `now()`
+- `docs/app/data/`：配套网页 APP 读取的方案注册表、11 份回放轨迹（9 个方案，02 的 `--realtime` 与 04 的 `--offline` 各一份）与资源副本，由 `build_registry.py` 生成
 - `03-toys-companion/demo/bailian/`：毛绒玩具实时语音试点（`qwen3.8-omni-flash-realtime`，按键说话 + 看图 + Function Calling 控制动作灯光；示意用量按官方音频输入 7、输出 12.5 Token / 秒折算），待真 Key 验证
 - `07-recorder/demo/bailian/`：录音卡纪要试点（`qwen-audio-3.1-asr-flash` 转写 + 说话人分离 → `qwen3.7-flash` 纪要，`--quality` 用 `qwen3.8-flash`；长录音一律经百炼临时存储走 `qwen-audio-3.1-asr-flash-filetrans` 异步转写，同步结果疑似截断时提示），待真 Key 验证
 - `01-ipc/demo/bailian/`：看护摄像头事件理解（`qwen3.7-flash` 看图生成结构化事件卡 → App 自然语言检索 → 看护日报；`--quality` 整条链路换 `qwen3.8-flash`），待真 Key 验证
@@ -28,6 +30,7 @@
 - 根 `README.md`：删除「脑洞实验室（待验证）」一节。能用现有能力实现的三个方向并入品类方案的进阶玩法：01 宠物动态、02 药盒识别 + 用药提醒、05 情绪周报；亲子异地陪伴（未成年人虚拟亲属红线）、眼镜熟人识别（未授权人脸识别）、具身家务教学（现有能力只能编排预置技能）不做
 - 根 `README.md`、`solutions/README.md`、`solutions/by-category/README.md`：补 9 个百炼参考 demo 的入口
 - `.github/workflows/link-check.yml`：PR 只对本次改动的 Markdown / HTML 查外链（经 `--files-from` 交给 lychee），并对全仓站内链接做一次离线检查（`--offline`，不联网）；全仓外链检查改为 master 每日定时（01:00 UTC）并可手动触发，push 不再跑全量
+- 05 桌宠参考 demo：日记与记忆的日期在 mock 下固定为 2026-10-01，mock 输出不再随运行日期变化；02 / 03 的 WebSocket 握手失败改为一行可读报错
 - 品类文档与 `by-solution/01-qwen`：2026-10-10 下线的模型换成现行模型；Realtime 成本按 3.8 代改写；03 / 05 / 06 / 07 成本按 2026-10 目录价重算；改正同传「仅 Tina 音色」「约 3 秒」、「Qwen3-ASR + 热词」、v3.5 配系统音色等过时说法，以及失效的百炼文档链接和 CLI 包名
 - 旧 demo `01 physical-sense`、`02 kit-chat`、`02 omni-realtime`、`03 voice-clone`：补 `--mock`（无 Key 时自动进入），live 依赖改为按需导入；`physical-sense` 不再打印 Key 片段
 - 旧 demo `02 kit-chat`：视觉模型 `qwen-vl-plus`（2026-10-10 下线）换成 `qwen3.7-flash` 并关闭思考；播报从没有系统音色的 `cosyvoice-v3.5-flash` 换成 `cosyvoice-v3-flash`；`06 livetranslate-ws` 改用主线模型名
