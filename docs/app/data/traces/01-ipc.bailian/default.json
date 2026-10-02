@@ -28,9 +28,11 @@
    "t_ms": null,
    "tag": "设备",
    "kind": "device",
-   "text": "门口 · 移动侦测 → 抓拍 1 帧（15 KB）· 上传云端",
+   "text": "门口 · 移动侦测 → 抓拍 1 帧 01_door_package.jpg（15 KB）· 上传云端",
    "lines": [],
-   "assets": []
+   "assets": [
+    "samples/events/01_door_package.jpg"
+   ]
   },
   {
    "i": 2,
@@ -68,9 +70,11 @@
    "t_ms": null,
    "tag": "设备",
    "kind": "device",
-   "text": "客厅 · 移动侦测 → 抓拍 1 帧（16 KB）· 上传云端",
+   "text": "客厅 · 移动侦测 → 抓拍 1 帧 02_cat_sofa_night.jpg（16 KB）· 上传云端",
    "lines": [],
-   "assets": []
+   "assets": [
+    "samples/events/02_cat_sofa_night.jpg"
+   ]
   },
   {
    "i": 6,
@@ -108,9 +112,11 @@
    "t_ms": null,
    "tag": "设备",
    "kind": "device",
-   "text": "厨房 · 画面变化 → 抓拍 1 帧（29 KB）· 上传云端",
+   "text": "厨房 · 画面变化 → 抓拍 1 帧 03_kitchen_kettle.jpg（29 KB）· 上传云端",
    "lines": [],
-   "assets": []
+   "assets": [
+    "samples/events/03_kitchen_kettle.jpg"
+   ]
   },
   {
    "i": 10,
@@ -157,9 +163,11 @@
    "t_ms": null,
    "tag": "设备",
    "kind": "device",
-   "text": "客厅 · 移动侦测 → 抓拍 1 帧（31 KB）· 上传云端",
+   "text": "客厅 · 移动侦测 → 抓拍 1 帧 04_vacuum_dog_morning.jpg（31 KB）· 上传云端",
    "lines": [],
-   "assets": []
+   "assets": [
+    "samples/events/04_vacuum_dog_morning.jpg"
+   ]
   },
   {
    "i": 15,
@@ -313,10 +321,28 @@
  },
  "inputs": [
   {
+   "path": "samples/events/01_door_package.jpg",
+   "media_type": "image/jpeg",
+   "bytes": 16213,
+   "asset": "assets/01-ipc.bailian/samples/events/01_door_package.jpg"
+  },
+  {
    "path": "samples/events/02_cat_sofa_night.jpg",
    "media_type": "image/jpeg",
    "bytes": 17057,
    "asset": "assets/01-ipc.bailian/samples/events/02_cat_sofa_night.jpg"
+  },
+  {
+   "path": "samples/events/03_kitchen_kettle.jpg",
+   "media_type": "image/jpeg",
+   "bytes": 30217,
+   "asset": "assets/01-ipc.bailian/samples/events/03_kitchen_kettle.jpg"
+  },
+  {
+   "path": "samples/events/04_vacuum_dog_morning.jpg",
+   "media_type": "image/jpeg",
+   "bytes": 32459,
+   "asset": "assets/01-ipc.bailian/samples/events/04_vacuum_dog_morning.jpg"
   }
  ],
  "outputs": [
