@@ -35,3 +35,7 @@ jobs:
       # check.py 会把 DASHSCOPE_* 变量从子进程环境里剔除，全部 demo 都在无 Key 的 mock / 离线模式下运行
       - name: Mock smoke (all demos, no key)
         run: python solutions/demo-standard/check.py smoke
+
+      # docs/app/data/ 由 build_registry.py 生成：在这里重新生成一遍，与提交的文件逐字节比对
+      - name: Registry and replay traces up to date
+        run: python solutions/demo-standard/check.py registry

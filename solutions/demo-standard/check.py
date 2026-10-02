@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """check.py — demo 标准自检（CI 与本地共用）
 
-  python3 solutions/demo-standard/check.py            # 依次跑下面三项
+  python3 solutions/demo-standard/check.py            # 依次跑下面四项
   python3 solutions/demo-standard/check.py secrets    # 密钥扫描：git 跟踪的文件 + 未忽略的新文件
-  python3 solutions/demo-standard/check.py manifests  # solution.yaml、目录结构、公共件与模板一致、模型名与接入地址
+  python3 solutions/demo-standard/check.py manifests  # solution.yaml、词表、栈声明、公共件与模板一致、模型名与接入地址
   python3 solutions/demo-standard/check.py smoke      # 全部 demo 的 mock 冒烟（子进程不带 DASHSCOPE_* 变量）
+  python3 solutions/demo-standard/check.py registry   # docs/app/data/ 的注册表与回放轨迹与源文件一致
   python3 solutions/demo-standard/check.py sync       # 改完模板公共件后，同步到同一栈的全部 demo
 
-manifests 需要 PyYAML，装了 jsonschema 时做完整 schema 校验：pip install pyyaml jsonschema
+manifests、registry 需要 PyYAML，装了 jsonschema 时做完整 schema 校验：pip install pyyaml jsonschema
 """
 from __future__ import annotations
 
@@ -142,6 +143,118 @@ def _verify_rows(text: str) -> list[str] | None:
     return [ln for ln in lines[start:] if ln.startswith("|")]
 
 
+def _vocab() -> dict[str, set[str]]:
+    data = _load_yaml(STD / "vocab.yaml")
+    return {name: {item["id"] for item in data.get(name) or []}
+            for name in ("archetypes", "parts", "features", "compliance")}
+
+
+def _stacks() -> dict[str, dict]:
+    return {p.stem: _load_yaml(p) for p in sorted((STD / "stacks").glob("*.yaml"))}
+
+
+def _vocab_problems(data: dict, demo_dir: Path, vocab: dict[str, set[str]], stack: dict | None) -> list[str]:
+    """v0.3：词表、玩法、凭证与接入点要和 vocab.yaml、stacks/<栈>.yaml 对得上。"""
+    errors = []
+
+    def unknown(kind: str, values, where: str) -> None:
+        for value in values or []:
+            if value not in vocab[kind]:
+                errors.append(f"{where} 的 {value} 不在 vocab.yaml 的 {kind} 里")
+
+    unknown("features", data.get("features"), "features")
+    unknown("compliance", data.get("compliance_tags"), "compliance_tags")
+    unknown("parts", [p.get("part") for p in (data.get("hardware") or {}).get("parts") or []], "hardware.parts")
+    experience = data.get("experience") or {}
+    variants = experience.get("variants") or []
+    unknown("archetypes", [experience.get("archetype")] if experience else [], "experience.archetype")
+    unknown("archetypes", [v.get("archetype") for v in variants if v.get("archetype")], "variants[].archetype")
+    if variants and (variants[0].get("id") != "default" or variants[0].get("args")):
+        errors.append("experience.variants 的第一个必须是 id 为 default、args 为空的默认玩法")
+    ids = [v.get("id") for v in variants]
+    if len(ids) != len(set(ids)):
+        errors.append("experience.variants 的 id 重复")
+    cover = experience.get("cover")
+    if cover and not (demo_dir / cover).is_file():
+        errors.append(f"experience.cover 指向的 {cover} 不存在")
+    regions = set(data.get("regions") or [])
+    for model in data.get("models") or []:
+        extra = set(model.get("regions") or []) - regions
+        if extra:
+            errors.append(f"models 里 {model.get('id')} 的 regions {sorted(extra)} 不在方案的 regions 里")
+    if stack:
+        keys = {f["key"] for f in stack.get("fields") or []}
+        services = {s["id"] for s in (stack.get("endpoints") or {}).get("services") or []}
+        envs = [data.get("env") or []] + [v.get("env") for v in variants if v.get("env")]
+        for env in envs:
+            errors += [f"env 里的 {k} 不在 stacks/{stack['id']}.yaml 的 fields 里" for k in env if k not in keys]
+        for variant in variants:
+            errors += [f"玩法 {variant.get('id')} 的接入点 {s} 不在 stacks/{stack['id']}.yaml 的 services 里"
+                       for s in variant.get("services") or [] if s not in services]
+    return errors
+
+
+def check_stacks() -> bool:
+    """栈声明过 schema；百炼的 .env.example 变量名和 demo_kit 地址表要与声明一致。"""
+    schema = json.loads((STD / "stack.schema.json").read_text(encoding="utf-8"))
+    try:
+        import jsonschema
+    except ImportError:
+        jsonschema = None
+    ok = True
+    for name, stack in _stacks().items():
+        errors = []
+        if jsonschema:
+            validator = jsonschema.Draft202012Validator(schema)
+            errors += [f"schema: {'/'.join(map(str, e.path)) or '(根)'} {e.message}" for e in validator.iter_errors(stack)]
+        if stack.get("id") != name:
+            errors.append(f"id 应为 {name}（与文件名一致）")
+        template = STD / "templates" / name
+        env_example = template / ".env.example"
+        if env_example.is_file():
+            declared = {f["key"] for f in stack.get("fields") or []}
+            listed = {m.group(1) for m in re.finditer(r"^([A-Z][A-Z0-9_]+)=", env_example.read_text(encoding="utf-8"), re.M)}
+            listed = {k for k in listed if not k.startswith("AIHW_")}
+            if listed != declared:
+                errors.append(f"templates/{name}/.env.example 的变量 {sorted(listed)} 与声明的 fields {sorted(declared)} 不一致")
+        if name == "bailian":
+            errors += _bailian_endpoint_problems(stack, template)
+        print(f"  {'OK  ' if not errors else 'FAIL'} 栈声明 stacks/{name}.yaml")
+        for err in errors:
+            print(f"       - {err}")
+        ok &= not errors
+    return ok
+
+
+def _bailian_endpoint_problems(stack: dict, template: Path) -> list[str]:
+    """按声明推导出的地址，要与 demo_kit.Config 算出的地址逐个相同。"""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("_kit_for_check", template / "demo_kit.py")
+    kit = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = kit  # dataclass 处理字符串注解时要能在 sys.modules 里找到模块
+    spec.loader.exec_module(kit)
+    region_field = next((f for f in stack["fields"] if f["key"] == "DASHSCOPE_API_REGION"), None)
+    regions = [o["value"] for o in (region_field or {}).get("options") or []]
+    errors = []
+    if sorted(regions) != sorted(kit.REGIONS):
+        errors.append(f"声明的地域 {sorted(regions)} 与 demo_kit.REGIONS {sorted(kit.REGIONS)} 不一致")
+    for region in regions:
+        for workspace in ("llm-check", ""):
+            values = {"DASHSCOPE_API_REGION": region, "DASHSCOPE_WORKSPACE_ID": workspace}
+            root = next((r for r in stack["endpoints"]["roots"]
+                         if all((values.get(k, "") != "") if v == "*" else values.get(k) == v
+                                for k, v in r["when"].items())), None)
+            if root is None:
+                errors.append(f"{region}{' + 业务空间' if workspace else ''} 没有匹配的 endpoints.roots")
+                continue
+            render = {key: (tpl or "").format(**values) for key, tpl in (("http", root["http"]), ("ws", root["ws"]))}
+            cfg = kit.Config("live", "", region, "sk-check", workspace)
+            if render["http"] != cfg.http_root() or render["ws"] != cfg.ws_root():
+                errors.append(f"{region}{' + 业务空间' if workspace else ''}：声明推导出 {render}，"
+                              f"demo_kit 是 http={cfg.http_root()} ws={cfg.ws_root()}")
+    return errors
+
+
 def check_manifests() -> bool:
     schema = json.loads((STD / "solution.schema.json").read_text(encoding="utf-8"))
     try:
@@ -150,6 +263,7 @@ def check_manifests() -> bool:
         jsonschema = None
     ok = True
     paths = _manifests()
+    vocab, stacks = _vocab(), _stacks()
     print(f"== manifests == {len(paths)} 个方案清单" + ("" if jsonschema else "（未装 jsonschema，只查必填字段）"))
     for path in paths:
         demo_dir = path.parent
@@ -166,6 +280,7 @@ def check_manifests() -> bool:
             errors.append(f"目录应为 by-category/{data.get('category')}/demo/{data.get('stack')}/")
         if data.get("id") != f"{category}.{stack}":
             errors.append(f"id 应为 {category}.{stack}")
+        errors += _vocab_problems(data, demo_dir, vocab, stacks.get(stack))
         for name in ("README.md", "VERIFY.md", ".env.example", "requirements.txt"):
             if not (demo_dir / name).is_file():
                 errors.append(f"缺少 {name}")
@@ -206,7 +321,8 @@ def check_manifests() -> bool:
         for err in errors:
             print(f"       - {err}")
         ok &= not errors
-    return check_legacy_models() and ok
+    stacks_ok = check_stacks()
+    return check_legacy_models() and stacks_ok and ok
 
 
 def check_legacy_models() -> bool:
@@ -266,6 +382,14 @@ def check_smoke() -> bool:
     return ok
 
 
+def check_registry() -> bool:
+    """docs/app/data/ 是 build_registry.py 的生成物：重新生成一遍，必须与仓库里的逐字节相同。"""
+    print("== registry == 重新生成注册表与回放轨迹并比对")
+    sys.path.insert(0, str(STD))
+    import build_registry
+    return build_registry.main(["--check"]) == 0
+
+
 def sync_shared() -> bool:
     """把模板里的公共件复制到同一栈的全部 demo（改完模板后运行）。"""
     for path in _manifests():
@@ -280,7 +404,7 @@ def sync_shared() -> bool:
 
 
 def main() -> None:
-    steps = {"secrets": check_secrets, "manifests": check_manifests, "smoke": check_smoke}
+    steps = {"secrets": check_secrets, "manifests": check_manifests, "smoke": check_smoke, "registry": check_registry}
     if sys.argv[1:] == ["sync"]:
         sys.exit(0 if sync_shared() else 1)
     chosen = sys.argv[1:] or list(steps)
