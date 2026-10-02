@@ -1,6 +1,6 @@
 // 09 具身智能 · 浏览器真跑：流程对照 solutions/by-category/09-embodied/demo/bailian/run.py 与 safety_gate.py
 import { fmtCny } from '../ui.js';
-import { costOf, toBase64 } from './bailian.js';
+import { costOf, toBase64 } from './client.js';
 
 // 本地安全门：规则表从 safety_gate.py 导入，判定逻辑与 SafetyGate.check() 一致
 function makeGate(c, utterance) {

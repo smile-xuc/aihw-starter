@@ -1,0 +1,131 @@
+{
+ "solution": "08-smart-watch.bailian",
+ "source": "solutions/by-category/08-smart-watch/demo/bailian",
+ "LLM_MODEL": "qwen3.7-flash",
+ "QUALITY_MODEL": "qwen3.8-flash",
+ "SYSTEM": "角色：智能手表的健康日报助手。输入是手表经手机 App 同步的一天聚合指标，以及手表本地规则已判定的红线。\n字段：gender 性别，age 年龄，bmi，rhr 静息心率（次/分），rhr_avg7 近 7 日静息心率均值，spo2 血氧均值（%），\nspo2_min 夜间血氧最低（%），deep_sleep_min 深睡（分钟），total_sleep_min 总睡眠（分钟），steps 步数，cal 活动热量（千卡）。\n按给定的 JSON Schema 输出一个 JSON 对象：\n- summary：表盘上的一句话总结，不超过 16 个汉字\n- alerts：需要关注的指标，最多 3 条；metric 取 spo2 / rhr / sleep / activity / other；text 不超过 24 个汉字，写出数值和参考值\n- advice：今天能做到的建议，最多 2 条，每条不超过 20 个汉字\n- disclaimer：固定为「以上为 AI 健康参考，不替代专业医疗意见。」\n规则：\n- 只做健康参考，不做诊断：不写病名，不推荐药物或剂量，不说「没事」「完全正常」之类的保证\n- 本地红线已触发时，summary 要提到它，advice 里包含「及时咨询医生」\n- 只依据输入数据，不编造没有的指标；静息心率和 7 日均值比较时写出差值\n- 语气平和，不制造恐慌",
+ "REPORT_SCHEMA": {
+  "type": "object",
+  "properties": {
+   "summary": {
+    "type": "string",
+    "description": "表盘一句话总结，不超过 16 个汉字"
+   },
+   "alerts": {
+    "type": "array",
+    "items": {
+     "type": "object",
+     "properties": {
+      "metric": {
+       "type": "string",
+       "enum": [
+        "spo2",
+        "rhr",
+        "sleep",
+        "activity",
+        "other"
+       ]
+      },
+      "text": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "metric",
+      "text"
+     ],
+     "additionalProperties": false
+    }
+   },
+   "advice": {
+    "type": "array",
+    "items": {
+     "type": "string"
+    }
+   },
+   "disclaimer": {
+    "type": "string"
+   }
+  },
+  "required": [
+   "summary",
+   "alerts",
+   "advice",
+   "disclaimer"
+  ],
+  "additionalProperties": false
+ },
+ "LLM_PRICES": {
+  "qwen3.7-flash": {
+   "cn-beijing": [
+    [
+     32000,
+     0.2,
+     0.8
+    ],
+    [
+     256000,
+     0.6,
+     2.4
+    ],
+    [
+     1000000,
+     1.2,
+     4.8
+    ]
+   ],
+   "ap-southeast-1": [
+    [
+     32000,
+     0.225,
+     0.974
+    ],
+    [
+     256000,
+     0.749,
+     2.998
+    ],
+    [
+     1000000,
+     1.499,
+     5.995
+    ]
+   ]
+  },
+  "qwen3.8-flash": {
+   "cn-beijing": [
+    [
+     1000000,
+     0.8,
+     2.7
+    ]
+   ],
+   "ap-southeast-1": [
+    [
+     1000000,
+     1.094,
+     3.427
+    ]
+   ]
+  }
+ },
+ "DISCLAIMER": "以上为 AI 健康参考，不替代专业医疗意见。",
+ "FIELDS": [
+  "gender",
+  "age",
+  "bmi",
+  "rhr",
+  "rhr_avg7",
+  "spo2",
+  "spo2_min",
+  "deep_sleep_min",
+  "total_sleep_min",
+  "steps",
+  "cal"
+ ],
+ "SAMPLES": [
+  "samples/day_normal.json",
+  "samples/day_alert.json"
+ ],
+ "CARD_WIDTH": 26
+}

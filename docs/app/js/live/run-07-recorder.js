@@ -1,6 +1,6 @@
 // 07 录音卡 · 浏览器真跑：流程对照 solutions/by-category/07-recorder/demo/bailian/run.py（同步转写 + 流式纪要）
 import { fmtCny } from '../ui.js';
-import { costOf, parseJson, toBase64 } from './bailian.js';
+import { costOf, parseJson, toBase64 } from './client.js';
 
 const pad = (n) => String(n).padStart(2, '0');
 const speakerLabel = (raw) => (raw == null ? '说话人' : `说话人${Number(raw) + 1}`);
@@ -35,10 +35,12 @@ export default async function run(x) {
   const model = c.LLM_MODEL;
   const audioPath = c.SAMPLE_AUDIO;
   const name = audioPath.split('/').pop();
-  const meta = JSON.parse(await x.assetText(audioPath.replace(/\.\w+$/, '.json')));
+  // 样本旁的 .json 记着时长；没发布时与 run.py 一样，用转写的最后一句结束时间代替
+  const metaPath = audioPath.replace(/\.\w+$/, '.json');
+  const meta = x.hasAsset(metaPath) ? JSON.parse(await x.assetText(metaPath)) : {};
   const audio = await x.asset(audioPath);
   let seconds = (meta.duration_ms || 0) / 1000;
-  x.say('设备', `录音卡 · 会议录音 ← ${name}（${seconds.toFixed(1)} s，${Math.floor(audio.byteLength / 1024)} KB）`);
+  x.say('设备', `录音卡 · 会议录音 ← ${name}（${seconds ? `${seconds.toFixed(1)} s，` : ''}${Math.floor(audio.byteLength / 1024)} KB）`);
   x.say('设备', '录音结束 → 经手机 App 上传云端');
   const tEnd = x.now();
 

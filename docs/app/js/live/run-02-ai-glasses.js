@@ -1,10 +1,22 @@
 // 02 AI 眼镜 · 浏览器真跑「拍照即问」：流程对照 solutions/by-category/02-ai-glasses/demo/bailian/run.py 的 run_ask()。
 // 设备上的播报走 WebSocket 流式合成；浏览器的 WebSocket 不能带 Authorization 请求头，这里改用非实时 HTTP 合成（仅北京地域）。
 import { fmtCny } from '../ui.js';
-import { safeAudioUrl, toBase64 } from './bailian.js';
+import { toBase64 } from './client.js';
 
 // 按价格页口径计费字符：一个汉字计 2 个字符，其他计 1 个（与 run.py 的 tts_chars() 一致）
 const ttsChars = (text) => [...text].reduce((n, ch) => n + (ch >= '\u4e00' && ch <= '\u9fff' ? 2 : 1), 0);
+
+// 非实时合成返回的是百炼结果存储里的音频地址（OSS 签名 URL）；只接受 aliyuncs.com 下的地址，并改成 https
+function safeAudioUrl(url) {
+  try {
+    const u = new URL(url);
+    if (!/(^|\.)aliyuncs\.com$/.test(u.hostname)) return null;
+    u.protocol = 'https:';
+    return u.href;
+  } catch {
+    return null;
+  }
+}
 
 export default async function run(x) {
   const { c } = x;

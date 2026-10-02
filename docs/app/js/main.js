@@ -46,7 +46,7 @@ async function route() {
       const reg = await registry();
       let result;
       if (page === 'c') result = renderCategory(view, reg, parts[1] || '');
-      else if (page === 's') result = await renderSolution(view, reg, parts[1] || '');
+      else if (page === 's') result = await renderSolution(view, reg, parts[1] || '', parts[2] || '');
       else result = renderHome(view, reg);
       cleanup = result?.cleanup || null;
     }

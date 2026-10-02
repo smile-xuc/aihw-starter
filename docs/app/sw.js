@@ -1,12 +1,11 @@
-// 离线回放：只缓存本站的 GET 请求；百炼接口是跨域请求，这里一律不碰。
-const CACHE = 'aihw-app-v1';
+// 离线回放：只缓存本站的 GET 请求；云端接口是跨域请求，这里一律不碰。
+const CACHE = 'aihw-app-v2';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css',
   'js/main.js', 'js/ui.js', 'js/meta.js', 'js/data.js', 'js/replay.js', 'js/settings.js',
   'js/pages/home.js', 'js/pages/category.js', 'js/pages/solution.js', 'js/pages/me.js',
-  'js/live/index.js', 'js/live/bailian.js',
+  'js/live/index.js', 'js/live/client.js',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
-  'data/registry.json', 'data/build.json',
 ];
 
 self.addEventListener('install', (event) => {
@@ -51,7 +50,7 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(caches.open(CACHE).then((c) => c.match(url.href)).then((hit) => hit || fetch(request)));
     return;
   }
-  // 样本图片、录音不会变，优先用缓存；页面、脚本、数据先走网络，离线时退回缓存
-  const media = /\/data\/demos\//.test(url.pathname);
+  // 样本图片、录音不会变，优先用缓存；页面、脚本、注册表与轨迹先走网络，离线时退回缓存
+  const media = /\/data\/assets\//.test(url.pathname);
   event.respondWith(media ? cacheFirst(request) : networkFirst(request));
 });

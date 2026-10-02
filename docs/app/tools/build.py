@@ -1,34 +1,26 @@
 #!/usr/bin/env python3
-"""docs/app 的数据构建：把网页 APP 要读的文件放进 docs/app/data/（不入库，Pages workflow 每次部署前重新生成）。
+"""docs/app 的构建与自检。只用标准库。
 
-  python3 docs/app/tools/build.py           生成 data/
-  python3 docs/app/tools/build.py --check   生成并自检（CI 用）
+  python3 docs/app/tools/build.py            重新生成 live-data/（改了被导入的 run.py 常量后运行，并提交）
+  python3 docs/app/tools/build.py --check    CI：live-data/ 与 run.py 一致、注册表与轨迹的引用齐全
 
-data/ 里有什么：
-  registry.json、traces/   方案注册表与回放轨迹。正式注册表上线前，从 sample-data/（临时样例）复制
-  demos/<方案 id>/samples/  各 demo 的样本图片、录音（回放展示，浏览器真跑时作为模拟设备输入）
-  live/<方案 id>.json       浏览器真跑要用的模型 ID、提示词、工具定义、单价，直接从 demo 的 run.py 导入，不在 JS 里另抄一份
-  build.json               构建时间、提交、数据来源
-
-本地预览：生成后在仓库根目录运行 python3 -m http.server -d docs 8000，打开 http://localhost:8000/app/
-只用标准库。
+live-data/<方案 id>.json：浏览器真跑要用的模型 ID、提示词、工具定义、单价，直接从各 demo 的 run.py 导入，JS 里不另抄一份。
+data/ 是注册表与回放轨迹（aihw/registry@0.1、aihw/trace@0.1），由 solutions/demo-standard/build_registry.py 生成并入库，这里只读、不写。
+本地预览：python3 -m http.server 8000 -d docs，打开 http://localhost:8000/app/
 """
 from __future__ import annotations
 
 import argparse
-import datetime as dt
 import importlib.util
 import json
 import math
-import shutil
-import subprocess
 import sys
 from pathlib import Path
 
 APP = Path(__file__).resolve().parents[1]
 REPO = APP.parents[1]
 DATA = APP / "data"
-SAMPLE_DATA = APP / "sample-data"
+LIVE_DATA = APP / "live-data"
 
 # 浏览器真跑读取的常量：{方案 id: {模块名: [常量名]}}。demo 改了这些常量的名字，这里同步改
 LIVE = {
@@ -66,139 +58,121 @@ class BuildError(RuntimeError):
     pass
 
 
-def git_commit() -> str:
-    try:
-        out = subprocess.run(["git", "-C", str(REPO), "rev-parse", "--short", "HEAD"],
-                             capture_output=True, text=True, check=True)
-        return out.stdout.strip()
-    except (OSError, subprocess.CalledProcessError):
-        return ""
+def demo_dir(sol_id: str) -> Path:
+    category, stack = sol_id.split(".")
+    return REPO / "solutions" / "by-category" / category / "demo" / stack
 
 
-def build_registry() -> tuple[dict, str]:
-    """注册表与回放轨迹。正式注册表上线前用 sample-data/ 里的临时样例。"""
-    shutil.copytree(SAMPLE_DATA / "traces", DATA / "traces")
-    shutil.copy2(SAMPLE_DATA / "registry.json", DATA / "registry.json")
-    return json.loads((DATA / "registry.json").read_text(encoding="utf-8")), "sample-data（临时样例）"
-
-
-def copy_demo_assets(registry: dict) -> None:
-    for sol in registry["solutions"]:
-        samples = REPO / sol["path"] / "samples"
-        if samples.is_dir():
-            shutil.copytree(samples, DATA / "demos" / sol["id"] / "samples")
-
-
-def load_module(demo_dir: Path, name: str):
+def load_module(directory: Path, name: str):
     """按 demo 自己的 sys.path 导入模块（各 demo 都有同名的 demo_kit / mock，导入前先清掉上一个 demo 的）。"""
     for dep in DEMO_SHARED_MODULES:
         sys.modules.pop(dep, None)
-    unique = f"aihw_app_{demo_dir.parent.parent.name}_{name}".replace("-", "_")
-    spec = importlib.util.spec_from_file_location(unique, demo_dir / f"{name}.py")
+    unique = f"aihw_app_{directory.parent.parent.name}_{name}".replace("-", "_")
+    spec = importlib.util.spec_from_file_location(unique, directory / f"{name}.py")
     module = importlib.util.module_from_spec(spec)
     sys.modules[unique] = module  # dataclass 在模块执行期间要能从 sys.modules 找到自己
-    sys.path.insert(0, str(demo_dir))
+    sys.path.insert(0, str(directory))
     try:
         spec.loader.exec_module(module)
     finally:
-        sys.path.remove(str(demo_dir))
+        sys.path.remove(str(directory))
         sys.modules.pop(unique, None)
     return module
 
 
-def plain(value, demo_dir: Path):
+def plain(value, directory: Path):
     """常量转成 JSON：Path → 相对 demo 目录的路径，集合 → 排序列表，inf → null（单价档位不封顶）。"""
     if isinstance(value, float) and math.isinf(value):
         return None
     if value is None or isinstance(value, (str, int, float, bool)):
         return value
     if isinstance(value, Path):
-        return value.relative_to(demo_dir).as_posix()
+        return value.relative_to(directory).as_posix()
     if isinstance(value, dict):
-        return {str(k): plain(v, demo_dir) for k, v in value.items()}
+        return {str(k): plain(v, directory) for k, v in value.items()}
     if isinstance(value, (list, tuple)):
-        return [plain(v, demo_dir) for v in value]
+        return [plain(v, directory) for v in value]
     if isinstance(value, (set, frozenset)):
-        return sorted(plain(v, demo_dir) for v in value)
+        return sorted(plain(v, directory) for v in value)
     raise BuildError(f"无法转成 JSON：{type(value).__name__}")
 
 
-def dump_live(registry: dict) -> list[str]:
-    by_id = {s["id"]: s for s in registry["solutions"]}
-    (DATA / "live").mkdir(parents=True)
-    done = []
+def live_files() -> dict[str, str]:
+    out = {}
     for sol_id, modules in LIVE.items():
-        if sol_id not in by_id:
-            raise BuildError(f"LIVE 里的 {sol_id} 不在注册表里")
-        demo_dir = REPO / by_id[sol_id]["path"]
-        out = {"solution": sol_id, "source": by_id[sol_id]["path"]}
+        directory = demo_dir(sol_id)
+        doc = {"solution": sol_id, "source": directory.relative_to(REPO).as_posix()}
         for module_name, names in modules.items():
-            module = load_module(demo_dir, module_name)
+            module = load_module(directory, module_name)
             for name in names:
                 if not hasattr(module, name):
-                    raise BuildError(f"{demo_dir.relative_to(REPO)}/{module_name}.py 没有 {name}："
+                    raise BuildError(f"{directory.relative_to(REPO)}/{module_name}.py 没有 {name}："
                                      "浏览器真跑要读这个常量；改了常量名就同步改 docs/app/tools/build.py 的 LIVE")
-                out[name] = plain(getattr(module, name), demo_dir)
-        (DATA / "live" / f"{sol_id}.json").write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n",
-                                                      encoding="utf-8")
-        done.append(sol_id)
+                doc[name] = plain(getattr(module, name), directory)
+        out[f"{sol_id}.json"] = json.dumps(doc, ensure_ascii=False, indent=1) + "\n"
     for dep in DEMO_SHARED_MODULES:
         sys.modules.pop(dep, None)
-    return done
+    return out
 
 
-def check(registry: dict) -> list[str]:
+def check_data(files: dict[str, str]) -> list[str]:
+    """页面要读的引用都在：注册表里的轨迹和样本文件存在，真跑要读的样本在注册表的 samples 里。"""
+    if not (DATA / "registry.json").is_file():
+        return ["docs/app/data/registry.json 不存在：注册表由 solutions/demo-standard/build_registry.py 生成（demo 标准 v0.3）"]
     problems = []
-    cats = {c["id"] for c in registry["categories"]}
-    for sol in registry["solutions"]:
-        if sol["category"] not in cats:
-            problems.append(f"{sol['id']}：品类 {sol['category']} 不在注册表里")
-        trace_path = (sol.get("experience") or {}).get("trace")
-        if not trace_path:
+    registry = json.loads((DATA / "registry.json").read_text(encoding="utf-8"))
+    if not str(registry.get("schema", "")).startswith("aihw/registry@0."):
+        return [f"docs/app/data/registry.json 不是 aihw/registry@0.x：{registry.get('schema')}"]
+    by_id = {s["id"]: s for s in registry.get("solutions", [])}
+    for sol in registry.get("solutions", []):
+        for variant in (sol.get("experience") or {}).get("variants", []):
+            path = variant.get("trace")
+            if path and not (DATA / path).is_file():
+                problems.append(f"{sol['id']}：缺回放轨迹 {path}")
+        for sample in sol.get("samples", []):
+            if sample.get("asset") and not (DATA / sample["asset"]).is_file():
+                problems.append(f"{sol['id']}：缺样本文件 {sample['asset']}")
+    for name, text in files.items():
+        sol_id = name[:-5]
+        sol = by_id.get(sol_id)
+        if not sol:
+            problems.append(f"live-data 的 {sol_id} 不在注册表里")
             continue
-        trace_file = DATA / trace_path
-        if not trace_file.is_file():
-            problems.append(f"{sol['id']}：缺回放轨迹 {trace_path}")
-            continue
-        trace = json.loads(trace_file.read_text(encoding="utf-8"))
-        if not trace.get("events"):
-            problems.append(f"{sol['id']}：回放轨迹没有事件")
-        for item in trace.get("inputs", []):
-            if not (DATA / "demos" / sol["id"] / item["path"]).is_file():
-                problems.append(f"{sol['id']}：回放引用的 {item['path']} 不在 data/demos/ 里")
-    for sol_id in LIVE:
-        live = json.loads((DATA / "live" / f"{sol_id}.json").read_text(encoding="utf-8"))
-        for key, value in live.items():
-            if isinstance(value, str) and value.startswith("samples/") and \
-                    not (DATA / "demos" / sol_id / value).is_file():
-                problems.append(f"{sol_id}：真跑要读的 {key}={value} 不在 data/demos/ 里")
+        have = {s["path"] for s in sol.get("samples", [])}
+        for key, value in json.loads(text).items():
+            values = value if isinstance(value, list) else [value]
+            for v in values:
+                path = v[-1] if isinstance(v, list) and v and isinstance(v[-1], str) else v
+                if isinstance(path, str) and path.startswith("samples/") and path not in have:
+                    problems.append(f"{sol_id}：真跑要读的 {key} → {path} 不在注册表的 samples 里")
     return problems
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="生成 docs/app/data/")
-    ap.add_argument("--check", action="store_true", help="生成后检查引用是否齐全（CI 用）")
+    ap = argparse.ArgumentParser(description="docs/app 的构建与自检")
+    ap.add_argument("--check", action="store_true", help="检查 live-data/ 是否最新、数据引用是否齐全（CI 用）")
     args = ap.parse_args()
-
-    if DATA.exists():
-        shutil.rmtree(DATA)
-    DATA.mkdir()
     try:
-        registry, source = build_registry()
-        copy_demo_assets(registry)
-        live = dump_live(registry)
+        files = live_files()
+        if args.check:
+            stale = [n for n, t in files.items() if not (LIVE_DATA / n).is_file() or (LIVE_DATA / n).read_text(encoding="utf-8") != t]
+            extra = sorted(p.name for p in LIVE_DATA.glob("*.json") if p.name not in files)
+            problems = [f"live-data/{n} 与 run.py 不一致：运行 python3 docs/app/tools/build.py 后提交" for n in stale]
+            problems += [f"live-data/{n} 没有对应的 LIVE 条目，删除它" for n in extra]
+            problems += check_data(files)
+            if problems:
+                sys.exit("docs/app 自检失败：\n" + "\n".join(f"- {p}" for p in problems))
+            print(f"docs/app 自检通过（live-data {len(files)} 个，注册表引用齐全）")
+            return
+        LIVE_DATA.mkdir(exist_ok=True)
+        for old in LIVE_DATA.glob("*.json"):
+            if old.name not in files:
+                old.unlink()
+        for name, text in files.items():
+            (LIVE_DATA / name).write_text(text, encoding="utf-8")
+        print(f"docs/app/live-data：{len(files)} 个方案")
     except BuildError as exc:
         sys.exit(f"docs/app 构建失败：{exc}")
-    info = {"built_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "commit": git_commit(),
-            "registry": source, "live": live}
-    (DATA / "build.json").write_text(json.dumps(info, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    size = sum(f.stat().st_size for f in DATA.rglob("*") if f.is_file())
-    print(f"docs/app/data：{len(registry['solutions'])} 个方案 · 真跑常量 {len(live)} 个 · {size / 1024:.0f} KB · 注册表来源 {source}")
-    if args.check:
-        problems = check(registry)
-        if problems:
-            sys.exit("docs/app 自检失败：\n" + "\n".join(f"- {p}" for p in problems))
-        print("docs/app 自检通过")
 
 
 if __name__ == "__main__":

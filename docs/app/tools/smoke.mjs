@@ -1,11 +1,10 @@
-// 网页 APP 冒烟测试（CI 与本地通用）：无头 Chrome 以 390 × 844 打开每个页面，查控制台报错和越界请求；
-// 再把发往百炼域名的请求转给 fake_bailian.py（各 demo 的 mock.py），把能在浏览器里真跑的方案完整跑一遍。
+// 网页 APP 冒烟测试（CI 与本地通用）：无头 Chrome 以 390 × 844 打开全部页面和玩法，查控制台报错、越界请求和横向溢出；
+// 再把发往百炼域名的请求转给 fake_bailian.py（各 demo 的 mock.py），把能在浏览器里真跑的玩法完整跑一遍。
 //
-//   python3 docs/app/tools/build.py
 //   npm install --no-save --prefix /tmp/pw playwright-core
 //   PLAYWRIGHT_CORE=/tmp/pw/node_modules/playwright-core/index.mjs CHROME=$(command -v google-chrome) node docs/app/tools/smoke.mjs
 //
-// 只说明页面逻辑和 mock 对得上；真实接口的响应仍待真 Key 验证。
+// 只说明页面逻辑与 mock（官方事件 / 响应结构）对得上；真实接口的响应仍待真 Key 验证。
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -17,17 +16,16 @@ const STATIC_PORT = Number(process.env.STATIC_PORT || 8781);
 const FAKE_PORT = Number(process.env.FAKE_PORT || 8782);
 const BASE = `http://127.0.0.1:${STATIC_PORT}/app/`;
 const ALLOWED = /^https:\/\/(dashscope\.aliyuncs\.com|dashscope-intl\.aliyuncs\.com|[a-z0-9-]+\.(cn-beijing|ap-southeast-1)\.maas\.aliyuncs\.com)\//;
-const KEY = { apiKey: 'sk-apptest0000000001', region: 'cn-beijing', workspaceId: 'llm-apptest' };
+const CRED = { values: { DASHSCOPE_API_KEY: 'sk-apptest0000000001', DASHSCOPE_API_REGION: 'cn-beijing', DASHSCOPE_WORKSPACE_ID: 'llm-apptest' } };
 const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'authorization,content-type,x-dashscope-sse', 'access-control-allow-methods': 'GET,POST' };
 
 const children = [];
 function serve(args, quiet) {
-  const child = spawn('python3', args, { cwd: docs, stdio: ['ignore', 'ignore', quiet ? 'ignore' : 'inherit'] });
-  children.push(child);
+  children.push(spawn('python3', args, { cwd: docs, stdio: ['ignore', 'ignore', quiet ? 'ignore' : 'inherit'] }));
 }
-async function ready(url) {
+async function ready(url, method = 'GET') {
   for (let i = 0; i < 50; i++) {
-    try { await fetch(url, { method: url.includes(String(FAKE_PORT)) ? 'POST' : 'GET' }); return; } catch { await new Promise((r) => setTimeout(r, 200)); }
+    try { await fetch(url, { method }); return; } catch { await new Promise((r) => setTimeout(r, 200)); }
   }
   throw new Error(`没起来：${url}`);
 }
@@ -50,7 +48,7 @@ async function main() {
   serve(['-m', 'http.server', String(STATIC_PORT), '--bind', '127.0.0.1', '-d', docs], true);
   serve([path.join(here, 'fake_bailian.py'), '--port', String(FAKE_PORT)]);
   await ready(`${BASE}index.html`);
-  await ready(`http://127.0.0.1:${FAKE_PORT}/x/reset`);
+  await ready(`http://127.0.0.1:${FAKE_PORT}/x/reset`, 'POST');
 
   const browser = await chromium.launch({ executablePath: process.env.CHROME || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, locale: 'zh-CN', reducedMotion: 'reduce', serviceWorkers: 'block' });
@@ -61,32 +59,33 @@ async function main() {
   page.on('request', (r) => {
     const url = r.url();
     if (url.startsWith(BASE) || url.startsWith('data:') || url.startsWith('blob:')) return;
-    if (!ALLOWED.test(url)) problems.push(`[${current}] 请求发往了百炼官方接入点以外的地址：${url}`);
+    if (!ALLOWED.test(url)) problems.push(`[${current}] 请求发往了官方接入点以外的地址：${url}`);
     else hostsSeen.add(new URL(url).host);
   });
 
-  // 页面：首页、9 个品类页、9 个方案页、我的
   current = 'home';
   await page.goto(BASE);
   await page.waitForSelector('.cat-card');
   await noOverflow(page);
   const cats = await page.$$eval('.cat-card', (els) => els.map((e) => e.getAttribute('href').replace('#/c/', '')));
+  const routes = [];
   for (const cat of cats) {
     current = `c/${cat}`;
     await page.goto(`${BASE}#/c/${cat}`);
     await page.waitForSelector('.category-hero');
     await noOverflow(page);
+    for (const href of await page.$$eval('a.row-card[href^="#/s/"]', (els) => els.map((e) => e.getAttribute('href')))) routes.push(href.slice(4));
   }
-  const sols = [];
-  for (const cat of cats) {
-    current = `s/${cat}`;
-    await page.goto(`${BASE}#/c/${cat}`);
-    await page.waitForSelector('.category-hero');
-    for (const href of await page.$$eval('a.row-card[href^="#/s/"]', (els) => els.map((e) => e.getAttribute('href')))) sols.push(href.slice(4));
-  }
-  for (const id of sols) {
-    current = `s/${id}`;
+  const pages = [];
+  for (const id of routes) {
     await page.goto(`${BASE}#/s/${id}`);
+    await page.waitForSelector('.stage');
+    const variants = await page.$$eval('[data-variant]', (els) => els.map((e) => e.dataset.variant));
+    for (const v of variants.length ? variants : ['']) pages.push({ id, variant: v });
+  }
+  for (const { id, variant } of pages) {
+    current = `s/${id}/${variant}`;
+    await page.goto(`${BASE}#/s/${id}${variant ? `/${variant}` : ''}`);
     await page.waitForSelector('.timeline .ev');
     await page.click('[data-act="all"]');
     await page.waitForSelector('.stage-foot:not([hidden])');
@@ -94,11 +93,11 @@ async function main() {
   }
   current = 'me';
   await page.goto(`${BASE}#/me`);
-  await page.waitForSelector('[data-form="key"]');
+  await page.waitForSelector('form[data-form]');
   await noOverflow(page);
 
-  // 浏览器真跑：填测试 Key，把百炼域名的请求转给假百炼
-  await page.evaluate((key) => localStorage.setItem('aihw.bailian.v1', JSON.stringify(key)), KEY);
+  // 浏览器真跑：填测试凭证，把百炼域名的请求转给假百炼
+  await page.evaluate((cred) => localStorage.setItem('aihw.credentials.bailian', JSON.stringify(cred)), CRED);
   await context.route(ALLOWED, async (route, req) => {
     if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
     const u = new URL(req.url());
@@ -106,31 +105,32 @@ async function main() {
     return route.fulfill({ status: res.status, headers: { ...CORS, 'content-type': res.headers.get('content-type') || 'application/json' }, body: Buffer.from(await res.arrayBuffer()) });
   });
   const results = [];
-  for (const id of sols) {
+  for (const { id, variant } of pages) {
     current = id;
     await fetch(`http://127.0.0.1:${FAKE_PORT}/${id}/reset`, { method: 'POST' });
-    await page.goto(`${BASE}#/s/${id}`);
+    await page.goto(`${BASE}#/s/${id}${variant ? `/${variant}` : ''}`);
     await page.waitForSelector('.timeline .ev');
+    const name = `${id}${variant ? `/${variant}` : ''}`;
     if (!(await page.$('[data-act="live"]'))) {
-      const blocked = await page.$('text=浏览器里跑不了');
-      results.push(`${id}：只放回放${blocked ? '（页面已说明原因）' : ''}`);
-      if (!blocked) problems.push(`[${id}] 没有真跑按钮，也没有说明原因`);
+      const reason = await page.$eval('.live-bar', (e) => e.textContent.trim()).catch(() => '');
+      results.push(`${name}：不在浏览器里跑 · ${reason.slice(0, 40)}…`);
+      if (!reason) problems.push(`[${name}] 没有真跑按钮，也没有说明原因`);
       continue;
     }
     await page.click('[data-act="live"]');
     await page.click('[data-sheet="go"]');
-    await page.waitForFunction(() => document.querySelector('.live-cost:not(.hidden)')
-      || [...document.querySelectorAll('.timeline .ev .txt')].some((e) => e.textContent.startsWith('出错')), null, { timeout: 30000 });
+    await page.waitForSelector('[data-export]', { timeout: 30000 });
     const errors = await page.$$eval('.timeline .ev .txt', (els) => els.map((e) => e.textContent).filter((t) => t.startsWith('出错')));
     const cost = await page.$eval('.live-cost', (e) => e.textContent.trim()).catch(() => '');
     const events = await page.$$eval('.timeline .ev', (els) => els.length);
-    if (errors.length || !cost) problems.push(`[${id}] 真跑失败：${errors.join('；') || '没有出结果'}`);
-    results.push(`${id}：真跑 ${events} 行 · ${cost.split('\n')[0]}`);
+    if (errors.length || !cost) problems.push(`[${name}] 真跑失败：${errors.join('；') || '没有出结果'}`);
+    results.push(`${name}：真跑 ${events} 行 · ${cost}`);
   }
   await browser.close();
   console.log(results.join('\n'));
   console.log(`发往的百炼域名：${[...hostsSeen].join('、') || '无'}`);
-  if (!hostsSeen.has(`${KEY.workspaceId}.cn-beijing.maas.aliyuncs.com`)) problems.push('填了业务空间 ID，但请求没有走业务空间专属域名');
+  if (!hostsSeen.has(`${CRED.values.DASHSCOPE_WORKSPACE_ID}.cn-beijing.maas.aliyuncs.com`)) problems.push('填了业务空间 ID，但请求没有走业务空间专属域名');
+  if (!results.some((r) => r.includes('：真跑 '))) problems.push('一个浏览器真跑都没有跑');
 }
 
 try {

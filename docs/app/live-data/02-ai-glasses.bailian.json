@@ -1,0 +1,31 @@
+{
+ "solution": "02-ai-glasses.bailian",
+ "source": "solutions/by-category/02-ai-glasses/demo/bailian",
+ "OMNI_MODEL": "qwen3.8-omni-flash",
+ "TTS_MODEL": "qwen-audio-3.0-tts-flash",
+ "TTS_VOICE": "longanhuan_v3.6",
+ "ASK_PROMPT": "你是一副 AI 眼镜的语音助手。用户按住镜腿拍下眼前的画面，并用语音提问（问题在音频里）。\n结合画面回答：口语化中文，两三句话，先给结论，适合耳机播报；不用列表、Markdown 和表情符号。\n画面里有人时不识别身份；看不清就直说，不要编造。",
+ "PRICES": {
+  "cn-beijing": {
+   "omni_in": 0.8,
+   "omni_out": 2.7,
+   "tts_per_10k_chars": 1.0,
+   "rt_audio_in": 6.0,
+   "rt_other_in": 1.5,
+   "rt_text_out": 4.5,
+   "rt_audio_out": 12.0
+  },
+  "ap-southeast-1": {
+   "omni_in": 1.094,
+   "omni_out": 3.427,
+   "tts_per_10k_chars": 1.12413,
+   "rt_audio_in": 6.781,
+   "rt_other_in": 1.677,
+   "rt_text_out": 5.104,
+   "rt_audio_out": 13.636
+  }
+ },
+ "SAMPLE_IMAGE": "samples/dish.jpg",
+ "SAMPLE_AUDIO": "samples/ask_dish.wav",
+ "OUT_RATE": 24000
+}

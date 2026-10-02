@@ -1,6 +1,6 @@
 // 04 Agent 硬件 · 浏览器真跑：流程对照 solutions/by-category/04-agent-hardware/demo/bailian/run.py 与 local_rules.py
 import { fmtCny } from '../ui.js';
-import { costOf, pyFormat, toBase64 } from './bailian.js';
+import { costOf, pyFormat, toBase64 } from './client.js';
 
 const pad = (n) => String(n).padStart(2, '0');
 

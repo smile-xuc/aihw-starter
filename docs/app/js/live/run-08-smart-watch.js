@@ -1,6 +1,6 @@
 // 08 智能手表 · 浏览器真跑：流程对照 solutions/by-category/08-smart-watch/demo/bailian/run.py（本地红线 + JSON Schema 日报）
 import { fmtCny } from '../ui.js';
-import { costOf, parseJson } from './bailian.js';
+import { costOf, parseJson } from './client.js';
 
 // 手表 / App 端的确定性红线，与 run.py 的 red_lines() 一致
 function redLines(day) {

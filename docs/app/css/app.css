@@ -294,6 +294,13 @@ a.chip { text-decoration: none; min-height: 32px; }
 .segment { display: flex; padding: 4px; background: var(--surface-low); border-radius: 13px; gap: 4px; }
 .segment button { flex: 1; min-height: 40px; border-radius: 9px; color: var(--muted); font-size: 12px; font-weight: 500; }
 .segment button[aria-pressed="true"] { background: var(--surface); color: var(--fg); box-shadow: 0 1px 5px #21103312; }
+.field-help { display: block; font-size: 11px; line-height: 1.6; color: var(--muted); margin-top: 6px; }
+.field-group { font-size: 11px; font-weight: 650; letter-spacing: .4px; color: var(--accent-ink); margin: 4px 0 10px; }
+.advice { margin: 0 0 10px; padding-left: 18px; line-height: 1.8; }
+.variant-switch { margin-bottom: 12px; }
+.inline-audio { margin-top: 6px; }
+.inline-audio audio { display: block; width: 100%; height: 34px; }
+.inline-audio small { display: block; font-size: 10px; color: var(--muted); margin-top: 3px; }
 .check-row { display: flex; gap: 10px; align-items: flex-start; font-size: 12.5px; line-height: 1.6; margin: 2px 0 14px; cursor: pointer; }
 .check-row input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--accent); flex-shrink: 0; }
 .check-row small { display: block; color: var(--muted); font-size: 11px; }

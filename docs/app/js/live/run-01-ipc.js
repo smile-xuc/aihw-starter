@@ -1,6 +1,6 @@
 // 01 IPC · 浏览器真跑：流程对照 solutions/by-category/01-ipc/demo/bailian/run.py（看图事件卡 → 检索 → 日报）
 import { fmtCny } from '../ui.js';
-import { costOf, parseJson, pyFormat, toBase64 } from './bailian.js';
+import { costOf, parseJson, pyFormat, toBase64 } from './client.js';
 
 const pad = (n) => String(n).padStart(2, '0');
 const minute = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;

@@ -1,8 +1,10 @@
-// 用户自己的百炼 Key、地域、业务空间 ID：只放在这台设备的浏览器存储里，页面不会把它们发给百炼官方接入点以外的任何地址。
+// 用户自己填的凭证与接入点：按栈声明（aihw/stack@0.1）的字段存，键名与 .env 变量名相同。
+// 只放在这台设备的浏览器存储里；请求只发往按栈声明推导出的官方接入点。
 
-const STORE_KEY = 'aihw.bailian.v1';
+import { FIELD_HINTS } from './meta.js';
+
+const storeKey = (stackId) => `aihw.credentials.${stackId}`;
 const THEME_KEY = 'aihw.theme';
-export const REGION_IDS = ['cn-beijing', 'ap-southeast-1'];
 
 function stores() {
   const list = [];
@@ -11,53 +13,69 @@ function stores() {
   return list;
 }
 
-export function loadBailian() {
+export function loadCredentials(stackId) {
   for (const [where, store] of stores()) {
     try {
-      const raw = store.getItem(STORE_KEY);
+      const raw = store.getItem(storeKey(stackId));
       if (!raw) continue;
       const v = JSON.parse(raw);
-      if (v && typeof v.apiKey === 'string' && REGION_IDS.includes(v.region)) {
-        return { apiKey: v.apiKey, region: v.region, workspaceId: v.workspaceId || '', remember: where === 'local', savedAt: v.savedAt || null };
-      }
+      if (v && v.values && typeof v.values === 'object') return { values: v.values, remember: where === 'local', savedAt: v.savedAt || null };
     } catch { /* 损坏的记录当作没填 */ }
   }
   return null;
 }
 
-export function saveBailian({ apiKey, region, workspaceId }, remember) {
-  clearBailian();
-  const value = JSON.stringify({ apiKey, region, workspaceId: workspaceId || '', savedAt: new Date().toISOString() });
+export function saveCredentials(stackId, values, remember) {
+  clearCredentials(stackId);
   const target = stores().find(([where]) => where === (remember ? 'local' : 'session'));
   if (!target) throw new Error('浏览器禁用了本地存储，无法保存');
-  target[1].setItem(STORE_KEY, value);
+  target[1].setItem(storeKey(stackId), JSON.stringify({ values, savedAt: new Date().toISOString() }));
 }
 
-export function clearBailian() {
+export function clearCredentials(stackId) {
   for (const [, store] of stores()) {
-    try { store.removeItem(STORE_KEY); } catch { /* 忽略 */ }
+    try { store.removeItem(storeKey(stackId)); } catch { /* 忽略 */ }
   }
 }
 
-export function maskKey(key) {
-  if (!key) return '';
-  return key.length <= 10 ? `${key.slice(0, 3)}…` : `${key.slice(0, 5)}…${key.slice(-4)}`;
+// 契约约定 pattern 是整串匹配
+export function fullMatch(pattern, value) {
+  const src = pattern.startsWith('^') ? pattern : `^(?:${pattern})`;
+  return new RegExp(src.endsWith('$') ? src : `${src}$`).test(value);
 }
 
-// 业务空间 ID 会拼进域名 {id}.{地域}.maas.aliyuncs.com，只放行小写字母、数字和连字符
-export function validateBailian({ apiKey, region, workspaceId }) {
+// 取值：用户填的值，没填用 default；首尾空白去掉
+export function fieldValues(stack, raw = {}) {
+  const out = {};
+  for (const f of stack.fields || []) out[f.key] = String(raw[f.key] ?? '').trim() || f.default || '';
+  return out;
+}
+
+export function validateCredentials(stack, raw) {
+  const values = fieldValues(stack, raw);
   const errors = [];
   const warnings = [];
-  const key = (apiKey || '').trim();
-  if (!key) errors.push('请填 API Key');
-  else if (!/^s[kt]-[A-Za-z0-9_-]{8,}$/.test(key)) errors.push('API Key 应以 sk-（长期 Key）或 st-（临时 Key）开头，只含字母、数字、- 和 _');
-  else if (key.startsWith('sk-sp-')) warnings.push('sk-sp- 开头的是 Token Plan 专属 Key，只能用于编程工具，调模型接口会被拒绝');
-  else if (key.startsWith('st-')) warnings.push('临时 Key 最长 30 分钟有效，过期后要重新生成');
-  if (!REGION_IDS.includes(region)) errors.push('请选择地域');
-  const ws = (workspaceId || '').trim();
-  if (ws && !/^[a-z0-9][a-z0-9-]{2,62}$/.test(ws)) errors.push('业务空间 ID 只含小写字母、数字和连字符，形如 llm-xxxx');
-  else if (ws && !ws.startsWith('llm-')) warnings.push('业务空间 ID 一般形如 llm-xxxx，请在控制台「业务空间管理」核对');
-  return { errors, warnings, value: { apiKey: key, region, workspaceId: ws } };
+  for (const f of stack.fields || []) {
+    const v = values[f.key];
+    if (!v) {
+      if (f.required) errors.push(`请填 ${f.label}`);
+      continue;
+    }
+    if (f.input === 'select' && f.options && !f.options.some((o) => o.value === v)) errors.push(`${f.label} 只能选：${f.options.map((o) => o.label).join(' / ')}`);
+    else if (f.pattern && !fullMatch(f.pattern, v)) errors.push(`${f.label} 格式不对：${f.help || f.pattern}`);
+    const hint = FIELD_HINTS[f.key]?.(v);
+    if (hint) warnings.push(hint);
+  }
+  return { errors, warnings, values };
+}
+
+export function missingFields(stack, values, required = []) {
+  return required.filter((k) => !values?.[k]).map((k) => (stack.fields || []).find((f) => f.key === k)?.label || k);
+}
+
+export function maskSecret(v) {
+  if (!v) return '';
+  return v.length <= 10 ? `${v.slice(0, 3)}…` : `${v.slice(0, 5)}…${v.slice(-4)}`;
 }
 
 export function loadTheme() {
