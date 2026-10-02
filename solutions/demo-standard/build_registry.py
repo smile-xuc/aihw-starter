@@ -229,6 +229,7 @@ def build_solution(path: Path, vocab: dict, stacks: dict, out: Path) -> dict:
     experience = data.get("experience") or {}
     variants = []
     kit_version = None
+    used_inputs: set[str] = set()
     run_info = data.get("run") or {}
     for variant in experience.get("variants") or []:
         vid = variant["id"]
@@ -240,6 +241,7 @@ def build_solution(path: Path, vocab: dict, stacks: dict, out: Path) -> dict:
             trace, work = run_variant(demo_dir, str(run_info.get("mock", "")), args, Path(tmp))
             trace = publish_trace(trace, sid, vid, work, out)
         kit_version = trace.get("kit")
+        used_inputs.update(item["path"] for item in trace["inputs"])
         trace_path = f"traces/{sid}/{vid}.json"
         (out / trace_path).parent.mkdir(parents=True, exist_ok=True)
         (out / trace_path).write_text(_dump(trace), encoding="utf-8")
@@ -251,6 +253,13 @@ def build_solution(path: Path, vocab: dict, stacks: dict, out: Path) -> dict:
             "credentials": credentials(list(variant.get("env") or required)),
             "trace": trace_path, "cost": (trace.get("result") or {}).get("cost"),
         })
+
+    # 轨迹只认日志里提到的文件：图片、音频样本一个都没被任何玩法提到，多半是 run.py 没打印文件名
+    unused = [s["path"] for s in samples if s["media_type"].startswith(("image/", "audio/"))
+              and s["path"] not in used_inputs]
+    if variants and unused:
+        raise BuildError(f"{_rel(demo_dir)}：样本 {', '.join(unused)} 没出现在任何玩法的回放轨迹里。"
+                         "让 run.py 在用到它时把文件名打印出来（如「抓拍 1 帧 xxx.jpg」），或从 samples/ 删掉")
 
     modes = []
     if variants:
