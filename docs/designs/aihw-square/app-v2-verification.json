@@ -1,0 +1,150 @@
+{
+  "date": "2026-10-01",
+  "scope": "Design prototype; local samples; no real model or device calls",
+  "artifacts": [
+    {
+      "file": "app-v2.html",
+      "bytes": 2666258,
+      "sha256": "38956aa495db3677fddbce864a7dc1ce40273020cd6c24c0c7444ce7b15f3171",
+      "scriptSyntax": "pass",
+      "iframeCount": 0
+    },
+    {
+      "file": "overview.html",
+      "bytes": 2672716,
+      "sha256": "86d2b301cfa773df42434f52e4f622ab42448e074bf42b70dfed9af98b78a030",
+      "scriptSyntax": "pass",
+      "iframeCount": 0
+    },
+    {
+      "file": "flow.html",
+      "bytes": 2668716,
+      "sha256": "80a6338776aa22c0ae5f86303698d9139f6862ce0e8cc4ab6c8cb963df0c3f14",
+      "scriptSyntax": "pass",
+      "iframeCount": 0
+    }
+  ],
+  "checks": {
+    "routes": {
+      "count": 14,
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "rendered": 28,
+      "smallButtonTargets": 0,
+      "minimumCssPx": {
+        "ios": 44,
+        "android": 48
+      }
+    },
+    "templateRuns": {
+      "templates": [
+        "realtime",
+        "vision",
+        "voice",
+        "document",
+        "motion",
+        "structured"
+      ],
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "completed": 12
+    },
+    "coreFlow": [
+      "detail",
+      "prepare",
+      "workbench",
+      "result",
+      "records"
+    ],
+    "search": {
+      "matching": "pass",
+      "empty": "pass",
+      "resetFromEmpty": "pass"
+    },
+    "favorites": {
+      "crossPlatformSync": "pass"
+    },
+    "samples": {
+      "materialSwitch": "pass",
+      "translationFollowup": "pass",
+      "emotionExpression": "pass"
+    },
+    "localFile": {
+      "fixture": "demo-transcript.txt",
+      "textPreview": "pass",
+      "networkUpload": false
+    },
+    "compare": {
+      "mediumReferenceSeconds": {
+        "blocking": 4.63,
+        "streaming": 2.37,
+        "realtime": 0.35
+      },
+      "source": "repository results dated 2026-07-09",
+      "sameTimingBasisClaim": false
+    },
+    "devices": {
+      "connection": "simulated; verified"
+    },
+    "service": {
+      "connection": "simulated; verified"
+    },
+    "appearance": {
+      "globalDarkSwitch": "pass",
+      "androidDarkGallery": "pass"
+    },
+    "mobile": {
+      "viewport": [
+        390,
+        844
+      ],
+      "documentWidth": {
+        "ios": 390,
+        "android": 390
+      },
+      "appHeight": {
+        "ios": 844,
+        "android": 844
+      },
+      "iosAppTop": 0,
+      "androidSmallButtonTargets": 0
+    },
+    "gallery": {
+      "screenCount": 18,
+      "duplicateIds": 0,
+      "recordCardsInsideBanner": 0,
+      "recordCardWidth": 350,
+      "recordCardTops": [
+        301,
+        451,
+        600
+      ],
+      "consoleErrors": 0
+    },
+    "appConsoleErrors": 0,
+    "export": {
+      "preview": "pass",
+      "selectAll": {
+        "characters": 234,
+        "selected": 234
+      },
+      "escapeClose": "pass",
+      "download": "Embedded-browser download event timed out; copyable-text fallback verified. Standard TXT download is offered with an in-panel compatibility note."
+    }
+  },
+  "screenshots": [
+    "app-flow-ios.jpg",
+    "app-flow-android-dark.jpg",
+    "app-overview.jpg",
+    "app-mobile-ios.jpg",
+    "app-mobile-android-dark.jpg"
+  ],
+  "limits": [
+    "Web design prototype, not native platform certification",
+    "No real inference, audio generation, benchmark run or hardware control"
+  ]
+}

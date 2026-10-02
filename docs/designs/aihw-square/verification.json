@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-10-01",
+  "result": "passed",
+  "checks": [
+    "JavaScript syntax checked",
+    "In-app browser: no console errors or warnings",
+    "Keyword search for meeting and Qwen returned matching cards",
+    "Category selection filtered the card list",
+    "Favorite and unfavorite synchronized across both previews",
+    "Saved empty state shown after removal",
+    "Experience sheet completed local translation sample",
+    "Escape closed modal; keyboard activated clear search",
+    "Light/dark switched both platform palettes",
+    "iOS 390×844: full-bleed app, no horizontal overflow",
+    "Android 390×844: correct platform shown, no horizontal overflow",
+    "Self-contained image/icon data embedded",
+    "Repository source links use verified master branch"
+  ],
+  "limits": [
+    "Local demo samples only; no AI APIs connected",
+    "Native system Liquid Glass effects are represented approximately in CSS"
+  ],
+  "files": [
+    "index.html",
+    "home-light.jpg",
+    "home-dark.jpg",
+    "home-mobile.jpg",
+    "experience-preview.jpg",
+    "设计说明.md"
+  ]
+}
