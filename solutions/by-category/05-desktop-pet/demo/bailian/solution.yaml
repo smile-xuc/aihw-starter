@@ -1,4 +1,4 @@
-schema: aihw/solution@0.1
+schema: aihw/solution@0.2
 id: 05-desktop-pet.bailian
 title: 桌宠 · 百炼实时语音陪伴 + 记忆日记
 category: 05-desktop-pet
@@ -12,6 +12,37 @@ models:
     role: 陪伴日记与记忆提炼（OpenAI 兼容，流式 JSON，关闭思考）
 regions: [cn-beijing, ap-southeast-1]
 env: [DASHSCOPE_API_KEY, DASHSCOPE_WORKSPACE_ID]
+features: [voice-input, voice-output, tool-calling, memory]
+experience:
+  archetype: realtime-voice
+  cover: null
+  variants:
+    - id: default
+      title: 语音陪伴 + 表情联动 + 记忆日记
+      args: []
+      services: [realtime, compatible]
+hardware:
+  parts:
+    - part: button
+      role: 头顶按键：按住说话
+      simulated_by: 自动按下 · --mic 时按回车
+    - part: mic
+      role: 主人说话
+      simulated_by: samples/owner_*.wav · --mic
+    - part: speaker
+      role: 播放回答
+      simulated_by: out/reply_N.wav · 可选扬声器
+    - part: screen
+      role: 表情屏（pet_expression 工具）
+      simulated_by: 控制台字符画
+    - part: motor
+      role: 跳一下、伸爪等动作（pet_expression 工具）
+      simulated_by: 控制台「[设备]」行
+    - part: led
+      role: 聆听与情绪灯光（pet_expression 工具）
+      simulated_by: 控制台「[设备]」行
+  chips: []
+  boards: []
 device:
   inputs: [wav, mic]
   outputs: [speaker, wav, console, markdown, json]
@@ -22,6 +53,7 @@ run:
 metrics:
   first_token: 松开按键（input_audio_buffer.commit）→ 首个 response.audio.delta，含 pet_expression 工具往返
   cost: 每轮 response.done.usage 之和 × 实时模型单价，取各轮均值；日记按 usage × qwen3.7-flash 单价另计
+  unit: 每轮对话
 verification:
   status: pending-live
   last_verified: null

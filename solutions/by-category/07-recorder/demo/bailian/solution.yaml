@@ -1,4 +1,4 @@
-schema: aihw/solution@0.1
+schema: aihw/solution@0.2
 id: 07-recorder.bailian
 title: 录音卡 / 会议盒子 · 百炼录音纪要
 category: 07-recorder
@@ -16,6 +16,28 @@ models:
     role: 结构化纪要，质量档（--quality）
 regions: [cn-beijing, ap-southeast-1]
 env: [DASHSCOPE_API_KEY]
+features: [voice-input, speaker-diarization, long-audio, structured-output]
+experience:
+  archetype: recorder
+  cover: null
+  variants:
+    - id: default
+      title: 会后转写 + 结构化纪要
+      args: []
+      services: [api, compatible]
+hardware:
+  parts:
+    - part: mic
+      role: 录会议
+      simulated_by: samples/meeting.mp3 · --mic
+    - part: button
+      role: 录音键
+      simulated_by: --mic 时按回车结束
+    - part: led
+      role: 录音指示灯
+      simulated_by: 控制台「[设备]」行
+  chips: []
+  boards: []
 device:
   inputs: [mp3, wav, m4a, mic, url]
   outputs: [markdown, json, console]
@@ -26,6 +48,7 @@ run:
 metrics:
   first_token: 录音结束（开始上传）→ 纪要首个 token，含转写耗时
   cost: 转写 usage + 纪要 usage × 模型单价（按地域）
+  unit: 每次会议（样本 55 秒）
 verification:
   status: pending-live
   last_verified: null

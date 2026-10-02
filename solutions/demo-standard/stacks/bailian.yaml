@@ -1,0 +1,99 @@
+# 栈声明：阿里云百炼。用户自己要填的凭证与接入点，以及接入点怎么由它们推导出来。
+# 格式 aihw/stack@0.1，见 solutions/demo-standard/README.md「APP 数据」一节与 stack.schema.json。
+# 一份声明三处用：配套 APP / 网页按它渲染填写表单并拼请求地址；templates/bailian/.env.example 的变量名
+# 和 demo_kit.py 的 REGIONS 地址表必须与它一致（check.py 校验）。
+# 凭证只存用户本机，客户端直连下面推导出的地址，不经过任何代持 Key 的服务器（2026-10-02 决定）。
+
+schema: aihw/stack@0.1
+id: bailian
+name: 阿里云百炼
+vendor: 阿里云
+docs:
+  - {title: 地域与接入地址, url: "https://help.aliyun.com/zh/model-studio/regions"}
+  - {title: 获取与配置 API Key, url: "https://help.aliyun.com/zh/model-studio/get-api-key"}
+  - {title: 业务空间管理, url: "https://docs.modelstudio.console.alibabacloud.com/zh/model-studio/use-workspace"}
+storage: local-only
+
+fields:  # 顺序即表单顺序；key 与 .env 变量名一致
+  - key: DASHSCOPE_API_KEY
+    group: credential
+    label: API Key
+    input: secret
+    required: true
+    default: null
+    options: null
+    placeholder: "sk-…"
+    pattern: "^s[kt]-\\S{8,}$"
+    help: 百炼控制台「密钥管理」创建，只在创建时显示一次；Key 与地域绑定，北京的 Key 不能调新加坡
+    link: {title: 获取与配置 API Key, url: "https://help.aliyun.com/zh/model-studio/get-api-key"}
+  - key: DASHSCOPE_API_REGION
+    group: endpoint
+    label: 地域
+    input: select
+    required: false
+    default: cn-beijing
+    options:
+      - {value: cn-beijing, label: 华北2（北京）}
+      - {value: ap-southeast-1, label: 新加坡}
+    placeholder: null
+    pattern: null
+    help: 与 API Key、业务空间所属地域一致，否则接口返回 401；免费额度只在北京地域发放
+    link: {title: 地域与接入地址, url: "https://help.aliyun.com/zh/model-studio/regions"}
+  - key: DASHSCOPE_WORKSPACE_ID
+    group: endpoint
+    label: 业务空间 ID
+    input: text
+    required: false
+    default: null
+    options: null
+    placeholder: "llm-…"
+    pattern: "^[A-Za-z0-9-]+$"
+    help: 控制台「业务空间管理」页 API Host 列，形如 llm-xxx；填了之后全部接口走业务空间专属域名。通用域名自 2026-09-30 起不再支持新特性，部分模型（如 qwen3.8-omni-flash-realtime）必须填
+    link: {title: 业务空间管理, url: "https://docs.modelstudio.console.alibabacloud.com/zh/model-studio/use-workspace"}
+
+endpoints:
+  roots:  # 从上到下匹配，第一条 when 全部满足的生效；"*" 表示该字段非空
+    - when: {DASHSCOPE_WORKSPACE_ID: "*"}
+      label: 业务空间专属域名
+      http: "https://{DASHSCOPE_WORKSPACE_ID}.{DASHSCOPE_API_REGION}.maas.aliyuncs.com"
+      ws: "wss://{DASHSCOPE_WORKSPACE_ID}.{DASHSCOPE_API_REGION}.maas.aliyuncs.com"
+    - when: {DASHSCOPE_API_REGION: cn-beijing}
+      label: 通用域名（北京）
+      http: "https://dashscope.aliyuncs.com"
+      ws: "wss://dashscope.aliyuncs.com"
+    - when: {DASHSCOPE_API_REGION: ap-southeast-1}
+      label: 通用域名（新加坡）
+      http: "https://dashscope-intl.aliyuncs.com"
+      ws: "wss://dashscope-intl.aliyuncs.com"
+  services:  # demo 用到的接入点；solution.yaml 的 experience.variants[].services 引用这里的 id
+    - id: compatible
+      label: OpenAI 兼容接口（文本、看图、工具调用）
+      url: "{http}/compatible-mode/v1"
+      browser: ok
+      browser_note: 2026-10-02 跨域预检通过（通用域名与业务空间域名）；带 Key 的实际响应待真 Key 验证
+    - id: api
+      label: DashScope 原生 HTTP（同步 / 异步推理、任务查询、上传凭证、TTS HTTP）
+      url: "{http}/api/v1"
+      browser: ok
+      browser_note: 2026-10-02 通用域名的跨域预检通过，业务空间域名未测；临时存储上传走 OSS 地址，跨域未测
+    - id: ws-inference
+      label: 任务制 WebSocket（流式 ASR、流式 TTS）
+      url: "{ws}/api-ws/v1/inference"
+      browser: blocked
+      browser_note: 握手要带 Authorization 请求头，浏览器的 WebSocket 不能自定义请求头
+    - id: realtime
+      label: Realtime WebSocket（实时语音 / 视频、同传）
+      url: "{ws}/api-ws/v1/realtime?model={model}"
+      browser: blocked
+      browser_note: 握手要带 Authorization 请求头；WebRTC 的 SDP 交换官方要求经业务服务端代理
+
+auth:
+  type: bearer
+  header: Authorization
+  value: "Bearer {DASHSCOPE_API_KEY}"
+
+security_advice:
+  - 新建一个子业务空间，只授权 demo 用到的模型，并设 RPM / TPM 限流
+  - API Key 用自定义权限，只开放要用的模型，可加 IP 白名单
+  - 在费用中心设消费预警：百炼不支持按金额给单个 Key 或业务空间设上限
+  - Key 只存在本机；不用了就在控制台删除这把 Key

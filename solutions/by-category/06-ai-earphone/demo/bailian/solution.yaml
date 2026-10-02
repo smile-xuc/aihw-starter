@@ -1,4 +1,4 @@
-schema: aihw/solution@0.1
+schema: aihw/solution@0.2
 id: 06-ai-earphone.bailian
 title: AI 耳机 · 百炼实时同传
 category: 06-ai-earphone
@@ -10,6 +10,25 @@ models:
     role: 实时同传（原文识别 + 译文字幕 + 译音；默认 speaker_detection 断句并区分说话人）
 regions: [cn-beijing, ap-southeast-1]
 env: [DASHSCOPE_API_KEY, DASHSCOPE_WORKSPACE_ID]
+features: [voice-input, voice-output, translation, speaker-diarization]
+experience:
+  archetype: realtime-voice
+  cover: null
+  variants:
+    - id: default
+      title: 中译英同传：字幕 + 译音
+      args: []
+      services: [realtime]
+hardware:
+  parts:
+    - part: mic
+      role: 耳机麦克风收现场讲话
+      simulated_by: samples/expo_guide_zh.wav 按实时节奏推流 · --mic
+    - part: speaker
+      role: 耳机扬声器播放译音
+      simulated_by: out/translation.wav · 可选扬声器
+  chips: []
+  boards: []
 device:
   inputs: [wav, mic]
   outputs: [console, speaker, wav, text]
@@ -20,6 +39,7 @@ run:
 metrics:
   first_token: 首包音频发出（开口）→ 首条译文字幕（response.audio_transcript.delta / response.text.delta）
   cost: 各句 response.done.usage 之和 × 模型单价（按地域），另折算每分钟成本
+  unit: 每段讲话（样本约 16 秒）
 verification:
   status: pending-live
   last_verified: null

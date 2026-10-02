@@ -1,4 +1,4 @@
-schema: aihw/solution@0.1
+schema: aihw/solution@0.2
 id: 01-ipc.bailian
 title: IPC / AI 视觉 · 百炼事件理解与检索
 category: 01-ipc
@@ -12,6 +12,22 @@ models:
     role: 质量档（--quality）：整条链路换成它，同样原生看图，单价约为默认档的 4 倍
 regions: [cn-beijing, ap-southeast-1]
 env: [DASHSCOPE_API_KEY]
+features: [vision, structured-output]
+experience:
+  archetype: vision
+  cover: samples/events/02_cat_sofa_night.jpg
+  variants:
+    - id: default
+      title: 事件抓拍 → 事件卡 → 检索 → 日报
+      args: []
+      services: [compatible]
+hardware:
+  parts:
+    - part: camera
+      role: 移动侦测或画面变化时抓拍事件帧
+      simulated_by: samples/events/*.jpg · --camera
+  chips: []
+  boards: []
 device:
   inputs: [jpg, camera]
   outputs: [json, markdown, console]
@@ -22,6 +38,7 @@ run:
 metrics:
   first_token: 抓拍完成（开始上传事件帧）→ 事件卡首个 token
   cost: 每个事件的 usage × 模型单价（按地域与输入档位）；检索、日报另计
+  unit: 每个事件
 verification:
   status: pending-live
   last_verified: null

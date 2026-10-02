@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/smile-xuc/aihw-starter/blob/master/solutions/demo-standard/trace.schema.json",
+  "title": "aihw-starter 回放轨迹 aihw/trace@0.1",
+  "description": "demo_kit 的 --trace 写出的一次运行记录。字段说明见 solutions/demo-standard/README.md「APP 数据」一节。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "solution", "variant", "mode", "kit", "args", "title", "region", "models", "timing",
+               "events", "result", "inputs", "outputs", "error"],
+  "properties": {
+    "schema": {"const": "aihw/trace@0.1"},
+    "solution": {"type": ["string", "null"]},
+    "variant": {"type": ["string", "null"]},
+    "mode": {"enum": ["mock", "live"]},
+    "kit": {"type": "string"},
+    "args": {"type": "array", "items": {"type": "string"}},
+    "title": {"type": "string"},
+    "region": {"type": "string"},
+    "models": {"type": "array", "items": {"type": "string"}},
+    "timing": {"enum": ["none", "measured"]},
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["i", "t_ms", "tag", "kind", "text", "lines", "assets"],
+        "properties": {
+          "i": {"type": "integer", "minimum": 0},
+          "t_ms": {"type": ["integer", "null"], "minimum": 0},
+          "tag": {"type": ["string", "null"]},
+          "kind": {"enum": ["device", "cloud", "result", "stats", "notice", "other"]},
+          "text": {"type": "string"},
+          "lines": {"type": "array", "items": {"type": "string"}},
+          "assets": {"type": "array", "items": {"type": "string", "pattern": "^(samples|out)/"}}
+        }
+      }
+    },
+    "result": {
+      "type": ["object", "null"], "additionalProperties": false,
+      "required": ["models", "first_token_ms", "cost", "sample", "note"],
+      "properties": {
+        "models": {"type": "array", "items": {"type": "string"}},
+        "first_token_ms": {"type": ["integer", "null"], "minimum": 0},
+        "cost": {"oneOf": [{"$ref": "#/$defs/range"}, {"type": "null"}]},
+        "sample": {"type": "string"},
+        "note": {"type": "string"}
+      }
+    },
+    "inputs": {"type": "array", "items": {"$ref": "#/$defs/file"}},
+    "outputs": {"type": "array", "items": {"$ref": "#/$defs/file"}},
+    "error": {"type": ["string", "null"]}
+  },
+  "$defs": {
+    "range": {"type": "object", "additionalProperties": false, "required": ["low", "high"],
+              "properties": {"low": {"type": "number", "minimum": 0}, "high": {"type": "number", "minimum": 0}}},
+    "file": {
+      "type": "object", "additionalProperties": false, "required": ["path", "media_type", "bytes", "asset"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^(samples|out)/"},
+        "media_type": {"type": "string"},
+        "bytes": {"type": "integer", "minimum": 0},
+        "text": {"type": ["string", "null"]},
+        "asset": {"type": ["string", "null"], "pattern": "^assets/"}
+      }
+    }
+  }
+}

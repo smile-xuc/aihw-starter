@@ -1,4 +1,4 @@
-schema: aihw/solution@0.1
+schema: aihw/solution@0.2
 id: 08-smart-watch.bailian
 title: 智能手表 · 百炼健康日报
 category: 08-smart-watch
@@ -12,8 +12,34 @@ models:
     role: 健康日报解读，质量档（--quality）
   - id: qwen-audio-3.0-tts-flash
     role: --speak 抬腕播报（非实时 HTTP 合成，仅北京地域）
+    regions: [cn-beijing]
 regions: [cn-beijing, ap-southeast-1]
 env: [DASHSCOPE_API_KEY]
+features: [structured-output, on-device-rules, voice-output]
+experience:
+  archetype: tools
+  cover: null
+  variants:
+    - id: default
+      title: 健康日报 + 红线提醒
+      args: []
+      services: [compatible]
+hardware:
+  parts:
+    - part: health-sensor
+      role: 心率、血氧、睡眠等一天的聚合指标
+      simulated_by: samples/day_normal.json、day_alert.json
+    - part: screen
+      role: 表盘卡片与红线弹窗
+      simulated_by: 控制台窄卡片
+    - part: vibration
+      role: 红线提醒震动
+      simulated_by: 控制台「[设备]」行
+    - part: speaker
+      role: --speak 抬腕播报（可选）
+      simulated_by: out/speak_<样本名>.wav
+  chips: []
+  boards: []
 device:
   inputs: [json]
   outputs: [console, json, wav, speaker]
@@ -24,6 +50,7 @@ run:
 metrics:
   first_token: 手表数据同步完成 → 日报首个 token（含本地红线判定；红线提醒本身不等云端）
   cost: 日报 usage × 模型单价（按地域、按输入分档）；--speak 另加计费字符数 × 语音合成单价
+  unit: 每份日报
 verification:
   status: pending-live
   last_verified: null

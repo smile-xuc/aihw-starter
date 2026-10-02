@@ -1,4 +1,4 @@
-schema: aihw/solution@0.1
+schema: aihw/solution@0.2
 id: 02-ai-glasses.bailian
 title: AI 眼镜 · 百炼一看即懂
 category: 02-ai-glasses
@@ -14,6 +14,36 @@ models:
     role: --realtime 给 AI 打电话：按住说话 + 1 帧/秒画面，语音直出（内置转写 qwen3-asr-flash-realtime）
 regions: [cn-beijing, ap-southeast-1]
 env: [DASHSCOPE_API_KEY, DASHSCOPE_WORKSPACE_ID]
+features: [vision, voice-input, voice-output]
+experience:
+  archetype: vision
+  cover: samples/dish.jpg
+  variants:
+    - id: default
+      title: 拍照即问
+      args: []
+      services: [compatible, ws-inference]
+    - id: realtime
+      title: 给 AI 打电话（实时）
+      args: [--realtime]
+      archetype: realtime-voice
+      services: [realtime]
+hardware:
+  parts:
+    - part: button
+      role: 镜腿按键：按住拍照、收音，松开提交
+      simulated_by: 自动按下 · --mic 时按回车
+    - part: camera
+      role: 镜腿摄像头拍第一视角照片
+      simulated_by: samples/dish.jpg · --camera
+    - part: mic
+      role: 收音提问
+      simulated_by: samples/ask_dish.wav · --mic
+    - part: speaker
+      role: 开放式耳机播报回答
+      simulated_by: out/reply_1.wav · 可选扬声器
+  chips: []
+  boards: []
 device:
   inputs: [wav, mic, jpg, camera]
   outputs: [speaker, wav, console]
@@ -24,6 +54,7 @@ run:
 metrics:
   first_token: 松开镜腿（提问上传 / input_audio_buffer.commit）→ 首包语音
   cost: 默认：omni-flash usage × 单价 + TTS usage.characters × 单价；--realtime：response.done.usage × 单价（按地域）
+  unit: 每次提问
 verification:
   status: pending-live
   last_verified: null

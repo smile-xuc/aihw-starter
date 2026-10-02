@@ -1,0 +1,118 @@
+# demo 标准 v0.3 的受控词表。
+# solution.yaml 里的 experience.archetype / features / hardware.parts / compliance_tags 只能用这里的 id（check.py 校验）。
+# build_registry.py 把整份词表原样写进 docs/app/data/registry.json 的 vocab，配套 APP 按它显示中文名。
+# 新增词条：维护者单独提 PR，改本文件后运行 python3 solutions/demo-standard/build_registry.py。
+
+archetypes:  # 回放舞台：APP 按它选时间线的版式
+  - id: realtime-voice
+    label: 实时语音
+    description: 按键说话或持续收音，云端实时回语音；时间线突出收音、回答和回复音频
+  - id: vision
+    label: 拍照 / 视觉理解
+    description: 图片（可带语音提问）→ 看图回答或事件卡；时间线旁放样本图片
+  - id: recorder
+    label: 录音纪要
+    description: 录音 → 转写与说话人分离 → 结构化纪要；渲染产出的 Markdown
+  - id: tools
+    label: 工具编排 / 结构化输出
+    description: 指令或数据 → 模型调用工具或按 Schema 输出 → 设备执行；把每轮工具调用做成步骤
+
+modes:  # 体验方式
+  - id: replay
+    label: 回放
+    description: 播放仓库里的 mock 回放轨迹，不调用模型、不需要 Key
+  - id: local-run
+    label: 本机真跑
+    description: 在自己的电脑上用自己的 Key 运行 python3 run.py
+  - id: browser-run
+    label: 网页直连真跑
+    description: 在 APP 或网页里填自己的 Key，直连平台；只有用到的接入点都能从浏览器直连的玩法才行
+
+parts:  # 做成产品需要的硬件部件
+  - {id: mic, label: 麦克风}
+  - {id: speaker, label: 扬声器}
+  - {id: camera, label: 摄像头}
+  - {id: button, label: 按键}
+  - {id: screen, label: 屏幕}
+  - {id: led, label: 灯光}
+  - {id: motor, label: 电机 / 舵机}
+  - {id: vibration, label: 振动马达}
+  - {id: health-sensor, label: 健康传感器}
+  - {id: arm, label: 机械臂}
+  - {id: gripper, label: 夹爪}
+  - {id: iot, label: 家居联动}
+
+features:  # 能力标签，APP 用来筛选
+  - {id: voice-input, label: 语音输入}
+  - {id: voice-output, label: 语音输出}
+  - {id: vision, label: 看图}
+  - {id: tool-calling, label: 工具调用}
+  - {id: structured-output, label: 结构化输出}
+  - {id: speaker-diarization, label: 说话人分离}
+  - {id: translation, label: 同声传译}
+  - {id: long-audio, label: 长录音}
+  - {id: memory, label: 长期记忆}
+  - {id: on-device-rules, label: 端侧规则}
+  - {id: offline-fallback, label: 断网降级}
+  - {id: safety-gate, label: 安全门}
+
+compliance:  # 合规标签；demo README 的「合规提示」一节至少写到 readme_must_cover 列的内容
+  - id: minors
+    label: 未成年人
+    obligation: 面向未成年人的陪伴类产品不得提供虚拟亲属、虚拟伴侣等服务，需要未成年人模式和使用时长提醒；不满十四周岁用户的个人信息属于敏感个人信息，要取得监护人同意
+    readme_must_cover:
+      - 系统提示词如何避免扮演家人或恋人
+      - 未成年人模式、时长提醒在量产中由哪一层实现
+      - 儿童个人信息的告知与监护人同意
+    sources:
+      - {title: 人工智能拟人化互动服务管理暂行办法（网信办）, url: "https://www.cac.gov.cn/2026-04/10/c_1777558395078289.htm"}
+      - {title: 个人信息保护法第二十八、三十一条, url: null}
+  - id: anthropomorphic
+    label: 拟人化互动
+    obligation: 持续性情感陪伴适用《人工智能拟人化互动服务管理暂行办法》（2026-07-15 施行）：提示 AI 身份与使用时长、防止情感依赖、对极端情绪干预、提供交互数据的删除选项
+    readme_must_cover:
+      - AI 身份提示和使用时长提醒的实现位置
+      - 防沉迷、极端情绪的处理方式
+      - 交互数据存在哪里、怎么删除
+    sources:
+      - {title: 人工智能拟人化互动服务管理暂行办法（网信办）, url: "https://www.cac.gov.cn/2026-04/10/c_1777558395078289.htm"}
+  - id: camera-privacy
+    label: 摄像头隐私
+    obligation: 摄像头画面属于个人信息：上传云端前告知并取得同意、写明保存期限；拍摄他人要有明显提示、不得偷拍、不识别身份；公共场所安装图像采集设备须设显著提示标识
+    readme_must_cover:
+      - 告知同意方式与保存期限
+      - 画面里有他人时的处理（提示、不留存、不识别身份）
+      - 是否做人脸识别；需要时如何取得单独同意
+    sources:
+      - {title: 个人信息保护法, url: null}
+      - {title: 民法典人格权编（肖像权）, url: null}
+  - id: recording-consent
+    label: 录音告知同意
+    obligation: 录音、同传会采集在场其他人的讲话：使用前告知讲话人并取得同意；转写、字幕和纪要设定保存期限，含个人信息时按个人信息保护法处理
+    readme_must_cover:
+      - 设备上的录音提示（如指示灯）与告知方式
+      - 录音与转写结果存在哪里、保存多久
+    sources:
+      - {title: 个人信息保护法, url: null}
+  - id: health
+    label: 健康数据
+    obligation: 不做医疗诊断，未取得医疗器械注册前不能宣传「诊断」「监测疾病」；健康数据属于敏感个人信息，处理前要取得用户单独同意
+    readme_must_cover:
+      - 免责声明由哪一层固定追加（不依赖模型）
+      - 上传哪些数据、不上传哪些原始数据
+      - 单独同意与保存期限
+    sources:
+      - {title: 个人信息保护法第二十八、二十九条, url: null}
+  - id: safety-critical
+    label: 安全关键
+    obligation: 驱动实体动作的产品，急停、限速、力矩限制必须在控制器和硬件层实现，软件安全门只是额外一层；量产前按目标市场的机器人安全标准做风险评估
+    readme_must_cover:
+      - 安全门在哪一层、拦截哪些动作
+      - 哪些限制必须在控制器或硬件层实现
+      - 现场人员如何叫停
+    sources:
+      - {title: ISO 10218、ISO/TS 15066（协作机器人，以目标市场认证清单为准）, url: null}
+
+compliance_baseline:  # 对所有方案都适用
+  label: 生成式 AI 服务
+  obligation: 本仓 demo 是开发者参考实现，不是面向公众的服务；面向公众上线前需完成生成式 AI 服务登记 / 备案与内容标识等义务

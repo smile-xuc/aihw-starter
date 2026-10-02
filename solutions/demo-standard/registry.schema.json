@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/smile-xuc/aihw-starter/blob/master/solutions/demo-standard/registry.schema.json",
+  "title": "aihw-starter 方案注册表 aihw/registry@0.1",
+  "description": "build_registry.py 生成的 docs/app/data/registry.json。字段说明见 solutions/demo-standard/README.md「APP 数据」一节。消费方要忽略不认识的字段。",
+  "type": "object",
+  "required": ["schema", "standard", "kit", "repo", "currency", "vocab", "stacks", "categories", "solutions"],
+  "properties": {
+    "schema": {"const": "aihw/registry@0.1"},
+    "standard": {"type": "string"},
+    "kit": {"type": ["string", "null"]},
+    "repo": {"type": "object", "required": ["url", "branch", "blob_base", "tree_base"]},
+    "currency": {"const": "CNY"},
+    "vocab": {"type": "object", "required": ["archetypes", "modes", "parts", "features", "compliance", "compliance_baseline"]},
+    "stacks": {"type": "array", "items": {"type": "object", "required": ["schema", "id", "fields", "endpoints", "auth"]}},
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "no", "name", "emoji", "capabilities", "scenes", "industry", "industry_units", "docs",
+                     "solutions", "topic_demos"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^0[1-9]-[a-z0-9-]+$"},
+          "solutions": {"type": "array", "items": {"type": "string"}},
+          "topic_demos": {"type": "array", "items": {"type": "object", "required": ["path", "title"]}}
+        }
+      }
+    },
+    "solutions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "category", "stack", "kind", "title", "summary", "path", "upstream", "license", "maintainers",
+                     "regions", "models", "features", "experience", "cost", "latency", "hardware", "device",
+                     "credentials", "compliance", "verification", "run", "samples", "docs"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^0[1-9]-[a-z0-9-]+\\.[a-z0-9-]+$"},
+          "kind": {"enum": ["reference", "pointer"]},
+          "models": {"type": "array", "items": {"type": "object", "required": ["id", "role", "regions"]}},
+          "experience": {
+            "type": "object", "required": ["archetype", "cover", "modes", "variants"],
+            "properties": {
+              "cover": {"type": ["string", "null"], "pattern": "^assets/"},
+              "modes": {"type": "array", "items": {"enum": ["replay", "local-run", "browser-run"]}},
+              "variants": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["id", "title", "archetype", "args", "mock_command", "live_command", "services", "browser",
+                               "credentials", "trace", "cost"],
+                  "properties": {
+                    "trace": {"type": "string", "pattern": "^traces/"},
+                    "browser": {"type": "object", "required": ["direct", "blocked_by"]},
+                    "cost": {"oneOf": [{"$ref": "#/$defs/range"}, {"type": "null"}]}
+                  }
+                }
+              }
+            }
+          },
+          "cost": {
+            "type": "object", "required": ["unit", "basis", "estimate", "measured"],
+            "properties": {
+              "estimate": {"type": ["object", "null"], "required": ["low", "high", "source", "variant", "note"]},
+              "measured": {"type": ["object", "null"], "required": ["date", "region", "models", "low", "high", "text", "note"]}
+            }
+          },
+          "latency": {"type": "object", "required": ["first_token", "measured"]},
+          "hardware": {
+            "type": "object", "required": ["parts", "chips", "boards"],
+            "properties": {"parts": {"type": "array",
+                                     "items": {"type": "object", "required": ["part", "label", "role", "simulated_by"]}}}
+          },
+          "credentials": {"type": "object", "required": ["stack", "required", "optional"]},
+          "compliance": {"type": "array",
+                         "items": {"type": "object", "required": ["tag", "label", "obligation", "readme_must_cover", "doc"]}},
+          "verification": {
+            "type": "object",
+            "required": ["status", "label", "last_verified", "level", "evidence", "record", "live_records", "pending_checks"],
+            "properties": {"status": {"enum": ["pending-live", "live-verified"]}}
+          },
+          "samples": {"type": "array",
+                      "items": {"type": "object", "required": ["path", "asset", "media_type", "bytes"],
+                                "properties": {"asset": {"type": "string", "pattern": "^assets/"}}}}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "range": {"type": "object", "required": ["low", "high"],
+              "properties": {"low": {"type": "number", "minimum": 0}, "high": {"type": "number", "minimum": 0}}}
+  }
+}
