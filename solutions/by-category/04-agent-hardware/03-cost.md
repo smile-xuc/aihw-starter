@@ -53,7 +53,7 @@
 复杂规划：     ~3000 tokens
 ```
 
-计费页（目录价随官方调整）：https://help.aliyun.com/zh/model-studio/billing-of-model-studio
+计费页（目录价随官方调整）：https://help.aliyun.com/zh/model-studio/model-pricing
 
 ### 2.2 端云协同后的月费用（量级）
 

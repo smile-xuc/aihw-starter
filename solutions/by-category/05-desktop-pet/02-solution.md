@@ -485,7 +485,7 @@ audio = synthesizer.call("今天天气真好呀～")
 - 动作情绪控制实践：https://help.aliyun.com/zh/model-studio/action-emotion-control-practice
 - CosyVoice 情感 TTS：https://help.aliyun.com/zh/model-studio/cosyvoice-clone-design-api
 - 自定义对话角色（性格切换）：https://help.aliyun.com/zh/model-studio/custom-role
-- 百炼应用编排（记忆/日记/学情）：https://help.aliyun.com/zh/model-studio/user-guide/build-an-agent
+- 百炼应用编排（记忆/日记/学情）：https://help.aliyun.com/zh/model-studio/new-single-agent-application
 - 千问大模型计费页面：https://bailian.console.aliyun.com/?productCode=p_efm#/billing
 
 <!-- FOOTER:START -->

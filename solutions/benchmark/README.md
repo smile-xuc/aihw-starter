@@ -38,6 +38,7 @@
 pip3 install dashscope openai --break-system-packages
 
 # Bailian CLI（可选，跑 CLI 脚本才需要）
+npm install -g bailian-cli   # 需 Node.js ≥ 18.17，安装后命令为 bl
 npx skills add modelstudioai/cli --all -g
 bl auth login
 ```
