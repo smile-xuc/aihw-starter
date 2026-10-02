@@ -1,9 +1,10 @@
 name: pages
 
-# GitHub Pages 部署：docs/ 照旧用 Jekyll 构建（与「从分支部署」的结果一致），部署前先生成网页 APP 的数据 docs/app/data/。
-# PR 只构建和冒烟测试，不部署。推到 master（或手动运行）后部署。
-# 部署要求 Settings → Pages → Build and deployment → Source 选「GitHub Actions」（需要仓库管理员）；
-# 还是「Deploy from a branch」时，deploy 会跳过并留一条提示，不报错。
+# GitHub Pages 仍是「从分支部署」（master 的 /docs，Jekyll 构建），合并即上线，不需要改仓库设置。
+# 这个 workflow 在 PR 和 master 上把 Pages 会发布的内容先检查一遍：
+#   - docs/app 自检：live-data/ 与各 demo 的 run.py 一致；注册表与回放轨迹（docs/app/data/）引用齐全
+#   - 用 Pages 同款的 Jekyll 构建 docs/，确认站点能构建
+#   - 网页 APP 冒烟测试：无头 Chrome 打开全部页面；浏览器真跑对着各 demo 的 mock.py 跑一遍
 
 on:
   push:
@@ -12,7 +13,6 @@ on:
     paths:
       - "docs/**"
       - "solutions/by-category/*/demo/bailian/**"
-      - "solutions/by-category/README.md"
       - "solutions/demo-standard/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
@@ -22,10 +22,10 @@ permissions:
 
 concurrency:
   group: pages-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: true
 
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,55 +34,18 @@ jobs:
         with:
           python-version: "3.12"
 
-      # 注册表与回放轨迹、样本、浏览器真跑常量（从各 demo 的 run.py 导入）；引用不齐就失败
-      - name: App data
+      - name: App self-check
         run: python docs/app/tools/build.py --check
 
-      # 无头 Chrome 打开全部页面查报错与横向溢出；把百炼域名的请求转给各 demo 的 mock.py，跑完 6 个浏览器真跑
+      - name: Jekyll build (same as Pages)
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./docs
+          destination: ./_site
+
       - name: App smoke test
         run: |
           npm install --no-save --no-audit --no-fund --prefix "$RUNNER_TEMP/pw" playwright-core@1.63.0
           PLAYWRIGHT_CORE="$RUNNER_TEMP/pw/node_modules/playwright-core/index.mjs" \
           CHROME="$(command -v google-chrome)" \
           node docs/app/tools/smoke.mjs
-
-      - uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./docs
-          destination: ./_site
-
-      - uses: actions/upload-pages-artifact@v5
-        with:
-          path: ./_site
-
-  pages-source:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    permissions:
-      pages: read
-    outputs:
-      build_type: ${{ steps.source.outputs.build_type }}
-    steps:
-      - id: source
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          build_type=$(gh api "repos/${{ github.repository }}/pages" --jq .build_type 2>/dev/null || echo none)
-          echo "build_type=$build_type" >> "$GITHUB_OUTPUT"
-          if [ "$build_type" != "workflow" ]; then
-            echo "::notice title=Pages 未切到 GitHub Actions::当前 Source 是 ${build_type}，本次只构建不部署。管理员在 Settings → Pages → Source 选 GitHub Actions 后重新运行本 workflow。"
-          fi
-
-  deploy:
-    needs: [build, pages-source]
-    if: needs.pages-source.outputs.build_type == 'workflow'
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v5
