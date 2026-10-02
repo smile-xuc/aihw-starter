@@ -183,14 +183,14 @@
   - 首发价：待核实（查证 2026-10-02）
   - 现价：待核实（查证 2026-10-02）
   - MSRP：待核实（查证 2026-10-02）
-  - 估算：官网称「万元内消费级机器人」，没有写具体金额（[松延动力官网](https://www.noetixrobotics.com/detail/Bumi)，查证 2026-10-02）
+  - 估算：官网称「万元级消费级人形机器人」，没有写具体金额（[松延动力官网 Bumi 页](https://www.noetixrobotics.com/detail/Bumi)，查证 2026-10-02）
 - **目标市场**：家庭陪伴、创客 / 编程教育；EDU 版面向开发者
 - **AI 能力**：
-  - AI 功能：用唤醒词「布米布米」进行语音交互，可用自然语言指令让机器人站起、打招呼、跳英歌舞、握手、击掌、前进、趴下；EDU 版 HighController SDK 可接入大模型，根据输入动态生成并调用原厂动作（官方文档提示有风险，需要严格的安全策略）。实现方式：运控板语音交互 Agent（唤醒词可配置）+ 开发者自接的大模型，具体模型未公开（[官网产品页](https://www.noetixrobotics.com/detail/Bumi) · [官方文档](https://web.noetixrobotics.com/docs/)，查证 2026-10-02）
+  - AI 功能：官方文档写 EDU 版 SDK 可「接入大模型，根据输入动态生成并调用原厂控制动作（具备一定风险，需要严格安全策略）」，并可「结合语音交互模块，实现自然语言控制」；运控板语音交互 agent 的唤醒词可配置。实现方式：运控板语音交互 agent + 开发者自接的大模型，具体模型未公开（[Bumi 官方文档](https://web.noetixrobotics.com/docs/)，查证 2026-10-02）
   - App 控制行走、舞蹈、示教录制；图形化编程（官网）
 - **大模型方案**：官方文档写 HighController 可「接入大模型」，具体基座未公开（非千问默认绑定）
-- **公开数据**：未见官方销量。媒体口径：2025-10-23 20:00–23:00 售出 200 台（[每日经济新闻（2025-10-24）](https://m.nbd.com.cn/articles/2025-10-24/4104720.html)）；截至 2025-10-24 12:00 售出 300 台（[界面新闻（2025-10-24）](https://www.jiemian.com/article/13515891.html)）
-- **关键差异化**：① 官网定位「让高性能机器人迈入万元级」；② 普通版 / EDU 版分层，SDK 公开（HighController / LowController / MediaController）；③ 官方文档写明「盲走」限制和使用禁区，可作为消费级具身的安全教育样本
+- **公开数据**：未见公开销量
+- **关键差异化**：① 官网定位「万元级消费级人形机器人，让高性能人形机器人走进家庭与日常生活」；② 普通版 / EDU 版分层，SDK 公开（HighController / LowController / MediaController）；③ 官方文档写明「盲走」限制和使用禁区，可作为消费级具身的安全教育样本
 - **商业模式**：硬件销售；官网称结合图形化编程平台和内容生态
 
 > 来源：[松延动力官网 Bumi 页](https://www.noetixrobotics.com/detail/Bumi) · [Bumi 官方文档](https://web.noetixrobotics.com/docs/) · [每日经济新闻（2025-10-24）](https://m.nbd.com.cn/articles/2025-10-24/4104720.html) · [界面新闻（2025-10-24）](https://www.jiemian.com/article/13515891.html)（均查证 2026-10-02）
