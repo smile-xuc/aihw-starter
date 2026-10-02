@@ -11,6 +11,13 @@
   - v0.2：填了 `DASHSCOPE_WORKSPACE_ID` 时，全部 HTTP / WebSocket（含流式 ASR、TTS）都走业务空间专属域名；文本模型分默认档 `qwen3.7-flash` / 质量档 `qwen3.8-flash`；成本可写区间，`VERIFY.md` 增加「待实测」；`check.py` 拦下 10-10 下线模型、快照名和写死的域名
 - `03-toys-companion/demo/bailian/`：毛绒玩具实时语音试点（`qwen3.8-omni-flash-realtime`，按键说话 + 看图 + Function Calling 控制动作灯光；示意用量按官方音频输入 7、输出 12.5 Token / 秒折算），待真 Key 验证
 - `07-recorder/demo/bailian/`：录音卡纪要试点（`qwen-audio-3.1-asr-flash` 转写 + 说话人分离 → `qwen3.7-flash` 纪要，`--quality` 用 `qwen3.8-flash`；长录音一律经百炼临时存储走 `qwen-audio-3.1-asr-flash-filetrans` 异步转写，同步结果疑似截断时提示），待真 Key 验证
+- `01-ipc/demo/bailian/`：看护摄像头事件理解（`qwen3.7-flash` 看图生成结构化事件卡 → App 自然语言检索 → 看护日报；`--quality` 整条链路换 `qwen3.8-flash`），待真 Key 验证
+- `02-ai-glasses/demo/bailian/`：眼镜「一看即懂」（`qwen3.8-omni-flash` 看图听问 + `qwen-audio-3.0-tts-flash` 流式播报；`--realtime` 用 `qwen3.8-omni-flash-realtime` 给 AI 打电话，画面每秒 1 帧），待真 Key 验证
+- `04-agent-hardware/demo/bailian/`：桌面 AI 盒子工具编排（端侧规则先执行 → `qwen3.8-flash` Function Calling 多轮编排本地设备与云端服务，`--cheap` 换 `qwen3.7-flash`；语音指令经 `qwen-audio-3.1-asr-flash` 转写；断网降级到端侧规则），待真 Key 验证
+- `05-desktop-pet/demo/bailian/`：桌宠实时语音陪伴（`qwen3.8-omni-flash-realtime` + `pet_expression` 工具切换屏幕表情与动作；结束时 `qwen3.7-flash` 写陪伴日记、提炼记忆，下次开机注入系统提示词），待真 Key 验证
+- `06-ai-earphone/demo/bailian/`：耳机实时同传（`qwen3.8-livetranslate-flash-realtime`，原生 WebSocket 按实时节奏推流 → 英文字幕增量 + 译音，自动区分说话人；`--text-only` 只出字幕），待真 Key 验证
+- `08-smart-watch/demo/bailian/`：手表健康日报（本地红线规则先判 → `qwen3.7-flash` 按 JSON Schema 输出日报 → 表盘窄卡片与 App 日报；`--quality` 换 `qwen3.8-flash`，`--speak` 用 `qwen-audio-3.0-tts-flash` 抬腕播报），待真 Key 验证
+- `09-embodied/demo/bailian/`：桌面机械臂看图规划（`qwen3.8-flash` 看图后逐步调用技能，每次调用先过本地安全门，模拟执行并回传结果；`--cheap` 换 `qwen3.7-flash`），待真 Key 验证
 - `.github/workflows/demo-smoke.yml`：全部 demo 在无 Key 的 mock / 离线模式下冒烟 + 密钥扫描 + 清单校验（Python 3.9 / 3.12）
 - `awesome/open-source/by-category/`：从 HTML 大盘挑真实仓库填充分册卡片（去空壳占位；01–09 + `_others`）
 - `.github/PULL_REQUEST_TEMPLATE.md`：对齐 CONTRIBUTING §七字段
@@ -18,6 +25,9 @@
 
 ### 变更
 
+- 根 `README.md`、`solutions/README.md`、`solutions/by-category/README.md`：补 9 个百炼参考 demo 的入口
+- `.github/workflows/link-check.yml`：PR 只对本次改动的 Markdown / HTML 查外链（经 `--files-from` 交给 lychee），并对全仓站内链接做一次离线检查（`--offline`，不联网）；全仓外链检查改为 master 每日定时（01:00 UTC）并可手动触发，push 不再跑全量
+- 品类文档与 `by-solution/01-qwen`：2026-10-10 下线的模型换成现行模型；Realtime 成本按 3.8 代改写；03 / 05 / 06 / 07 成本按 2026-10 目录价重算；改正同传「仅 Tina 音色」「约 3 秒」、「Qwen3-ASR + 热词」、v3.5 配系统音色等过时说法，以及失效的百炼文档链接和 CLI 包名
 - 旧 demo `01 physical-sense`、`02 kit-chat`、`02 omni-realtime`、`03 voice-clone`：补 `--mock`（无 Key 时自动进入），live 依赖改为按需导入；`physical-sense` 不再打印 Key 片段
 - 旧 demo `02 kit-chat`：视觉模型 `qwen-vl-plus`（2026-10-10 下线）换成 `qwen3.7-flash` 并关闭思考；播报从没有系统音色的 `cosyvoice-v3.5-flash` 换成 `cosyvoice-v3-flash`；`06 livetranslate-ws` 改用主线模型名
 - 旧 demo `02 kit-chat`、`02 omni-realtime`、`03 voice-clone`、`06 livetranslate-ws`：DashScope SDK 依赖升到 `dashscope>=1.26.5`

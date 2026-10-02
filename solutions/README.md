@@ -41,7 +41,7 @@ solutions/
 
 完整版 = README + 商业 + 方案 + 算账 + 案例 + FAQ + 可跑 demo。九品类现均为完整版（9/9）。
 
-参考 demo 按 [`demo-standard/`](./demo-standard/README.md) 放在 `by-category/<品类>/demo/<栈>/`：填自己的 Key 三步跑通，无 Key 自动 mock。百炼试点：[03 玩具实时语音](./by-category/03-toys-companion/demo/bailian/)、[07 录音纪要](./by-category/07-recorder/demo/bailian/)。
+参考 demo 按 [`demo-standard/`](./demo-standard/README.md) 放在 `by-category/<品类>/demo/<栈>/`：填自己的 Key 三步跑通，无 Key 自动 mock。百炼参考 demo 9 个品类都有，在各自目录运行 `python3 run.py`（均待真 Key 验证）：[01 事件理解与检索](./by-category/01-ipc/demo/bailian/)、[02 一看即懂](./by-category/02-ai-glasses/demo/bailian/)、[03 玩具实时语音](./by-category/03-toys-companion/demo/bailian/)、[04 工具编排](./by-category/04-agent-hardware/demo/bailian/)、[05 桌宠陪伴与记忆日记](./by-category/05-desktop-pet/demo/bailian/)、[06 实时同传](./by-category/06-ai-earphone/demo/bailian/)、[07 录音纪要](./by-category/07-recorder/demo/bailian/)、[08 健康日报](./by-category/08-smart-watch/demo/bailian/)、[09 看图规划](./by-category/09-embodied/demo/bailian/)。
 
 ## 怎么开始
 

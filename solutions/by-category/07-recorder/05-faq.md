@@ -44,10 +44,10 @@ A：ASR 文件版一般不需要手动切。但 **LLM 摘要建议 Map-Reduce �
 A：录完回看 → 文件转写（成本低、准确率通常更好）；边录边看字幕 → 实时流式。可组合：实时出字幕，结束后再跑一遍文件版出最终纪要。
 
 **Q8：1 小时端到端大概多少钱？**
-A：公开量级约 **¥1–4 / 小时**（ASR + 摘要）。以 [Model Studio 计费](https://help.aliyun.com/zh/model-studio/billing-of-model-studio) 与实测为准。详见 [`03-cost.md`](./03-cost.md)。
+A：公开量级约 **¥0.3–0.8 / 小时**（ASR + 摘要；[参考 demo](./demo/bailian/) 的 3.1 ASR + `qwen3.7-flash` 组合约 ¥0.06–0.11）。以 [Model Studio 计费](https://help.aliyun.com/zh/model-studio/model-pricing) 与实测为准。详见 [`03-cost.md`](./03-cost.md)。
 
-**Q9：默认用 qwen-plus 还是 max？**
-A：Map 用 flash、Reduce 用 plus 通常够用。max 留给用户主动要的「深度分析」或强专业文档，不要作为每场会默认。
+**Q9：默认用 qwen3.7-flash 还是 qwen3.8-flash？**
+A：Map、Reduce 都用 qwen3.7-flash 通常够用。qwen3.8-flash 留给用户主动要的「深度分析」或强专业文档，不要作为每场会默认。
 
 ---
 
@@ -60,7 +60,7 @@ A：文件版开 diarization（或 CAM++ 后处理），输出带 `speaker_id` �
 A：不能写死保证。普通话清晰会议公开宣传常到很高准确率；方言、强口音、重叠发言、远场噪音会明显下降。应用层应提供热词、纠错回流与「跳转到音频时间点」。
 
 **Q12：中英混合会议怎么办？**
-A：选支持多语种 / language hints 的 ASR（Paraformer、fun-asr、SenseVoice 等），并在摘要 prompt 中允许中英专有名词保留。先小样本实测再承诺。
+A：选支持多语种 / language hints 的 ASR（Paraformer、fun-asr、Qwen-Audio-ASR，或私有化的开源 SenseVoice 等；云端 `sensevoice-v1` 将于 2026-10-10 下线），并在摘要 prompt 中允许中英专有名词保留。先小样本实测再承诺。
 
 ---
 

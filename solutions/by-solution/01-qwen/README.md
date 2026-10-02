@@ -86,8 +86,11 @@ cd samples/conversation/multimodal_dialog
 **安装：**
 
 ```bash
-npm i -g @alibaba/bailian-cli
+npm install -g bailian-cli   # 需 Node.js ≥ 18.17，安装后命令为 bl / bailian
+bl skill init                # 可选：为 Claude Code / Qwen Code 等 Agent 装配套 Skills
 ```
+
+> 安装说明：<https://docs.modelstudio.console.alibabacloud.com/zh/model-studio/cli/installation>（查证 2026-10-02）
 
 **常用命令速览：**
 
@@ -110,7 +113,7 @@ npm i -g @alibaba/bailian-cli
 > 完整方案：[omni-realtime/](./omni-realtime/) · 可视化架构页：<https://smile-xuc.github.io/aihw-starter/omni-runtime-host.html>
 > 官方文档：<https://help.aliyun.com/zh/model-studio/realtime>
 
-前两种接入把语音链路当成一条可组装的流水线。Qwen-Omni-Realtime 走的是另一条路：音频直接进模型、直接出音频，WebSocket 双工，首包时延进入数百毫秒量级，还支持语义打断和情绪起伏。桌面机器人、伴随机器人这类高价值单品接入后，已知项目反馈用户单日活跃时长出现数量级增长。代价是单位时长成本显著高于三段式。
+前两种接入把语音链路当成一条可组装的流水线。Qwen-Omni-Realtime 走的是另一条路：音频直接进模型、直接出音频，WebSocket 双工，首包时延进入数百毫秒量级，还支持语义打断和情绪起伏。桌面机器人、伴随机器人这类高价值单品接入后，已知项目反馈用户单日活跃时长出现数量级增长。代价曾是单位时长成本显著高于三段式；2026-09 上架的 `qwen3.8-omni-flash-realtime` 把音频输出单价降到 3.5-Flash 的约 1/9，按目录价每轮已与三段式持平或更低，成本大头转为 instructions 与历史上下文，见 [omni-realtime §9](./omni-realtime/README.md)。
 
 | 链路 | 体感延迟（轻 / 复杂 / 搜索） | 语义打断 |
 |---|---|---|
@@ -118,7 +121,7 @@ npm i -g @alibaba/bailian-cli
 | 三段式流式 | 2473 / 2846 / 2980 ms | 不支持 |
 | Omni Realtime（WebSocket 双工） | **347 / 375 / 433 ms** | 支持 |
 
-Realtime WebSocket 协议下目前有两条模型线：**Qwen3.5-Omni-Realtime**（全模态，可进图像）与 **Qwen-Audio-3.0-Realtime**（Plus / Flash 两档，音频专用端到端 S2S）。纯语音产品优先评估后者，成本更优；需要看图才选 Omni 线。Audio-3.0-Realtime 的轮次控制有三档：声学 VAD（`server_vad`）、语义轮次（`smart_turn`）、按键说话（push-to-talk），并原生带 Function Calling、音色复刻与说话人增强。
+Realtime 协议下目前有三条模型线：**Qwen-Omni-Realtime**（全模态，可进图像；3.8-Omni-Flash-Realtime 起支持 Function Calling + 远程 MCP、多通道音频，3.5 代仍可用）、**Qwen-Audio-Realtime**（3.0 Plus / Flash、3.1 Plus，音频专用端到端 S2S）与 **LiveTranslate**（同传）。三条线都可走 WebSocket，也支持 WebRTC 与 AOQ。3.8 起 Omni-Flash 与 Audio-3.0-Flash 单价相同，纯语音产品按效果在两者间选；需要看图选 Omni 线。Audio-3.0-Realtime 的轮次控制有三档：声学 VAD（`server_vad`）、语义轮次（`smart_turn`）、按键说话（push-to-talk），并原生带 Function Calling、音色复刻与说话人增强。
 
 一个 Realtime 模型只输出三样东西：文本、音频、`function_call`。要把它变成一台能动、能看、有记忆、有时间感的设备，靠的是模型与硬件之间那一层自建宿主，本方案统称 **Runtime Host**。它承担六类职责：装配器（建会话时拼 instructions / tools / voice）、路由器（按工具名前缀三路分发 + 参数校验兜底）、状态机（模式位 / 计时器 / 生命周期）、注入器（异步事件转对话轮次）、设备桥（动作 ID 转指令帧，两级回包语义）、记忆管道（离线，不在实时链路上）。
 
@@ -136,12 +139,12 @@ Realtime WebSocket 协议下目前有两条模型线：**Qwen3.5-Omni-Realtime**
 
 | 能力 | 模型 / 接口 | 适用场景 | 接入方式 |
 |---|---|---|---|
-| **文本对话 / 推理** | Qwen3.8-Max / Qwen-Max / Qwen-Plus / Qwen-Turbo | 角色对话、摘要、规划、长程 Agent | DashScope Chat API / `bl` CLI |
-| **视觉理解** | Qwen-VL（图像）/ Qwen-VL-Video（视频） | IPC 摘要 / 以文搜图 / 户外告警 | DashScope 多模态接口 |
-| **全模态对话** | Qwen-Omni / Qwen-Omni-Realtime（Qwen3.5-Omni：113 种语言方言输入、36 种音色） | 实时语音对话、端到端低时延 | 多模态交互套件 / `bl omni` / [Realtime + Runtime Host](./omni-realtime/) |
-| **实时语音对话（S2S）** | Qwen-Audio-3.0-Realtime（Plus / Flash） | 纯语音实时交互、陪伴对话、语音客服 | Realtime WebSocket（三档轮次控制：声学 VAD / 语义轮次 / 按键） |
+| **文本对话 / 推理** | Qwen3.8-Max / Qwen-Max / Qwen-Plus / Qwen3.8-Flash / Qwen3.7-Flash | 角色对话、摘要、规划、长程 Agent | DashScope Chat API / `bl` CLI |
+| **视觉理解** | Qwen3.7 / Qwen3.8 原生视觉（`qwen3.7-flash` / `qwen3.7-plus`）；音视频理解 `qwen3.8-omni-flash` | IPC 摘要 / 以文搜图 / 户外告警 | DashScope 多模态接口 / OpenAI 兼容 |
+| **全模态对话** | Qwen-Omni / Qwen-Omni-Realtime（Qwen3.8-Omni-Flash 与 Qwen3.5-Omni：113 种语言方言输入、36 种语言方言语音输出、55 种音色） | 实时语音对话、端到端低时延 | 多模态交互套件 / `bl omni` / [Realtime + Runtime Host](./omni-realtime/) |
+| **实时语音对话（S2S）** | Qwen-Audio-Realtime（3.0 Plus / Flash、3.1 Plus） | 纯语音实时交互、陪伴对话、语音客服 | Realtime WebSocket / WebRTC / AOQ（三档轮次控制：声学 VAD / 语义轮次 / 按键） |
 | **TTS / 情感语音** | Qwen-Audio-3.0-TTS（新一代）/ CosyVoice | 角色音色、声音克隆、情感合成、方言播报 | DashScope 语音接口 / `bl speech synthesize` |
-| **ASR / 语音识别** | Paraformer 系列 | 录音卡纪要、AI 耳机听写 | DashScope ASR / `bl speech recognize` |
+| **ASR / 语音识别** | Qwen-Audio-ASR（3.0 / 3.1，热词 + Prompt 上下文）/ Fun-ASR / Paraformer（较早一代） | 录音卡纪要、AI 耳机听写 | DashScope ASR / `bl speech recognize` |
 | **Function Calling** | Qwen Chat + tools | Agent 调度（设备控制 / 检索 / 翻译） | DashScope 通用工具调用 |
 | **内容感知（OSS）** | 阿里云 OSS AI 媒资处理 | IPC 云存量数据上 AI 不动现有架构 | OSS 内容感知开关 |
 | **应用编排** | 百炼应用 / 工作流 | 无代码搭建对话流、知识库、RAG | 百炼控制台 |
@@ -165,7 +168,7 @@ Realtime WebSocket 协议下目前有两条模型线：**Qwen3.5-Omni-Realtime**
 ## 4. 典型 BOM 与计费量级
 
 - **硬件 BOM 增量**：依品类而异，最低可至 0（IPC 直接软件升级），最高 20–50 元（玩具新增语音 SoC + 麦克风阵列）
-- **云端按量计费**：百炼 / DashScope 公开 token / 时长 / 次计价，详见 [百炼定价页](https://help.aliyun.com/zh/model-studio/billing-of-model-studio)
+- **云端按量计费**：百炼 / DashScope 公开 token / 时长 / 次计价，详见 [百炼定价页](https://help.aliyun.com/zh/model-studio/model-pricing)
 - **典型用户单价**：在 IPC 品类已能跑通 5–10 元/月 AI 订阅（见 [01-ipc/03-cost.md](../../by-category/01-ipc/03-cost.md)）
 
 ## 5. 接入路径
@@ -180,13 +183,14 @@ Realtime WebSocket 协议下目前有两条模型线：**Qwen3.5-Omni-Realtime**
    安装 bl CLI → 快速验证各能力 → DashScope SDK 生产集成 → 各品类 demo/ 改造
 ```
 
-## 6. 模型代际速览（2026-08）
+## 6. 模型代际速览（2026-10）
 
 | 方向 | 新一代模型 | 要点 |
 |---|---|---|
 | 旗舰文本 / Agent | Qwen3.8-Max | 总参数 2.4 万亿、激活 95B，1M 上下文；Max 级别首次开放权重（LLM 思考部分）；reasoning_effort 三档调节；兼容 OpenAI / Anthropic 标准协议，可对接 Claude Code / Qwen Code |
-| 全模态 | Qwen3.5-Omni（Plus / Flash） | 端到端看图 + 听声 + 说话；113 种语言与方言输入、36 种拟人音色；单次可理解长视频与长音频；Flash 实时首包进入数百毫秒量级 |
-| 实时语音 S2S | Qwen-Audio-3.0-Realtime（Plus / Flash） | 音频专用端到端实时对话；三档轮次控制（声学 VAD / 语义轮次 smart_turn / 按键 push-to-talk）；原生 Function Calling、音色复刻、说话人增强 |
+| 全模态 | Qwen3.5-Omni（Plus / Flash） | 端到端看图 + 听声 + 说话；113 种语言与方言输入、36 种语言与方言语音输出、55 种拟人音色；单次可理解长视频与长音频；Flash 实时首包进入数百毫秒量级 |
+| 实时全模态 | Qwen3.8-Omni-Flash-Realtime（2026-09-21 上架） | 音频输入 6 元、输出 12 元 / 百万 Token（北京），音频输出单价约为 3.5-Flash-Realtime 的 1/9；WebSocket / WebRTC / AOQ；Function Calling + 远程 MCP；1 / 2 / 4 声道空间音频；必须用业务空间专属域名。同代非实时版 Qwen3.8-Omni-Flash 只输出文本 |
+| 实时语音 S2S | Qwen-Audio-3.0-Realtime（Plus / Flash）、3.1-Realtime-Plus（2026-09-20） | 音频专用端到端实时对话；三档轮次控制（声学 VAD / 语义轮次 smart_turn / 按键 push-to-talk）；原生 Function Calling、音色复刻、说话人增强 |
 | TTS | Qwen-Audio-3.0-TTS（Plus / Flash） | fun-cosyvoice 升级线；16 语种 + 20 种中文方言；free-style 自然语言指令与 [gasp]/[giggles] 类细粒度标签；复刻流程注入语音增强、高噪环境更稳；48kHz 高保真（即将） |
 
 **第三方评测速览**（2026-07 公开榜单，以官方最新公布为准）：

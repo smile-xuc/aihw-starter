@@ -51,7 +51,7 @@
 端侧设备                  千问大模型云服务                业务后端
 ┌──────────┐  WebSocket  ┌──────────────────┐         ┌──────────┐
 │ 麦克风    │ ──────────► │ ASR (FunASR/     │         │ 首次激活 │
-│ + 唤醒词  │             │   Qwen3-ASR)     │         │   认证   │
+│ + 唤醒词  │             │  Qwen-Audio-ASR) │         │   认证   │
 │ + 喇叭    │             │                  │         │          │
 │ + 主控    │ ◄────────── │ LLM (Qwen系列)   │ ◄─────► │ 订阅鉴权 │
 │ (RTOS/   │             │                  │         │          │
@@ -141,13 +141,15 @@ from dashscope.audio.tts_v2 import SpeechSynthesizer, AudioFormat
 dashscope.api_key = "YOUR_DASHSCOPE_API_KEY"
 
 synthesizer = SpeechSynthesizer(
-    model="cosyvoice-v3.5-flash",
+    model="cosyvoice-v3-flash",
     voice="longhuhu_v3",        # 音色 ID，见 3.4
     format=AudioFormat.PCM_16000HZ_MONO_16BIT,
 )
 
 audio = synthesizer.call("你好呀，我是龙呼呼，今天想听什么故事？")
 ```
+
+> `cosyvoice-v3.5-flash` / `-plus` 没有系统音色，只能播复刻或设计出来的音色（4.1.1），所以系统音色用 `cosyvoice-v3-flash`；也可换 `qwen-audio-3.0-tts-flash`，童声如 `longpaopao_v3.6`（[语音合成](https://help.aliyun.com/zh/model-studio/tts-model)，查证 2026-10-01）。
 
 ### 3.4 推荐音色组合
 
@@ -177,7 +179,7 @@ from dashscope.audio.tts_v2 import VoiceEnrollmentService
 service = VoiceEnrollmentService()
 result = service.create_voice(
     target_model="cosyvoice-v3.5-flash",
-    prefix="parent_",
+    prefix="parent",              # 只能用字母和数字，不超过 10 个字符
     url="https://your-oss-bucket.aliyuncs.com/parent_sample_25s.wav",
     max_prompt_audio_length=25,   # 与录音长度一致
 )
@@ -189,7 +191,7 @@ voice_id = result["voice_id"]
 ```python
 service.create_voice(
     target_model="cosyvoice-v3.5-flash",
-    prefix="ip_xiaohu_",
+    prefix="ipxiaohu",
     voice_prompt="活泼可爱的小女孩，音色清脆甜美，语速稍快",
     preview_text="你好呀，我是小呼呼，很高兴认识你～",
 )
@@ -267,7 +269,7 @@ client = OpenAI(
 )
 
 response = client.chat.completions.create(
-    model="qwen-vl-plus",
+    model="qwen3.7-flash",          # qwen-vl-plus 将于 2026-10-10 下线；效果优先用 qwen3.7-plus
     messages=[{
         "role": "user",
         "content": [
@@ -275,6 +277,7 @@ response = client.chat.completions.create(
             {"type": "text", "text": "这道数学题怎么做？请用小学三年级能听懂的方式一步步讲解，不要直接给答案。"},
         ],
     }],
+    extra_body={"enable_thinking": False},  # Qwen3.7 默认开思考，设备交互要关掉
 )
 ```
 
@@ -378,7 +381,7 @@ response = client.chat.completions.create(
 |---|---|
 | cosyvoice-v3.5-plus / -flash | 中文（普通话+10 种方言）+ 英/法/德/日/韩/俄 + 东南亚 4 种 |
 | cosyvoice-v3-flash | 中文 17 种方言（方言最全） |
-| cosyvoice-v2 / -v1 | 中英 |
+| cosyvoice-v2 | 中英（`cosyvoice-v1` 将于 2026-10-10 下线） |
 
 ## 六、下一阶段能力：活人感（长记忆 + Always-on）
 
@@ -417,7 +420,7 @@ response = client.chat.completions.create(
 
 1. 按第二节准备：开通 Qwen 与 CosyVoice（伴学再开视觉模型），创建 API-KEY。LLM / VL 走 OpenAI 兼容协议，TTS 走 WebSocket。
 2. 自调对话：按 3.3 用兼容协议调用 `qwen-plus`，系统提示词用 3.1。
-3. 播报：按 3.3 调用 `cosyvoice-v3.5-flash`。
+3. 播报：按 3.3 调用 `cosyvoice-v3-flash`。
 4. 亲情包：公网音频 URL 克隆音色后再合成。可跑示例见 [`demo/voice-clone/`](./demo/voice-clone/)，步骤见该目录 README，对应 4.1。
 5. 拍照问答与学情日报的调用写在 4.2。口语陪练写在 4.3。
 6. 多模态交互开发套件的控制台点击顺序：待核实。方案总览只比较了套件与自调，没有逐步命令。

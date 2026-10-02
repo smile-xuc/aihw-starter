@@ -1,12 +1,83 @@
 name: link-check
 
+# PRs check external links only in the files they touch, so a slow external
+# site can't turn an unrelated PR red; internal links are checked repo-wide
+# offline. The full scan runs daily on master and on demand.
 on:
   pull_request:
-  push:
-    branches: [master]
+  schedule:
+    - cron: "0 1 * * *" # 01:00 UTC = 09:00 Beijing
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
+  # Keep this job id: the PR check is reported as "lychee".
   lychee:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Collect changed files
+        id: changed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git -c core.quotePath=false diff --name-only --diff-filter=ACMR \
+            "$BASE_SHA...$HEAD_SHA" > "$RUNNER_TEMP/pr-files.txt"
+          # Same scope as lychee-full below; deleted files are skipped.
+          grep -E '^(README\.md|CONTRIBUTING\.md|faq\.md|CHANGELOG\.md|awesome/.+\.md|awesome/open-source/[^/]+\.html|solutions/.+\.md|primer/.+\.md|docs/[^/]+\.html)$' \
+            "$RUNNER_TEMP/pr-files.txt" > "$RUNNER_TEMP/changed-files.txt" || true
+          count=$(wc -l < "$RUNNER_TEMP/changed-files.txt" | tr -d ' ')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "Files in scope changed by this PR: $count"
+          cat "$RUNNER_TEMP/changed-files.txt"
+
+      - name: Link check (changed files)
+        if: steps.changed.outputs.count != '0'
+        uses: lycheeverse/lychee-action@v2
+        with:
+          fail: true
+          # A changed file may legitimately contain no links.
+          failIfEmpty: false
+          format: markdown
+          # The list goes through --files-from, not args: the action eval's
+          # args in bash, and file names come from the PR.
+          args: >-
+            --verbose
+            --no-progress
+            --max-concurrency 4
+            --max-retries 3
+            --retry-wait-time 5
+            --timeout 30
+            --accept 200,204,206,429
+            --files-from ${{ runner.temp }}/changed-files.txt
+
+      # Renaming or deleting a file can break links in files the PR didn't
+      # touch. --offline checks every local link and makes no network requests.
+      - name: Internal links (full repo, offline)
+        if: ${{ !cancelled() }}
+        uses: lycheeverse/lychee-action@v2
+        with:
+          fail: true
+          format: markdown
+          args: >-
+            --offline
+            --no-progress
+            README.md CONTRIBUTING.md faq.md CHANGELOG.md
+            'awesome/**/*.md'
+            'awesome/open-source/*.html'
+            'solutions/**/*.md'
+            'primer/**/*.md'
+            'docs/*.html'
+
+  lychee-full:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

@@ -35,10 +35,10 @@ A：眼镜可做「一看即懂」+ 屏显字幕；耳机优势是双手解放�
 ## B. 模型与链路
 
 **Q5：Livetranslate 比三段式慢，为什么还要用？**
-A：端到端模型要积累语义再出译，延迟大约 ~3 秒量级，但连贯性更好。日常对讲可用 ASR+翻译 LLM+TTS；专业同传优先 Livetranslate。见 [`02-solution.md`](./02-solution.md)。
+A：端到端模型要积累语义再出译，延迟官方称低至 2.3 秒（实测受网络影响），但连贯性更好。日常对讲可用 ASR+翻译 LLM+TTS；专业同传优先 Livetranslate。见 [`02-solution.md`](./02-solution.md)。
 
 **Q6：粤语客户怎么办？**
-A：Livetranslate 上粤语等多仅文本输出。AR / App 走字幕；强需求粤语音频输出可评估切 `Qwen3-Livetranslate` 或 Omni，并以官方语言表为准。
+A：Livetranslate 上粤语等多仅文本输出。AR / App 走字幕；强需求粤语音频输出可评估切 `qwen3.8-omni-flash-realtime` 等 Omni 模型（`Qwen3-Livetranslate` 将于 2026-10-10 下线），并以官方语言表为准。
 
 **Q7：能控制商务正式语气吗？**
 A：Livetranslate 不支持自定义系统提示词。要风格控制走「ASR + qwen-plus 翻译 + TTS」拼接。

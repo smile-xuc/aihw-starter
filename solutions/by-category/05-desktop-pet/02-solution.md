@@ -30,7 +30,8 @@
 
 | 层次 | 方案 | 说明 |
 |---|---|---|
-| 基础链路 | 标签嵌入式（方案 C） | LLM 单次推理输出文本 + emoji + action + emotion，端侧流式解析驱动多路外设 |
+| 基础链路（默认） | `qwen3.8-omni-flash-realtime` + Function Calling | 语音直进直出，表情、动作、灯光由工具调用触发，见[参考 demo](./demo/bailian/) |
+| 基础链路（三段式） | 标签嵌入式（方案 C） | LLM 单次推理输出文本 + emoji + action + emotion，端侧流式解析驱动多路外设 |
 | 黏性层 | 每日记忆日记系统 | 自动提炼对话记忆点，生成陪伴日记，支持长期记忆召回 |
 | 网络兜底 | BLE Opus 代理对话 | Wi-Fi 不可用时通过手机蓝牙透传完成完整 AI 对话 |
 | 运营层 | 云端 Agent 配置后台 | RAG 知识库 + Prompt 编排 + 意图管理 + A/B 实验，零代码热更新 |
@@ -79,9 +80,11 @@
 
 ## 二、推荐 AI 链路
 
+> **默认推荐**：`qwen3.8-omni-flash-realtime` 实时语音链路，表情、动作、灯光用 Function Calling 触发（参考 demo 的 `pet_expression` 工具）。按目录价每轮约 ¥0.004–0.008，与三段式持平或更低（见 [03-cost.md](./03-cost.md) 2.3）。实时模型会把文本里的标签直接念出来，所以下面的标签嵌入式用于三段式链路（ASR → LLM → 情感 TTS）。
+
 ### 2.1 输出协议选型
 
-桌宠品类推荐**方案 C · 标签嵌入式**——token 消耗最低，端侧嵌入式设备易于解析：
+走三段式链路时，桌宠品类推荐**方案 C · 标签嵌入式**——token 消耗最低，端侧嵌入式设备易于解析：
 
 | 维度 | 方案 C · 标签嵌入式 | 方案 A · 标准 JSON | 方案 B · 自然语言符号 |
 |---|---|---|---|
@@ -485,7 +488,7 @@ audio = synthesizer.call("今天天气真好呀～")
 - 动作情绪控制实践：https://help.aliyun.com/zh/model-studio/action-emotion-control-practice
 - CosyVoice 情感 TTS：https://help.aliyun.com/zh/model-studio/cosyvoice-clone-design-api
 - 自定义对话角色（性格切换）：https://help.aliyun.com/zh/model-studio/custom-role
-- 百炼应用编排（记忆/日记/学情）：https://help.aliyun.com/zh/model-studio/user-guide/build-an-agent
+- 百炼应用编排（记忆/日记/学情）：https://help.aliyun.com/zh/model-studio/new-single-agent-application
 - 千问大模型计费页面：https://bailian.console.aliyun.com/?productCode=p_efm#/billing
 
 <!-- FOOTER:START -->

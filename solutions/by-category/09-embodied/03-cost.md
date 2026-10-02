@@ -45,7 +45,7 @@
 
 ## 二、云端推理成本估算
 
-> 千问目录价随官方调整；下表只给量级。计费页：https://help.aliyun.com/zh/model-studio/billing-of-model-studio
+> 千问目录价随官方调整；下表只给量级。计费页：https://help.aliyun.com/zh/model-studio/model-pricing
 
 | 动作类型 | 单次 Token 量级 | 费用量级 | 说明 |
 |---|---|---|---|

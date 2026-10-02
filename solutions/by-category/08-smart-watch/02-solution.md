@@ -52,7 +52,7 @@
 | 深度周报 | qwen-plus | 更稳的结构化输出 |
 | 实时陪练语音 | 可选 Realtime | 仅高客单；非本 demo 范围 |
 
-计费：https://help.aliyun.com/zh/model-studio/billing-of-model-studio
+计费：https://help.aliyun.com/zh/model-studio/model-pricing
 
 ## 五、安全约束
 

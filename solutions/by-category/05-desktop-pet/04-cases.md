@@ -59,7 +59,7 @@
 
 - **公开信息源**：[LOOI 官网商店](https://looirobot.com/products/looi-robot) · [服务条款](https://looirobot.com/policies/terms-of-service) · [Kickstarter](https://www.kickstarter.com/projects/tangiblefuture/looi-robot-turn-your-smartphone-into-a-desktop-robot) · [Hackster](https://www.hackster.io/news/tangiblefuture-s-looi-turns-smartphones-into-ambulatory-companion-robots-with-chatgpt-support-fddc772c62b2)（查证 2026-09-30）
 - **亮点**：硬件极简，体验由软件与手机屏定义
-- **可借鉴点**：轻 BOM 下「软件 > 堆料」；Realtime 适合作为高体验旗舰选项，而不是白牌标配
+- **可借鉴点**：轻 BOM 下「软件 > 堆料」；3.5 代 Realtime 适合作为高体验旗舰选项，而不是白牌标配
 - **另见**：[LOOI 商业产品卡][pet]
 
 ### 案例：EMO（Living.AI）— 桌面情感宠物标杆

@@ -98,7 +98,7 @@ else:
 | 对话 | `qwen-plus` 主流；低频 / 控成本用 `qwen-flash` |
 | 工具调用 | 使用 Function Calling；工具 schema 保持短、参数强校验 |
 | ASR / TTS | 语音入口三段式；Realtime 仅高客单评估 |
-| 计费 | 以官方目录价为准：https://help.aliyun.com/zh/model-studio/billing-of-model-studio |
+| 计费 | 以官方目录价为准：https://help.aliyun.com/zh/model-studio/model-pricing |
 
 ## 七、安全与隐私
 

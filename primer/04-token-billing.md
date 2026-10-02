@@ -28,7 +28,7 @@
 
 类比：token 是「加油站的升」，不是「公里数」。同样说五句话，带长 system prompt、多轮历史、图片或音频时，「加了多少升」完全不同——所以同传一小时和玩具闲聊五句，账单形态差一个数量级以上。
 
-> 官方入口（仓库默认方案）：[百炼模型价格](https://help.aliyun.com/zh/model-studio/model-pricing) · [计费说明](https://help.aliyun.com/zh/model-studio/billing-of-model-studio)
+> 官方入口（仓库默认方案）：[百炼模型价格](https://help.aliyun.com/zh/model-studio/model-pricing) · [计费说明](https://help.aliyun.com/zh/model-studio/bill-query-and-cost-management)
 
 ## 一、计费解剖：钱花在哪几块
 
