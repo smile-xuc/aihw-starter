@@ -3,7 +3,7 @@ glasses_kit_chat.py — AI 眼镜「一看即懂」最小闭环（性价比路�
 
 模拟眼镜端到云端的套件链路：
   ① 输入一张「眼镜拍到的照片」+ 一句语音化的问题
-  ② Qwen-VL 视觉理解（等价于套件的视觉问答模块）
+  ② qwen3.7-flash 视觉理解（等价于套件的视觉问答模块）
   ③ CosyVoice 合成回答语音，保存为 mp3（等价于眼镜端 TTS 回播）
 
 量产接入请使用多模态交互开发套件 SDK（含端侧 VAD/唤醒/全双工），
@@ -14,6 +14,9 @@ Demo 仓库：https://github.com/aliyun/alibabacloud-bailian-speech-demo
   python glasses_kit_chat.py --image menu.jpg --question "这是什么菜？帮我推荐一个"
   python glasses_kit_chat.py --image sign.jpg --question "这个招牌写的什么？翻译成中文"
 
+  # 离线 mock：不联网、不需要 Key（未设置 DASHSCOPE_API_KEY 时自动进入）
+  python glasses_kit_chat.py --mock
+
 ⚠️ AI 生成代码，仅作接入参考。
 """
 
@@ -22,12 +25,8 @@ import base64
 import os
 import sys
 
-import dashscope
-from dashscope.audio.tts_v2 import AudioFormat, SpeechSynthesizer
-from openai import OpenAI
-
-VL_MODEL = "qwen-vl-plus"           # 性价比档；追求效果可换 qwen-vl-max
-TTS_MODEL = "cosyvoice-v3.5-flash"
+VL_MODEL = "qwen3.7-flash"          # 性价比档；追求效果可换 qwen3.7-plus
+TTS_MODEL = "cosyvoice-v3-flash"    # cosyvoice-v3.5-* 没有系统音色，用系统音色时选 v3-flash
 TTS_VOICE = "longanyang"            # 阳光男声，可按产品人设更换
 
 SYSTEM_PROMPT = (
@@ -47,6 +46,8 @@ def encode_image(path: str) -> str:
 
 def ask_vl(image_uri: str, question: str, api_key: str) -> str:
     """视觉问答：等价于套件的拍照问答模块。"""
+    from openai import OpenAI
+
     client = OpenAI(
         api_key=api_key,
         base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
@@ -63,12 +64,15 @@ def ask_vl(image_uri: str, question: str, api_key: str) -> str:
                 ],
             },
         ],
+        extra_body={"enable_thinking": False},  # Qwen3.7 默认开思考，语音播报场景要关掉
     )
     return response.choices[0].message.content.strip()
 
 
 def speak(text: str, output: str) -> None:
     """TTS 合成：等价于眼镜端的语音回播。"""
+    from dashscope.audio.tts_v2 import AudioFormat, SpeechSynthesizer
+
     synthesizer = SpeechSynthesizer(
         model=TTS_MODEL,
         voice=TTS_VOICE,
@@ -84,15 +88,26 @@ def speak(text: str, output: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="AI 眼镜「一看即懂」最小闭环")
-    parser.add_argument("--image", required=True, help="眼镜拍到的照片路径")
+    parser.add_argument("--image", help="眼镜拍到的照片路径（live 必填）")
     parser.add_argument("--question", default="我看到的是什么？", help="用户的语音问题")
     parser.add_argument("--output", default="glasses_reply.mp3", help="回答语音输出文件")
+    parser.add_argument("--mock", action="store_true", help="离线 mock：不联网、不需要 Key")
     args = parser.parse_args()
 
     api_key = os.getenv("DASHSCOPE_API_KEY")
-    if not api_key:
-        print("请先设置环境变量 DASHSCOPE_API_KEY（见 .env.example）", file=sys.stderr)
-        sys.exit(1)
+    if args.mock or not api_key:
+        reason = "--mock" if args.mock else "未检测到 DASHSCOPE_API_KEY"
+        print(f"[MOCK] 离线模拟（{reason}），不联网、不生成音频")
+        print(f"[1/3] 上传图片并提问（mock）：{args.image or '<--image>'} · {args.question}")
+        print(f"[2/3] AI 回答（mock）：{VL_MODEL} 会用三句话以内的口语回答画面内容")
+        print(f"[3/3] 语音合成（mock）：{TTS_MODEL} / {TTS_VOICE} → 真跑时写入 {args.output}")
+        return
+    if not args.image:
+        parser.error("live 模式需要 --image")
+    try:
+        import dashscope
+    except ImportError:
+        sys.exit("live 模式需要 dashscope 与 openai：pip install -r requirements.txt")
     dashscope.api_key = api_key
 
     print(f"[1/3] 上传图片并提问：{args.question}")

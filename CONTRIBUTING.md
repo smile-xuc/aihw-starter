@@ -194,6 +194,7 @@ solutions/by-category/0X-{slug}/
 ```
 
 4. **完整版** vs **占位版**：第一次提交可以是占位版（每个文件保留小节标题 + TODO 说明即可），但 PR 中要写清楚下一步补全计划。
+5. **可运行 demo**：按 [`solutions/demo-standard/`](./solutions/demo-standard/README.md) 放在 `demo/<栈>/`（如 `demo/bailian/`），从模板复制；`python3 solutions/demo-standard/check.py` 全绿后再提 PR。
 
 ### 6 文件的标准小节
 

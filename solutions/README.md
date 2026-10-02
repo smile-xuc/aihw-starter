@@ -35,10 +35,13 @@ solutions/
 │   ├── 04-talk-to-fengge.md ← Talk-to-Fengge 开源案例（架构启发）
 │   ├── 05-qwen-robot.md   ← 千问具身智能方案（架构参考）
 │   └── 06-edge-hybrid.md  ← 端侧 / 混合（端云协同）
+├── demo-standard/         ← 参考 demo 统一标准（品类 × 栈）、模板、CI 自检
 └── benchmark/             ← 方案延迟横评实测
 ```
 
 完整版 = README + 商业 + 方案 + 算账 + 案例 + FAQ + 可跑 demo。九品类现均为完整版（9/9）。
+
+参考 demo 按 [`demo-standard/`](./demo-standard/README.md) 放在 `by-category/<品类>/demo/<栈>/`：填自己的 Key 三步跑通，无 Key 自动 mock。百炼试点：[03 玩具实时语音](./by-category/03-toys-companion/demo/bailian/)、[07 录音纪要](./by-category/07-recorder/demo/bailian/)。
 
 ## 怎么开始
 

@@ -1,0 +1,2 @@
+# live 模式需要；--mock 只用标准库
+websocket-client>=1.8.0

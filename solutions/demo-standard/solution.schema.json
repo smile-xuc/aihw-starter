@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/smile-xuc/aihw-starter/blob/master/solutions/demo-standard/solution.schema.json",
+  "title": "aihw-starter solution.yaml v0.1",
+  "description": "一个「品类 × 栈」方案的最小清单。字段说明见 solutions/demo-standard/README.md。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "title", "category", "stack", "kind", "summary", "models", "regions", "env",
+               "device", "run", "metrics", "verification", "license", "maintainers"],
+  "properties": {
+    "schema": {"const": "aihw/solution@0.1"},
+    "id": {"type": "string", "pattern": "^0[1-9]-[a-z0-9-]+\\.[a-z0-9-]+$", "description": "<category>.<stack>"},
+    "title": {"type": "string", "minLength": 4},
+    "category": {"enum": ["01-ipc", "02-ai-glasses", "03-toys-companion", "04-agent-hardware", "05-desktop-pet",
+                          "06-ai-earphone", "07-recorder", "08-smart-watch", "09-embodied"]},
+    "stack": {"enum": ["bailian", "xiaozhi", "tuyaopen", "volcengine", "agora", "tencent"]},
+    "kind": {"enum": ["reference", "pointer"], "description": "reference：本仓可运行 demo；pointer：只指向上游"},
+    "summary": {"type": "string", "minLength": 10},
+    "upstream": {"type": ["string", "null"]},
+    "models": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["id", "role"],
+        "properties": {"id": {"type": "string"}, "role": {"type": "string"}}
+      }
+    },
+    "regions": {"type": "array", "minItems": 1, "uniqueItems": true,
+                "items": {"type": "string", "pattern": "^[a-z]{2}-[a-z]+(-[0-9]+)?$"}},
+    "env": {"type": "array", "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"}},
+    "device": {
+      "type": "object", "additionalProperties": false, "required": ["inputs", "outputs"],
+      "properties": {
+        "inputs": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^[a-z0-9-]+$"}},
+        "outputs": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^[a-z0-9-]+$"}}
+      }
+    },
+    "run": {
+      "type": "object", "additionalProperties": false, "required": ["live", "mock"],
+      "properties": {
+        "setup": {"type": "string"},
+        "live": {"type": "string", "pattern": "^python3 "},
+        "mock": {"type": "string", "pattern": "^python3 .*--mock"}
+      }
+    },
+    "metrics": {
+      "type": "object", "additionalProperties": false, "required": ["first_token", "cost"],
+      "properties": {"first_token": {"type": "string"}, "cost": {"type": "string"}}
+    },
+    "verification": {
+      "type": "object", "additionalProperties": false, "required": ["status", "last_verified", "record"],
+      "properties": {
+        "status": {"enum": ["pending-live", "live-verified"]},
+        "last_verified": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+        "record": {"type": "string"}
+      }
+    },
+    "license": {"type": "string"},
+    "compliance_tags": {"type": "array", "items": {"type": "string", "pattern": "^[a-z0-9-]+$"}},
+    "maintainers": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^@[A-Za-z0-9-]+$"}}
+  },
+  "allOf": [
+    {"if": {"properties": {"kind": {"const": "pointer"}}}, "then": {"required": ["upstream"]}},
+    {"if": {"properties": {"verification": {"properties": {"status": {"const": "live-verified"}}}}},
+     "then": {"properties": {"verification": {"properties": {"last_verified": {"type": "string"}}}}}}
+  ]
+}

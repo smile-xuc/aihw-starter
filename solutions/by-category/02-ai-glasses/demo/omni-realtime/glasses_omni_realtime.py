@@ -14,9 +14,14 @@ qwen3.5-omni-flash-realtime：连续音频流 + 视频帧的全双工实时交�
 用法：
   python glasses_omni_realtime.py --audio question.wav --frame view.jpg
 
+  # 离线 mock：不联网、不需要 Key（未设置 DASHSCOPE_API_KEY 时自动进入）
+  python glasses_omni_realtime.py --mock
+
 ⚠️ AI 生成代码，仅作接入参考。realtime 协议与 SDK 接口以官方文档为准：
-   https://help.aliyun.com/zh/model-studio/omni-realtime
+   https://help.aliyun.com/zh/model-studio/realtime
 """
+
+from __future__ import annotations
 
 import argparse
 import base64
@@ -24,13 +29,17 @@ import os
 import sys
 import time
 
-import dashscope
-from dashscope.audio.qwen_omni import (
-    AudioFormat,
-    MultiModality,
-    OmniRealtimeCallback,
-    OmniRealtimeConversation,
-)
+try:
+    import dashscope
+    from dashscope.audio.qwen_omni import (
+        AudioFormat,
+        MultiModality,
+        OmniRealtimeCallback,
+        OmniRealtimeConversation,
+    )
+except ImportError:  # 仅 --mock 时允许缺少 dashscope
+    dashscope = None
+    OmniRealtimeCallback = object
 
 MODEL = "qwen3.5-omni-flash-realtime"
 CHUNK_MS = 100          # 音频分块时长（模拟实时采集节奏）
@@ -84,15 +93,26 @@ def send_frame(conversation: OmniRealtimeConversation, image_path: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="AI 眼镜 omni 实时链路 demo")
-    parser.add_argument("--audio", required=True, help="用户提问音频（wav，16k 单声道）")
+    parser.add_argument("--audio", help="用户提问音频（wav，16k 单声道；live 必填）")
     parser.add_argument("--frame", help="摄像头画面（jpg/png），模拟视频帧")
     parser.add_argument("--output", default="omni_reply.pcm", help="AI 回复音频输出")
+    parser.add_argument("--mock", action="store_true", help="离线 mock：不联网、不需要 Key")
     args = parser.parse_args()
 
     api_key = os.getenv("DASHSCOPE_API_KEY")
-    if not api_key:
-        print("请先设置环境变量 DASHSCOPE_API_KEY（见 .env.example）", file=sys.stderr)
-        sys.exit(1)
+    if args.mock or not api_key:
+        reason = "--mock" if args.mock else "未检测到 DASHSCOPE_API_KEY"
+        print(f"[MOCK] 离线模拟（{reason}），不联网、不生成音频")
+        print(f"[会话] mock 连接 {MODEL}（WebSocket，服务端 VAD）")
+        print(f"[画面] {args.frame or '<--frame>'} → 约 1 fps 推帧")
+        print(f"[音频] {args.audio or '<--audio>'} → 每 {CHUNK_MS} ms 一包")
+        print("[识别] 这是什么菜？")
+        print("[回复] 这是宫保鸡丁，微辣，配米饭正好。（mock 固定回放）")
+        return
+    if not args.audio:
+        parser.error("live 模式需要 --audio")
+    if dashscope is None:
+        sys.exit("live 模式需要 dashscope：pip install -r requirements.txt")
     dashscope.api_key = api_key
 
     callback = GlassesCallback(args.output)

@@ -153,6 +153,7 @@ solutions/by-category/0X-xxxx/
 2. 选定方案后回到具体品类的 [demo/](./solutions/by-category/01-ipc/demo/)
 3. 跑通示例 → 改造成自家产品
 4. 做实时语音机器人？看 [Omni 实时端到端 · Runtime Host](./solutions/by-solution/01-qwen/omni-realtime/)
+5. 百炼参考 demo：填自己的 Key 三步跑通，标准见 [demo-standard](./solutions/demo-standard/README.md)（试点 [03](./solutions/by-category/03-toys-companion/demo/bailian/) · [07](./solutions/by-category/07-recorder/demo/bailian/)）
 
 </td>
 <td width="33%" valign="top">
