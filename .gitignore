@@ -25,4 +25,7 @@ secrets/
 
 # Demo 运行输出
 solutions/**/demo/**/out/
+solutions/by-solution/07-video-dubbing/input/
+solutions/by-solution/07-video-dubbing/work/
+solutions/by-solution/07-video-dubbing/output/
 solutions/demo-standard/templates/**/out/
