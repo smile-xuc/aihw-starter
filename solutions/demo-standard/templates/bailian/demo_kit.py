@@ -1,21 +1,25 @@
-"""demo_kit.py — aihw-starter 百炼参考 demo 公共件 v0.2
+"""demo_kit.py — aihw-starter 百炼参考 demo 公共件 v0.3
 
 每个百炼 demo 目录放一份原样副本，单个目录拷走也能跑。
 正本：solutions/demo-standard/templates/bailian/demo_kit.py
 CI（solutions/demo-standard/check.py）校验副本与正本逐字节一致；要改先改正本，再同步到各 demo。
 所有接入地址都从 Config 的方法取，demo 代码里不写死域名（check.py 会检查）。
+地址表 REGIONS 要与 solutions/demo-standard/stacks/bailian.yaml 的凭证声明一致（check.py 会检查）。
 
 只依赖标准库。麦克风 / 扬声器 / 摄像头为可选能力，需要时安装 requirements-device.txt。
 """
 from __future__ import annotations
 
 import argparse
+import atexit
 import datetime as _dt
 import json
 import math
 import os
 import platform
+import re
 import sys
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -26,7 +30,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterator, Optional, Tuple, Union
 
-KIT_VERSION = "0.2"
+KIT_VERSION = "0.3"
 
 # 地域 → 接入地址（查证 2026-10-01，来源见 solutions/demo-standard/README.md「地域」一节）
 REGIONS = {
@@ -137,10 +141,12 @@ class Config:
 
 
 def add_standard_args(parser: argparse.ArgumentParser) -> None:
-    """所有百炼 demo 共有的三个参数。"""
+    """所有百炼 demo 共有的参数。"""
     parser.add_argument("--mock", action="store_true", help="强制离线 mock：不联网、不需要 Key（CI 用）")
     parser.add_argument("--region", choices=sorted(REGIONS), help="临时覆盖 .env 里的 DASHSCOPE_API_REGION")
     parser.add_argument("--record", action="store_true", help="真跑成功后把验证记录追加到 VERIFY.md")
+    parser.add_argument("--trace", metavar="FILE",
+                        help="把本次运行的日志、结果和产出文件写成回放轨迹（aihw/trace@0.1），可在配套 APP 里打开")
 
 
 def resolve(args: argparse.Namespace, demo_dir: Path, need_workspace: bool = False) -> Config:
@@ -161,24 +167,30 @@ def resolve(args: argparse.Namespace, demo_dir: Path, need_workspace: bool = Fal
         cfg = Config("mock", "未检测到 DASHSCOPE_API_KEY，自动进入 mock", region)
     elif need_workspace and _unset(workspace):
         sys.exit("已读取 DASHSCOPE_API_KEY，但缺少 DASHSCOPE_WORKSPACE_ID：本 demo 的模型必须走业务空间专属域名。"
-                 "在百炼控制台「业务空间详情」复制 ID 填入 .env；只想离线体验请加 --mock。")
+                 "在百炼控制台「业务空间管理」页的 API Host 列复制业务空间 ID（形如 llm-xxx）填入 .env；"
+                 "只想离线体验请加 --mock。")
     else:
         cfg = Config("live", "已读取 DASHSCOPE_API_KEY", region, key.strip(), "" if _unset(workspace) else workspace)
     if args.record and not cfg.live:
         sys.exit(f"--record 只记录真跑结果，当前为 mock（{cfg.reason}）")
+    if getattr(args, "trace", None):
+        _start_trace(Path(args.trace), demo_dir, cfg)
     return cfg
 
 
 def banner(title: str, cfg: Config, models: list[str]) -> None:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(errors="replace")  # 非 UTF-8 终端也不因个别字符崩溃
+    if _TRACE:
+        _TRACE.header = {"title": title, "region": cfg.region, "models": list(models)}
     rule = "─" * 64
     mode = "LIVE 真实调用百炼" if cfg.live else f"MOCK 离线模拟（{cfg.reason}）"
-    print(rule)
-    print(title)
-    print(f"模式：{mode}")
-    print(f"地域：{cfg.region_label} · {cfg.region}    模型：{'、'.join(models)}")
-    print(rule, flush=True)
+    with _untraced():
+        print(rule)
+        print(title)
+        print(f"模式：{mode}")
+        print(f"地域：{cfg.region_label} · {cfg.region}    模型：{'、'.join(models)}")
+        print(rule, flush=True)
 
 
 def say(tag: str, text: str) -> None:
@@ -188,6 +200,19 @@ def say(tag: str, text: str) -> None:
 
 def now_ms() -> float:
     return time.perf_counter() * 1000
+
+
+MOCK_TODAY = _dt.date(2026, 10, 1)  # mock 输出里的「今天」；固定下来，mock 输出与回放轨迹才可复现
+
+
+def today(cfg: Config) -> _dt.date:
+    """「今天」：真跑用系统日期，mock 固定为 MOCK_TODAY。mock 输出里不要直接用 date.today()。"""
+    return _dt.date.today() if cfg.live else MOCK_TODAY
+
+
+def now(cfg: Config) -> _dt.datetime:
+    """「现在」：真跑用系统时间，mock 固定为 MOCK_TODAY 上午 9 点。"""
+    return _dt.datetime.now().replace(microsecond=0) if cfg.live else _dt.datetime.combine(MOCK_TODAY, _dt.time(9))
 
 
 # ───────────────────────── 验证记录 ─────────────────────────
@@ -227,19 +252,208 @@ def verify_row(cfg: Config, models: list[str], first_ms: float | None, cost: Cos
 
 def finish(cfg: Config, args: argparse.Namespace, demo_dir: Path, *, models: list[str],
            first_ms: float | None, cost: Cost, sample: str, note: str = "") -> None:
-    """打印本次运行的验证记录；--record 时追加到 VERIFY.md 末尾的表格。"""
-    row = verify_row(cfg, models, first_ms if cfg.live else None, cost, sample,
-                     note if cfg.live else "；".join(filter(None, ["mock 用量为示意值", note])))
-    print("\n—— 验证记录（VERIFY.md 格式）——")
-    print(VERIFY_HEADER)
-    print(row)
-    if not cfg.live:
-        print("（mock 结果仅用于检查流程，不写入 VERIFY.md）")
-    elif args.record:
-        path = demo_dir / "VERIFY.md"
-        with path.open("a", encoding="utf-8") as fh:
-            fh.write(row + "\n")
-        print(f"已追加到 {path.name}；提交 PR 前请把「验证人」改成 GitHub ID，并更新 solution.yaml 的 verification")
+    """打印本次运行的验证记录；--record 时追加到 VERIFY.md 末尾的表格；--trace 时写出回放轨迹。"""
+    shown_note = note if cfg.live else "；".join(filter(None, ["mock 用量为示意值", note]))
+    row = verify_row(cfg, models, first_ms if cfg.live else None, cost, sample, shown_note)
+    with _untraced():
+        print("\n—— 验证记录（VERIFY.md 格式）——")
+        print(VERIFY_HEADER)
+        print(row)
+        if not cfg.live:
+            print("（mock 结果仅用于检查流程，不写入 VERIFY.md）")
+        elif args.record:
+            path = demo_dir / "VERIFY.md"
+            with path.open("a", encoding="utf-8") as fh:
+                fh.write(row + "\n")
+            print(f"已追加到 {path.name}；提交 PR 前请把「验证人」改成 GitHub ID，并更新 solution.yaml 的 verification")
+    if _TRACE:
+        first = round(first_ms) if cfg.live and first_ms is not None else None
+        _TRACE.result = {"models": list(models), "first_token_ms": first, "cost": _cost_range(cost),
+                         "sample": sample, "note": shown_note}
+        _TRACE.write()
+        with _untraced():
+            print(f"回放轨迹 → {_TRACE.path}")
+
+
+# ───────────────────────── 回放轨迹（--trace） ─────────────────────────
+# 格式见 solutions/demo-standard/README.md「APP 数据」一节：每行「[标签] 文字」是一条事件，
+# 后面缩进的续行归到同一条；横幅和验证记录不进事件，结构化地写在顶层与 result 里。
+
+TRACE_SCHEMA = "aihw/trace@0.1"
+_TAG_LINE = re.compile(r"^\[([^\]\s][^\]]{0,15})\] ?(.*)$")
+_TAG_KINDS = {"设备": "device", "云端": "cloud", "统计": "stats", "提示": "notice"}
+_TEXT_TYPES = {".md": "text/markdown", ".txt": "text/plain", ".json": "application/json", ".csv": "text/csv"}
+_MEDIA_TYPES = {".wav": "audio/wav", ".mp3": "audio/mpeg", ".m4a": "audio/mp4", ".jpg": "image/jpeg",
+                ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp", **_TEXT_TYPES}
+_INLINE_LIMIT = 64 * 1024
+_TRACE: _Trace | None = None
+
+
+def _cost_range(cost: Cost) -> dict | None:
+    if cost is None:
+        return None
+    low, high = cost if isinstance(cost, tuple) else (cost, cost)
+    return {"low": round(low, 6), "high": round(high, 6)}
+
+
+def _media_type(path: Path) -> str:
+    return _MEDIA_TYPES.get(path.suffix.lower(), "application/octet-stream")
+
+
+class _Tee:
+    """把 stdout / stderr 原样输出，同时交给轨迹记录。"""
+
+    def __init__(self, stream, sink):
+        self._stream, self._sink = stream, sink
+
+    def write(self, text: str) -> int:
+        written = self._stream.write(text)
+        self._sink(text)
+        return written
+
+    def flush(self) -> None:
+        self._stream.flush()
+
+    def __getattr__(self, name):
+        return getattr(self._stream, name)
+
+
+class _Trace:
+    def __init__(self, path: Path, demo_dir: Path, cfg: Config):
+        self.path, self.demo_dir, self.cfg = path, demo_dir, cfg
+        self.started, self.started_wall = time.perf_counter(), time.time()
+        self.header: dict = {}
+        self.events: list[dict] = []
+        self.result: dict | None = None
+        self.muted, self.written = 0, False
+        self.pending, self.stderr_tail = "", ""
+        self.lock = threading.Lock()
+        argv, skip = [], False
+        for item in sys.argv[1:]:
+            if skip or item.startswith("--trace="):
+                skip = False
+                continue
+            if item == "--trace":
+                skip = True
+                continue
+            argv.append(item)
+        self.args = argv
+
+    def feed(self, text: str) -> None:
+        with self.lock:
+            if self.muted:
+                return
+            self.pending += text
+            while "\n" in self.pending:
+                line, self.pending = self.pending.split("\n", 1)
+                self._line(line.rsplit("\r", 1)[-1].rstrip())
+
+    def feed_stderr(self, text: str) -> None:
+        self.stderr_tail = (self.stderr_tail + text)[-2000:]
+
+    def _line(self, line: str) -> None:
+        t_ms = round((time.perf_counter() - self.started) * 1000) if self.cfg.live else None
+        match = _TAG_LINE.match(line)
+        if match:
+            tag, text = match.groups()
+            self.events.append({"i": len(self.events), "t_ms": t_ms, "tag": tag,
+                                "kind": _TAG_KINDS.get(tag, "result"), "text": text, "lines": []})
+        elif self.events and (not line.strip() or line[:1].isspace()):
+            self.events[-1]["lines"].append(line)
+        elif line.strip():
+            self.events.append({"i": len(self.events), "t_ms": t_ms, "tag": None, "kind": "other",
+                                "text": line.strip(), "lines": []})
+
+    def _files(self, folder: str, since: float | None) -> list[Path]:
+        root = self.demo_dir / folder
+        if not root.is_dir():
+            return []
+        return sorted(p for p in root.rglob("*") if p.is_file() and p.name != "README.md"
+                      and (since is None or p.stat().st_mtime >= since))
+
+    def write(self) -> None:
+        samples = self._files("samples", None)
+        outputs = self._files("out", self.started_wall - 1)
+        rel = {p: p.relative_to(self.demo_dir).as_posix() for p in samples + outputs}
+        names: dict[str, list[Path]] = {}
+        for p in samples + outputs:
+            names.setdefault(p.name, []).append(p)
+
+        def mentioned(text: str) -> list[str]:
+            """这段文字提到的样本 / 产出文件：先认完整相对路径，文件名不重名时也认文件名。"""
+            found = []
+            for p, path in rel.items():
+                hit = re.search(r"(?<![A-Za-z0-9_./-])" + re.escape(path) + r"(?![A-Za-z0-9_.-])", text)
+                if not hit and len(names[p.name]) == 1:
+                    hit = re.search(r"(?<![A-Za-z0-9_./-])" + re.escape(p.name) + r"(?![A-Za-z0-9_.-])", text)
+                if hit:
+                    found.append(path)
+            return sorted(found)
+
+        events = []
+        for event in self.events:
+            lines = event["lines"]
+            while lines and not lines[-1].strip():
+                lines.pop()
+            while lines and not lines[0].strip():
+                lines.pop(0)
+            indent = min((len(x) - len(x.lstrip()) for x in lines if x.strip()), default=0)
+            lines = [x[indent:] for x in lines]
+            events.append({**event, "lines": lines, "assets": mentioned("\n".join([event["text"], *lines]))})
+        used = {a for e in events for a in e["assets"]} | set(mentioned((self.result or {}).get("sample", "")))
+        inputs = [{"path": rel[p], "media_type": _media_type(p), "bytes": p.stat().st_size, "asset": None}
+                  for p in samples if rel[p] in used]
+        produced = []
+        for p in outputs:
+            media = _media_type(p)
+            text = None
+            if p.suffix.lower() in _TEXT_TYPES and p.stat().st_size <= _INLINE_LIMIT:
+                text = p.read_text(encoding="utf-8", errors="replace")
+            produced.append({"path": rel[p], "media_type": media, "bytes": p.stat().st_size, "text": text,
+                             "asset": None})
+        solution = None
+        manifest = self.demo_dir / "solution.yaml"
+        if manifest.is_file():
+            found = re.search(r"""^id:\s*["']?([\w.-]+)["']?\s*(?:#.*)?$""", manifest.read_text(encoding="utf-8"), re.M)
+            solution = found.group(1) if found else None
+        error = None
+        if self.result is None:
+            error = self.stderr_tail.strip() or "运行没有正常结束（没有调用 demo_kit.finish）"
+        data = {"schema": TRACE_SCHEMA, "solution": solution, "variant": None, "mode": self.cfg.mode,
+                "kit": KIT_VERSION, "args": self.args, "title": self.header.get("title", ""),
+                "region": self.cfg.region, "models": self.header.get("models", []),
+                "timing": "measured" if self.cfg.live else "none", "events": events, "result": self.result,
+                "inputs": inputs, "outputs": produced, "error": error}
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        self.written = True
+
+
+class _untraced:
+    """这段输出不进回放轨迹（横幅、验证记录等）。"""
+
+    def __enter__(self):
+        if _TRACE:
+            sys.stdout.flush()
+            _TRACE.muted += 1
+
+    def __exit__(self, *exc):
+        if _TRACE:
+            sys.stdout.flush()
+            _TRACE.muted -= 1
+
+
+def _start_trace(path: Path, demo_dir: Path, cfg: Config) -> None:
+    global _TRACE
+    _TRACE = _Trace(path, demo_dir, cfg)
+    sys.stdout = _Tee(sys.stdout, _TRACE.feed)
+    sys.stderr = _Tee(sys.stderr, _TRACE.feed_stderr)
+
+    def _flush_on_exit() -> None:
+        if _TRACE and not _TRACE.written:
+            _TRACE.write()
+
+    atexit.register(_flush_on_exit)
 
 
 # ───────────────────────── HTTP（标准库） ─────────────────────────
