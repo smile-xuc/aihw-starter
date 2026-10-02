@@ -45,8 +45,8 @@
 
 ### 案例：Meta Ray-Ban Display（Meta）— 海外对标
 
-- **公开信息源**：[Meta 新闻稿（2025-09-17，2025-09-30 更新）](https://about.fb.com/news/2025/09/meta-ray-ban-display-ai-glasses-emg-wristband/) · [TrendForce（2026-01-30）](https://www.trendforce.com/presscenter/news/20260130-12908.html)（查证 2026-09-30）
-- **形态**：官方新闻稿称单眼全彩高分辨率 in-lens 显示（原文 "full-color, high-resolution display" / "in-lens display"），随附 Meta Neural Band。起价 $799 USD，含眼镜与腕带。2025-09-30 起在美国部分零售店开售。新闻稿没有写 LCoS 或几何反射光波导
+- **公开信息源**：[Meta 新闻稿（2025-09-17，2025-09-30 更新）](https://about.fb.com/news/2025/09/meta-ray-ban-display-ai-glasses-emg-wristband/) · [TrendForce（2026-01-30）](https://www.trendforce.com/presscenter/news/20260130-12908.html)（查证 2026-09-30）· [New Features for Meta Ray-Ban Display（2026-09-23）](https://about.fb.com/news/2026/09/new-features-for-meta-ray-ban-display-navigation-hologram/)（查证 2026-10-02）
+- **形态**：官方新闻稿称单眼全彩高分辨率 in-lens 显示（原文 "full-color, high-resolution display" / "in-lens display"），随附 Meta Neural Band。起价 $799 USD，含眼镜与腕带。在售（美国，线上 + 零售，查证 2026-10-02）。新闻稿没有写 LCoS 或几何反射光波导
 - **亮点**：待核实
 - **公开数据**：[TrendForce 2026-01-30](https://www.trendforce.com/presscenter/news/20260130-12908.html) 称 Meta Ray-Ban Display 零部件订单两度上修，并预计 2026 年全球 AR 眼镜出货 95 万台。口径是 AR 眼镜，不是「显示类眼镜」
 - **可借鉴点**：全彩显示是比单绿更高端的路线，验证了「显示 + 眼镜」的消费需求；腕带肌电交互提示了「无手机操控」的方向；799 美元定价说明全彩方案的成本尚未到大众化区间，与单绿路线形成高低两档并存的格局

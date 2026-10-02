@@ -136,6 +136,50 @@
 
 ---
 
+### Ray-Ban Meta Audio（Meta × EssilorLuxottica）
+
+- **上市状态**：预售（渠道待核实，查证 2026-10-02）；[新闻稿（2026-09-23）](https://about.fb.com/news/2026/09/introducing-ray-ban-meta-audio-glasses-new-styles-plus-muse/) 写 "ship October 13"（年份待核实）
+
+- **官网/渠道**：<https://about.fb.com/news/2026/09/introducing-ray-ban-meta-audio-glasses-new-styles-plus-muse/>（新闻稿）
+- **形态**：Meta 产品线中的音频款，无摄像头、无显示；开放式扬声器 + Meta AI，用于语音助手、翻译、通话、音乐。约 43 g；续航最长 12 小时（厂商称）；充电盒再加 48 小时（厂商称）；Clubmaster 和 Burbank 两款共 23 种框镜组合；支持处方镜片
+- **定价**：
+  - 首发价：（预购起价）$349 USD · [新闻稿（2026-09-23）](https://about.fb.com/news/2026/09/introducing-ray-ban-meta-audio-glasses-new-styles-plus-muse/) · 查证 2026-10-02
+  - 现价：待核实
+  - MSRP：待核实
+  - 处方和 Transitions 加价：待核实
+- **目标市场**：待核实
+- **AI 能力**：Meta AI，用于语音助手、翻译、通话、音乐
+- **大模型方案**：Meta AI。官网未公开具体基座模型（非千问默认绑定）
+- **公开数据**：待核实
+- **关键差异化**：① 无摄像头、无显示的音频款；② 开放式扬声器 + Meta AI，用于语音助手、翻译、通话、音乐；③ Clubmaster 和 Burbank 两款共 23 种框镜组合，支持处方镜片
+- **商业模式**：硬件销售
+
+> 来源：[Introducing Ray-Ban Meta Audio（2026-09-23）](https://about.fb.com/news/2026/09/introducing-ray-ban-meta-audio-glasses-new-styles-plus-muse/)（查证 2026-10-02）
+
+---
+
+### Meta Ray-Ban Display（Meta）
+
+- **上市状态**：在售（美国，线上 + 零售，查证 2026-10-02）。[新闻稿（2026-09-23）](https://about.fb.com/news/2026/09/new-features-for-meta-ray-ban-display-navigation-hologram/) 原文 "introducing online ordering in the US"，脚注 "US: Online ordering begins today."
+
+- **官网/渠道**：<https://about.fb.com/news/2026/09/new-features-for-meta-ray-ban-display-navigation-hologram/>（2026-09-23 新闻稿）；<https://about.fb.com/news/2025/09/meta-ray-ban-display-ai-glasses-emg-wristband/>（2025-09-17 新闻稿）
+- **形态**：镜内显示 + Meta Neural Band（EMG 腕带）手势控制。官方新闻稿称单眼全彩高分辨率 in-lens 显示（原文 "full-color, high-resolution display" / "in-lens display"），随附 Meta Neural Band。相对 Ray-Ban Meta Gen 2（有相机、无显示）与 Oakley Meta HSTN（无显示的相机 + 开放式音频），本卡为镜内显示并用 Meta Neural Band 做手势控制；Halliday G2 为无摄像头的双目光波导显示
+- **定价**：
+  - 首发价：$799 USD（含 Meta Neural Band）· [新闻稿（2025-09-17）](https://about.fb.com/news/2025/09/meta-ray-ban-display-ai-glasses-emg-wristband/) · 查证 2026-10-02
+  - 现价：待核实
+  - MSRP：待核实
+- **目标市场**：美国
+- **AI 能力**：Meta AI；镜内查看消息与翻译；Meta Neural Band 将肌肉活动信号转为手势指令
+- **大模型方案**：Meta AI。官网未公开具体基座模型（非千问默认绑定）
+- **公开数据**：待核实
+- **关键差异化**：① 有镜内显示，Ray-Ban Meta Gen 2（有相机、无显示）与 Oakley Meta HSTN（无显示的相机 + 开放式音频）无显示；② Meta Neural Band（EMG 腕带）手势控制；③ Halliday G2 为无摄像头的双目光波导显示，本卡用 EMG 腕带做手势控制
+- **商业模式**：硬件销售
+- **另见**：[公开案例](../../../solutions/by-category/02-ai-glasses/04-cases.md)
+
+> 来源：[New Features for Meta Ray-Ban Display（2026-09-23）](https://about.fb.com/news/2026/09/new-features-for-meta-ray-ban-display-navigation-hologram/) · [Meta Ray-Ban Display: AI Glasses With an EMG Wristband（2025-09-17）](https://about.fb.com/news/2025/09/meta-ray-ban-display-ai-glasses-emg-wristband/)（均查证 2026-10-02）
+
+---
+
 ## 待补充清单
 
 ### 海外标杆
