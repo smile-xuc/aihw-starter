@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import argparse
 import base64
-import datetime as dt
 import json
 import sys
 import time
@@ -409,7 +408,7 @@ def main() -> None:
     favorite = ACTIONS[pet.actions.most_common(1)[0][0]] if pet.actions else "无"
     note = f"{len(turns)} 轮均值；首字=松开按键→首包音频；含 pet_expression"
     if not args.no_diary:
-        today = dt.date.today().isoformat()
+        today = kit.today(cfg).isoformat()
         try:
             entry, (tok_in, tok_out) = diary.write(http, cfg, model=DIARY_MODEL, name=PET_NAME, history=history,
                                                    memory=memory, turns=len(turns), favorite=favorite)
