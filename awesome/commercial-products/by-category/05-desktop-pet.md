@@ -89,6 +89,28 @@
 
 ---
 
+### StackChan（M5Stack）
+
+- **上市状态**：在售（M5Stack 官方商店，查证 2026-10-02）
+- **官网/渠道**：<https://shop.m5stack.com/products/stackchan-kawaii-co-created-open-source-ai-desktop-robot> M5Stack 官方商店；<https://docs.m5stack.com/en/StackChan> 官方文档
+- **形态**：掌上桌面机器人。主控 CoreS3（ESP32-S3，240 MHz 双核，16 MB Flash + 8 MB PSRAM），2.0 寸触屏，0.3 MP 摄像头，双麦，1 W 扬声器，9 轴 IMU；两个反馈舵机（水平 360° 连续旋转、垂直 90°），12 颗 RGB LED，红外收发，三区触摸，NFC，550 mAh 电池（官方商店）。页面不一致：CNX Software 写 700 mAh、156 g，卡片取官方商店规格
+- **定价**：
+  - 首发价：待核实（查证 2026-10-02）
+  - 现价：$99 USD · 全球 · [M5Stack 官方商店（K151）](https://shop.m5stack.com/products/stackchan-kawaii-co-created-open-source-ai-desktop-robot)（查证 2026-10-02）
+  - MSRP：待核实（查证 2026-10-02）
+- **目标市场**：创客 / 开发者，以及想要可编程桌宠的入门用户
+- **AI 能力**：
+  - AI 功能：说唤醒词「Hi, StackChan」或点屏幕唤醒 AI Agent 语音对话，可做通用问答、提醒；可用语音控制自身扬声器、舵机、RGB 灯和摄像头（如 "What can you see right now?"）；通过 MCP 接入 Home Assistant 后可语音控制家居设备。实现方式：经 StackChan World App 绑定的联网 AI Agent，模型、音色、性格、记忆在 App 中配置，文档没有写具体模型名（[M5Stack 文档](https://docs.m5stack.com/en/StackChan)，查证 2026-10-02）
+  - 空闲时随机眨眼、转头；触摸、摇晃会触发表情；支持 OTA；可用 Arduino、UiFlow2 二次开发（官方商店 / 文档）
+- **大模型方案**：官网未公开具体基座模型（非千问默认绑定）；App 中可选择 "AI model"
+- **公开数据**：未见公开销量
+- **关键差异化**：① <$100 的成品 AI 桌宠，可对照 Eilik 的 $139.99；② 软硬件开源、社区共创，可作为 05 开源条目的商业化对照；③ 接入 M5Stack 扩展生态，并支持 MCP 控制 Home Assistant
+- **商业模式**：硬件销售；另售遥控套件（价格待核实）
+
+> 来源：[M5Stack 官方商店](https://shop.m5stack.com/products/stackchan-kawaii-co-created-open-source-ai-desktop-robot) · [M5Stack 文档](https://docs.m5stack.com/en/StackChan) · [CNX Software（2026-01-13）](https://www.cnx-software.com/2026/01/13/m5stack-stackchan-is-a-cute-open-source-ai-desktop-robot/)（均查证 2026-10-02）
+
+---
+
 ## 待补充清单
 
 - [ ] 国内工位桌宠 / 潮玩品牌公开 SKU
