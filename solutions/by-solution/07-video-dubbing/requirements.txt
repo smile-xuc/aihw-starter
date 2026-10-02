@@ -1,0 +1,8 @@
+# Python 部分仅标准库（dub.py / bailian.py / pause_plan.py / smooth_dub.py / media.py / selftest.py）
+#
+# 另需：
+#   ffmpeg / ffprobe：抽音轨、变速、响度归一、混音、封装（macOS: brew install ffmpeg；Ubuntu: apt install ffmpeg）
+#   demucs：⑤ 人声分离。第一次跑到这一步时 dub.py 自动执行下面这行（带 PyTorch，约 1 GB）；
+#           不想自动安装就加 --no-auto-install，自己装：
+# demucs
+# soundfile
