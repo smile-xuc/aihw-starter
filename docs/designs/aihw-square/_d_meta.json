@@ -1,0 +1,45 @@
+{
+  "type": "design",
+  "designSystems": [],
+  "primaryDesignSystem": null,
+  "assets": {
+    "AIHW 功能广场 · 双端首页": {
+      "versions": [
+        {
+          "path": "index.html",
+          "createdAt": "2026-09-30T15:49:22.782Z",
+          "status": "needs-review"
+        }
+      ]
+    },
+    "AIHW · 完整 APP 设计": {
+      "versions": [
+        {
+          "path": "app-v2.html",
+          "createdAt": "2026-10-01T14:37:51.556Z",
+          "status": "needs-review"
+        }
+      ]
+    },
+    "AIHW · 页面总览": {
+      "versions": [
+        {
+          "path": "overview.html",
+          "createdAt": "2026-10-01T14:37:51.619Z",
+          "status": "needs-review"
+        }
+      ]
+    },
+    "AIHW · 核心体验流程": {
+      "versions": [
+        {
+          "path": "flow.html",
+          "createdAt": "2026-10-01T14:37:51.701Z",
+          "status": "needs-review"
+        }
+      ]
+    }
+  },
+  "createdAt": "2026-09-30T15:49:22.783Z",
+  "updatedAt": "2026-10-01T14:37:51.702Z"
+}

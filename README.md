@@ -171,6 +171,18 @@ solutions/by-category/0X-xxxx/
 
 ---
 
+## 功能广场 APP 设计
+
+面向产品体验者的可点击设计原型，覆盖 9 类硬件、10 个品类 Demo，提供 14 个页面视图和 6 类体验工作台。支持 iOS 27 / Android Material 3 双端对照、深浅色和手机全屏布局。
+
+- [完整可点击原型](./docs/designs/aihw-square/app-v2.html?screen=home)
+- [18 屏页面总览](./docs/designs/aihw-square/overview.html) · [核心体验流程](./docs/designs/aihw-square/flow.html)
+- [设计入口、使用方法与说明](./docs/designs/aihw-square/README.md)
+
+在 [GitHub Pages 站点](https://smile-xuc.github.io/aihw-starter/) 点击「功能广场 APP」可直接浏览。AI 输出、声音播放和设备连接使用本地设计样例；真实方案运行仍通过对应品类的 `demo/` 完成。
+
+---
+
 ## 仓库结构
 
 ```
@@ -193,7 +205,8 @@ aihw-starter/
 │   ├── open-source/           # 开源项目索引（137+ 项目，15 品类）
 │   └── commercial-products/   # 在售商业化产品案例
 ├── primer/                    # AI 通识（01–07：授权 / 规格 / KV / Token / 蒸馏 / 端云 / 记忆）
-├── docs/                      # GitHub Pages 门面页
+├── docs/                      # GitHub Pages 门面页与可视化设计
+│   └── designs/aihw-square/    # 功能广场 APP 原型、页面总览与设计说明
 ├── faq.md                     # 跨品类通用 FAQ
 └── CONTRIBUTING.md            # 贡献指南
 ```
