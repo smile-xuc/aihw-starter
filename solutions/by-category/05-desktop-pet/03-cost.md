@@ -60,7 +60,7 @@ TTS：20–60 字
 
 动作 / 表情标签嵌在文本里，**不另计费**；但每个标签约占数个 token，须在 system prompt 里限制「每轮最多 1 emoji + 1 action」，避免堆叠浪费并破坏体验。
 
-### 2.2 三段式链路（主流）
+### 2.2 三段式链路
 
 > 口径：ASR → LLM → 情感 TTS。目录价随官方调整，下表只给量级。计费页：https://help.aliyun.com/zh/model-studio/model-pricing
 >
@@ -72,11 +72,11 @@ TTS：20–60 字
 | ~20（中度） | qwen-plus + cosyvoice-v3-flash | 3–9 元 | 主流桌宠 |
 | ~50（重度） | qwen-plus + cosyvoice-v3-flash | 8–21 元 | 高活跃潮玩；需评估是否切 Realtime |
 
-按 **2 年摊销** 计入硬件售价时：中度用户约 **75–200 元/台** 量级的云端预提——在 399–699 元零售档已不算轻，需配合轮次管控，或评估 2.3 的 3.8 代 Realtime。
+按 **2 年摊销** 计入硬件售价时：中度用户约 **75–200 元/台** 量级的云端预提——在 399–699 元零售档已不算轻，所以默认推荐 2.3 的 3.8 代 Realtime（中度用户 2 年约 60–120 元），并配合轮次管控。
 
-### 2.3 Realtime 链路（旗舰可选）
+### 2.3 Realtime 链路（默认推荐）
 
-Qwen-Omni-Realtime / Qwen-Audio-3.0-Realtime 按音频时长计费。3.5 代 Omni 和 Qwen-Audio 的 Plus 档单位时长成本显著高于三段式；2026-09 上架的 `qwen3.8-omni-flash-realtime`（与 `qwen-audio-3.0-realtime-flash` 同价）按目录价首轮约 ¥0.004、聊到第 10 轮约 ¥0.008（[参考 demo](./demo/bailian/)），已与三段式持平或更低，成本随系统提示和历史上下文增长。按 3.5 代 / Plus 档的成本，适合：
+Qwen-Omni-Realtime / Qwen-Audio-3.0-Realtime 按音频时长计费。3.5 代 Omni 和 Qwen-Audio 的 Plus 档单位时长成本显著高于三段式；2026-09 上架的 `qwen3.8-omni-flash-realtime`（与 `qwen-audio-3.0-realtime-flash` 同价）按目录价首轮约 ¥0.004、聊到第 10 轮约 ¥0.008（[参考 demo](./demo/bailian/)），已与三段式持平或更低，成本随系统提示和历史上下文增长，所以默认推荐它（中度用户约 2–5 元 / 台 / 月）；表情和动作改用 Function Calling 触发，因为实时模型会把文本里的标签念出来。3.5 代 / Plus 档按其成本只适合：
 
 - 客单 ≥ 800 元、对话是主体验
 - 需要语义打断与拟人节奏
