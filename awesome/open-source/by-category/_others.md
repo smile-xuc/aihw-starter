@@ -86,6 +86,8 @@
 - **HTML 品类**：模型部署
 
 > whisper.cpp 主卡在 [`07-recorder.md`](./07-recorder.md)。
+>
+> Lemonade（端侧统一推理调度服务）主卡在 [`04-agent-hardware.md`](./04-agent-hardware.md#lemonade)。
 
 ## 参考合集
 

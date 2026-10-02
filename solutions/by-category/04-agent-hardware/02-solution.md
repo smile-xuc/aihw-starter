@@ -47,6 +47,8 @@
 └─────────────────────────────────────────────┘
 ```
 
+> 端侧同时跑多个本地模型（意图分类、本地 SLM、ASR / TTS 等）时，可在 Agent 调度框架与推理引擎之间加一层端侧统一推理调度服务，统一 API 并管理引擎、模型加载与内存，见 [`06-edge-hybrid.md` §2.1](../../by-solution/06-edge-hybrid.md#21-端侧统一推理调度层)；开源参考 [Lemonade](../../../awesome/open-source/by-category/04-agent-hardware.md#lemonade)。
+
 ## 三、关键设计要点
 
 | 要点 | 说明 |

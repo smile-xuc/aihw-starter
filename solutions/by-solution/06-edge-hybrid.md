@@ -42,6 +42,34 @@
 
 乐鑫公开表述与实践：**ESP 芯片是 LLM 体验的入口，而非在 MCU 上直接跑大模型**——端侧做采集、唤醒与执行，LLM 在云或私有化智能体平台。
 
+### 2.1 端侧统一推理调度层
+
+C 档设备（Agent 盒、AI PC、家庭中枢）常在本地同时跑 LLM、ASR、TTS、Embedding 等多个模型，每类模型又可能落在不同的推理引擎和计算单元（CPU / GPU / NPU）上。这时需要一层本地推理调度服务：对上给 Agent 框架一个统一 API，对下管理引擎、模型与内存。开源参考是 [Lemonade](https://github.com/lemonade-sdk/lemonade)（Apache-2.0，项目 README 称由 AMD 赞助），开源卡见 [awesome · 04 Agent 硬件](../../awesome/open-source/by-category/04-agent-hardware.md#lemonade)。
+
+它可以理解为「端侧的 [new-api](https://github.com/QuantumNous/new-api)」：两者都对调用方暴露统一的 OpenAI 兼容接口，并按模型名或策略路由请求；区别在于调度对象。
+
+| 维度 | new-api（云端模型 API 网关） | Lemonade（端侧推理调度） |
+|---|---|---|
+| 运行位置 | 服务器，多用户 / 多租户 | 单台设备，本机或局域网访问 |
+| 下游对象 | 多家供应商的渠道与 API Key（也可把 Ollama、vLLM 等自建服务接为渠道） | 本机的推理引擎进程与计算单元 |
+| 主要难点 | 渠道权重与重试、额度计费、协议转换 | 硬件探测、后端选择与引擎安装、模型格式（GGUF / ONNX / FLM）与下载、加载 / 卸载、内存约束、NPU 独占 |
+
+Lemonade 文档与源码中和端侧调度直接相关的机制（main 分支，查证 2026-10-02）：
+
+- **按硬件选后端**：探测 CPU、AMD / NVIDIA GPU、Apple Metal、AMD XDNA2 NPU 后选择后端，加载模型时按需下载引擎；除从磁盘流式加载的后端外，模型大于「本机最大内存池」与「80% 系统内存」两者中的较大值时，不出现在可用列表
+- **多模型并存**：LLM、Embedding、Reranking、语音转写、图像生成各自独立 LRU，`max_loaded_models` 默认每类 1 个；NPU 上 FastFlowLM、Ryzen AI LLM、whisper.cpp 三类后端互斥
+- **统一接口**：OpenAI 兼容（含 `/realtime` 实时转写 WebSocket）、Ollama 兼容、Anthropic `/v1/messages`、MCP 网关，默认端口 `13305`
+- **端云路由**：可把 OpenAI 兼容的云服务注册为候选模型（文档标注为实验性，已验证 Fireworks、OpenAI、OpenRouter、Together），再用路由策略把标记为隐私的请求留在本地、把编程或长文本请求发往云端
+- **可嵌入**：Embeddable Lemonade 是可随应用安装包分发的 `lemond` 便携版
+
+适用档位：主要对应 C 档；B 档里手机 SoC / 边缘盒只跑 0.5B–4B 意图模型时，单一推理引擎通常够用；A 档和 ESP32 类 MCU 终端不需要这一层。
+
+选型边界：
+
+- NPU 后端只覆盖 AMD XDNA2；Qualcomm QNN、Intel OpenVINO 在项目跨厂商路线图中尚未勾选，也未见瑞芯微 RKNN 等国产 SoC NPU 后端，RK3576 / RK3588 类盒子只能用 llama.cpp 的 CPU 等通用后端
+- 云端卸载为实验特性；百炼 OpenAI 兼容模式不在其已验证列表中，作为云端候选待核实
+- 可与 new-api 叠加：Lemonade 对外是 OpenAI 兼容服务，可接为 new-api 的上游渠道；new-api 也可作为 Lemonade 的云端候选（两种组合均待核实）
+
 ## 3. 品类适配
 
 | 品类 | 推荐档位 | 端侧重点 | 云侧重点 |
@@ -101,6 +129,7 @@
 | 模型规格 × 芯片 | [primer/02](../../primer/02-model-size-chips.md) |
 | 端云切分原则 | [primer/06 · 端云协同基础](../../primer/06-edge-cloud.md) |
 | 端侧小模型 / 蒸馏边界 | [primer/05 · 蒸馏](../../primer/05-distillation.md) |
+| 端侧统一推理调度（见 §2.1） | [lemonade-sdk/lemonade](https://github.com/lemonade-sdk/lemonade) |
 
 > 欢迎补充各品类实测的「本地命令命中率 / 上云占比 / 断网体验」数据。
 
