@@ -43,8 +43,11 @@ solutions/
 
 参考 demo 按 [`demo-standard/`](./demo-standard/README.md) 放在 `by-category/<品类>/demo/<栈>/`：填自己的 Key 三步跑通，无 Key 自动 mock。百炼参考 demo 9 个品类都有，在各自目录运行 `python3 run.py`（均待真 Key 验证）：[01 事件理解与检索](./by-category/01-ipc/demo/bailian/)、[02 一看即懂](./by-category/02-ai-glasses/demo/bailian/)、[03 玩具实时语音](./by-category/03-toys-companion/demo/bailian/)、[04 工具编排](./by-category/04-agent-hardware/demo/bailian/)、[05 桌宠陪伴与记忆日记](./by-category/05-desktop-pet/demo/bailian/)、[06 实时同传](./by-category/06-ai-earphone/demo/bailian/)、[07 录音纪要](./by-category/07-recorder/demo/bailian/)、[08 健康日报](./by-category/08-smart-watch/demo/bailian/)、[09 看图规划](./by-category/09-embodied/demo/bailian/)。
 
+这 9 个方案也能在[网页 APP](https://smile-xuc.github.io/aihw-starter/app/)里直接看回放，其中 01、02 拍照即问、04、07、08、09 填自己的百炼 Key 可以在浏览器里真跑，说明见 [`docs/app/`](../docs/app/README.md)。
+
 ## 怎么开始
 
+- **想先看效果**：打开[网页 APP](https://smile-xuc.github.io/aihw-starter/app/)，9 个参考方案的回放、单次成本、硬件与合规要点都在里面。
 - **品牌商 / 方案商**：进入 [`by-category/`](./by-category/) 浏览全品类总览，再选感兴趣的赛道。
 - **开发者 / 架构师**：进入 [`by-solution/`](./by-solution/) 选定模型 / 框架方案，再看跨品类的接入差异。
 - **不确定从哪开始**：直接看根 [`README.md`](../README.md) 的「热门品类」表格速览。
