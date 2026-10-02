@@ -230,7 +230,10 @@ class TtsWs:
     def __init__(self, url: str, headers: dict):
         import websocket  # websocket-client
         self.websocket = websocket
-        self.ws = websocket.create_connection(url, header=[f"{k}: {v}" for k, v in headers.items()], timeout=30)
+        try:
+            self.ws = websocket.create_connection(url, header=[f"{k}: {v}" for k, v in headers.items()], timeout=30)
+        except (websocket.WebSocketException, OSError) as exc:
+            sys.exit(f"[云端] 播报通道连接失败：{exc}（401 / 403 多为 Key、业务空间与地域不一致）")
 
     def send(self, message: dict) -> None:
         self.ws.settimeout(10)
@@ -444,7 +447,10 @@ class WsTransport:
 
     def __init__(self, url: str, headers: dict):
         import websocket  # websocket-client
-        self.ws = websocket.create_connection(url, header=[f"{k}: {v}" for k, v in headers.items()], timeout=30)
+        try:
+            self.ws = websocket.create_connection(url, header=[f"{k}: {v}" for k, v in headers.items()], timeout=30)
+        except (websocket.WebSocketException, OSError) as exc:
+            sys.exit(f"[云端] 连接失败：{exc}（401 / 403 多为 Key、业务空间与地域不一致）")
 
     def send(self, event: dict) -> None:
         self.ws.send(json.dumps(event, ensure_ascii=False))

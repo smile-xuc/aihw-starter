@@ -382,7 +382,7 @@ def main() -> None:
         http = MockHttp(DEMO_DIR / "samples")
         kit.say("设备", "连接本地 mock 云端（按官方响应结构回放，不联网）")
 
-    box, tasks, now = Box(), [], dt.datetime.now()
+    box, tasks, now = Box(), [], kit.now(cfg)
     try:
         for index, (kind, value) in enumerate(commands(args), 1):
             task = Task(source=Path(value).name if kind == "audio" else f"文本「{value}」")
