@@ -1,0 +1,14 @@
+{
+  "engine": "Kokoro-82M (Apache-2.0)",
+  "duration_ms": 3150,
+  "sentences": [
+    {
+      "speaker": "用户",
+      "speaker_id": 0,
+      "voice": "zf_xiaoxiao",
+      "begin_time": 0,
+      "end_time": 2700,
+      "text": "这是什么菜？辣不辣？"
+    }
+  ]
+}

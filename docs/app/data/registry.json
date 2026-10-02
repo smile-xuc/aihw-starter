@@ -1,0 +1,2703 @@
+{
+ "schema": "aihw/registry@0.1",
+ "standard": "0.3",
+ "kit": "0.3",
+ "repo": {
+  "url": "https://github.com/smile-xuc/aihw-starter",
+  "branch": "master",
+  "blob_base": "https://github.com/smile-xuc/aihw-starter/blob/master/",
+  "tree_base": "https://github.com/smile-xuc/aihw-starter/tree/master/"
+ },
+ "currency": "CNY",
+ "vocab": {
+  "archetypes": [
+   {
+    "id": "realtime-voice",
+    "label": "实时语音",
+    "description": "按键说话或持续收音，云端实时回语音；时间线突出收音、回答和回复音频"
+   },
+   {
+    "id": "vision",
+    "label": "拍照 / 视觉理解",
+    "description": "图片（可带语音提问）→ 看图回答或事件卡；时间线旁放样本图片"
+   },
+   {
+    "id": "recorder",
+    "label": "录音纪要",
+    "description": "录音 → 转写与说话人分离 → 结构化纪要；渲染产出的 Markdown"
+   },
+   {
+    "id": "tools",
+    "label": "工具编排 / 结构化输出",
+    "description": "指令或数据 → 模型调用工具或按 Schema 输出 → 设备执行；把每轮工具调用做成步骤"
+   }
+  ],
+  "modes": [
+   {
+    "id": "replay",
+    "label": "回放",
+    "description": "播放仓库里的 mock 回放轨迹，不调用模型、不需要 Key"
+   },
+   {
+    "id": "local-run",
+    "label": "本机真跑",
+    "description": "在自己的电脑上用自己的 Key 运行 python3 run.py"
+   },
+   {
+    "id": "browser-run",
+    "label": "网页直连真跑",
+    "description": "在 APP 或网页里填自己的 Key，直连平台；只有用到的接入点都能从浏览器直连的玩法才行"
+   }
+  ],
+  "parts": [
+   {
+    "id": "mic",
+    "label": "麦克风"
+   },
+   {
+    "id": "speaker",
+    "label": "扬声器"
+   },
+   {
+    "id": "camera",
+    "label": "摄像头"
+   },
+   {
+    "id": "button",
+    "label": "按键"
+   },
+   {
+    "id": "screen",
+    "label": "屏幕"
+   },
+   {
+    "id": "led",
+    "label": "灯光"
+   },
+   {
+    "id": "motor",
+    "label": "电机 / 舵机"
+   },
+   {
+    "id": "vibration",
+    "label": "振动马达"
+   },
+   {
+    "id": "health-sensor",
+    "label": "健康传感器"
+   },
+   {
+    "id": "arm",
+    "label": "机械臂"
+   },
+   {
+    "id": "gripper",
+    "label": "夹爪"
+   },
+   {
+    "id": "iot",
+    "label": "家居联动"
+   }
+  ],
+  "features": [
+   {
+    "id": "voice-input",
+    "label": "语音输入"
+   },
+   {
+    "id": "voice-output",
+    "label": "语音输出"
+   },
+   {
+    "id": "vision",
+    "label": "看图"
+   },
+   {
+    "id": "tool-calling",
+    "label": "工具调用"
+   },
+   {
+    "id": "structured-output",
+    "label": "结构化输出"
+   },
+   {
+    "id": "speaker-diarization",
+    "label": "说话人分离"
+   },
+   {
+    "id": "translation",
+    "label": "同声传译"
+   },
+   {
+    "id": "long-audio",
+    "label": "长录音"
+   },
+   {
+    "id": "memory",
+    "label": "长期记忆"
+   },
+   {
+    "id": "on-device-rules",
+    "label": "端侧规则"
+   },
+   {
+    "id": "offline-fallback",
+    "label": "断网降级"
+   },
+   {
+    "id": "safety-gate",
+    "label": "安全门"
+   }
+  ],
+  "compliance": [
+   {
+    "id": "minors",
+    "label": "未成年人",
+    "obligation": "面向未成年人的陪伴类产品不得提供虚拟亲属、虚拟伴侣等服务，需要未成年人模式和使用时长提醒；不满十四周岁用户的个人信息属于敏感个人信息，要取得监护人同意",
+    "readme_must_cover": [
+     "系统提示词如何避免扮演家人或恋人",
+     "未成年人模式、时长提醒在量产中由哪一层实现",
+     "儿童个人信息的告知与监护人同意"
+    ],
+    "sources": [
+     {
+      "title": "人工智能拟人化互动服务管理暂行办法（网信办）",
+      "url": "https://www.cac.gov.cn/2026-04/10/c_1777558395078289.htm"
+     },
+     {
+      "title": "个人信息保护法第二十八、三十一条",
+      "url": null
+     }
+    ]
+   },
+   {
+    "id": "anthropomorphic",
+    "label": "拟人化互动",
+    "obligation": "持续性情感陪伴适用《人工智能拟人化互动服务管理暂行办法》（2026-07-15 施行）：提示 AI 身份与使用时长、防止情感依赖、对极端情绪干预、提供交互数据的删除选项",
+    "readme_must_cover": [
+     "AI 身份提示和使用时长提醒的实现位置",
+     "防沉迷、极端情绪的处理方式",
+     "交互数据存在哪里、怎么删除"
+    ],
+    "sources": [
+     {
+      "title": "人工智能拟人化互动服务管理暂行办法（网信办）",
+      "url": "https://www.cac.gov.cn/2026-04/10/c_1777558395078289.htm"
+     }
+    ]
+   },
+   {
+    "id": "camera-privacy",
+    "label": "摄像头隐私",
+    "obligation": "摄像头画面属于个人信息：上传云端前告知并取得同意、写明保存期限；拍摄他人要有明显提示、不得偷拍、不识别身份；公共场所安装图像采集设备须设显著提示标识",
+    "readme_must_cover": [
+     "告知同意方式与保存期限",
+     "画面里有他人时的处理（提示、不留存、不识别身份）",
+     "是否做人脸识别；需要时如何取得单独同意"
+    ],
+    "sources": [
+     {
+      "title": "个人信息保护法",
+      "url": null
+     },
+     {
+      "title": "民法典人格权编（肖像权）",
+      "url": null
+     }
+    ]
+   },
+   {
+    "id": "recording-consent",
+    "label": "录音告知同意",
+    "obligation": "录音、同传会采集在场其他人的讲话：使用前告知讲话人并取得同意；转写、字幕和纪要设定保存期限，含个人信息时按个人信息保护法处理",
+    "readme_must_cover": [
+     "设备上的录音提示（如指示灯）与告知方式",
+     "录音与转写结果存在哪里、保存多久"
+    ],
+    "sources": [
+     {
+      "title": "个人信息保护法",
+      "url": null
+     }
+    ]
+   },
+   {
+    "id": "health",
+    "label": "健康数据",
+    "obligation": "不做医疗诊断，未取得医疗器械注册前不能宣传「诊断」「监测疾病」；健康数据属于敏感个人信息，处理前要取得用户单独同意",
+    "readme_must_cover": [
+     "免责声明由哪一层固定追加（不依赖模型）",
+     "上传哪些数据、不上传哪些原始数据",
+     "单独同意与保存期限"
+    ],
+    "sources": [
+     {
+      "title": "个人信息保护法第二十八、二十九条",
+      "url": null
+     }
+    ]
+   },
+   {
+    "id": "safety-critical",
+    "label": "安全关键",
+    "obligation": "驱动实体动作的产品，急停、限速、力矩限制必须在控制器和硬件层实现，软件安全门只是额外一层；量产前按目标市场的机器人安全标准做风险评估",
+    "readme_must_cover": [
+     "安全门在哪一层、拦截哪些动作",
+     "哪些限制必须在控制器或硬件层实现",
+     "现场人员如何叫停"
+    ],
+    "sources": [
+     {
+      "title": "ISO 10218、ISO/TS 15066（协作机器人，以目标市场认证清单为准）",
+      "url": null
+     }
+    ]
+   }
+  ],
+  "compliance_baseline": {
+   "label": "生成式 AI 服务",
+   "obligation": "本仓 demo 是开发者参考实现，不是面向公众的服务；面向公众上线前需完成生成式 AI 服务登记 / 备案与内容标识等义务"
+  }
+ },
+ "stacks": [
+  {
+   "schema": "aihw/stack@0.1",
+   "id": "bailian",
+   "name": "阿里云百炼",
+   "vendor": "阿里云",
+   "docs": [
+    {
+     "title": "地域与接入地址",
+     "url": "https://help.aliyun.com/zh/model-studio/regions"
+    },
+    {
+     "title": "获取与配置 API Key",
+     "url": "https://help.aliyun.com/zh/model-studio/get-api-key"
+    },
+    {
+     "title": "业务空间管理",
+     "url": "https://docs.modelstudio.console.alibabacloud.com/zh/model-studio/use-workspace"
+    }
+   ],
+   "storage": "local-only",
+   "fields": [
+    {
+     "key": "DASHSCOPE_API_KEY",
+     "group": "credential",
+     "label": "API Key",
+     "input": "secret",
+     "required": true,
+     "default": null,
+     "options": null,
+     "placeholder": "sk-…",
+     "pattern": "^s[kt]-\\S{8,}$",
+     "help": "百炼控制台「密钥管理」创建，只在创建时显示一次；Key 与地域绑定，北京的 Key 不能调新加坡",
+     "link": {
+      "title": "获取与配置 API Key",
+      "url": "https://help.aliyun.com/zh/model-studio/get-api-key"
+     }
+    },
+    {
+     "key": "DASHSCOPE_API_REGION",
+     "group": "endpoint",
+     "label": "地域",
+     "input": "select",
+     "required": false,
+     "default": "cn-beijing",
+     "options": [
+      {
+       "value": "cn-beijing",
+       "label": "华北2（北京）"
+      },
+      {
+       "value": "ap-southeast-1",
+       "label": "新加坡"
+      }
+     ],
+     "placeholder": null,
+     "pattern": null,
+     "help": "与 API Key、业务空间所属地域一致，否则接口返回 401；免费额度只在北京地域发放",
+     "link": {
+      "title": "地域与接入地址",
+      "url": "https://help.aliyun.com/zh/model-studio/regions"
+     }
+    },
+    {
+     "key": "DASHSCOPE_WORKSPACE_ID",
+     "group": "endpoint",
+     "label": "业务空间 ID",
+     "input": "text",
+     "required": false,
+     "default": null,
+     "options": null,
+     "placeholder": "llm-…",
+     "pattern": "^[A-Za-z0-9-]+$",
+     "help": "控制台「业务空间管理」页 API Host 列，形如 llm-xxx；填了之后全部接口走业务空间专属域名。通用域名自 2026-09-30 起不再支持新特性，部分模型（如 qwen3.8-omni-flash-realtime）必须填",
+     "link": {
+      "title": "业务空间管理",
+      "url": "https://docs.modelstudio.console.alibabacloud.com/zh/model-studio/use-workspace"
+     }
+    }
+   ],
+   "endpoints": {
+    "roots": [
+     {
+      "when": {
+       "DASHSCOPE_WORKSPACE_ID": "*"
+      },
+      "label": "业务空间专属域名",
+      "http": "https://{DASHSCOPE_WORKSPACE_ID}.{DASHSCOPE_API_REGION}.maas.aliyuncs.com",
+      "ws": "wss://{DASHSCOPE_WORKSPACE_ID}.{DASHSCOPE_API_REGION}.maas.aliyuncs.com"
+     },
+     {
+      "when": {
+       "DASHSCOPE_API_REGION": "cn-beijing"
+      },
+      "label": "通用域名（北京）",
+      "http": "https://dashscope.aliyuncs.com",
+      "ws": "wss://dashscope.aliyuncs.com"
+     },
+     {
+      "when": {
+       "DASHSCOPE_API_REGION": "ap-southeast-1"
+      },
+      "label": "通用域名（新加坡）",
+      "http": "https://dashscope-intl.aliyuncs.com",
+      "ws": "wss://dashscope-intl.aliyuncs.com"
+     }
+    ],
+    "services": [
+     {
+      "id": "compatible",
+      "label": "OpenAI 兼容接口（文本、看图、工具调用）",
+      "url": "{http}/compatible-mode/v1",
+      "browser": "ok",
+      "browser_note": "2026-10-02 跨域预检通过（通用域名与业务空间域名）；带 Key 的实际响应待真 Key 验证"
+     },
+     {
+      "id": "api",
+      "label": "DashScope 原生 HTTP（同步 / 异步推理、任务查询、上传凭证、TTS HTTP）",
+      "url": "{http}/api/v1",
+      "browser": "ok",
+      "browser_note": "2026-10-02 通用域名的跨域预检通过，业务空间域名未测；临时存储上传走 OSS 地址，跨域未测"
+     },
+     {
+      "id": "ws-inference",
+      "label": "任务制 WebSocket（流式 ASR、流式 TTS）",
+      "url": "{ws}/api-ws/v1/inference",
+      "browser": "blocked",
+      "browser_note": "握手要带 Authorization 请求头，浏览器的 WebSocket 不能自定义请求头"
+     },
+     {
+      "id": "realtime",
+      "label": "Realtime WebSocket（实时语音 / 视频、同传）",
+      "url": "{ws}/api-ws/v1/realtime?model={model}",
+      "browser": "blocked",
+      "browser_note": "握手要带 Authorization 请求头；WebRTC 的 SDP 交换官方要求经业务服务端代理"
+     }
+    ]
+   },
+   "auth": {
+    "type": "bearer",
+    "header": "Authorization",
+    "value": "Bearer {DASHSCOPE_API_KEY}"
+   },
+   "security_advice": [
+    "新建一个子业务空间，只授权 demo 用到的模型，并设 RPM / TPM 限流",
+    "API Key 用自定义权限，只开放要用的模型，可加 IP 白名单",
+    "在费用中心设消费预警：百炼不支持按金额给单个 Key 或业务空间设上限",
+    "Key 只存在本机；不用了就在控制台删除这把 Key"
+   ]
+  }
+ ],
+ "categories": [
+  {
+   "id": "01-ipc",
+   "no": "01",
+   "name": "IPC / AI 视觉",
+   "emoji": "📷",
+   "capabilities": "事件摘要、自然语言检索、自定义事件告警、每日总结、一键成片等",
+   "scenes": "家用安防 / 户外门铃 / 商用监控 / 可穿戴拍摄",
+   "industry": {
+    "shipments": "待核实 / 5,507（中国消费级销量，2025，洛图）",
+    "revenue": "~1,000",
+    "ai_share": "~3-5%",
+    "trend": "↑",
+    "source": {
+     "text": "洛图科技（新浪，2026-01-29）",
+     "url": "https://finance.sina.com.cn/tech/roll/2026-01-29/doc-inhiyrwa0714712.shtml"
+    }
+   },
+   "industry_units": {
+    "shipments": "万台/年",
+    "revenue": "亿元/年"
+   },
+   "docs": {
+    "readme": "solutions/by-category/01-ipc/README.md",
+    "business": "solutions/by-category/01-ipc/01-business.md",
+    "solution": "solutions/by-category/01-ipc/02-solution.md",
+    "cost": "solutions/by-category/01-ipc/03-cost.md",
+    "cases": "solutions/by-category/01-ipc/04-cases.md",
+    "faq": "solutions/by-category/01-ipc/05-faq.md"
+   },
+   "solutions": [
+    "01-ipc.bailian"
+   ],
+   "topic_demos": [
+    {
+     "path": "solutions/by-category/01-ipc/demo/physical-sense",
+     "title": "🧪 Demo · 物理世界感知 Agent（IPC 场景）"
+    }
+   ]
+  },
+  {
+   "id": "02-ai-glasses",
+   "no": "02",
+   "name": "AI 眼镜",
+   "emoji": "👓",
+   "capabilities": "一看即懂（视觉问答）、同声传译、实时音视频交互、会议听记",
+   "scenes": "音频眼镜 / 拍照眼镜 / AI 显示眼镜（单绿光波导）",
+   "industry": {
+    "shipments": "1,477.3（全球智能眼镜出货，含 AR/VR，2025，IDC）",
+    "revenue": "~50-100",
+    "ai_share": "~30-50%",
+    "trend": "↑↑↑",
+    "source": {
+     "text": "IDC",
+     "url": "https://www.idc.com/resource-center/blog/2025%E5%B9%B4%E4%B8%AD%E5%9B%BD%E6%99%BA%E8%83%BD%E7%9C%BC%E9%95%9C%E5%B8%82%E5%9C%BA%E5%90%8C%E6%AF%94%E5%A2%9E%E9%95%BF87-1%EF%BC%8C%E8%A1%8C%E4%B8%9A%E4%BB%8E%E7%A1%AC%E4%BB%B6%E9%93%BA%E9%99%88/"
+    }
+   },
+   "industry_units": {
+    "shipments": "万台/年",
+    "revenue": "亿元/年"
+   },
+   "docs": {
+    "readme": "solutions/by-category/02-ai-glasses/README.md",
+    "business": "solutions/by-category/02-ai-glasses/01-business.md",
+    "solution": "solutions/by-category/02-ai-glasses/02-solution.md",
+    "cost": "solutions/by-category/02-ai-glasses/03-cost.md",
+    "cases": "solutions/by-category/02-ai-glasses/04-cases.md",
+    "faq": "solutions/by-category/02-ai-glasses/05-faq.md"
+   },
+   "solutions": [
+    "02-ai-glasses.bailian"
+   ],
+   "topic_demos": [
+    {
+     "path": "solutions/by-category/02-ai-glasses/demo/kit-chat",
+     "title": "🧪 kit-chat — 「一看即懂」最小闭环（性价比路线）"
+    },
+    {
+     "path": "solutions/by-category/02-ai-glasses/demo/omni-realtime",
+     "title": "🧪 omni-realtime — 「给 AI 打电话」实时链路（高性能路线）"
+    }
+   ]
+  },
+  {
+   "id": "03-toys-companion",
+   "no": "03",
+   "name": "AI 玩具 / 陪伴 / 儿童伴学",
+   "emoji": "🧸",
+   "capabilities": "爸妈声音陪伴（声音克隆）、学情日报、拍照问答、口语陪练",
+   "scenes": "AI 挂件 / 毛绒陪伴 / 儿童伴学 / 养成系潮玩",
+   "industry": {
+    "shipments": "~2,000-3,000",
+    "revenue": "~200-300",
+    "ai_share": "~10-15%",
+    "trend": "↑↑",
+    "source": {
+     "text": "待核实",
+     "url": null
+    }
+   },
+   "industry_units": {
+    "shipments": "万台/年",
+    "revenue": "亿元/年"
+   },
+   "docs": {
+    "readme": "solutions/by-category/03-toys-companion/README.md",
+    "business": "solutions/by-category/03-toys-companion/01-business.md",
+    "solution": "solutions/by-category/03-toys-companion/02-solution.md",
+    "cost": "solutions/by-category/03-toys-companion/03-cost.md",
+    "cases": "solutions/by-category/03-toys-companion/04-cases.md",
+    "faq": "solutions/by-category/03-toys-companion/05-faq.md"
+   },
+   "solutions": [
+    "03-toys-companion.bailian"
+   ],
+   "topic_demos": [
+    {
+     "path": "solutions/by-category/03-toys-companion/demo/voice-clone",
+     "title": "🧪 voice-clone — 爸妈声音陪伴最小闭环"
+    }
+   ]
+  },
+  {
+   "id": "04-agent-hardware",
+   "no": "04",
+   "name": "Agent 硬件",
+   "emoji": "🤖",
+   "capabilities": "多 Agent 协同 + 端云模型协同",
+   "scenes": "桌面 AI 盒子 / 家庭中枢",
+   "industry": {
+    "shipments": "~50-100",
+    "revenue": "~10-20",
+    "ai_share": "~50%+",
+    "trend": "↑↑",
+    "source": {
+     "text": "待核实",
+     "url": null
+    }
+   },
+   "industry_units": {
+    "shipments": "万台/年",
+    "revenue": "亿元/年"
+   },
+   "docs": {
+    "readme": "solutions/by-category/04-agent-hardware/README.md",
+    "business": "solutions/by-category/04-agent-hardware/01-business.md",
+    "solution": "solutions/by-category/04-agent-hardware/02-solution.md",
+    "cost": "solutions/by-category/04-agent-hardware/03-cost.md",
+    "cases": "solutions/by-category/04-agent-hardware/04-cases.md",
+    "faq": "solutions/by-category/04-agent-hardware/05-faq.md"
+   },
+   "solutions": [
+    "04-agent-hardware.bailian"
+   ],
+   "topic_demos": [
+    {
+     "path": "solutions/by-category/04-agent-hardware/demo/intent-router",
+     "title": "intent-router — Agent 硬件端侧意图分发"
+    }
+   ]
+  },
+  {
+   "id": "05-desktop-pet",
+   "no": "05",
+   "name": "桌宠",
+   "emoji": "🪴",
+   "capabilities": "动作情绪标签三路同步 + 每日记忆日记 + BLE 降级对话 + Agent 后台热配置",
+   "scenes": "桌面陪伴 / 情感互动",
+   "industry": {
+    "shipments": "~100-200",
+    "revenue": "~10-30",
+    "ai_share": "~40%+",
+    "trend": "↑↑",
+    "source": {
+     "text": "待核实",
+     "url": null
+    }
+   },
+   "industry_units": {
+    "shipments": "万台/年",
+    "revenue": "亿元/年"
+   },
+   "docs": {
+    "readme": "solutions/by-category/05-desktop-pet/README.md",
+    "business": "solutions/by-category/05-desktop-pet/01-business.md",
+    "solution": "solutions/by-category/05-desktop-pet/02-solution.md",
+    "cost": "solutions/by-category/05-desktop-pet/03-cost.md",
+    "cases": "solutions/by-category/05-desktop-pet/04-cases.md",
+    "faq": "solutions/by-category/05-desktop-pet/05-faq.md"
+   },
+   "solutions": [
+    "05-desktop-pet.bailian"
+   ],
+   "topic_demos": [
+    {
+     "path": "solutions/by-category/05-desktop-pet/demo/stream-tag-parser",
+     "title": "stream-tag-parser — 桌宠流式标签解析"
+    }
+   ]
+  },
+  {
+   "id": "06-ai-earphone",
+   "no": "06",
+   "name": "AI 耳机",
+   "emoji": "🎧",
+   "capabilities": "实时翻译 / 对话 / 听记多用途",
+   "scenes": "出海办公 / 同传 / 录音助手",
+   "industry": {
+    "shipments": "~30,000（TWS 全量）/ ~1,000-2,000（AI 功能款）",
+    "revenue": "~200-400（AI 功能款）",
+    "ai_share": "~15-25%",
+    "trend": "↑↑",
+    "source": {
+     "text": "待核实",
+     "url": null
+    }
+   },
+   "industry_units": {
+    "shipments": "万台/年",
+    "revenue": "亿元/年"
+   },
+   "docs": {
+    "readme": "solutions/by-category/06-ai-earphone/README.md",
+    "business": "solutions/by-category/06-ai-earphone/01-business.md",
+    "solution": "solutions/by-category/06-ai-earphone/02-solution.md",
+    "cost": "solutions/by-category/06-ai-earphone/03-cost.md",
+    "cases": "solutions/by-category/06-ai-earphone/04-cases.md",
+    "faq": "solutions/by-category/06-ai-earphone/05-faq.md"
+   },
+   "solutions": [
+    "06-ai-earphone.bailian"
+   ],
+   "topic_demos": [
+    {
+     "path": "solutions/by-category/06-ai-earphone/demo/livetranslate-ws",
+     "title": "livetranslate-ws — AI 耳机同传最小 demo"
+    }
+   ]
+  },
+  {
+   "id": "07-recorder",
+   "no": "07",
+   "name": "录音卡 / 会议盒子",
+   "emoji": "🎙️",
+   "capabilities": "ASR + 纪要 Agent，结构化纪要",
+   "scenes": "销售拜访 / 会议纪要 / 个人备忘",
+   "industry": {
+    "shipments": "~200-500",
+    "revenue": "~20-50",
+    "ai_share": "~60%+",
+    "trend": "↑↑",
+    "source": {
+     "text": "待核实",
+     "url": null
+    }
+   },
+   "industry_units": {
+    "shipments": "万台/年",
+    "revenue": "亿元/年"
+   },
+   "docs": {
+    "readme": "solutions/by-category/07-recorder/README.md",
+    "business": "solutions/by-category/07-recorder/01-business.md",
+    "solution": "solutions/by-category/07-recorder/02-solution.md",
+    "cost": "solutions/by-category/07-recorder/03-cost.md",
+    "cases": "solutions/by-category/07-recorder/04-cases.md",
+    "faq": "solutions/by-category/07-recorder/05-faq.md"
+   },
+   "solutions": [
+    "07-recorder.bailian"
+   ],
+   "topic_demos": [
+    {
+     "path": "solutions/by-category/07-recorder/demo/map-reduce-summary",
+     "title": "map-reduce-summary — 长会议 Map-Reduce 纪要"
+    }
+   ]
+  },
+  {
+   "id": "08-smart-watch",
+   "no": "08",
+   "name": "智能手表 / 健康可穿戴",
+   "emoji": "⌚",
+   "capabilities": "健康指标解读 + 订阅商业化",
+   "scenes": "运动健康 / 睡眠监测",
+   "industry": {
+    "shipments": "~15,000",
+    "revenue": "~1,500",
+    "ai_share": "~5-10%",
+    "trend": "↑",
+    "source": {
+     "text": "待核实",
+     "url": null
+    }
+   },
+   "industry_units": {
+    "shipments": "万台/年",
+    "revenue": "亿元/年"
+   },
+   "docs": {
+    "readme": "solutions/by-category/08-smart-watch/README.md",
+    "business": "solutions/by-category/08-smart-watch/01-business.md",
+    "solution": "solutions/by-category/08-smart-watch/02-solution.md",
+    "cost": "solutions/by-category/08-smart-watch/03-cost.md",
+    "cases": "solutions/by-category/08-smart-watch/04-cases.md",
+    "faq": "solutions/by-category/08-smart-watch/05-faq.md"
+   },
+   "solutions": [
+    "08-smart-watch.bailian"
+   ],
+   "topic_demos": [
+    {
+     "path": "solutions/by-category/08-smart-watch/demo/metrics-prompt",
+     "title": "metrics-prompt — 健康指标 → 自然语言解读"
+    }
+   ]
+  },
+  {
+   "id": "09-embodied",
+   "no": "09",
+   "name": "具身智能",
+   "emoji": "🦾",
+   "capabilities": "VLA 端云协同 + 多本体形态适配",
+   "scenes": "机械臂 / 四足 / 人形",
+   "industry": {
+    "shipments": "~1-5（本体级）",
+    "revenue": "~10-30",
+    "ai_share": "~80%+",
+    "trend": "↑↑↑",
+    "source": {
+     "text": "待核实",
+     "url": null
+    }
+   },
+   "industry_units": {
+    "shipments": "万台/年",
+    "revenue": "亿元/年"
+   },
+   "docs": {
+    "readme": "solutions/by-category/09-embodied/README.md",
+    "business": "solutions/by-category/09-embodied/01-business.md",
+    "solution": "solutions/by-category/09-embodied/02-solution.md",
+    "cost": "solutions/by-category/09-embodied/03-cost.md",
+    "cases": "solutions/by-category/09-embodied/04-cases.md",
+    "faq": "solutions/by-category/09-embodied/05-faq.md"
+   },
+   "solutions": [
+    "09-embodied.bailian"
+   ],
+   "topic_demos": [
+    {
+     "path": "solutions/by-category/09-embodied/demo/vla-intent-router",
+     "title": "vla-intent-router — 语言指令 → 技能计划 + 安全门"
+    }
+   ]
+  }
+ ],
+ "solutions": [
+  {
+   "id": "01-ipc.bailian",
+   "category": "01-ipc",
+   "stack": "bailian",
+   "kind": "reference",
+   "title": "IPC / AI 视觉 · 百炼事件理解与检索",
+   "summary": "看护摄像头事件抓拍 → qwen3.7-flash 看图生成结构化事件卡，并在 App 里做自然语言检索和看护日报",
+   "path": "solutions/by-category/01-ipc/demo/bailian",
+   "upstream": null,
+   "license": "MIT",
+   "maintainers": [
+    "@smile-xuc"
+   ],
+   "regions": [
+    "cn-beijing",
+    "ap-southeast-1"
+   ],
+   "models": [
+    {
+     "id": "qwen3.7-flash",
+     "role": "默认档：看图生成事件卡（JSON）+ 自然语言检索（JSON）+ 看护日报（流式 Markdown），均关闭思考",
+     "regions": null
+    },
+    {
+     "id": "qwen3.8-flash",
+     "role": "质量档（--quality）：整条链路换成它，同样原生看图，单价约为默认档的 4 倍",
+     "regions": null
+    }
+   ],
+   "features": [
+    "vision",
+    "structured-output"
+   ],
+   "experience": {
+    "archetype": "vision",
+    "cover": "assets/01-ipc.bailian/samples/events/02_cat_sofa_night.jpg",
+    "modes": [
+     "replay",
+     "local-run",
+     "browser-run"
+    ],
+    "variants": [
+     {
+      "id": "default",
+      "title": "事件抓拍 → 事件卡 → 检索 → 日报",
+      "archetype": "vision",
+      "args": [],
+      "mock_command": "python3 run.py --mock",
+      "live_command": "python3 run.py",
+      "services": [
+       "compatible"
+      ],
+      "browser": {
+       "direct": true,
+       "blocked_by": []
+      },
+      "credentials": {
+       "required": [
+        "DASHSCOPE_API_KEY"
+       ],
+       "optional": [
+        "DASHSCOPE_API_REGION",
+        "DASHSCOPE_WORKSPACE_ID"
+       ]
+      },
+      "trace": "traces/01-ipc.bailian/default.json",
+      "cost": {
+       "low": 0.00027,
+       "high": 0.00027
+      }
+     }
+    ]
+   },
+   "cost": {
+    "unit": "每个事件",
+    "basis": "每个事件的 usage × 模型单价（按地域与输入档位）；检索、日报另计",
+    "estimate": {
+     "low": 0.00027,
+     "high": 0.00027,
+     "source": "mock",
+     "variant": "default",
+     "note": "mock 用量为示意值"
+    },
+    "measured": null
+   },
+   "latency": {
+    "first_token": "抓拍完成（开始上传事件帧）→ 事件卡首个 token",
+    "measured": null
+   },
+   "hardware": {
+    "parts": [
+     {
+      "part": "camera",
+      "label": "摄像头",
+      "role": "移动侦测或画面变化时抓拍事件帧",
+      "simulated_by": "samples/events/*.jpg · --camera"
+     }
+    ],
+    "chips": [],
+    "boards": []
+   },
+   "device": {
+    "inputs": [
+     "jpg",
+     "camera"
+    ],
+    "outputs": [
+     "json",
+     "markdown",
+     "console"
+    ]
+   },
+   "credentials": {
+    "stack": "bailian",
+    "required": [
+     "DASHSCOPE_API_KEY"
+    ],
+    "optional": [
+     "DASHSCOPE_API_REGION",
+     "DASHSCOPE_WORKSPACE_ID"
+    ]
+   },
+   "compliance": [
+    {
+     "tag": "camera-privacy",
+     "label": "摄像头隐私",
+     "obligation": "摄像头画面属于个人信息：上传云端前告知并取得同意、写明保存期限；拍摄他人要有明显提示、不得偷拍、不识别身份；公共场所安装图像采集设备须设显著提示标识",
+     "readme_must_cover": [
+      "告知同意方式与保存期限",
+      "画面里有他人时的处理（提示、不留存、不识别身份）",
+      "是否做人脸识别；需要时如何取得单独同意"
+     ],
+     "doc": "solutions/by-category/01-ipc/05-faq.md"
+    }
+   ],
+   "verification": {
+    "status": "pending-live",
+    "label": "待真 Key 验证",
+    "last_verified": null,
+    "level": null,
+    "evidence": [],
+    "record": "solutions/by-category/01-ipc/demo/bailian/VERIFY.md",
+    "live_records": 0,
+    "pending_checks": [
+     "首字延迟",
+     "图片 Token 折算",
+     "单次成本",
+     "专属域名连通性",
+     "JSON 稳定性",
+     "「昨晚」检索"
+    ]
+   },
+   "run": {
+    "cwd": "solutions/by-category/01-ipc/demo/bailian",
+    "setup": "仅标准库，无需安装",
+    "live": "python3 run.py",
+    "mock": "python3 run.py --mock"
+   },
+   "samples": [
+    {
+     "path": "samples/events/01_door_package.jpg",
+     "asset": "assets/01-ipc.bailian/samples/events/01_door_package.jpg",
+     "media_type": "image/jpeg",
+     "bytes": 16213
+    },
+    {
+     "path": "samples/events/02_cat_sofa_night.jpg",
+     "asset": "assets/01-ipc.bailian/samples/events/02_cat_sofa_night.jpg",
+     "media_type": "image/jpeg",
+     "bytes": 17057
+    },
+    {
+     "path": "samples/events/03_kitchen_kettle.jpg",
+     "asset": "assets/01-ipc.bailian/samples/events/03_kitchen_kettle.jpg",
+     "media_type": "image/jpeg",
+     "bytes": 30217
+    },
+    {
+     "path": "samples/events/04_vacuum_dog_morning.jpg",
+     "asset": "assets/01-ipc.bailian/samples/events/04_vacuum_dog_morning.jpg",
+     "media_type": "image/jpeg",
+     "bytes": 32459
+    },
+    {
+     "path": "samples/events.json",
+     "asset": "assets/01-ipc.bailian/samples/events.json",
+     "media_type": "application/json",
+     "bytes": 548
+    }
+   ],
+   "docs": {
+    "readme": "solutions/by-category/01-ipc/demo/bailian/README.md",
+    "verify": "solutions/by-category/01-ipc/demo/bailian/VERIFY.md",
+    "category": "solutions/by-category/01-ipc/README.md",
+    "solution": "solutions/by-category/01-ipc/02-solution.md",
+    "cost": "solutions/by-category/01-ipc/03-cost.md",
+    "faq": "solutions/by-category/01-ipc/05-faq.md"
+   }
+  },
+  {
+   "id": "02-ai-glasses.bailian",
+   "category": "02-ai-glasses",
+   "stack": "bailian",
+   "kind": "reference",
+   "title": "AI 眼镜 · 百炼一看即懂",
+   "summary": "眼镜按住镜腿拍照提问 → qwen3.8-omni-flash 看图听问 + qwen-audio-3.0-tts-flash 流式播报；--realtime 用 qwen3.8-omni-flash-realtime 语音直出",
+   "path": "solutions/by-category/02-ai-glasses/demo/bailian",
+   "upstream": null,
+   "license": "MIT",
+   "maintainers": [
+    "@smile-xuc"
+   ],
+   "regions": [
+    "cn-beijing",
+    "ap-southeast-1"
+   ],
+   "models": [
+    {
+     "id": "qwen3.8-omni-flash",
+     "role": "拍照即问：图片 + 提问音频一次输入，流式文字（reasoning_effort=none）",
+     "regions": null
+    },
+    {
+     "id": "qwen-audio-3.0-tts-flash",
+     "role": "播报：实时语音合成 WebSocket，边收文字边合成",
+     "regions": null
+    },
+    {
+     "id": "qwen3.8-omni-flash-realtime",
+     "role": "--realtime 给 AI 打电话：按住说话 + 1 帧/秒画面，语音直出（内置转写 qwen3-asr-flash-realtime）",
+     "regions": null
+    }
+   ],
+   "features": [
+    "vision",
+    "voice-input",
+    "voice-output"
+   ],
+   "experience": {
+    "archetype": "vision",
+    "cover": "assets/02-ai-glasses.bailian/samples/dish.jpg",
+    "modes": [
+     "replay",
+     "local-run"
+    ],
+    "variants": [
+     {
+      "id": "default",
+      "title": "拍照即问",
+      "archetype": "vision",
+      "args": [],
+      "mock_command": "python3 run.py --mock",
+      "live_command": "python3 run.py",
+      "services": [
+       "compatible",
+       "ws-inference"
+      ],
+      "browser": {
+       "direct": false,
+       "blocked_by": [
+        "ws-inference"
+       ]
+      },
+      "credentials": {
+       "required": [
+        "DASHSCOPE_API_KEY",
+        "DASHSCOPE_WORKSPACE_ID"
+       ],
+       "optional": [
+        "DASHSCOPE_API_REGION"
+       ]
+      },
+      "trace": "traces/02-ai-glasses.bailian/default.json",
+      "cost": {
+       "low": 0.009282,
+       "high": 0.009282
+      }
+     },
+     {
+      "id": "realtime",
+      "title": "给 AI 打电话（实时）",
+      "archetype": "realtime-voice",
+      "args": [
+       "--realtime"
+      ],
+      "mock_command": "python3 run.py --mock --realtime",
+      "live_command": "python3 run.py --realtime",
+      "services": [
+       "realtime"
+      ],
+      "browser": {
+       "direct": false,
+       "blocked_by": [
+        "realtime"
+       ]
+      },
+      "credentials": {
+       "required": [
+        "DASHSCOPE_API_KEY",
+        "DASHSCOPE_WORKSPACE_ID"
+       ],
+       "optional": [
+        "DASHSCOPE_API_REGION"
+       ]
+      },
+      "trace": "traces/02-ai-glasses.bailian/realtime.json",
+      "cost": {
+       "low": 0.002327,
+       "high": 0.002327
+      }
+     }
+    ]
+   },
+   "cost": {
+    "unit": "每次提问",
+    "basis": "默认：omni-flash usage × 单价 + TTS usage.characters × 单价；--realtime：response.done.usage × 单价（按地域）",
+    "estimate": {
+     "low": 0.009282,
+     "high": 0.009282,
+     "source": "mock",
+     "variant": "default",
+     "note": "mock 用量为示意值"
+    },
+    "measured": null
+   },
+   "latency": {
+    "first_token": "松开镜腿（提问上传 / input_audio_buffer.commit）→ 首包语音",
+    "measured": null
+   },
+   "hardware": {
+    "parts": [
+     {
+      "part": "button",
+      "label": "按键",
+      "role": "镜腿按键：按住拍照、收音，松开提交",
+      "simulated_by": "自动按下 · --mic 时按回车"
+     },
+     {
+      "part": "camera",
+      "label": "摄像头",
+      "role": "镜腿摄像头拍第一视角照片",
+      "simulated_by": "samples/dish.jpg · --camera"
+     },
+     {
+      "part": "mic",
+      "label": "麦克风",
+      "role": "收音提问",
+      "simulated_by": "samples/ask_dish.wav · --mic"
+     },
+     {
+      "part": "speaker",
+      "label": "扬声器",
+      "role": "开放式耳机播报回答",
+      "simulated_by": "out/reply_1.wav · 可选扬声器"
+     }
+    ],
+    "chips": [],
+    "boards": []
+   },
+   "device": {
+    "inputs": [
+     "wav",
+     "mic",
+     "jpg",
+     "camera"
+    ],
+    "outputs": [
+     "speaker",
+     "wav",
+     "console"
+    ]
+   },
+   "credentials": {
+    "stack": "bailian",
+    "required": [
+     "DASHSCOPE_API_KEY",
+     "DASHSCOPE_WORKSPACE_ID"
+    ],
+    "optional": [
+     "DASHSCOPE_API_REGION"
+    ]
+   },
+   "compliance": [
+    {
+     "tag": "camera-privacy",
+     "label": "摄像头隐私",
+     "obligation": "摄像头画面属于个人信息：上传云端前告知并取得同意、写明保存期限；拍摄他人要有明显提示、不得偷拍、不识别身份；公共场所安装图像采集设备须设显著提示标识",
+     "readme_must_cover": [
+      "告知同意方式与保存期限",
+      "画面里有他人时的处理（提示、不留存、不识别身份）",
+      "是否做人脸识别；需要时如何取得单独同意"
+     ],
+     "doc": "solutions/by-category/02-ai-glasses/05-faq.md"
+    }
+   ],
+   "verification": {
+    "status": "pending-live",
+    "label": "待真 Key 验证",
+    "last_verified": null,
+    "level": null,
+    "evidence": [],
+    "record": "solutions/by-category/02-ai-glasses/demo/bailian/VERIFY.md",
+    "live_records": 0,
+    "pending_checks": [
+     "首包延迟",
+     "图片与音频 Token 折算",
+     "单次成本",
+     "专属域名连通性",
+     "实时模式稳定性"
+    ]
+   },
+   "run": {
+    "cwd": "solutions/by-category/02-ai-glasses/demo/bailian",
+    "setup": "pip install -r requirements.txt",
+    "live": "python3 run.py",
+    "mock": "python3 run.py --mock"
+   },
+   "samples": [
+    {
+     "path": "samples/ask_dish.json",
+     "asset": "assets/02-ai-glasses.bailian/samples/ask_dish.json",
+     "media_type": "application/json",
+     "bytes": 273
+    },
+    {
+     "path": "samples/ask_dish.txt",
+     "asset": "assets/02-ai-glasses.bailian/samples/ask_dish.txt",
+     "media_type": "text/plain",
+     "bytes": 40
+    },
+    {
+     "path": "samples/ask_dish.wav",
+     "asset": "assets/02-ai-glasses.bailian/samples/ask_dish.wav",
+     "media_type": "audio/wav",
+     "bytes": 100878
+    },
+    {
+     "path": "samples/dish.jpg",
+     "asset": "assets/02-ai-glasses.bailian/samples/dish.jpg",
+     "media_type": "image/jpeg",
+     "bytes": 56283
+    }
+   ],
+   "docs": {
+    "readme": "solutions/by-category/02-ai-glasses/demo/bailian/README.md",
+    "verify": "solutions/by-category/02-ai-glasses/demo/bailian/VERIFY.md",
+    "category": "solutions/by-category/02-ai-glasses/README.md",
+    "solution": "solutions/by-category/02-ai-glasses/02-solution.md",
+    "cost": "solutions/by-category/02-ai-glasses/03-cost.md",
+    "faq": "solutions/by-category/02-ai-glasses/05-faq.md"
+   }
+  },
+  {
+   "id": "03-toys-companion.bailian",
+   "category": "03-toys-companion",
+   "stack": "bailian",
+   "kind": "reference",
+   "title": "AI 玩具 / 陪伴 · 百炼实时语音",
+   "summary": "毛绒玩具按键说话 + 眼睛摄像头 → qwen3.8-omni-flash-realtime 实时语音回复，并用 Function Calling 控制动作与灯光",
+   "path": "solutions/by-category/03-toys-companion/demo/bailian",
+   "upstream": null,
+   "license": "MIT",
+   "maintainers": [
+    "@smile-xuc"
+   ],
+   "regions": [
+    "cn-beijing",
+    "ap-southeast-1"
+   ],
+   "models": [
+    {
+     "id": "qwen3.8-omni-flash-realtime",
+     "role": "实时语音对话 + 看图 + 工具调用（内置输入转写 qwen3-asr-flash-realtime）",
+     "regions": null
+    }
+   ],
+   "features": [
+    "voice-input",
+    "voice-output",
+    "vision",
+    "tool-calling"
+   ],
+   "experience": {
+    "archetype": "realtime-voice",
+    "cover": "assets/03-toys-companion.bailian/samples/toy_cam.jpg",
+    "modes": [
+     "replay",
+     "local-run"
+    ],
+    "variants": [
+     {
+      "id": "default",
+      "title": "按键说话 + 看图",
+      "archetype": "realtime-voice",
+      "args": [],
+      "mock_command": "python3 run.py --mock",
+      "live_command": "python3 run.py",
+      "services": [
+       "realtime"
+      ],
+      "browser": {
+       "direct": false,
+       "blocked_by": [
+        "realtime"
+       ]
+      },
+      "credentials": {
+       "required": [
+        "DASHSCOPE_API_KEY",
+        "DASHSCOPE_WORKSPACE_ID"
+       ],
+       "optional": [
+        "DASHSCOPE_API_REGION"
+       ]
+      },
+      "trace": "traces/03-toys-companion.bailian/default.json",
+      "cost": {
+       "low": 0.006657,
+       "high": 0.006657
+      }
+     }
+    ]
+   },
+   "cost": {
+    "unit": "每轮对话",
+    "basis": "一轮 response.done.usage 之和 × 模型单价（按地域）",
+    "estimate": {
+     "low": 0.006657,
+     "high": 0.006657,
+     "source": "mock",
+     "variant": "default",
+     "note": "mock 用量为示意值"
+    },
+    "measured": null
+   },
+   "latency": {
+    "first_token": "松开按键（input_audio_buffer.commit）→ 首个 response.audio.delta，含工具调用往返",
+    "measured": null
+   },
+   "hardware": {
+    "parts": [
+     {
+      "part": "button",
+      "label": "按键",
+      "role": "按住说话，松开提交",
+      "simulated_by": "自动按下 · --mic 时按回车"
+     },
+     {
+      "part": "mic",
+      "label": "麦克风",
+      "role": "小朋友说话",
+      "simulated_by": "samples/kid_ask_story.wav · --mic"
+     },
+     {
+      "part": "camera",
+      "label": "摄像头",
+      "role": "眼睛摄像头看小朋友手里的东西",
+      "simulated_by": "samples/toy_cam.jpg · --camera"
+     },
+     {
+      "part": "speaker",
+      "label": "扬声器",
+      "role": "播放回答",
+      "simulated_by": "out/reply_1.wav · 可选扬声器"
+     },
+     {
+      "part": "motor",
+      "label": "电机 / 舵机",
+      "role": "挥手、点头等动作（toy_action 工具）",
+      "simulated_by": "控制台「[设备]」行"
+     },
+     {
+      "part": "led",
+      "label": "灯光",
+      "role": "聆听、回答时的灯光（toy_action 工具）",
+      "simulated_by": "控制台「[设备]」行"
+     }
+    ],
+    "chips": [],
+    "boards": []
+   },
+   "device": {
+    "inputs": [
+     "wav",
+     "mic",
+     "jpg",
+     "camera"
+    ],
+    "outputs": [
+     "speaker",
+     "wav",
+     "console"
+    ]
+   },
+   "credentials": {
+    "stack": "bailian",
+    "required": [
+     "DASHSCOPE_API_KEY",
+     "DASHSCOPE_WORKSPACE_ID"
+    ],
+    "optional": [
+     "DASHSCOPE_API_REGION"
+    ]
+   },
+   "compliance": [
+    {
+     "tag": "minors",
+     "label": "未成年人",
+     "obligation": "面向未成年人的陪伴类产品不得提供虚拟亲属、虚拟伴侣等服务，需要未成年人模式和使用时长提醒；不满十四周岁用户的个人信息属于敏感个人信息，要取得监护人同意",
+     "readme_must_cover": [
+      "系统提示词如何避免扮演家人或恋人",
+      "未成年人模式、时长提醒在量产中由哪一层实现",
+      "儿童个人信息的告知与监护人同意"
+     ],
+     "doc": "solutions/by-category/03-toys-companion/05-faq.md"
+    },
+    {
+     "tag": "anthropomorphic",
+     "label": "拟人化互动",
+     "obligation": "持续性情感陪伴适用《人工智能拟人化互动服务管理暂行办法》（2026-07-15 施行）：提示 AI 身份与使用时长、防止情感依赖、对极端情绪干预、提供交互数据的删除选项",
+     "readme_must_cover": [
+      "AI 身份提示和使用时长提醒的实现位置",
+      "防沉迷、极端情绪的处理方式",
+      "交互数据存在哪里、怎么删除"
+     ],
+     "doc": "solutions/by-category/03-toys-companion/05-faq.md"
+    }
+   ],
+   "verification": {
+    "status": "pending-live",
+    "label": "待真 Key 验证",
+    "last_verified": null,
+    "level": null,
+    "evidence": [],
+    "record": "solutions/by-category/03-toys-companion/demo/bailian/VERIFY.md",
+    "live_records": 0,
+    "pending_checks": [
+     "首包延迟",
+     "Token 折算",
+     "业务空间专属域名 + 临时 Key"
+    ]
+   },
+   "run": {
+    "cwd": "solutions/by-category/03-toys-companion/demo/bailian",
+    "setup": "pip install -r requirements.txt",
+    "live": "python3 run.py",
+    "mock": "python3 run.py --mock"
+   },
+   "samples": [
+    {
+     "path": "samples/kid_ask_story.wav",
+     "asset": "assets/03-toys-companion.bailian/samples/kid_ask_story.wav",
+     "media_type": "audio/wav",
+     "bytes": 74318
+    },
+    {
+     "path": "samples/toy_cam.jpg",
+     "asset": "assets/03-toys-companion.bailian/samples/toy_cam.jpg",
+     "media_type": "image/jpeg",
+     "bytes": 31044
+    }
+   ],
+   "docs": {
+    "readme": "solutions/by-category/03-toys-companion/demo/bailian/README.md",
+    "verify": "solutions/by-category/03-toys-companion/demo/bailian/VERIFY.md",
+    "category": "solutions/by-category/03-toys-companion/README.md",
+    "solution": "solutions/by-category/03-toys-companion/02-solution.md",
+    "cost": "solutions/by-category/03-toys-companion/03-cost.md",
+    "faq": "solutions/by-category/03-toys-companion/05-faq.md"
+   }
+  },
+  {
+   "id": "04-agent-hardware.bailian",
+   "category": "04-agent-hardware",
+   "stack": "bailian",
+   "kind": "reference",
+   "title": "Agent 硬件 · 百炼工具编排",
+   "summary": "桌面 AI 盒子收到一句指令 → 端侧规则能做的直接执行 → 其余由 qwen3.8-flash 用 Function Calling 多轮编排本地设备与云端服务 → 断网时降级到端侧规则",
+   "path": "solutions/by-category/04-agent-hardware/demo/bailian",
+   "upstream": null,
+   "license": "MIT",
+   "maintainers": [
+    "@smile-xuc"
+   ],
+   "regions": [
+    "cn-beijing",
+    "ap-southeast-1"
+   ],
+   "models": [
+    {
+     "id": "qwen3.8-flash",
+     "role": "多轮工具编排，默认（OpenAI 兼容，流式 Function Calling，关闭思考）",
+     "regions": null
+    },
+    {
+     "id": "qwen3.7-flash",
+     "role": "多轮工具编排，省钱档（--cheap）",
+     "regions": null
+    },
+    {
+     "id": "qwen-audio-3.1-asr-flash",
+     "role": "语音指令转写（HTTP 同步，本地 WAV 转 Base64）",
+     "regions": null
+    }
+   ],
+   "features": [
+    "voice-input",
+    "tool-calling",
+    "on-device-rules",
+    "offline-fallback"
+   ],
+   "experience": {
+    "archetype": "tools",
+    "cover": null,
+    "modes": [
+     "replay",
+     "local-run",
+     "browser-run"
+    ],
+    "variants": [
+     {
+      "id": "default",
+      "title": "端侧规则 + 云端多轮编排",
+      "archetype": "tools",
+      "args": [],
+      "mock_command": "python3 run.py --mock",
+      "live_command": "python3 run.py",
+      "services": [
+       "api",
+       "compatible"
+      ],
+      "browser": {
+       "direct": true,
+       "blocked_by": []
+      },
+      "credentials": {
+       "required": [
+        "DASHSCOPE_API_KEY"
+       ],
+       "optional": [
+        "DASHSCOPE_API_REGION",
+        "DASHSCOPE_WORKSPACE_ID"
+       ]
+      },
+      "trace": "traces/04-agent-hardware.bailian/default.json",
+      "cost": {
+       "low": 0.002273,
+       "high": 0.002273
+      }
+     },
+     {
+      "id": "offline",
+      "title": "断网降级",
+      "archetype": "tools",
+      "args": [
+       "--offline"
+      ],
+      "mock_command": "python3 run.py --mock --offline",
+      "live_command": "python3 run.py --offline",
+      "services": [],
+      "browser": {
+       "direct": false,
+       "blocked_by": []
+      },
+      "credentials": {
+       "required": [
+        "DASHSCOPE_API_KEY"
+       ],
+       "optional": [
+        "DASHSCOPE_API_REGION",
+        "DASHSCOPE_WORKSPACE_ID"
+       ]
+      },
+      "trace": "traces/04-agent-hardware.bailian/offline.json",
+      "cost": {
+       "low": 0.0,
+       "high": 0.0
+      }
+     }
+    ]
+   },
+   "cost": {
+    "unit": "每个云端任务",
+    "basis": "转写 usage + 各轮编排 usage × 模型单价（按地域、按输入分档）；端侧执行不计费",
+    "estimate": {
+     "low": 0.002273,
+     "high": 0.002273,
+     "source": "mock",
+     "variant": "default",
+     "note": "mock 用量为示意值"
+    },
+    "measured": null
+   },
+   "latency": {
+    "first_token": "说完指令（松开按键 / 提交文本）→ 首个工具调用到达，语音指令含转写",
+    "measured": null
+   },
+   "hardware": {
+    "parts": [
+     {
+      "part": "button",
+      "label": "按键",
+      "role": "按住说话",
+      "simulated_by": "自动按下 · --mic 时按回车"
+     },
+     {
+      "part": "mic",
+      "label": "麦克风",
+      "role": "收语音指令",
+      "simulated_by": "samples/cmd_morning.wav · --mic"
+     },
+     {
+      "part": "speaker",
+      "label": "扬声器",
+      "role": "播报回复",
+      "simulated_by": "控制台「[盒子]」行（demo 不做语音合成）"
+     },
+     {
+      "part": "iot",
+      "label": "家居联动",
+      "role": "联动家里的灯、闹钟和音量",
+      "simulated_by": "控制台「[设备]」行"
+     }
+    ],
+    "chips": [],
+    "boards": []
+   },
+   "device": {
+    "inputs": [
+     "text",
+     "wav",
+     "mic"
+    ],
+    "outputs": [
+     "console"
+    ]
+   },
+   "credentials": {
+    "stack": "bailian",
+    "required": [
+     "DASHSCOPE_API_KEY"
+    ],
+    "optional": [
+     "DASHSCOPE_API_REGION",
+     "DASHSCOPE_WORKSPACE_ID"
+    ]
+   },
+   "compliance": [],
+   "verification": {
+    "status": "pending-live",
+    "label": "待真 Key 验证",
+    "last_verified": null,
+    "level": null,
+    "evidence": [],
+    "record": "solutions/by-category/04-agent-hardware/demo/bailian/VERIFY.md",
+    "live_records": 0,
+    "pending_checks": [
+     "首字延迟",
+     "单次成本",
+     "转写用量",
+     "编排顺序",
+     "流式分片格式"
+    ]
+   },
+   "run": {
+    "cwd": "solutions/by-category/04-agent-hardware/demo/bailian",
+    "setup": "仅标准库，无需安装",
+    "live": "python3 run.py",
+    "mock": "python3 run.py --mock"
+   },
+   "samples": [
+    {
+     "path": "samples/cmd_morning.json",
+     "asset": "assets/04-agent-hardware.bailian/samples/cmd_morning.json",
+     "media_type": "application/json",
+     "bytes": 321
+    },
+    {
+     "path": "samples/cmd_morning.wav",
+     "asset": "assets/04-agent-hardware.bailian/samples/cmd_morning.wav",
+     "media_type": "audio/wav",
+     "bytes": 223278
+    },
+    {
+     "path": "samples/cmd_morning_script.txt",
+     "asset": "assets/04-agent-hardware.bailian/samples/cmd_morning_script.txt",
+     "media_type": "text/plain",
+     "bytes": 85
+    }
+   ],
+   "docs": {
+    "readme": "solutions/by-category/04-agent-hardware/demo/bailian/README.md",
+    "verify": "solutions/by-category/04-agent-hardware/demo/bailian/VERIFY.md",
+    "category": "solutions/by-category/04-agent-hardware/README.md",
+    "solution": "solutions/by-category/04-agent-hardware/02-solution.md",
+    "cost": "solutions/by-category/04-agent-hardware/03-cost.md",
+    "faq": "solutions/by-category/04-agent-hardware/05-faq.md"
+   }
+  },
+  {
+   "id": "05-desktop-pet.bailian",
+   "category": "05-desktop-pet",
+   "stack": "bailian",
+   "kind": "reference",
+   "title": "桌宠 · 百炼实时语音陪伴 + 记忆日记",
+   "summary": "桌宠按键说话 → qwen3.8-omni-flash-realtime 实时语音回复，Function Calling 切换屏幕表情与动作；结束时 qwen3.7-flash 写陪伴日记、提炼记忆，下次开机注入",
+   "path": "solutions/by-category/05-desktop-pet/demo/bailian",
+   "upstream": null,
+   "license": "MIT",
+   "maintainers": [
+    "@smile-xuc"
+   ],
+   "regions": [
+    "cn-beijing",
+    "ap-southeast-1"
+   ],
+   "models": [
+    {
+     "id": "qwen3.8-omni-flash-realtime",
+     "role": "实时语音对话 + 工具调用 pet_expression（内置输入转写 qwen3-asr-flash-realtime）",
+     "regions": null
+    },
+    {
+     "id": "qwen3.7-flash",
+     "role": "陪伴日记与记忆提炼（OpenAI 兼容，流式 JSON，关闭思考）",
+     "regions": null
+    }
+   ],
+   "features": [
+    "voice-input",
+    "voice-output",
+    "tool-calling",
+    "memory"
+   ],
+   "experience": {
+    "archetype": "realtime-voice",
+    "cover": null,
+    "modes": [
+     "replay",
+     "local-run"
+    ],
+    "variants": [
+     {
+      "id": "default",
+      "title": "语音陪伴 + 表情联动 + 记忆日记",
+      "archetype": "realtime-voice",
+      "args": [],
+      "mock_command": "python3 run.py --mock",
+      "live_command": "python3 run.py",
+      "services": [
+       "realtime",
+       "compatible"
+      ],
+      "browser": {
+       "direct": false,
+       "blocked_by": [
+        "realtime"
+       ]
+      },
+      "credentials": {
+       "required": [
+        "DASHSCOPE_API_KEY",
+        "DASHSCOPE_WORKSPACE_ID"
+       ],
+       "optional": [
+        "DASHSCOPE_API_REGION"
+       ]
+      },
+      "trace": "traces/05-desktop-pet.bailian/default.json",
+      "cost": {
+       "low": 0.004097,
+       "high": 0.004097
+      }
+     }
+    ]
+   },
+   "cost": {
+    "unit": "每轮对话",
+    "basis": "每轮 response.done.usage 之和 × 实时模型单价，取各轮均值；日记按 usage × qwen3.7-flash 单价另计",
+    "estimate": {
+     "low": 0.004097,
+     "high": 0.004097,
+     "source": "mock",
+     "variant": "default",
+     "note": "mock 用量为示意值"
+    },
+    "measured": null
+   },
+   "latency": {
+    "first_token": "松开按键（input_audio_buffer.commit）→ 首个 response.audio.delta，含 pet_expression 工具往返",
+    "measured": null
+   },
+   "hardware": {
+    "parts": [
+     {
+      "part": "button",
+      "label": "按键",
+      "role": "头顶按键：按住说话",
+      "simulated_by": "自动按下 · --mic 时按回车"
+     },
+     {
+      "part": "mic",
+      "label": "麦克风",
+      "role": "主人说话",
+      "simulated_by": "samples/owner_*.wav · --mic"
+     },
+     {
+      "part": "speaker",
+      "label": "扬声器",
+      "role": "播放回答",
+      "simulated_by": "out/reply_N.wav · 可选扬声器"
+     },
+     {
+      "part": "screen",
+      "label": "屏幕",
+      "role": "表情屏（pet_expression 工具）",
+      "simulated_by": "控制台字符画"
+     },
+     {
+      "part": "motor",
+      "label": "电机 / 舵机",
+      "role": "跳一下、伸爪等动作（pet_expression 工具）",
+      "simulated_by": "控制台「[设备]」行"
+     },
+     {
+      "part": "led",
+      "label": "灯光",
+      "role": "聆听与情绪灯光（pet_expression 工具）",
+      "simulated_by": "控制台「[设备]」行"
+     }
+    ],
+    "chips": [],
+    "boards": []
+   },
+   "device": {
+    "inputs": [
+     "wav",
+     "mic"
+    ],
+    "outputs": [
+     "speaker",
+     "wav",
+     "console",
+     "markdown",
+     "json"
+    ]
+   },
+   "credentials": {
+    "stack": "bailian",
+    "required": [
+     "DASHSCOPE_API_KEY",
+     "DASHSCOPE_WORKSPACE_ID"
+    ],
+    "optional": [
+     "DASHSCOPE_API_REGION"
+    ]
+   },
+   "compliance": [
+    {
+     "tag": "anthropomorphic",
+     "label": "拟人化互动",
+     "obligation": "持续性情感陪伴适用《人工智能拟人化互动服务管理暂行办法》（2026-07-15 施行）：提示 AI 身份与使用时长、防止情感依赖、对极端情绪干预、提供交互数据的删除选项",
+     "readme_must_cover": [
+      "AI 身份提示和使用时长提醒的实现位置",
+      "防沉迷、极端情绪的处理方式",
+      "交互数据存在哪里、怎么删除"
+     ],
+     "doc": "solutions/by-category/05-desktop-pet/05-faq.md"
+    }
+   ],
+   "verification": {
+    "status": "pending-live",
+    "label": "待真 Key 验证",
+    "last_verified": null,
+    "level": null,
+    "evidence": [],
+    "record": "solutions/by-category/05-desktop-pet/demo/bailian/VERIFY.md",
+    "live_records": 0,
+    "pending_checks": [
+     "首包延迟",
+     "工具调用是否稳定",
+     "音频 Token 折算与历史累加",
+     "单轮成本",
+     "专属域名连通性",
+     "新加坡音色",
+     "日记 JSON"
+    ]
+   },
+   "run": {
+    "cwd": "solutions/by-category/05-desktop-pet/demo/bailian",
+    "setup": "pip install -r requirements.txt",
+    "live": "python3 run.py",
+    "mock": "python3 run.py --mock"
+   },
+   "samples": [
+    {
+     "path": "samples/owner_1.wav",
+     "asset": "assets/05-desktop-pet.bailian/samples/owner_1.wav",
+     "media_type": "audio/wav",
+     "bytes": 115278
+    },
+    {
+     "path": "samples/owner_2.wav",
+     "asset": "assets/05-desktop-pet.bailian/samples/owner_2.wav",
+     "media_type": "audio/wav",
+     "bytes": 134478
+    },
+    {
+     "path": "samples/owner_3.wav",
+     "asset": "assets/05-desktop-pet.bailian/samples/owner_3.wav",
+     "media_type": "audio/wav",
+     "bytes": 111278
+    },
+    {
+     "path": "samples/owner_script.txt",
+     "asset": "assets/05-desktop-pet.bailian/samples/owner_script.txt",
+     "media_type": "text/plain",
+     "bytes": 123
+    }
+   ],
+   "docs": {
+    "readme": "solutions/by-category/05-desktop-pet/demo/bailian/README.md",
+    "verify": "solutions/by-category/05-desktop-pet/demo/bailian/VERIFY.md",
+    "category": "solutions/by-category/05-desktop-pet/README.md",
+    "solution": "solutions/by-category/05-desktop-pet/02-solution.md",
+    "cost": "solutions/by-category/05-desktop-pet/03-cost.md",
+    "faq": "solutions/by-category/05-desktop-pet/05-faq.md"
+   }
+  },
+  {
+   "id": "06-ai-earphone.bailian",
+   "category": "06-ai-earphone",
+   "stack": "bailian",
+   "kind": "reference",
+   "title": "AI 耳机 · 百炼实时同传",
+   "summary": "耳机麦克风收到的中文讲话按实时节奏推流 → qwen3.8-livetranslate-flash-realtime → 英文字幕增量 + 英文译音，自动区分说话人",
+   "path": "solutions/by-category/06-ai-earphone/demo/bailian",
+   "upstream": null,
+   "license": "MIT",
+   "maintainers": [
+    "@smile-xuc"
+   ],
+   "regions": [
+    "cn-beijing",
+    "ap-southeast-1"
+   ],
+   "models": [
+    {
+     "id": "qwen3.8-livetranslate-flash-realtime",
+     "role": "实时同传（原文识别 + 译文字幕 + 译音；默认 speaker_detection 断句并区分说话人）",
+     "regions": null
+    }
+   ],
+   "features": [
+    "voice-input",
+    "voice-output",
+    "translation",
+    "speaker-diarization"
+   ],
+   "experience": {
+    "archetype": "realtime-voice",
+    "cover": null,
+    "modes": [
+     "replay",
+     "local-run"
+    ],
+    "variants": [
+     {
+      "id": "default",
+      "title": "中译英同传：字幕 + 译音",
+      "archetype": "realtime-voice",
+      "args": [],
+      "mock_command": "python3 run.py --mock",
+      "live_command": "python3 run.py",
+      "services": [
+       "realtime"
+      ],
+      "browser": {
+       "direct": false,
+       "blocked_by": [
+        "realtime"
+       ]
+      },
+      "credentials": {
+       "required": [
+        "DASHSCOPE_API_KEY",
+        "DASHSCOPE_WORKSPACE_ID"
+       ],
+       "optional": [
+        "DASHSCOPE_API_REGION"
+       ]
+      },
+      "trace": "traces/06-ai-earphone.bailian/default.json",
+      "cost": {
+       "low": 0.04194,
+       "high": 0.04194
+      }
+     }
+    ]
+   },
+   "cost": {
+    "unit": "每段讲话（样本约 16 秒）",
+    "basis": "各句 response.done.usage 之和 × 模型单价（按地域），另折算每分钟成本",
+    "estimate": {
+     "low": 0.04194,
+     "high": 0.04194,
+     "source": "mock",
+     "variant": "default",
+     "note": "mock 用量为示意值"
+    },
+    "measured": null
+   },
+   "latency": {
+    "first_token": "首包音频发出（开口）→ 首条译文字幕（response.audio_transcript.delta / response.text.delta）",
+    "measured": null
+   },
+   "hardware": {
+    "parts": [
+     {
+      "part": "mic",
+      "label": "麦克风",
+      "role": "耳机麦克风收现场讲话",
+      "simulated_by": "samples/expo_guide_zh.wav 按实时节奏推流 · --mic"
+     },
+     {
+      "part": "speaker",
+      "label": "扬声器",
+      "role": "耳机扬声器播放译音",
+      "simulated_by": "out/translation.wav · 可选扬声器"
+     }
+    ],
+    "chips": [],
+    "boards": []
+   },
+   "device": {
+    "inputs": [
+     "wav",
+     "mic"
+    ],
+    "outputs": [
+     "console",
+     "speaker",
+     "wav",
+     "text"
+    ]
+   },
+   "credentials": {
+    "stack": "bailian",
+    "required": [
+     "DASHSCOPE_API_KEY",
+     "DASHSCOPE_WORKSPACE_ID"
+    ],
+    "optional": [
+     "DASHSCOPE_API_REGION"
+    ]
+   },
+   "compliance": [
+    {
+     "tag": "recording-consent",
+     "label": "录音告知同意",
+     "obligation": "录音、同传会采集在场其他人的讲话：使用前告知讲话人并取得同意；转写、字幕和纪要设定保存期限，含个人信息时按个人信息保护法处理",
+     "readme_must_cover": [
+      "设备上的录音提示（如指示灯）与告知方式",
+      "录音与转写结果存在哪里、保存多久"
+     ],
+     "doc": "solutions/by-category/06-ai-earphone/05-faq.md"
+    }
+   ],
+   "verification": {
+    "status": "pending-live",
+    "label": "待真 Key 验证",
+    "last_verified": null,
+    "level": null,
+    "evidence": [],
+    "record": "solutions/by-category/06-ai-earphone/demo/bailian/VERIFY.md",
+    "live_records": 0,
+    "pending_checks": [
+     "首条字幕、首包译音与同传时延",
+     "音频 Token 折算",
+     "原文识别是否计费",
+     "每分钟成本",
+     "专属域名连通性",
+     "单线程收发在真实网络下是否稳定",
+     "说话人区分与热词"
+    ]
+   },
+   "run": {
+    "cwd": "solutions/by-category/06-ai-earphone/demo/bailian",
+    "setup": "pip install -r requirements.txt",
+    "live": "python3 run.py",
+    "mock": "python3 run.py --mock"
+   },
+   "samples": [
+    {
+     "path": "samples/expo_guide_script.txt",
+     "asset": "assets/06-ai-earphone.bailian/samples/expo_guide_script.txt",
+     "media_type": "text/plain",
+     "bytes": 213
+    },
+    {
+     "path": "samples/expo_guide_zh.json",
+     "asset": "assets/06-ai-earphone.bailian/samples/expo_guide_zh.json",
+     "media_type": "application/json",
+     "bytes": 749
+    },
+    {
+     "path": "samples/expo_guide_zh.wav",
+     "asset": "assets/06-ai-earphone.bailian/samples/expo_guide_zh.wav",
+     "media_type": "audio/wav",
+     "bytes": 504078
+    }
+   ],
+   "docs": {
+    "readme": "solutions/by-category/06-ai-earphone/demo/bailian/README.md",
+    "verify": "solutions/by-category/06-ai-earphone/demo/bailian/VERIFY.md",
+    "category": "solutions/by-category/06-ai-earphone/README.md",
+    "solution": "solutions/by-category/06-ai-earphone/02-solution.md",
+    "cost": "solutions/by-category/06-ai-earphone/03-cost.md",
+    "faq": "solutions/by-category/06-ai-earphone/05-faq.md"
+   }
+  },
+  {
+   "id": "07-recorder.bailian",
+   "category": "07-recorder",
+   "stack": "bailian",
+   "kind": "reference",
+   "title": "录音卡 / 会议盒子 · 百炼录音纪要",
+   "summary": "录音卡会后上传录音 → qwen-audio-3.1-asr-flash 转写并分离说话人 → qwen3.7-flash 流式生成结构化纪要卡片",
+   "path": "solutions/by-category/07-recorder/demo/bailian",
+   "upstream": null,
+   "license": "MIT",
+   "maintainers": [
+    "@smile-xuc"
+   ],
+   "regions": [
+    "cn-beijing",
+    "ap-southeast-1"
+   ],
+   "models": [
+    {
+     "id": "qwen-audio-3.1-asr-flash",
+     "role": "同步转写 + 说话人分离（本地文件 Base64，demo 只用于 ≤3 分钟的录音）",
+     "regions": null
+    },
+    {
+     "id": "qwen-audio-3.1-asr-flash-filetrans",
+     "role": "异步转写 + 说话人分离（长录音经百炼临时存储 oss://，或 --audio-url 公网 URL；≤12 小时）",
+     "regions": null
+    },
+    {
+     "id": "qwen3.7-flash",
+     "role": "结构化纪要，默认档（OpenAI 兼容，流式 JSON，关闭思考）",
+     "regions": null
+    },
+    {
+     "id": "qwen3.8-flash",
+     "role": "结构化纪要，质量档（--quality）",
+     "regions": null
+    }
+   ],
+   "features": [
+    "voice-input",
+    "speaker-diarization",
+    "long-audio",
+    "structured-output"
+   ],
+   "experience": {
+    "archetype": "recorder",
+    "cover": null,
+    "modes": [
+     "replay",
+     "local-run",
+     "browser-run"
+    ],
+    "variants": [
+     {
+      "id": "default",
+      "title": "会后转写 + 结构化纪要",
+      "archetype": "recorder",
+      "args": [],
+      "mock_command": "python3 run.py --mock",
+      "live_command": "python3 run.py",
+      "services": [
+       "api",
+       "compatible"
+      ],
+      "browser": {
+       "direct": true,
+       "blocked_by": []
+      },
+      "credentials": {
+       "required": [
+        "DASHSCOPE_API_KEY"
+       ],
+       "optional": [
+        "DASHSCOPE_API_REGION",
+        "DASHSCOPE_WORKSPACE_ID"
+       ]
+      },
+      "trace": "traces/07-recorder.bailian/default.json",
+      "cost": {
+       "low": 0.00229,
+       "high": 0.00229
+      }
+     }
+    ]
+   },
+   "cost": {
+    "unit": "每次会议（样本 55 秒）",
+    "basis": "转写 usage + 纪要 usage × 模型单价（按地域）",
+    "estimate": {
+     "low": 0.00229,
+     "high": 0.00229,
+     "source": "mock",
+     "variant": "default",
+     "note": "mock 用量为示意值"
+    },
+    "measured": null
+   },
+   "latency": {
+    "first_token": "录音结束（开始上传）→ 纪要首个 token，含转写耗时",
+    "measured": null
+   },
+   "hardware": {
+    "parts": [
+     {
+      "part": "mic",
+      "label": "麦克风",
+      "role": "录会议",
+      "simulated_by": "samples/meeting.mp3 · --mic"
+     },
+     {
+      "part": "button",
+      "label": "按键",
+      "role": "录音键",
+      "simulated_by": "--mic 时按回车结束"
+     },
+     {
+      "part": "led",
+      "label": "灯光",
+      "role": "录音指示灯",
+      "simulated_by": "控制台「[设备]」行"
+     }
+    ],
+    "chips": [],
+    "boards": []
+   },
+   "device": {
+    "inputs": [
+     "mp3",
+     "wav",
+     "m4a",
+     "mic",
+     "url"
+    ],
+    "outputs": [
+     "markdown",
+     "json",
+     "console"
+    ]
+   },
+   "credentials": {
+    "stack": "bailian",
+    "required": [
+     "DASHSCOPE_API_KEY"
+    ],
+    "optional": [
+     "DASHSCOPE_API_REGION",
+     "DASHSCOPE_WORKSPACE_ID"
+    ]
+   },
+   "compliance": [
+    {
+     "tag": "recording-consent",
+     "label": "录音告知同意",
+     "obligation": "录音、同传会采集在场其他人的讲话：使用前告知讲话人并取得同意；转写、字幕和纪要设定保存期限，含个人信息时按个人信息保护法处理",
+     "readme_must_cover": [
+      "设备上的录音提示（如指示灯）与告知方式",
+      "录音与转写结果存在哪里、保存多久"
+     ],
+     "doc": "solutions/by-category/07-recorder/05-faq.md"
+    }
+   ],
+   "verification": {
+    "status": "pending-live",
+    "label": "待真 Key 验证",
+    "last_verified": null,
+    "level": null,
+    "evidence": [],
+    "record": "solutions/by-category/07-recorder/demo/bailian/VERIFY.md",
+    "live_records": 0,
+    "pending_checks": [
+     "同步接口截断",
+     "3.1 ASR 的音频 Token 折算",
+     "上传凭证接口的域名"
+    ]
+   },
+   "run": {
+    "cwd": "solutions/by-category/07-recorder/demo/bailian",
+    "setup": "仅标准库，无需安装",
+    "live": "python3 run.py",
+    "mock": "python3 run.py --mock"
+   },
+   "samples": [
+    {
+     "path": "samples/meeting.json",
+     "asset": "assets/07-recorder.bailian/samples/meeting.json",
+     "media_type": "application/json",
+     "bytes": 2116
+    },
+    {
+     "path": "samples/meeting.mp3",
+     "asset": "assets/07-recorder.bailian/samples/meeting.mp3",
+     "media_type": "audio/mpeg",
+     "bytes": 219825
+    },
+    {
+     "path": "samples/meeting_script.txt",
+     "asset": "assets/07-recorder.bailian/samples/meeting_script.txt",
+     "media_type": "text/plain",
+     "bytes": 941
+    }
+   ],
+   "docs": {
+    "readme": "solutions/by-category/07-recorder/demo/bailian/README.md",
+    "verify": "solutions/by-category/07-recorder/demo/bailian/VERIFY.md",
+    "category": "solutions/by-category/07-recorder/README.md",
+    "solution": "solutions/by-category/07-recorder/02-solution.md",
+    "cost": "solutions/by-category/07-recorder/03-cost.md",
+    "faq": "solutions/by-category/07-recorder/05-faq.md"
+   }
+  },
+  {
+   "id": "08-smart-watch.bailian",
+   "category": "08-smart-watch",
+   "stack": "bailian",
+   "kind": "reference",
+   "title": "智能手表 · 百炼健康日报",
+   "summary": "手表同步一天的聚合健康指标 → 本地红线规则先判定 → qwen3.7-flash 输出结构化日报 → 表盘窄卡片与 App 日报，可选抬腕语音播报",
+   "path": "solutions/by-category/08-smart-watch/demo/bailian",
+   "upstream": null,
+   "license": "MIT",
+   "maintainers": [
+    "@smile-xuc"
+   ],
+   "regions": [
+    "cn-beijing",
+    "ap-southeast-1"
+   ],
+   "models": [
+    {
+     "id": "qwen3.7-flash",
+     "role": "健康日报解读，默认档（OpenAI 兼容，流式，JSON Schema 结构化输出，关闭思考）",
+     "regions": null
+    },
+    {
+     "id": "qwen3.8-flash",
+     "role": "健康日报解读，质量档（--quality）",
+     "regions": null
+    },
+    {
+     "id": "qwen-audio-3.0-tts-flash",
+     "role": "--speak 抬腕播报（非实时 HTTP 合成，仅北京地域）",
+     "regions": [
+      "cn-beijing"
+     ]
+    }
+   ],
+   "features": [
+    "structured-output",
+    "on-device-rules",
+    "voice-output"
+   ],
+   "experience": {
+    "archetype": "tools",
+    "cover": null,
+    "modes": [
+     "replay",
+     "local-run",
+     "browser-run"
+    ],
+    "variants": [
+     {
+      "id": "default",
+      "title": "健康日报 + 红线提醒",
+      "archetype": "tools",
+      "args": [],
+      "mock_command": "python3 run.py --mock",
+      "live_command": "python3 run.py",
+      "services": [
+       "compatible"
+      ],
+      "browser": {
+       "direct": true,
+       "blocked_by": []
+      },
+      "credentials": {
+       "required": [
+        "DASHSCOPE_API_KEY"
+       ],
+       "optional": [
+        "DASHSCOPE_API_REGION",
+        "DASHSCOPE_WORKSPACE_ID"
+       ]
+      },
+      "trace": "traces/08-smart-watch.bailian/default.json",
+      "cost": {
+       "low": 0.000378,
+       "high": 0.000378
+      }
+     }
+    ]
+   },
+   "cost": {
+    "unit": "每份日报",
+    "basis": "日报 usage × 模型单价（按地域、按输入分档）；--speak 另加计费字符数 × 语音合成单价",
+    "estimate": {
+     "low": 0.000378,
+     "high": 0.000378,
+     "source": "mock",
+     "variant": "default",
+     "note": "mock 用量为示意值"
+    },
+    "measured": null
+   },
+   "latency": {
+    "first_token": "手表数据同步完成 → 日报首个 token（含本地红线判定；红线提醒本身不等云端）",
+    "measured": null
+   },
+   "hardware": {
+    "parts": [
+     {
+      "part": "health-sensor",
+      "label": "健康传感器",
+      "role": "心率、血氧、睡眠等一天的聚合指标",
+      "simulated_by": "samples/day_normal.json、day_alert.json"
+     },
+     {
+      "part": "screen",
+      "label": "屏幕",
+      "role": "表盘卡片与红线弹窗",
+      "simulated_by": "控制台窄卡片"
+     },
+     {
+      "part": "vibration",
+      "label": "振动马达",
+      "role": "红线提醒震动",
+      "simulated_by": "控制台「[设备]」行"
+     },
+     {
+      "part": "speaker",
+      "label": "扬声器",
+      "role": "--speak 抬腕播报（可选）",
+      "simulated_by": "out/speak_<样本名>.wav"
+     }
+    ],
+    "chips": [],
+    "boards": []
+   },
+   "device": {
+    "inputs": [
+     "json"
+    ],
+    "outputs": [
+     "console",
+     "json",
+     "wav",
+     "speaker"
+    ]
+   },
+   "credentials": {
+    "stack": "bailian",
+    "required": [
+     "DASHSCOPE_API_KEY"
+    ],
+    "optional": [
+     "DASHSCOPE_API_REGION",
+     "DASHSCOPE_WORKSPACE_ID"
+    ]
+   },
+   "compliance": [
+    {
+     "tag": "health",
+     "label": "健康数据",
+     "obligation": "不做医疗诊断，未取得医疗器械注册前不能宣传「诊断」「监测疾病」；健康数据属于敏感个人信息，处理前要取得用户单独同意",
+     "readme_must_cover": [
+      "免责声明由哪一层固定追加（不依赖模型）",
+      "上传哪些数据、不上传哪些原始数据",
+      "单独同意与保存期限"
+     ],
+     "doc": "solutions/by-category/08-smart-watch/05-faq.md"
+    }
+   ],
+   "verification": {
+    "status": "pending-live",
+    "label": "待真 Key 验证",
+    "last_verified": null,
+    "level": null,
+    "evidence": [],
+    "record": "solutions/by-category/08-smart-watch/demo/bailian/VERIFY.md",
+    "live_records": 0,
+    "pending_checks": [
+     "首字延迟",
+     "单次成本",
+     "JSON Schema 流式输出",
+     "播报音色与音频格式",
+     "播报计费字符"
+    ]
+   },
+   "run": {
+    "cwd": "solutions/by-category/08-smart-watch/demo/bailian",
+    "setup": "仅标准库，无需安装",
+    "live": "python3 run.py",
+    "mock": "python3 run.py --mock"
+   },
+   "samples": [
+    {
+     "path": "samples/day_alert.json",
+     "asset": "assets/08-smart-watch.bailian/samples/day_alert.json",
+     "media_type": "application/json",
+     "bytes": 199
+    },
+    {
+     "path": "samples/day_normal.json",
+     "asset": "assets/08-smart-watch.bailian/samples/day_normal.json",
+     "media_type": "application/json",
+     "bytes": 199
+    }
+   ],
+   "docs": {
+    "readme": "solutions/by-category/08-smart-watch/demo/bailian/README.md",
+    "verify": "solutions/by-category/08-smart-watch/demo/bailian/VERIFY.md",
+    "category": "solutions/by-category/08-smart-watch/README.md",
+    "solution": "solutions/by-category/08-smart-watch/02-solution.md",
+    "cost": "solutions/by-category/08-smart-watch/03-cost.md",
+    "faq": "solutions/by-category/08-smart-watch/05-faq.md"
+   }
+  },
+  {
+   "id": "09-embodied.bailian",
+   "category": "09-embodied",
+   "stack": "bailian",
+   "kind": "reference",
+   "title": "具身智能 · 百炼看图规划",
+   "summary": "桌面机械臂的腕部相机画面 + 一句指令 → qwen3.8-flash 看图后逐步调用技能 → 每次调用先过本地安全门 → 模拟执行并回传结果，直到模型汇报完成",
+   "path": "solutions/by-category/09-embodied/demo/bailian",
+   "upstream": null,
+   "license": "MIT",
+   "maintainers": [
+    "@smile-xuc"
+   ],
+   "regions": [
+    "cn-beijing",
+    "ap-southeast-1"
+   ],
+   "models": [
+    {
+     "id": "qwen3.8-flash",
+     "role": "看图 + Function Calling 技能规划，默认（OpenAI 兼容，流式，关闭思考）",
+     "regions": null
+    },
+    {
+     "id": "qwen3.7-flash",
+     "role": "看图 + Function Calling 技能规划，省钱档（--cheap）",
+     "regions": null
+    }
+   ],
+   "features": [
+    "vision",
+    "tool-calling",
+    "safety-gate",
+    "on-device-rules"
+   ],
+   "experience": {
+    "archetype": "tools",
+    "cover": "assets/09-embodied.bailian/samples/desk_scene.jpg",
+    "modes": [
+     "replay",
+     "local-run",
+     "browser-run"
+    ],
+    "variants": [
+     {
+      "id": "default",
+      "title": "看图规划 + 本地安全门",
+      "archetype": "tools",
+      "args": [],
+      "mock_command": "python3 run.py --mock",
+      "live_command": "python3 run.py",
+      "services": [
+       "compatible"
+      ],
+      "browser": {
+       "direct": true,
+       "blocked_by": []
+      },
+      "credentials": {
+       "required": [
+        "DASHSCOPE_API_KEY"
+       ],
+       "optional": [
+        "DASHSCOPE_API_REGION",
+        "DASHSCOPE_WORKSPACE_ID"
+       ]
+      },
+      "trace": "traces/09-embodied.bailian/default.json",
+      "cost": {
+       "low": 0.003407,
+       "high": 0.003407
+      }
+     }
+    ]
+   },
+   "cost": {
+    "unit": "每条上云指令",
+    "basis": "各轮 usage × 模型单价（按地域、按输入分档；画面每轮计入输入）；指令级拒绝不计费",
+    "estimate": {
+     "low": 0.003407,
+     "high": 0.003407,
+     "source": "mock",
+     "variant": "default",
+     "note": "mock 用量为示意值"
+    },
+    "measured": null
+   },
+   "latency": {
+    "first_token": "下达指令 → 首个技能调用到达",
+    "measured": null
+   },
+   "hardware": {
+    "parts": [
+     {
+      "part": "camera",
+      "label": "摄像头",
+      "role": "腕部相机看桌面",
+      "simulated_by": "samples/desk_scene.jpg · --camera"
+     },
+     {
+      "part": "arm",
+      "label": "机械臂",
+      "role": "移动到目标上方",
+      "simulated_by": "控制台「[设备]」行"
+     },
+     {
+      "part": "gripper",
+      "label": "夹爪",
+      "role": "抓取与放下，夹持力受安全门限制",
+      "simulated_by": "控制台「[设备]」行"
+     },
+     {
+      "part": "button",
+      "label": "按键",
+      "role": "现场确认与叫停",
+      "simulated_by": "demo 自动确认（量产用实体按键或 App）"
+     }
+    ],
+    "chips": [],
+    "boards": []
+   },
+   "device": {
+    "inputs": [
+     "jpg",
+     "camera",
+     "text"
+    ],
+    "outputs": [
+     "console"
+    ]
+   },
+   "credentials": {
+    "stack": "bailian",
+    "required": [
+     "DASHSCOPE_API_KEY"
+    ],
+    "optional": [
+     "DASHSCOPE_API_REGION",
+     "DASHSCOPE_WORKSPACE_ID"
+    ]
+   },
+   "compliance": [
+    {
+     "tag": "safety-critical",
+     "label": "安全关键",
+     "obligation": "驱动实体动作的产品，急停、限速、力矩限制必须在控制器和硬件层实现，软件安全门只是额外一层；量产前按目标市场的机器人安全标准做风险评估",
+     "readme_must_cover": [
+      "安全门在哪一层、拦截哪些动作",
+      "哪些限制必须在控制器或硬件层实现",
+      "现场人员如何叫停"
+     ],
+     "doc": "solutions/by-category/09-embodied/05-faq.md"
+    }
+   ],
+   "verification": {
+    "status": "pending-live",
+    "label": "待真 Key 验证",
+    "last_verified": null,
+    "level": null,
+    "evidence": [],
+    "record": "solutions/by-category/09-embodied/demo/bailian/VERIFY.md",
+    "live_records": 0,
+    "pending_checks": [
+     "首字延迟",
+     "单次成本",
+     "看图加工具调用",
+     "规划行为",
+     "省钱档对比"
+    ]
+   },
+   "run": {
+    "cwd": "solutions/by-category/09-embodied/demo/bailian",
+    "setup": "仅标准库，无需安装",
+    "live": "python3 run.py",
+    "mock": "python3 run.py --mock"
+   },
+   "samples": [
+    {
+     "path": "samples/desk_scene.jpg",
+     "asset": "assets/09-embodied.bailian/samples/desk_scene.jpg",
+     "media_type": "image/jpeg",
+     "bytes": 22373
+    }
+   ],
+   "docs": {
+    "readme": "solutions/by-category/09-embodied/demo/bailian/README.md",
+    "verify": "solutions/by-category/09-embodied/demo/bailian/VERIFY.md",
+    "category": "solutions/by-category/09-embodied/README.md",
+    "solution": "solutions/by-category/09-embodied/02-solution.md",
+    "cost": "solutions/by-category/09-embodied/03-cost.md",
+    "faq": "solutions/by-category/09-embodied/05-faq.md"
+   }
+  }
+ ]
+}

@@ -1,0 +1,294 @@
+{
+ "schema": "aihw/trace@0.1",
+ "solution": "09-embodied.bailian",
+ "variant": "default",
+ "mode": "mock",
+ "kit": "0.3",
+ "args": [
+  "--mock"
+ ],
+ "title": "09 具身智能 · 百炼看图规划参考 demo",
+ "region": "cn-beijing",
+ "models": [
+  "qwen3.8-flash"
+ ],
+ "timing": "none",
+ "events": [
+  {
+   "i": 0,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "连接本地 mock 云端（按官方响应结构回放，不联网）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 1,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "腕部相机 ← desk_scene.jpg（21 KB）",
+   "lines": [],
+   "assets": [
+    "samples/desk_scene.jpg"
+   ]
+  },
+  {
+   "i": 2,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "操作员指令：把螺丝放进左边的盒子",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 3,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "qwen3.8-flash 看图规划（Function Calling，流式）……",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 4,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "第 1 轮 → locate {\"object\": \"螺丝\"}",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 5,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "相机：定位「螺丝」→ (-60, 30) mm",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 6,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "第 2 轮 → locate {\"object\": \"左边的蓝色盒子\"}",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 7,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "相机：定位「左边的蓝色盒子」→ (-230, 0) mm",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 8,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "第 3 轮 → grasp {\"object\": \"螺丝\", \"max_force_n\": 8}",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 9,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "夹爪：抓取「螺丝」，夹持力上限 8 N",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 10,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "第 4 轮 → place {\"target\": \"左边的蓝色盒子\"}",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 11,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "机械臂：把「螺丝」移到「左边的蓝色盒子」上方 → 松开夹爪",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 12,
+   "t_ms": null,
+   "tag": "机械臂",
+   "kind": "result",
+   "text": "螺丝已经放进左边的蓝色盒子。",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 13,
+   "t_ms": null,
+   "tag": "统计",
+   "kind": "stats",
+   "text": "指令 1 · 5 轮 · 执行技能 4 次 · 安全门 allow 4 / rewrite 0 / reject 0 · 下达指令 → 首个技能调用 —（mock 不计时） · ¥0.0044（输入 5104 / 输出 106 Token）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 14,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "操作员指令：用 40 牛的力抓紧那个黑色零件",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 15,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "qwen3.8-flash 看图规划（Function Calling，流式）……",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 16,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "第 1 轮 → locate {\"object\": \"黑色零件\"}",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 17,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "相机：定位「黑色零件」→ (70, 10) mm",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 18,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "第 2 轮 → grasp {\"object\": \"黑色零件\", \"max_force_n\": 40.0}",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 19,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "安全门 rewrite：grasp — 夹持力 40 N 超过上限，改为 20 N；动作前插入 wait_confirm",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 20,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "暂停，等待现场确认：操作员要求 40 N，超过 20 N 上限 → 已确认（demo 自动确认；量产用实体按键或 App）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 21,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "夹爪：抓取「黑色零件」，夹持力上限 20 N",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 22,
+   "t_ms": null,
+   "tag": "机械臂",
+   "kind": "result",
+   "text": "已抓住黑色零件，夹持力按安全门上限 20 牛执行，等待下一步指令。",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 23,
+   "t_ms": null,
+   "tag": "统计",
+   "kind": "stats",
+   "text": "指令 2 · 3 轮 · 执行技能 2 次 · 安全门 allow 1 / rewrite 1 / reject 0 · 下达指令 → 首个技能调用 —（mock 不计时） · ¥0.0024（输入 2752 / 输出 90 Token）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 24,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "操作员指令：追着人跑并撞上去",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 25,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "安全门 reject：指令含禁止动作「撞击」→ 不上云、不执行",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 26,
+   "t_ms": null,
+   "tag": "机械臂",
+   "kind": "result",
+   "text": "这个动作不安全，已拒绝执行。",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 27,
+   "t_ms": null,
+   "tag": "统计",
+   "kind": "stats",
+   "text": "指令 3 · 安全门直接拒绝 · 不上云 · ¥0",
+   "lines": [],
+   "assets": []
+  }
+ ],
+ "result": {
+  "models": [
+   "qwen3.8-flash"
+  ],
+  "first_token_ms": null,
+  "cost": {
+   "low": 0.003407,
+   "high": 0.003407
+  },
+  "sample": "desk_scene.jpg + 3 条指令",
+  "note": "mock 用量为示意值；3 条指令：上云 2、指令级拒绝 1；安全门 rewrite 1、reject 1；成本为上云指令均值；首字=下达指令→首个技能调用；夹持力上限 20 N"
+ },
+ "inputs": [
+  {
+   "path": "samples/desk_scene.jpg",
+   "media_type": "image/jpeg",
+   "bytes": 22373,
+   "asset": "assets/09-embodied.bailian/samples/desk_scene.jpg"
+  }
+ ],
+ "outputs": [],
+ "error": null
+}

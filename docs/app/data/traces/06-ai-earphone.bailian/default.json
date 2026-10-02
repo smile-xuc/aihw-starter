@@ -1,0 +1,205 @@
+{
+ "schema": "aihw/trace@0.1",
+ "solution": "06-ai-earphone.bailian",
+ "variant": "default",
+ "mode": "mock",
+ "kit": "0.3",
+ "args": [
+  "--mock"
+ ],
+ "title": "06 AI 耳机 · 百炼实时同传参考 demo",
+ "region": "cn-beijing",
+ "models": [
+  "qwen3.8-livetranslate-flash-realtime"
+ ],
+ "timing": "none",
+ "events": [
+  {
+   "i": 0,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "连接本地 mock 云端（按官方事件顺序回放，不联网）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 1,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "会话就绪：自动识别源语种 → en · 字幕 + 译音（24 kHz · 音色 Tina） · 断句 speaker_detection",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 2,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "耳机麦克风 ← expo_guide_zh.wav（15.8 s），按 100 ms 一包 10 倍速推流",
+   "lines": [],
+   "assets": [
+    "samples/expo_guide_zh.wav"
+   ]
+  },
+  {
+   "i": 3,
+   "t_ms": null,
+   "tag": "耳机",
+   "kind": "result",
+   "text": "字幕（说话人1）：Hello everyone, and welcome",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 4,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "原文（说话人1）：各位好，欢迎参观耳机生产线。",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 5,
+   "t_ms": null,
+   "tag": "耳机",
+   "kind": "result",
+   "text": "字幕（说话人1）：…to the earphone production line.",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 6,
+   "t_ms": null,
+   "tag": "耳机",
+   "kind": "result",
+   "text": "字幕（说话人2）：This is the acoustic test area. Every pair of earphones",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 7,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "原文（说话人2）：这里是声学测试区，每副耳机出厂前都要做三道降噪检测。",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 8,
+   "t_ms": null,
+   "tag": "耳机",
+   "kind": "result",
+   "text": "字幕（说话人2）：…goes through three noise-cancellation checks before it leaves the factory.",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 9,
+   "t_ms": null,
+   "tag": "耳机",
+   "kind": "result",
+   "text": "字幕（说话人1）：After the tour, trial units",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 10,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "讲话结束（共推流 15.8 s）→ session.finish，等待最后一句",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 11,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "原文（说话人1）：参观结束后，可以在前台领取试用样机。",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 12,
+   "t_ms": null,
+   "tag": "耳机",
+   "kind": "result",
+   "text": "字幕（说话人1）：…are available at the front desk.",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 13,
+   "t_ms": null,
+   "tag": "App",
+   "kind": "result",
+   "text": "双语字幕 → out/subtitles.txt（3 句）",
+   "lines": [],
+   "assets": [
+    "out/subtitles.txt"
+   ]
+  },
+  {
+   "i": 14,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "耳机扬声器 → out/translation.wav（4.0 s）",
+   "lines": [],
+   "assets": [
+    "out/translation.wav"
+   ]
+  },
+  {
+   "i": 15,
+   "t_ms": null,
+   "tag": "统计",
+   "kind": "stats",
+   "text": "时延 —（mock 不计时） · 3 句 · ¥0.042（输入 112 / 输出 254 Token） · 折合每分钟 ¥0.160",
+   "lines": [],
+   "assets": []
+  }
+ ],
+ "result": {
+  "models": [
+   "qwen3.8-livetranslate-flash-realtime"
+  ],
+  "first_token_ms": null,
+  "cost": {
+   "low": 0.04194,
+   "high": 0.04194
+  },
+  "sample": "expo_guide_zh.wav（16 s）",
+  "note": "mock 用量为示意值；首字=首包音频发出→首条译文字幕；3 句；折合每分钟 ¥0.160"
+ },
+ "inputs": [
+  {
+   "path": "samples/expo_guide_zh.wav",
+   "media_type": "audio/wav",
+   "bytes": 504078,
+   "asset": "assets/06-ai-earphone.bailian/samples/expo_guide_zh.wav"
+  }
+ ],
+ "outputs": [
+  {
+   "path": "out/subtitles.txt",
+   "media_type": "text/plain",
+   "bytes": 486,
+   "text": "[00:00] 说话人1\n各位好，欢迎参观耳机生产线。\nHello everyone, and welcometo the earphone production line.\n\n[00:04] 说话人2\n这里是声学测试区，每副耳机出厂前都要做三道降噪检测。\nThis is the acoustic test area. Every pair of earphonesgoes through three noise-cancellation checks before it leaves the factory.\n\n[00:10] 说话人1\n参观结束后，可以在前台领取试用样机。\nAfter the tour, trial unitsare available at the front desk.\n",
+   "asset": null
+  },
+  {
+   "path": "out/translation.wav",
+   "media_type": "audio/wav",
+   "bytes": 192044,
+   "text": null,
+   "asset": "assets/06-ai-earphone.bailian/outputs/default/translation.wav"
+  }
+ ],
+ "error": null
+}

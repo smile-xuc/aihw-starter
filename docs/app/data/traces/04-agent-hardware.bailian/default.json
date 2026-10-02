@@ -1,0 +1,197 @@
+{
+ "schema": "aihw/trace@0.1",
+ "solution": "04-agent-hardware.bailian",
+ "variant": "default",
+ "mode": "mock",
+ "kit": "0.3",
+ "args": [
+  "--mock"
+ ],
+ "title": "04 Agent 硬件 · 百炼工具编排参考 demo",
+ "region": "cn-beijing",
+ "models": [
+  "qwen3.8-flash",
+  "qwen-audio-3.1-asr-flash"
+ ],
+ "timing": "none",
+ "events": [
+  {
+   "i": 0,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "连接本地 mock 云端（按官方响应结构回放，不联网）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 1,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "指令（文本）：把客厅灯关掉",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 2,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "端侧规则：本地关键词「关掉」 → 本地执行，不上云",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 3,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "灯光：客厅 → 关",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 4,
+   "t_ms": null,
+   "tag": "盒子",
+   "kind": "result",
+   "text": "好的，客厅的灯已关闭。",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 5,
+   "t_ms": null,
+   "tag": "统计",
+   "kind": "stats",
+   "text": "指令 1 · 端侧执行 · 工具 1 次 · 不上云 · ¥0",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 6,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "麦克风 ← cmd_morning.wav（7.0 s）· 松开按键",
+   "lines": [],
+   "assets": [
+    "samples/cmd_morning.wav"
+   ]
+  },
+  {
+   "i": 7,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "转写 qwen-audio-3.1-asr-flash……",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 8,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "听到：明早七点叫我，顺便查一下杭州天气，要是下雨就提前半小时。（mock 不计时）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 9,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "多步线索「查一下」 → qwen3.8-flash 编排（Function Calling，流式）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 10,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "第 1 轮 → 调用 get_weather",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 11,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "天气服务（示例数据）：杭州 明天 小雨 18–23℃，降水概率 70%",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 12,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "第 2 轮 → 调用 set_alarm",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 13,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "闹钟：明天 06:30「起床」",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 14,
+   "t_ms": null,
+   "tag": "盒子",
+   "kind": "result",
+   "text": "杭州明天小雨，18–23 度。闹钟已改到明早 06:30，出门记得带伞。",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 15,
+   "t_ms": null,
+   "tag": "统计",
+   "kind": "stats",
+   "text": "指令 2 · 云端 3 轮 · 工具 2 次 · 说完指令 → 首个工具调用 —（mock 不计时） · ¥0.0023（转写 ¥0.00022 + 编排 ¥0.0021；编排共 2201 / 110 Token）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 16,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "盒子状态：灯 客厅关 · 闹钟 「起床」明天 06:30 · 音量 40",
+   "lines": [],
+   "assets": []
+  }
+ ],
+ "result": {
+  "models": [
+   "qwen-audio-3.1-asr-flash",
+   "qwen3.8-flash"
+  ],
+  "first_token_ms": null,
+  "cost": {
+   "low": 0.002273,
+   "high": 0.002273
+  },
+  "sample": "文本「把客厅灯关掉」 + cmd_morning.wav",
+  "note": "mock 用量为示意值；2 条指令：端侧 1、云端 1、断网降级 0；成本为云端任务均值；首字=说完指令→首个工具调用（含转写）"
+ },
+ "inputs": [
+  {
+   "path": "samples/cmd_morning.wav",
+   "media_type": "audio/wav",
+   "bytes": 223278,
+   "asset": "assets/04-agent-hardware.bailian/samples/cmd_morning.wav"
+  }
+ ],
+ "outputs": [],
+ "error": null
+}

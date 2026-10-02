@@ -1,0 +1,143 @@
+{
+ "schema": "aihw/trace@0.1",
+ "solution": "02-ai-glasses.bailian",
+ "variant": "default",
+ "mode": "mock",
+ "kit": "0.3",
+ "args": [
+  "--mock"
+ ],
+ "title": "02 AI 眼镜 · 百炼「一看即懂」参考 demo（拍照即问）",
+ "region": "cn-beijing",
+ "models": [
+  "qwen3.8-omni-flash",
+  "qwen-audio-3.0-tts-flash"
+ ],
+ "timing": "none",
+ "events": [
+  {
+   "i": 0,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "开机，连接本地 mock 云端（按官方响应与事件顺序回放，不联网）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 1,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "按住镜腿 · 拍照 + 收音",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 2,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "麦克风 ← ask_dish.wav（3.1 s）",
+   "lines": [],
+   "assets": [
+    "samples/ask_dish.wav"
+   ]
+  },
+  {
+   "i": 3,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "镜腿摄像头 ← dish.jpg（54 KB）",
+   "lines": [],
+   "assets": [
+    "samples/dish.jpg"
+   ]
+  },
+  {
+   "i": 4,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "松开镜腿 → 上传照片和提问，同时连好播报通道",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 5,
+   "t_ms": null,
+   "tag": "云端",
+   "kind": "cloud",
+   "text": "看图听问 qwen3.8-omni-flash（流式文字）→ 播报 qwen-audio-3.0-tts-flash（WebSocket · longanhuan_v3.6）",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 6,
+   "t_ms": null,
+   "tag": "眼镜",
+   "kind": "result",
+   "text": "这是宫保鸡丁，鸡丁配花生米、干辣椒和葱段，微辣带一点甜。怕辣的话把干辣椒拨到一边，配米饭正好。",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 7,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "耳机 → out/reply_1.wav（0.7 s）",
+   "lines": [],
+   "assets": [
+    "out/reply_1.wav"
+   ]
+  },
+  {
+   "i": 8,
+   "t_ms": null,
+   "tag": "统计",
+   "kind": "stats",
+   "text": "第 1 问 · 松开镜腿 → 首字 —（mock 不计时） · 首包语音 —（mock 不计时） · ¥0.0093（看图听问 ¥0.00048：输入 444 / 输出 47 Token；播报 ¥0.0088：88 字符）",
+   "lines": [],
+   "assets": []
+  }
+ ],
+ "result": {
+  "models": [
+   "qwen3.8-omni-flash",
+   "qwen-audio-3.0-tts-flash"
+  ],
+  "first_token_ms": null,
+  "cost": {
+   "low": 0.009282,
+   "high": 0.009282
+  },
+  "sample": "ask_dish.wav + dish.jpg",
+  "note": "mock 用量为示意值；1 问均值；首字=松开镜腿→首包语音；看图听问 ¥0.00048 + 播报 ¥0.0088"
+ },
+ "inputs": [
+  {
+   "path": "samples/ask_dish.wav",
+   "media_type": "audio/wav",
+   "bytes": 100878,
+   "asset": "assets/02-ai-glasses.bailian/samples/ask_dish.wav"
+  },
+  {
+   "path": "samples/dish.jpg",
+   "media_type": "image/jpeg",
+   "bytes": 56283,
+   "asset": "assets/02-ai-glasses.bailian/samples/dish.jpg"
+  }
+ ],
+ "outputs": [
+  {
+   "path": "out/reply_1.wav",
+   "media_type": "audio/wav",
+   "bytes": 33644,
+   "text": null,
+   "asset": "assets/02-ai-glasses.bailian/outputs/default/reply_1.wav"
+  }
+ ],
+ "error": null
+}

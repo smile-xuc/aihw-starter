@@ -1,0 +1,168 @@
+{
+ "schema": "aihw/trace@0.1",
+ "solution": "04-agent-hardware.bailian",
+ "variant": "offline",
+ "mode": "mock",
+ "kit": "0.3",
+ "args": [
+  "--mock",
+  "--offline"
+ ],
+ "title": "04 Agent 硬件 · 百炼工具编排参考 demo",
+ "region": "cn-beijing",
+ "models": [
+  "端侧规则（断网）"
+ ],
+ "timing": "none",
+ "events": [
+  {
+   "i": 0,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "断网模式：不连云端，只用端侧规则",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 1,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "指令（文本）：把客厅灯关掉",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 2,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "端侧规则：本地关键词「关掉」 → 本地执行，不上云",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 3,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "灯光：客厅 → 关",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 4,
+   "t_ms": null,
+   "tag": "盒子",
+   "kind": "result",
+   "text": "好的，客厅的灯已关闭。",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 5,
+   "t_ms": null,
+   "tag": "统计",
+   "kind": "stats",
+   "text": "指令 1 · 端侧执行 · 工具 1 次 · 不上云 · ¥0",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 6,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "麦克风 ← cmd_morning.wav（7.0 s）· 松开按键",
+   "lines": [],
+   "assets": [
+    "samples/cmd_morning.wav"
+   ]
+  },
+  {
+   "i": 7,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "断网 → 端侧离线识别（模拟：读取 cmd_morning.json）：明早七点叫我，顺便查一下杭州天气，要是下雨就提前半小时。",
+   "lines": [],
+   "assets": [
+    "samples/cmd_morning.json"
+   ]
+  },
+  {
+   "i": 8,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "断网：多步线索「查一下」，拆成小句降级到端侧规则",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 9,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "闹钟：明天 07:00「起床」",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 10,
+   "t_ms": null,
+   "tag": "盒子",
+   "kind": "result",
+   "text": "网络不可用。已设好明天 07:00 的闹钟。「查一下杭州天气」「要是下雨就提前半小时」需要联网，恢复网络后再说一次。",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 11,
+   "t_ms": null,
+   "tag": "统计",
+   "kind": "stats",
+   "text": "指令 2 · 断网降级 · 本地完成 1 项、2 项待联网 · ¥0",
+   "lines": [],
+   "assets": []
+  },
+  {
+   "i": 12,
+   "t_ms": null,
+   "tag": "设备",
+   "kind": "device",
+   "text": "盒子状态：灯 客厅关 · 闹钟 「起床」明天 07:00 · 音量 40",
+   "lines": [],
+   "assets": []
+  }
+ ],
+ "result": {
+  "models": [
+   "（只用端侧规则）"
+  ],
+  "first_token_ms": null,
+  "cost": {
+   "low": 0.0,
+   "high": 0.0
+  },
+  "sample": "文本「把客厅灯关掉」 + cmd_morning.wav",
+  "note": "mock 用量为示意值；2 条指令：端侧 1、云端 0、断网降级 1；成本为云端任务均值；首字=说完指令→首个工具调用（含转写）"
+ },
+ "inputs": [
+  {
+   "path": "samples/cmd_morning.json",
+   "media_type": "application/json",
+   "bytes": 321,
+   "asset": "assets/04-agent-hardware.bailian/samples/cmd_morning.json"
+  },
+  {
+   "path": "samples/cmd_morning.wav",
+   "media_type": "audio/wav",
+   "bytes": 223278,
+   "asset": "assets/04-agent-hardware.bailian/samples/cmd_morning.wav"
+  }
+ ],
+ "outputs": [],
+ "error": null
+}
