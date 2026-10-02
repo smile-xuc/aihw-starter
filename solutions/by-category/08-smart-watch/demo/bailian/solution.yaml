@@ -1,0 +1,33 @@
+schema: aihw/solution@0.1
+id: 08-smart-watch.bailian
+title: 智能手表 · 百炼健康日报
+category: 08-smart-watch
+stack: bailian
+kind: reference
+summary: 手表同步一天的聚合健康指标 → 本地红线规则先判定 → qwen3.7-flash 输出结构化日报 → 表盘窄卡片与 App 日报，可选抬腕语音播报
+models:
+  - id: qwen3.7-flash
+    role: 健康日报解读，默认档（OpenAI 兼容，流式，JSON Schema 结构化输出，关闭思考）
+  - id: qwen3.8-flash
+    role: 健康日报解读，质量档（--quality）
+  - id: qwen-audio-3.0-tts-flash
+    role: --speak 抬腕播报（非实时 HTTP 合成，仅北京地域）
+regions: [cn-beijing, ap-southeast-1]
+env: [DASHSCOPE_API_KEY]
+device:
+  inputs: [json]
+  outputs: [console, json, wav, speaker]
+run:
+  setup: 仅标准库，无需安装
+  live: python3 run.py
+  mock: python3 run.py --mock
+metrics:
+  first_token: 手表数据同步完成 → 日报首个 token（含本地红线判定；红线提醒本身不等云端）
+  cost: 日报 usage × 模型单价（按地域、按输入分档）；--speak 另加计费字符数 × 语音合成单价
+verification:
+  status: pending-live
+  last_verified: null
+  record: VERIFY.md
+license: MIT
+compliance_tags: [health]
+maintainers: ["@smile-xuc"]

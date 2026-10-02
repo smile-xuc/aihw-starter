@@ -1,0 +1,1 @@
+# 仅标准库。live 需要第三方包时写在这里（如 websocket-client），--mock 必须只用标准库

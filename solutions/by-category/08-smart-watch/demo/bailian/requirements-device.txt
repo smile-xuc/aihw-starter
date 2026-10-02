@@ -1,0 +1,2 @@
+# 可选：--speak 时用扬声器播放抬腕播报（不装也会写 out/speak_*.wav）
+sounddevice>=0.5.0

@@ -1,0 +1,2 @@
+# live 模式需要（实时语音合成与 --realtime 都走 WebSocket）；--mock 只用标准库
+websocket-client>=1.8.0

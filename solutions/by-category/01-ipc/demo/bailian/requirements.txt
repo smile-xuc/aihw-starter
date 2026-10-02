@@ -1,0 +1,1 @@
+# 仅标准库：live 与 --mock 都不需要第三方包。摄像头抓帧见 requirements-device.txt

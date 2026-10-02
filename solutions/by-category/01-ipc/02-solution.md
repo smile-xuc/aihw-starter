@@ -608,6 +608,8 @@ response = client.chat.completions.create(
 
 存量 Bucket 可直接开启 AI 内容感知，**无需迁移数据**。
 
+可运行参考：[`demo/bailian/`](./demo/bailian/) 用 `qwen3.7-flash` 跑通「事件抓拍 → 事件卡 → 自然语言检索 → 看护日报」，没有 Key 时自动 mock。
+
 ## 四、能力边界
 
 - **能做**：存量 Bucket 零迁移升级、自然语言搜视频/图、事件实时分析、告警二次确认

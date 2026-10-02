@@ -1,0 +1,33 @@
+schema: aihw/solution@0.1
+id: 02-ai-glasses.bailian
+title: AI 眼镜 · 百炼一看即懂
+category: 02-ai-glasses
+stack: bailian
+kind: reference
+summary: 眼镜按住镜腿拍照提问 → qwen3.8-omni-flash 看图听问 + qwen-audio-3.0-tts-flash 流式播报；--realtime 用 qwen3.8-omni-flash-realtime 语音直出
+models:
+  - id: qwen3.8-omni-flash
+    role: 拍照即问：图片 + 提问音频一次输入，流式文字（reasoning_effort=none）
+  - id: qwen-audio-3.0-tts-flash
+    role: 播报：实时语音合成 WebSocket，边收文字边合成
+  - id: qwen3.8-omni-flash-realtime
+    role: --realtime 给 AI 打电话：按住说话 + 1 帧/秒画面，语音直出（内置转写 qwen3-asr-flash-realtime）
+regions: [cn-beijing, ap-southeast-1]
+env: [DASHSCOPE_API_KEY, DASHSCOPE_WORKSPACE_ID]
+device:
+  inputs: [wav, mic, jpg, camera]
+  outputs: [speaker, wav, console]
+run:
+  setup: pip install -r requirements.txt
+  live: python3 run.py
+  mock: python3 run.py --mock
+metrics:
+  first_token: 松开镜腿（提问上传 / input_audio_buffer.commit）→ 首包语音
+  cost: 默认：omni-flash usage × 单价 + TTS usage.characters × 单价；--realtime：response.done.usage × 单价（按地域）
+verification:
+  status: pending-live
+  last_verified: null
+  record: VERIFY.md
+license: MIT
+compliance_tags: [camera-privacy]
+maintainers: ["@smile-xuc"]

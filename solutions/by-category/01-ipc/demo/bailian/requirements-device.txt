@@ -1,0 +1,2 @@
+# 可选：用电脑摄像头模拟 IPC 抓帧（--camera）
+opencv-python>=4.9.0

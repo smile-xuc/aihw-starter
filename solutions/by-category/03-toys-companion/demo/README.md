@@ -14,9 +14,17 @@
 
 > 本目录存放玩具/陪伴/伴学品类的可运行示例代码，与 [`02-solution.md`](../02-solution.md) 的三大场景包一一对应。
 
-## 已有 demo
+## 参考 demo（品类 × 栈）
 
-- ✅ [**`voice-clone/`**](./voice-clone/) — ❤️ 亲情包 · 爸妈声音陪伴最小闭环：20 秒录音 → 克隆音色 → 用爸妈声音讲睡前故事
+按 [demo 统一标准](../../../demo-standard/README.md) 组织：每个栈一个目录，三步跑通，无 Key 自动 mock。
+
+| 栈 | 目录 | 场景 | 状态 |
+|---|---|---|---|
+| 百炼 | [`bailian/`](./bailian/) | 毛绒玩具按键说话 + 眼睛摄像头 → `qwen3.8-omni-flash-realtime` 实时语音回复，Function Calling 控制动作与灯光 | 待真 Key 验证 |
+
+## 专题 demo
+
+- ✅ [**`voice-clone/`**](./voice-clone/) — ❤️ 亲情包 · 爸妈声音陪伴最小闭环：20 秒录音 → 克隆音色 → 用爸妈声音讲睡前故事（`--mock` 可离线体验）
 
 ## 计划包含的 demo（欢迎贡献）
 

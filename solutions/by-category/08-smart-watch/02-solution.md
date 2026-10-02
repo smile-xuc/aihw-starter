@@ -70,6 +70,7 @@
 2. `build_prompt()` 把指标填进提示词：一句话总结、需关注项、一条可执行建议，并写明不做医疗诊断。
 3. `mock_interpret()` 按代码里的规则生成日报。严重项在首行加 `[ALERT]`。文末固定「以上为AI健康参考，不替代专业医疗意见。」
 4. 第四节把日报对应 `qwen-flash`、深度周报对应 `qwen-plus`。把 prompt 发给这些模型的请求体，本 demo 未给出，待核实。
+5. 真实请求体见百炼参考 demo [`demo/bailian/`](./demo/bailian/)：本地红线 + `qwen3.7-flash` JSON Schema 日报 + 可选抬腕播报，无 Key 时自动 mock。
 
 ## 七、能力边界
 

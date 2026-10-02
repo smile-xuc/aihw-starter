@@ -14,7 +14,15 @@
 
 > 对应技术方案：[`02-solution.md`](../02-solution.md) Prompt 模式。
 
-## 已提供
+## 参考 demo（品类 × 栈）
+
+按 [demo 统一标准](../../../demo-standard/README.md) 组织：每个栈一个目录，三步跑通，无 Key 自动 mock。
+
+| 栈 | 目录 | 场景 | 状态 |
+|---|---|---|---|
+| 百炼 | [`bailian/`](./bailian/) | 手表同步一天的聚合指标 → 本地红线先判 → `qwen3.7-flash` 结构化日报 → 表盘卡片，可选 `qwen-audio-3.0-tts-flash` 抬腕播报 | 待真 Key 验证 |
+
+## 专题 demo
 
 ### [`metrics-prompt/`](./metrics-prompt/) — 指标 JSON → 自然语言解读（离线 mock）
 
