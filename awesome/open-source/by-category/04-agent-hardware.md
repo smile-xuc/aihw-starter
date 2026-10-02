@@ -86,6 +86,22 @@
 - **关键特性**：私有 AI 语音；唤醒词；本地处理
 - **HTML 品类**：语音 AI
 
+## 端侧推理调度层
+
+> 本节收录跑在 Agent 盒 / AI PC 上的本地推理服务软件（不是整机或固件）。它在端云协同架构中的位置见 [`06-edge-hybrid.md` §2.1](../../../solutions/by-solution/06-edge-hybrid.md#21-端侧统一推理调度层)。
+
+### Lemonade
+
+- **仓库**：<https://github.com/lemonade-sdk/lemonade>
+- **Star**：以 HTML 大盘为准
+- **License**：Apache-2.0（第三方组件另附许可声明）
+- **框架**：C++ 服务端（`lemond`）+ CLI + React App；Windows / Linux / macOS（Apple Silicon）/ Docker
+- **状态**：活跃（最新稳定版 v2026.40.0 发布于 2026-09-30，查证 2026-10-02）
+- **简介**：端侧统一推理调度服务，可类比为「端侧的 [new-api](https://github.com/QuantumNous/new-api)」：对上暴露一个 OpenAI 兼容端点，对下按硬件探测结果选择、安装推理引擎，并管理模型下载与加载 / 卸载。项目 README 称其为社区项目、由 AMD 赞助，AMD 工程师针对 Ryzen AI、Radeon、Strix Halo PC 做优化。
+- **关键特性**：多推理引擎（llama.cpp、FastFlowLM、Ryzen AI LLM、whisper.cpp、stable-diffusion.cpp 等）；多后端（CPU / Vulkan / ROCm / CUDA / Metal / AMD XDNA2 NPU）；OpenAI / Ollama / Anthropic 兼容接口与 MCP 网关；多模型并存（按类型 LRU、NPU 后端互斥）；文本 / 视觉 / 语音 / 图像多模态；实验性云端卸载与策略路由；可嵌入发行包
+- **HTML 品类**：模型部署
+- **另见**：被调度的通用推理框架（llama.cpp、ONNX Runtime 等）见 [`_others.md`](./_others.md#模型部署)
+
 ## 贡献指引
 
 详见根目录 [`CONTRIBUTING.md`](../../../CONTRIBUTING.md)。
