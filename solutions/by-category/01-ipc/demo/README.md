@@ -15,7 +15,15 @@
 > 本目录用于存放 IPC / AI 视觉品类的可运行示例代码。
 > 标注 ⚠️ 的示例由 AI 生成，仅作参考实现，生产使用前请务必自测。
 
-## 已包含的 demo
+## 参考 demo（品类 × 栈）
+
+按 [demo 统一标准](../../../demo-standard/README.md) 组织：每个栈一个目录，三步跑通，无 Key 自动 mock。
+
+| 栈 | 目录 | 场景 | 状态 |
+|---|---|---|---|
+| 百炼 | [`bailian/`](./bailian/) | 看护摄像头事件抓拍 → `qwen3.7-flash` 看图生成事件卡，App 里自然语言检索（「找昨晚宠物跳沙发那段」）并生成看护日报 | 待真 Key 验证 |
+
+## 专题 demo
 
 - ⚠️ [**`physical-sense/`**](./physical-sense/) — 百炼物理世界感知 Agent（IPC 场景）调用示例，输入一张图片输出结构化描述（object / action / event / description / title）
 
