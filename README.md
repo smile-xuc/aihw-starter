@@ -71,7 +71,7 @@
 </tr>
 <tr>
 <td align="center">04</td>
-<td><a href="./solutions/by-category/04-agent-hardware/"><b>Agent 硬件（如桌面盒子）</b></a></td>
+<td><a href="./solutions/by-category/04-agent-hardware/"><b>Agent 硬件（如口袋助手、桌面盒子）</b></a></td>
 <td align="center" nowrap>✅ 完整版</td>
 <td>多 Agent 协同 + 端云模型协同</td>
 </tr>
@@ -160,7 +160,7 @@ solutions/by-category/0X-xxxx/
 ### 🔍 了解生态
 
 - [primer/](./primer/) — AI 通识：开放权重、规格与芯片、KV 量化、Token 计费、蒸馏、端云、记忆
-- [awesome/open-source/](./awesome/open-source/) — 137+ 个 GitHub 开源项目，15 品类
+- [awesome/open-source/](./awesome/open-source/) — 138+ 个 GitHub 开源项目，15 品类
 - [awesome/commercial-products/](./awesome/commercial-products/) — 在售商业产品
 - [docs/ 门面页](https://smile-xuc.github.io/aihw-starter/) — GitHub Pages 总览
 
@@ -212,17 +212,17 @@ aihw-starter/
 │   │   ├── 01-ipc/            # IPC / AI 视觉
 │   │   ├── 02-ai-glasses/     # AI 眼镜
 │   │   ├── 03-toys-companion/ # AI 玩具 / 陪伴
-│   │   ├── 04-agent-hardware/ # Agent 硬件
+│   │   ├── 04-agent-hardware/ # Agent 硬件（口袋助手、桌面盒子）
 │   │   ├── 05-desktop-pet/    # 桌宠
 │   │   ├── 06-ai-earphone/    # AI 耳机
 │   │   ├── 07-recorder/       # 录音卡 / 会议盒子
 │   │   ├── 08-smart-watch/    # 智能手表 / 健康可穿戴
 │   │   └── 09-embodied/       # 具身智能
-│   ├── by-solution/           # 方案总览（开发者视角：千问 / 小智 …）
+│   ├── by-solution/           # 方案总览（千问 / 小智 / 端云协同 / 视频配音 / Qwen Audio Agent …）
 │   ├── demo-standard/         # 参考 demo 统一标准、模板与 CI 自检；生成网页 APP 的注册表与回放
 │   └── benchmark/             # 方案延迟横评实测
 ├── awesome/
-│   ├── open-source/           # 开源项目索引（137+ 项目，15 品类）
+│   ├── open-source/           # 开源项目索引（138+ 项目，15 品类）
 │   └── commercial-products/   # 在售商业化产品案例
 ├── primer/                    # AI 通识（01–07：授权 / 规格 / KV / Token / 蒸馏 / 端云 / 记忆）
 ├── docs/                      # GitHub Pages：门面页与交互式学习页

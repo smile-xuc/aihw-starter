@@ -50,10 +50,10 @@
 
 ## 四、推荐方案（千问大模型版本）
 
-**一个底座 + 三个附加能力项**：
+**一个底座 + 三个附加能力项**。底座是百炼硬件 Agent 开发平台（Agent Studio for Hardware，原多模态交互开发套件）：
 
 ```
-多模态交互开发套件（底座）
+百炼硬件 Agent 开发平台（底座）
   RTOS/Linux/Android SDK + 全双工对话 + VAD/唤醒 + 视觉问答 + 可视化配置
   ├── 🌍 同声传译    qwen3.5-livetranslate-flash-realtime
   ├── 📞 实时音视频  qwen3.5-omni-flash-realtime（打电话级体验）

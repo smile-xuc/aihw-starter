@@ -19,7 +19,7 @@ solutions/
 │   ├── 01-ipc/            ← IPC / AI 视觉（完整版）
 │   ├── 02-ai-glasses/     ← AI 眼镜（完整版）
 │   ├── 03-toys-companion/ ← AI 玩具 / 陪伴（完整版）
-│   ├── 04-agent-hardware/ ← Agent 硬件（完整版）
+│   ├── 04-agent-hardware/ ← Agent 硬件（口袋助手、桌面盒子，完整版）
 │   ├── 05-desktop-pet/    ← 桌宠（完整版）
 │   ├── 06-ai-earphone/    ← AI 耳机（完整版）
 │   ├── 07-recorder/       ← 录音卡 / 会议盒子（完整版）
@@ -34,7 +34,9 @@ solutions/
 │   ├── 03-mainstream-llms.md ← 豆包 / Kimi / 智谱 / DeepSeek / OpenAI 对照
 │   ├── 04-talk-to-fengge.md ← Talk-to-Fengge 开源案例（架构启发）
 │   ├── 05-qwen-robot.md   ← 千问具身智能方案（架构参考）
-│   └── 06-edge-hybrid.md  ← 端侧 / 混合（端云协同）
+│   ├── 06-edge-hybrid.md  ← 端侧 / 混合（端云协同；含 Lemonade 调度层）
+│   ├── 07-video-dubbing/  ← AI 视频翻译配音
+│   └── 08-qwen-audio-agent.md ← Qwen Audio Agent（开源 harness）
 ├── demo-standard/         ← 参考 demo 统一标准（品类 × 栈）、模板、CI 自检
 └── benchmark/             ← 方案延迟横评实测
 ```

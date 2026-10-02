@@ -13,7 +13,7 @@
 | 03 | [🌐 主流大模型对照（豆包 / Kimi / 智谱 / DeepSeek / OpenAI）](./03-mainstream-llms.md) | 📖 选型对照 | 各家 Chat / Realtime / 语音能力与接入形态 | 跨品类第二供应商 / 容灾 / 海外 |
 | 04 | [🔊 Talk-to-Fengge（开源案例）](./04-talk-to-fengge.md) | 📖 架构启发 | WebRTC 实时语音 + 声音克隆 + 人格注入 | 玩具陪伴 / 桌宠 / 耳机 |
 | 05 | [🦾 千问具身智能方案（Qwen-Robot Suite）](./05-qwen-robot.md) | 📖 架构参考 | RobotManip / RobotNav / RobotWorld 三模型矩阵 | 具身智能（机械臂 / 四足 / 人形） |
-| 06 | [📶 端侧 / 混合方案（端云协同）](./06-edge-hybrid.md) | 📖 架构导读 | 离线唤醒 + 本地命令 + 云增强 / NAS 私有化；**切分原则见 [primer/06](../../primer/06-edge-cloud.md)** | 全品类（按薄终端→厚边缘分档） |
+| 06 | [📶 端侧 / 混合方案（端云协同）](./06-edge-hybrid.md) | 📖 架构导读 | 离线唤醒 + 本地命令 + 云增强 / NAS 私有化；C 档可加[端侧统一推理调度（Lemonade）](./06-edge-hybrid.md#21-端侧统一推理调度层)；**切分原则见 [primer/06](../../primer/06-edge-cloud.md)** | 全品类（按薄终端→厚边缘分档） |
 | 07 | [🎬 AI 视频翻译配音](./07-video-dubbing/README.md) | 🧪 可跑（待真 Key 验证） | 多说话人转写 → omni 校正 → 音节预算翻译 → 声音复刻配音 → 零重叠混音 → 质检门禁；交付配音成片 + 字幕 JSON | 带屏 AI 硬件、硬件配套 APP（01 一键成片 / 02 第一视角视频 / 04 带屏盒子 / 07 会议录像） |
 | 08 | [🗣️ Qwen Audio Agent（开源实时语音 harness）](./08-qwen-audio-agent.md) | 🧩 开源 harness | Realtime 前台对话（默认 Qwen-Audio-3.0-Realtime，可换 Omni / 第三方 / 本地）+ 后台 Agent 异步委派；Gateway 自托管 | 本仓品类暂无 demo；上游示例为桌面办公、智能座舱、ESP32-C3 语音卡片（半双工）；最适合 Agent 硬件 |
 
@@ -31,7 +31,7 @@
 |---|---|---|---|---|
 | 千问大模型串接（ASR → LLM → TTS，阻塞式） | 5502 / 9449 / 7416 ms | 依不同模型而定，可扩容 | 不支持 | [method1_blocking](../benchmark/scripts/method1_blocking_sdk.py) |
 | 千问大模型串接（ASR → LLM → TTS，流式） | 2473 / 2846 / 2980 ms | 依不同模型而定，可扩容 | 不支持 | [method2_streaming](../benchmark/scripts/method2_streaming_sdk.py) |
-| 百炼多模态交互开发套件（全双工套件方案） | **997 / 1058 / 1660 ms** | 默认 10 QPS，可扩容 | 支持 | [method4_duplex](../benchmark/scripts/method4_duplex_sdk.py) |
+| 百炼硬件 Agent 开发平台（Agent Studio for Hardware，原多模态交互开发套件，全双工） | **997 / 1058 / 1660 ms** | 默认 10 QPS，可扩容 | 支持 | [method4_duplex](../benchmark/scripts/method4_duplex_sdk.py) |
 | Qwen-Omni 端到端（qwen3.5-omni-flash，HTTP 流式） | **1204 / 1317 / 1318 ms** | 可扩容 | 支持 | [method3_omni](../benchmark/scripts/method3_omni_sdk.py) |
 | Qwen-Omni Realtime（qwen3.5-omni-flash-realtime，WebSocket 双工） | **347 / 375 / 433 ms** | 可扩容 | 支持 | [method3_omni_realtime](../benchmark/scripts/method3_omni_realtime_sdk.py) |
 

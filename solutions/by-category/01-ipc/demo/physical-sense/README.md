@@ -2,7 +2,7 @@
 
 > ⚠️ **本目录的代码由 AI 生成，仅作示例参考。生产使用前请务必自测、补全错误处理与重试逻辑。**
 
-最小可运行示例：调用百炼「多模态交互开发套件」 + 「物理世界感知 Agent · IPC 场景」，
+最小可运行示例：调用「百炼硬件 Agent 开发平台（Agent Studio for Hardware，原多模态交互开发套件）」 + 「物理世界感知 Agent · IPC 场景」，
 对一张图片（URL 或本地文件）输出结构化描述 —— `object` / `action` / `event` / `description` / `title`。
 
 对应方案文档：[`../../02-solution.md` · 一、百炼 — 物理世界感知 Agent 接入](../../02-solution.md#一百炼--物理世界感知-agent-接入)

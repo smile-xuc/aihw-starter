@@ -538,7 +538,7 @@
    "name": "Agent 硬件",
    "emoji": "🤖",
    "capabilities": "多 Agent 协同 + 端云模型协同",
-   "scenes": "桌面 AI 盒子 / 家庭中枢",
+   "scenes": "口袋助手 / 桌面 AI 盒子 / 家庭中枢",
    "industry": {
     "shipments": "~50-100",
     "revenue": "~10-20",

@@ -33,7 +33,7 @@
 
 ## 量产 SDK
 
-端侧集成（Android / iOS / Linux / RTOS，含 VAD/唤醒/回声消除）使用多模态交互开发套件 SDK：
+端侧集成（Android / iOS / Linux / RTOS，含 VAD/唤醒/回声消除）使用百炼硬件 Agent 开发平台（Agent Studio for Hardware，原多模态交互开发套件）SDK：
 
 - 官方 Demo 仓库：https://github.com/aliyun/alibabacloud-bailian-speech-demo
 

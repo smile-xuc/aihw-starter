@@ -117,6 +117,7 @@ else:
 - 开源实时语音 harness（Realtime 前台对话 + 后台 Agent 异步办事，Gateway 自托管）：见 [`../../by-solution/08-qwen-audio-agent.md`](../../by-solution/08-qwen-audio-agent.md)
 - 延迟横评：见 [`../../benchmark/`](../../benchmark/)
 - 具身 / 机器人调度：见 [`../../by-solution/05-qwen-robot.md`](../../by-solution/05-qwen-robot.md)（勿与本品类混为一谈）
+- 随身设备把本品类当执行端：眼镜、耳机、录音卡、口袋设备只负责开口，复杂任务交给云端或家里电脑上的 Agent（如装了 OpenClaw 的家用盒子）。和根 README 里「一句话办完多步任务」不同，那边是盒子自己先在端侧办。见 [亮点功能速览](../../../README.md)
 
 ## 九、接入步骤
 

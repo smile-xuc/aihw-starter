@@ -90,7 +90,7 @@ IPC 品类当前提供 **两类接入方式**，可按需选用或组合使用�
 ### 前提条件
 
 - 已开通[阿里云百炼模型服务并获取 API-KEY](https://help.aliyun.com/zh/model-studio/get-api-key)，作为百炼模型服务的鉴权凭证
-- 进入[多模态交互开发套件](https://bailian.console.aliyun.com/#/multimodal-dialog)控制台，点右上角【免费开通】完成服务开通
+- 进入[百炼硬件 Agent 开发平台（Agent Studio for Hardware，原多模态交互开发套件）](https://bailian.console.aliyun.com/#/multimodal-dialog)控制台，点右上角【免费开通】完成服务开通
 
 ### 管控台配置（图文教程）
 

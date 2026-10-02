@@ -36,7 +36,7 @@
 
 ### 实时性与拟人化：设计与公开数据
 
-- **链路**：前台是端到端 Realtime 模型（音频进、音频出），不走 ASR → LLM → TTS 三段。本仓 [benchmark](../benchmark/README.md) 中同走 Realtime 协议的 `qwen3.5-omni-flash-realtime` 体感延迟为 347 / 375 / 433 ms（轻 / 复杂 / 搜索），多模态交互开发套件全双工为 997 / 1058 / 1660 ms；Qwen-Audio-Realtime 和本项目尚未纳入实测，项目也未公布首包时延。
+- **链路**：前台是端到端 Realtime 模型（音频进、音频出），不走 ASR → LLM → TTS 三段。本仓 [benchmark](../benchmark/README.md) 中同走 Realtime 协议的 `qwen3.5-omni-flash-realtime` 体感延迟为 347 / 375 / 433 ms（轻 / 复杂 / 搜索），百炼硬件 Agent 开发平台（Agent Studio for Hardware，原多模态交互开发套件）全双工为 997 / 1058 / 1660 ms；Qwen-Audio-Realtime 和本项目尚未纳入实测，项目也未公布首包时延。
 - **对话节奏**：`smart_turn` 结合声学与语义判断轮次，用户插话即停止播报；慢任务交给后台，前台不冷场，结果等用户说完再合并播报。
 - **人格一致**：音色、人格文件和长期记忆跨会话保留。Qwen-Audio-3.0-Realtime-Plus 的第三方榜单成绩见 [千问方案第 6 节](./01-qwen/README.md)。
 - **项目自测**（[技术报告](https://arxiv.org/abs/2609.25195)，本仓未复现）：自建座舱基准 134 例、41 个业务工具，前台 Qwen Audio 3.0 Realtime Plus、后台 `qwen3.8-max`。前台直连与后台委派混合执行的任务成功率为 91.04%，只用前台直连为 72.39%，全部委派为 80.60%；前台直连在 48 个多步任务中只完成 14 个。在 80 个所有配置都成功的轮次上，混合执行的平均任务执行时延为 4.729 s，比前台直连低 26.73%，比全部委派低 30.91%（从用户说完计到任务完成，不含回复生成与播放）。
@@ -84,13 +84,13 @@ Gateway（自托管：本机 / 家用电脑 / NAS / 自有服务器，Node.js 22
 
 ### 5.2 同口径对照
 
-口径：每轮用户说 5 秒、AI 回复约 10 秒语音（回复文本约 40 Token）；系统提示与工具定义按 1,000 Token 计；10 轮约 2.5 分钟。按官方多轮计费规则，用户音频和模型输出文本计入上下文，此后每轮作为输入重算；instructions 每轮按文本计一次；模型输出音频只在输出时计一次。音频折算：Qwen-Audio Realtime 输入、输出均为每秒 12.5 Token；Omni Realtime 输入每秒 7 Token、输出每秒 12.5 Token。多模态交互开发套件按交互轮次计费（元/千次），与上下文长度无关。
+口径：每轮用户说 5 秒、AI 回复约 10 秒语音（回复文本约 40 Token）；系统提示与工具定义按 1,000 Token 计；10 轮约 2.5 分钟。按官方多轮计费规则，用户音频和模型输出文本计入上下文，此后每轮作为输入重算；instructions 每轮按文本计一次；模型输出音频只在输出时计一次。音频折算：Qwen-Audio Realtime 输入、输出均为每秒 12.5 Token；Omni Realtime 输入每秒 7 Token、输出每秒 12.5 Token。百炼硬件 Agent 开发平台按交互轮次计费（元/千次），与上下文长度无关。
 
 | 方案 · 模型或配置 | 首轮 | 10 轮累计 | 折合每分钟 |
 |---|--:|--:|--:|
-| 多模态交互开发套件 · 轻量语音闲聊（2.3 元/千次） | ¥0.0023 | ¥0.023 | ¥0.009 |
-| 多模态交互开发套件 · 标准语音闲聊（5.45 元/千次） | ¥0.0055 | ¥0.055 | ¥0.022 |
-| 多模态交互开发套件 · 升级模型组合（12.55 元/千次）¹ | ¥0.013 | ¥0.13 | ¥0.050 |
+| 百炼硬件 Agent 开发平台 · 轻量语音闲聊（2.3 元/千次） | ¥0.0023 | ¥0.023 | ¥0.009 |
+| 百炼硬件 Agent 开发平台 · 标准语音闲聊（5.45 元/千次） | ¥0.0055 | ¥0.055 | ¥0.022 |
+| 百炼硬件 Agent 开发平台 · 升级模型组合（12.55 元/千次）¹ | ¥0.013 | ¥0.13 | ¥0.050 |
 | qwen-audio-agent · `qwen-audio-3.0-realtime-flash` | ¥0.0034 | ¥0.053 | ¥0.021 |
 | **qwen-audio-agent · `qwen-audio-3.0-realtime-plus`（默认）** | **¥0.026** | **¥0.38** | **¥0.15** |
 | Omni Realtime · `qwen3.8-omni-flash-realtime` | ¥0.0034 | ¥0.046 | ¥0.018 |
@@ -114,13 +114,13 @@ Gateway（自托管：本机 / 家用电脑 / NAS / 自有服务器，Node.js 22
 - 限流：`qwen-audio-3.0-realtime-plus` / `-flash` 默认 RPM 60、TPM 100,000，`qwen3.8-omni-flash-realtime` 为 RPM 60、TPM 2,000,000。按每路对话每分钟 7,000–15,000 Token 估，100,000 TPM 约支撑 7–14 路同时对话（估算，以控制台配额为准）。
 - 套件另有设备订阅（2 / 5 / 10 元/台/年三档，100 台起购，购买后得到共享资源池）和节省计划折扣，上表只按后付费对照。
 
-> 来源：[模型价格（含实时语音对话 Token 折算与多轮计费规则）](https://help.aliyun.com/zh/model-studio/model-pricing) · [qwen-audio-3.0-realtime-plus](https://help.aliyun.com/zh/model-studio/qwen-audio-3-0-realtime-plus) · [qwen-audio-3.0-realtime-flash](https://help.aliyun.com/zh/model-studio/qwen-audio-3-0-realtime-flash) · [qwen-audio-3.1-realtime-plus](https://help.aliyun.com/zh/model-studio/qwen-audio-3-1-realtime-plus) · [qwen3.8-omni-flash-realtime](https://help.aliyun.com/zh/model-studio/qwen3-8-omni-flash-realtime) · [Qwen-Omni-Realtime 计费与音频折算](https://help.aliyun.com/zh/model-studio/realtime) · [Qwen-Audio 实时语音对话](https://help.aliyun.com/zh/model-studio/qwen-audio-realtime-user-guides) · [多模态交互开发套件产品计费](https://help.aliyun.com/zh/model-studio/product-billing)（均查证 2026-10-02）
+> 来源：[模型价格（含实时语音对话 Token 折算与多轮计费规则）](https://help.aliyun.com/zh/model-studio/model-pricing) · [qwen-audio-3.0-realtime-plus](https://help.aliyun.com/zh/model-studio/qwen-audio-3-0-realtime-plus) · [qwen-audio-3.0-realtime-flash](https://help.aliyun.com/zh/model-studio/qwen-audio-3-0-realtime-flash) · [qwen-audio-3.1-realtime-plus](https://help.aliyun.com/zh/model-studio/qwen-audio-3-1-realtime-plus) · [qwen3.8-omni-flash-realtime](https://help.aliyun.com/zh/model-studio/qwen3-8-omni-flash-realtime) · [Qwen-Omni-Realtime 计费与音频折算](https://help.aliyun.com/zh/model-studio/realtime) · [Qwen-Audio 实时语音对话](https://help.aliyun.com/zh/model-studio/qwen-audio-realtime-user-guides) · [百炼硬件 Agent 开发平台产品计费](https://help.aliyun.com/zh/model-studio/product-billing)（均查证 2026-10-02）
 
-## 6. 与千问方案、多模态交互开发套件的关系
+## 6. 与千问方案、百炼硬件 Agent 开发平台的关系
 
 qwen-audio-agent 用的仍是千问 Realtime 模型，补的是模型与设备之间的宿主层。三条路径的边界：
 
-| 维度 | 百炼多模态交互开发套件 | 直连 Realtime + 自建 Runtime Host | qwen-audio-agent |
+| 维度 | 百炼硬件 Agent 开发平台 | 直连 Realtime + 自建 Runtime Host | qwen-audio-agent |
 |---|---|---|---|
 | **本仓文档** | [千问方案第 1.1 节](./01-qwen/README.md) | [omni-realtime](./01-qwen/omni-realtime/) | 本页 |
 | **交付形态** | 云端托管链路 + 端侧 SDK（Android / iOS / Linux / RTOS）+ 控制台配置 | 只有模型 API，宿主自己写 | 开源宿主（Gateway）+ 参考客户端，自己部署运维 |
@@ -145,12 +145,12 @@ qwen-audio-agent 用的仍是千问 Realtime 模型，补的是模型与设备�
 
 | 诉求 | 更偏向 |
 |---|---|
-| 量产设备，要官方 RTOS / Android SDK 和可预测的按次计费 | 多模态交互开发套件 |
+| 量产设备，要官方 RTOS / Android SDK 和可预测的按次计费 | 百炼硬件 Agent 开发平台 |
 | 高价值单品，要自己掌控动作同步与每轮成本 | 直连 Omni Realtime + 自建 Runtime Host |
 | 对话中要真正办事（文件、代码、业务系统），设备侧有可常驻的宿主（PC、盒子、车机） | qwen-audio-agent |
 | 想先拿一套完整的开源宿主做原型，再决定是否自建 | qwen-audio-agent，再对照 omni-realtime 补设备侧细节 |
 
-> 命名：阿里云开发者社区 2026-09-16 的一篇[百炼 Agent Studio 介绍](https://developer.aliyun.com/article/1763850)把面向硬件的部分写作 Agent Studio for Hardware，所述能力（Android / iOS / Linux / RTOS SDK、全双工语音）与多模态交互开发套件一致；帮助中心、产品页和计费页截至 2026-10-02 仍用「多模态交互开发套件」，改名待核实，本页沿用帮助中心名称。
+> 名称：本仓称百炼硬件 Agent 开发平台（Agent Studio for Hardware）。帮助中心、产品页和计费页截至 2026-10-02 的页面标题仍是「多模态交互开发套件」。来源：[百炼 Agent Studio 介绍（开发者社区，2026-09-16）](https://developer.aliyun.com/article/1763850)。
 
 ## 7. 能力边界与待核实
 

@@ -160,7 +160,7 @@ python3 run.py --trace out/trace.json    # 把这次运行写成回放轨迹，�
 | API Key | 只能调北京 | 只能调新加坡 |
 | 免费额度 | 多数模型各 100 万 Token（90 天） | 中国站无（国际站账号在新加坡另有免费额度） |
 | 单价 | 基准 | 普遍更高，例如 `qwen3.8-flash` 输入 0.8 → 1.094 元 / 百万 Token |
-| 新加坡缺的 | — | `cosyvoice-v3.5-*`、`paraformer-*`、`qwen-audio-3.1-tts-flash`、多模态交互开发套件；Qwen-Audio-TTS 的 HTTP 接口只在北京，新加坡要走 WebSocket |
+| 新加坡缺的 | — | `cosyvoice-v3.5-*`、`paraformer-*`、`qwen-audio-3.1-tts-flash`、百炼硬件 Agent 开发平台（Agent Studio for Hardware，原多模态交互开发套件）；Qwen-Audio-TTS 的 HTTP 接口只在北京，新加坡要走 WebSocket |
 
 - 通用域名「当前可继续使用」，但官方注明自 2026-09-30 起不再支持新特性；新 demo 一律建议填业务空间 ID
 - `regions` 只写两地都核实过可用的；只在北京可用的模型（如 `cosyvoice-v3.5-flash`）要在 `solution.yaml` 只写 `cn-beijing`

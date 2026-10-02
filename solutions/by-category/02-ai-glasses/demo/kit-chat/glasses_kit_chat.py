@@ -6,7 +6,7 @@ glasses_kit_chat.py — AI 眼镜「一看即懂」最小闭环（性价比路�
   ② qwen3.7-flash 视觉理解（等价于套件的视觉问答模块）
   ③ CosyVoice 合成回答语音，保存为 mp3（等价于眼镜端 TTS 回播）
 
-量产接入请使用多模态交互开发套件 SDK（含端侧 VAD/唤醒/全双工），
+量产接入请使用百炼硬件 Agent 开发平台（Agent Studio for Hardware，原多模态交互开发套件）SDK（含端侧 VAD/唤醒/全双工），
 本脚本用于快速体验链路效果与评估回答质量。
 Demo 仓库：https://github.com/aliyun/alibabacloud-bailian-speech-demo
 

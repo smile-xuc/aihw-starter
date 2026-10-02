@@ -7,6 +7,10 @@
 
 ### 新增
 
+- `solutions/by-solution/07-video-dubbing/`：AI 视频翻译配音（多说话人转写、音节预算翻译、声音复刻、零重叠混音），交付配音成片与字幕 JSON
+- `solutions/by-solution/08-qwen-audio-agent.md`：Qwen Audio Agent 开源实时语音 harness 导读；「贡献新方案」写明开源 harness 的收录要点；HTML 大盘补收录
+- Lemonade：awesome 04 开源卡与 HTML 大盘、`06-edge-hybrid.md` §2.1、04 技术方案互链；方案总览 06 行指向这一层；04 商业判断增加「维护者判断（2026-10）」
+- Muse Charm：04 案例页与 awesome 商业卡页的待补充清单各加一行；CONTRIBUTING 新增「品类归属」
 - `solutions/demo-standard/`：百炼参考 demo 统一标准 v0.2（目录按「品类 × 栈」、统一 `.env.example`、一条启动命令、README「三步跑通」、无 Key 自动 mock、`solution.yaml` 最小清单与 schema、`VERIFY.md` 验证记录格式）、百炼模板、`check.py` 自检、离线语音样本合成工具
   - v0.2：填了 `DASHSCOPE_WORKSPACE_ID` 时，全部 HTTP / WebSocket（含流式 ASR、TTS）都走业务空间专属域名；文本模型分默认档 `qwen3.7-flash` / 质量档 `qwen3.8-flash`；成本可写区间，`VERIFY.md` 增加「待实测」；`check.py` 拦下 10-10 下线模型、快照名和写死的域名
   - v0.3：给配套网页 APP 用的数据——`build_registry.py` 从 9 个 `solution.yaml` 生成方案注册表 `docs/app/data/registry.json`，从各玩法的 `run.py --mock --trace` 生成回放轨迹，并复制样本与 mock 产出，CI 逐字节校验；栈声明 `stacks/bailian.yaml` 写明用户要填的凭证与接入点；词表 `vocab.yaml`（回放舞台、硬件部件、能力、合规标签）；`solution.yaml` 升 `aihw/solution@0.2`（`features`、`experience`、`hardware`、`metrics.unit`、`models[].regions`）；`demo_kit` 增加 `--trace` 与可复现的 `today()` / `now()`
@@ -27,6 +31,9 @@
 
 ### 变更
 
+- 04 称呼补上「口袋助手」：根 README、品类总览（行业速览、代表场景）、`solutions/README.md`、awesome 开源 04 标题与引言、primer 品类表；网页 APP 注册表同步代表场景
+- 「多模态交互开发套件」统一改为「百炼硬件 Agent 开发平台（Agent Studio for Hardware）」，各页首次出现注明原名。帮助中心页面标题截至 2026-10-02 仍是旧名，见 08 方案页的名称说明
+- 02 / 04 / 06 / 07 技术方案补「随身入口派活给云端或家里电脑上的 Agent」，链回根 README 亮点表
 - 根 `README.md`：「功能广场 APP 设计」一节改为「网页 APP」（入口、回放与浏览器真跑的范围、凭证只存本机），原型改为设计存档链接；亮点表补 04 / 08 / 09 并按品类编号排序，桌宠、耳机、录音卡的付费锚点按品类页改写，末尾加跨品类亮点「一句话派活给 Agent」（眼镜、耳机、录音卡等随身设备只当入口，任务交给云端或家里电脑上的 Agent 执行，付费锚点标「探索期」）；百炼参考 demo 表加「网页 APP」回放列；仓库结构补 `docs/app/`、`solutions/benchmark/`、`.github/workflows/`；加 demo 冒烟与 Pages 徽章；商业合作入口改为 Issue 标题以 `[business]` 开头（仓库没有这个标签）
 - `solutions/README.md`、`solutions/by-category/README.md`：补网页 APP 入口
 - 根 `README.md`：删除「脑洞实验室（待验证）」一节。能用现有能力实现的三个方向并入品类方案的进阶玩法：01 宠物动态、02 药盒识别 + 用药提醒、05 情绪周报；亲子异地陪伴（未成年人虚拟亲属红线）、眼镜熟人识别（未授权人脸识别）、具身家务教学（现有能力只能编排预置技能）不做
