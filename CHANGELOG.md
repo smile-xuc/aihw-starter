@@ -25,6 +25,7 @@
 
 ### 变更
 
+- 根 `README.md`：删除「脑洞实验室（待验证）」一节。能用现有能力实现的三个方向并入品类方案的进阶玩法：01 宠物动态、02 药盒识别 + 用药提醒、05 情绪周报；亲子异地陪伴（未成年人虚拟亲属红线）、眼镜熟人识别（未授权人脸识别）、具身家务教学（现有能力只能编排预置技能）不做
 - 根 `README.md`、`solutions/README.md`、`solutions/by-category/README.md`：补 9 个百炼参考 demo 的入口
 - `.github/workflows/link-check.yml`：PR 只对本次改动的 Markdown / HTML 查外链（经 `--files-from` 交给 lychee），并对全仓站内链接做一次离线检查（`--offline`，不联网）；全仓外链检查改为 master 每日定时（01:00 UTC）并可手动触发，push 不再跑全量
 - 品类文档与 `by-solution/01-qwen`：2026-10-10 下线的模型换成现行模型；Realtime 成本按 3.8 代改写；03 / 05 / 06 / 07 成本按 2026-10 目录价重算；改正同传「仅 Tina 音色」「约 3 秒」、「Qwen3-ASR + 热词」、v3.5 配系统音色等过时说法，以及失效的百炼文档链接和 CLI 包名

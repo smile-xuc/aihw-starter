@@ -32,18 +32,6 @@
 
 > 想看完整功能清单和商业化打法？进入对应品类的 [`solutions/by-category/`](./solutions/by-category/) 目录。
 
-### 🧪 脑洞实验室（待验证）
-
-下列方向尚未出现在对应品类的公开案例里。讨论 Issue 写「待开」。
-
-| 方向 | 状态 | 相关品类 | 讨论 Issue | 合规提示 |
-|---|---|---|---|---|
-| **IPC × 宠物社交**：AI 摄像头为宠物生成动态（「今日金毛偷吃了三口粮」） | 想法 | [01 商业化](./solutions/by-category/01-ipc/01-business.md) · [01 FAQ](./solutions/by-category/01-ipc/05-faq.md) | 待开 | 未见本仓单列提示 |
-| **玩具 × 亲子异地陪伴**：外地家长的声音，加上 AI 补齐互动 | 想法 | [03 商业化](./solutions/by-category/03-toys-companion/01-business.md) · [03 FAQ](./solutions/by-category/03-toys-companion/05-faq.md) | 待开 | 《人工智能拟人化互动服务管理暂行办法》第十四条不得向未成年人提供虚拟亲属、虚拟伴侣等虚拟亲密关系服务。[网信办原文（2026-04-10）](https://www.cac.gov.cn/2026-04/10/c_1777558395078289.htm)（查证 2026-09-30）。见 [faq.md](./faq.md) Q22.1 |
-| **桌宠 × 情绪陪伴日记**：记录一周情绪走势，输出情绪周报 | 想法 | [05 商业化](./solutions/by-category/05-desktop-pet/01-business.md) · [05 FAQ](./solutions/by-category/05-desktop-pet/05-faq.md) | 待开 | 桌宠适用持续性情感互动相关义务，见 [05 FAQ](./solutions/by-category/05-desktop-pet/05-faq.md) E 节 |
-| **眼镜 × 老年人辅助**：识别药盒并语音提醒药量；识别路人是否熟人 | 想法 | [02 商业化](./solutions/by-category/02-ai-glasses/01-business.md) · [02 FAQ](./solutions/by-category/02-ai-glasses/05-faq.md) | 待开 | 未见本仓单列提示 |
-| **具身 × 家务教学**：看一次示范后叠一种衣服 | 想法 | [09 商业化](./solutions/by-category/09-embodied/01-business.md) · [09 FAQ](./solutions/by-category/09-embodied/05-faq.md) | 待开 | 未见本仓单列提示 |
-
 ---
 
 ## 热门品类
