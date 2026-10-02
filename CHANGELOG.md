@@ -26,7 +26,7 @@
 ### 变更
 
 - 根 `README.md`、`solutions/README.md`、`solutions/by-category/README.md`：补 9 个百炼参考 demo 的入口
-- `.github/workflows/link-check.yml`：PR 只查本次改动的 Markdown / HTML（经 `--files-from` 交给 lychee）；全仓检查改为 master 每日定时（01:00 UTC）并可手动触发，push 不再跑全量
+- `.github/workflows/link-check.yml`：PR 只对本次改动的 Markdown / HTML 查外链（经 `--files-from` 交给 lychee），并对全仓站内链接做一次离线检查（`--offline`，不联网）；全仓外链检查改为 master 每日定时（01:00 UTC）并可手动触发，push 不再跑全量
 - 品类文档与 `by-solution/01-qwen`：2026-10-10 下线的模型换成现行模型；Realtime 成本按 3.8 代改写；03 / 05 / 06 / 07 成本按 2026-10 目录价重算；改正同传「仅 Tina 音色」「约 3 秒」、「Qwen3-ASR + 热词」、v3.5 配系统音色等过时说法，以及失效的百炼文档链接和 CLI 包名
 - 旧 demo `01 physical-sense`、`02 kit-chat`、`02 omni-realtime`、`03 voice-clone`：补 `--mock`（无 Key 时自动进入），live 依赖改为按需导入；`physical-sense` 不再打印 Key 片段
 - 旧 demo `02 kit-chat`：视觉模型 `qwen-vl-plus`（2026-10-10 下线）换成 `qwen3.7-flash` 并关闭思考；播报从没有系统音色的 `cosyvoice-v3.5-flash` 换成 `cosyvoice-v3-flash`；`06 livetranslate-ws` 改用主线模型名
