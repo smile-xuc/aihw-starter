@@ -27,6 +27,8 @@
 
 ### 变更
 
+- 根 `README.md`：「功能广场 APP 设计」一节改为「网页 APP」（入口、回放与浏览器真跑的范围、凭证只存本机），原型改为设计存档链接；亮点表补 04 / 08 / 09 并按品类编号排序，桌宠、耳机、录音卡的付费锚点按品类页改写，末尾加跨品类亮点「一句话派活给 Agent」（眼镜、耳机、录音卡等随身设备只当入口，任务交给云端或家里电脑上的 Agent 执行，付费锚点标「探索期」）；百炼参考 demo 表加「网页 APP」回放列；仓库结构补 `docs/app/`、`solutions/benchmark/`、`.github/workflows/`；加 demo 冒烟与 Pages 徽章；商业合作入口改为 Issue 标题以 `[business]` 开头（仓库没有这个标签）
+- `solutions/README.md`、`solutions/by-category/README.md`：补网页 APP 入口
 - 根 `README.md`：删除「脑洞实验室（待验证）」一节。能用现有能力实现的三个方向并入品类方案的进阶玩法：01 宠物动态、02 药盒识别 + 用药提醒、05 情绪周报；亲子异地陪伴（未成年人虚拟亲属红线）、眼镜熟人识别（未授权人脸识别）、具身家务教学（现有能力只能编排预置技能）不做
 - 根 `README.md`、`solutions/README.md`、`solutions/by-category/README.md`：补 9 个百炼参考 demo 的入口
 - `.github/workflows/link-check.yml`：PR 只对本次改动的 Markdown / HTML 查外链（经 `--files-from` 交给 lychee），并对全仓站内链接做一次离线检查（`--offline`，不联网）；全仓外链检查改为 master 每日定时（01:00 UTC）并可手动触发，push 不再跑全量

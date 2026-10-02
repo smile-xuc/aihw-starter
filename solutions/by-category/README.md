@@ -56,6 +56,8 @@ solutions/by-category/0X-xxx/
 
 9 个品类各有一个，路径统一为 `<品类>/demo/bailian/`：在 `.env` 填好 Key 后运行 `python3 run.py`；没有 Key 时同一条命令自动进入 mock，不联网、不计费。目前均为「待真 Key 验证」，标准见 [demo-standard](../demo-standard/README.md)。
 
+9 个方案都能在[网页 APP](https://smile-xuc.github.io/aihw-starter/app/)里直接看回放；01、02 拍照即问、04、07、08、09 填自己的百炼 Key 可以在浏览器里真跑。
+
 | # | 品类 | 入口 | 跑通的链路 |
 |---|---|---|---|
 | 01 | 📷 IPC / AI 视觉 | [`demo/bailian/`](./01-ipc/demo/bailian/) | 事件抓拍 → `qwen3.7-flash` 看图生成事件卡 → 自然语言检索 → 看护日报 |
