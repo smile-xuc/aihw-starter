@@ -169,6 +169,8 @@ translator.stop()
 - 对端无声时不要持续发空帧，浪费配额
 - 客户端必须监听 `translation.text` 事件并实时上屏字幕；只监听 `.done` 事件会出现「文字慢于语音」错觉
 
+> 百炼参考 demo（`qwen3.8-livetranslate-flash-realtime`，原生 WebSocket，实时推流 + 字幕 + 译音 + 说话人区分，无 Key 自动 mock）：[`demo/bailian/`](./demo/bailian/)。3.8 的会话字段和事件名与上面 3.5 的 SDK 写法不同，以 demo 为准
+
 ## 五、示例与模板
 
 ### 5.1 中文方言降级表

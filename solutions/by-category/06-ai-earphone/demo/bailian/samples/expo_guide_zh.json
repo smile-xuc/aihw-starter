@@ -1,0 +1,30 @@
+{
+  "engine": "Kokoro-82M (Apache-2.0)",
+  "duration_ms": 15750,
+  "sentences": [
+    {
+      "speaker": "讲解员",
+      "speaker_id": 0,
+      "voice": "zf_xiaoxiao",
+      "begin_time": 0,
+      "end_time": 3700,
+      "text": "各位好，欢迎参观耳机生产线。"
+    },
+    {
+      "speaker": "工程师",
+      "speaker_id": 1,
+      "voice": "zm_yunjian",
+      "begin_time": 4150,
+      "end_time": 10425,
+      "text": "这里是声学测试区，每副耳机出厂前都要做三道降噪检测。"
+    },
+    {
+      "speaker": "讲解员",
+      "speaker_id": 0,
+      "voice": "zf_xiaoxiao",
+      "begin_time": 10875,
+      "end_time": 15300,
+      "text": "参观结束后，可以在前台领取试用样机。"
+    }
+  ]
+}
