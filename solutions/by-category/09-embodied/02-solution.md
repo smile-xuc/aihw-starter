@@ -193,6 +193,7 @@
 2. 解析结果落到 `skills[]`。demo 白名单为 `locate`、`grasp`、`place`、`navigate`、`search`、`inspect`、`wait_confirm`。
 3. 安全门三种结果，与 demo README 一致：抓取放置类为 `gate=allow`；用力超过代码里的力矩上限为 `gate=rewrite`，并插入 `wait_confirm`；撞人、扔、解除急停一类为 `gate=reject`，`skills` 为空。
 4. 接到 Qwen-RobotNav / Qwen-RobotManip 的在线调用步骤：待核实。官方仓库写明目前没有发布这两款模型权重的计划（查证 2026-09-30）。
+5. 用通用模型做看图规划的真实请求体见百炼参考 demo [`demo/bailian/`](./demo/bailian/)：`qwen3.8-flash` 看图 + Function Calling 逐步调用技能，每次调用先过本地安全门，无 Key 时自动 mock。
 
 ## 十一、能力边界
 

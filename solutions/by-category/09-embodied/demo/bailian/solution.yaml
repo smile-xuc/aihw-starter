@@ -1,0 +1,31 @@
+schema: aihw/solution@0.1
+id: 09-embodied.bailian
+title: 具身智能 · 百炼看图规划
+category: 09-embodied
+stack: bailian
+kind: reference
+summary: 桌面机械臂的腕部相机画面 + 一句指令 → qwen3.8-flash 看图后逐步调用技能 → 每次调用先过本地安全门 → 模拟执行并回传结果，直到模型汇报完成
+models:
+  - id: qwen3.8-flash
+    role: 看图 + Function Calling 技能规划，默认（OpenAI 兼容，流式，关闭思考）
+  - id: qwen3.7-flash
+    role: 看图 + Function Calling 技能规划，省钱档（--cheap）
+regions: [cn-beijing, ap-southeast-1]
+env: [DASHSCOPE_API_KEY]
+device:
+  inputs: [jpg, camera, text]
+  outputs: [console]
+run:
+  setup: 仅标准库，无需安装
+  live: python3 run.py
+  mock: python3 run.py --mock
+metrics:
+  first_token: 下达指令 → 首个技能调用到达
+  cost: 各轮 usage × 模型单价（按地域、按输入分档；画面每轮计入输入）；指令级拒绝不计费
+verification:
+  status: pending-live
+  last_verified: null
+  record: VERIFY.md
+license: MIT
+compliance_tags: [safety-critical]
+maintainers: ["@smile-xuc"]
