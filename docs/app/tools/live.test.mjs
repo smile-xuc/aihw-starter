@@ -5,6 +5,7 @@ import { chat, costOf, ApiError, postJson } from '../js/live/client.js';
 import { runInBrowser } from '../js/live/index.js';
 import run02 from '../js/live/run-02-ai-glasses.js';
 import run07 from '../js/live/run-07-recorder.js';
+import run04 from '../js/live/run-04-agent-hardware.js';
 
 const bytes = (...values) => Uint8Array.from(values).buffer;
 const ascii = (s) => [...s].map((c) => c.charCodeAt(0));
@@ -130,3 +131,38 @@ test('wrapper error retains request ids and numeric-only usage evidence',async()
   const c=await constants('07-recorder.bailian'),reg={root:new URL('../data/',import.meta.url)},sol={id:'07-recorder.bailian',samples:[]},stage={push:()=>({update(){return this;}})};
   await withFetch(async(url)=>{if(String(url).includes('live-data'))return Response.json(c);if(String(url).includes('chat/completions'))return stream([{request_id:'llm-id',choices:[{delta:{content:'{}'}}],usage:{prompt_tokens:3,completion_tokens:2,secret:'fixture-only'}}]);return Response.json(asr({request_id:'asr-id',usage:{input_tokens:0,output_tokens:0,duration:55,secret:'fixture-only'}}));},async()=>assert.rejects(runInBrowser(reg,sol,{id:'default'},cred,stage,{input:audioInput()}),e=>e.usageRecords?.length===2 && e.usageRecords[0].requestId==='asr-id' && e.usageRecords[1].requestId==='llm-id' && e.usageRecords[0].usage.input_tokens===0 && !JSON.stringify(e.usageRecords).includes('fixture-only')));
 });
+
+async function agentUsageFixture(usage, sample = wav) {
+  const c=await constants('04-agent-hardware.bailian');const reg={root:new URL('../data/',import.meta.url)},sol={id:'04-agent-hardware.bailian',samples:[]};const events=[];
+  return withFetch(async(url)=>{const path=String(url);if(path.includes('live-data'))return Response.json(c);if(path.includes('chat/completions'))return stream([{choices:[{delta:{content:'已完成'}}],usage:{prompt_tokens:0,completion_tokens:0}}]);if(path.includes('api/v1'))return Response.json({output:{text:'请说你好'},usage});return new Response(sample);},async()=>{const result=await runInBrowser(reg,sol,{id:'default'},cred,{push:event=>{events.push(event);return {update(){return this;}};}});return {result,events};});
+}
+test('04 absent and partial ASR usage with complete chat usage stays estimated from valid WAV duration',async()=>{
+  for(const usage of [{},{input_tokens:1},{input_tokens:1,output_tokens:2,duration:NaN},{duration:4}]){const {result,events}=await agentUsageFixture(usage);if(usage.input_tokens===1 && usage.output_tokens===2){assert.equal(result.costStatus,'usage');continue;}assert.equal(result.costStatus,'estimated');assert.ok(result.cost>0);assert.equal(result.usageRecords.find(r=>r.model.includes('asr')).usage.known,false);assert.ok(events.some(e=>e.tag==='统计' && e.text.includes('估算')));}
+});
+test('04 valid zero ASR counts remain exact zero rather than inferred transcript charges',async()=>{const {result}=await agentUsageFixture({input_tokens:0,output_tokens:0,duration:5});assert.equal(result.costStatus,'usage');assert.equal(result.cost,0);});
+test('04 missing or partial ASR usage without defensible duration is unknown',async()=>{
+  for(const usage of [{},{input_tokens:1},{input_tokens:1,output_tokens:null},{duration:0},{duration:-2}]){const {result,events}=await agentUsageFixture(usage,jpeg);assert.equal(result.costStatus,'unknown');assert.equal(result.cost,null);assert.ok(result.warnings.length);assert.ok(events.filter(e=>e.tag==='统计'&&!e.text.includes('不上云')).every(e=>!/¥[0-9]/.test(e.text)));}
+});
+test('wrapper preserves explicit 02 TTS and 07 ASR estimates with complete chat usage',async()=>{
+  for(const [id,input] of [['02-ai-glasses',imageInput()],['07-recorder',audioInput()]]){const c=await constants(`${id}.bailian`),reg={root:new URL('../data/',import.meta.url)},sol={id:`${id}.bailian`,samples:[]};await withFetch(async(url)=>{const path=String(url);if(path.includes('live-data'))return Response.json(c);if(path.includes('chat/completions'))return stream([{choices:[{delta:{content:id==='07-recorder'?minutes():'回答'}}],usage:{prompt_tokens:0,completion_tokens:0}}]);return Response.json(id==='02-ai-glasses'?{output:{audio:{url:'https://a.aliyuncs.com/x'}},usage:{}}:asr({usage:{}}));},async()=>{const result=await runInBrowser(reg,sol,{id:'default'},cred,{push:()=>({update(){return this;}})},{input});assert.equal(result.costStatus,'estimated');assert.notEqual(result.cost,null);});}
+});
+const malformedSentences = [
+  ['object text',{text:{unexpected:'object'},begin_time:'bad',end_time:'bad'}],
+  ['numeric text',{text:123,begin_time:0,end_time:1}],
+  ['null text',{text:null,begin_time:0,end_time:1}],
+  ['string begin',{text:'句子',begin_time:'1',end_time:2}],
+  ['NaN begin',{text:'句子',begin_time:NaN,end_time:2}],
+  ['infinite end',{text:'句子',begin_time:0,end_time:Infinity}],
+  ['negative begin',{text:'句子',begin_time:-1,end_time:2}],
+  ['negative end',{text:'句子',begin_time:0,end_time:-1}],
+  ['reversed times',{text:'句子',begin_time:2,end_time:1}],
+  ['object speaker',{text:'句子',begin_time:0,end_time:1,speaker_id:{}}],
+  ['negative speaker',{text:'句子',begin_time:0,end_time:1,speaker_id:-1}],
+  ['nonfinite speaker',{text:'句子',begin_time:0,end_time:1,speaker_id:NaN}],
+  ['fractional speaker',{text:'句子',begin_time:0,end_time:1,speaker_id:1.5}],
+];
+for(const [name,sentence] of malformedSentences)test(`07 rejects malformed sentence ${name} before minutes request`,async()=>{
+  let calls=0;const x=context(await constants('07-recorder.bailian'),{post:async()=>asr({output:{sentences:[sentence]}}),chat:async()=>{calls++;return turn(minutes());}});await assert.rejects(run07(x),/转写.*(文字|时间|说话人|句子)/);assert.equal(calls,0);
+});
+test('07 optional omitted sentence timestamps and speaker stay supported',async()=>{const result=await run07(context(await constants('07-recorder.bailian'),{post:async()=>asr({output:{sentences:[{text:'仅有文字'}]}}),chat:async()=>turn(minutes())}));assert.ok(result.outputs.find(o=>o.path==='out/transcript.txt').text.includes('[00:00] 说话人：仅有文字'));});
+test('04 audio routed to local rules still includes incurred ASR estimate',async()=>{const c={...await constants('04-agent-hardware.bailian'),DEFAULT_SESSION:[['audio','samples/local.wav']]};const result=await run04(context(c,{asset:async()=>wav,post:async()=>({output:{text:'客厅开灯'},usage:{}})}));assert.equal(result.costStatus,'estimated');assert.ok(result.cost>0);});

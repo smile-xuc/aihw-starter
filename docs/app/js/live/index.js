@@ -74,12 +74,14 @@ export async function runInBrowser(reg, sol, variant, cred, stage, { signal, onF
   };
   const values = cred.values;
   const usageRecords = [];
-  const recordUsage = (model, requestId, usage) => {
+  const recordUsage = (model, requestId, usage, kind = 'chat') => {
     const safeUsage = Object.fromEntries(['prompt', 'completion', 'input_tokens', 'output_tokens', 'characters', 'duration'].filter((key) => validCount(usage?.[key])).map((key) => [key, usage[key]]));
-    safeUsage.known = typeof usage?.known === 'boolean' ? usage.known : (validCount(usage?.input_tokens) && validCount(usage?.output_tokens)) || validCount(usage?.characters);
+    safeUsage.known = kind === 'chat' ? usage?.known === true : kind === 'tts' ? validCount(usage?.characters) : validCount(usage?.input_tokens) && validCount(usage?.output_tokens);
     usageRecords.push({ model: typeof model === 'string' ? model : '', requestId: typeof requestId === 'string' ? requestId : '', usage: safeUsage });
+    return safeUsage.known;
   };
   let missingUsage = false;
+  let incompletePostUsage = false;
   let firstTextAt = null;
   const honestCostText = (text) => missingUsage ? String(text).replace(/¥(?:[\d.,]+(?:[–-][\d.,]+)?|—)/g, '费用未知') : text;
   const ctx = {
@@ -101,7 +103,8 @@ export async function runInBrowser(reg, sol, variant, cred, stage, { signal, onF
     },
     post: async (service, path, payload, headers = {}) => {
       const response = await postJson(cred, service, path, payload, { headers, signal, onFallback });
-      recordUsage(payload.model, response.request_id, response.usage);
+      const known = recordUsage(payload.model, response.request_id, response.usage, payload.model === c.TTS_MODEL ? 'tts' : 'post');
+      if (!known) incompletePostUsage = true;
       return response;
     },
   };
@@ -115,11 +118,11 @@ export async function runInBrowser(reg, sol, variant, cred, stage, { signal, onF
   result.metrics ||= { textFirstMs: firstTextAt == null ? null : firstTextAt - t0, audioFirstMs: null, audioReadyMs: null, totalMs: now() - t0 };
   result.costStatus ||= result.cost == null ? 'unknown' : 'usage';
   result.warnings ||= [];
-  if (missingUsage) {
+  if (missingUsage || (incompletePostUsage && result.costStatus !== 'estimated')) {
     result.cost = null;
     result.costStatus = 'unknown';
-    result.note = honestCostText(result.note);
-    const warning = '接口未返回完整 Chat Token 用量，总成本未知';
+    result.note = String(result.note).replace(/¥(?:[\d.,]+(?:[–-][\d.,]+)?|—)/g, '费用未知');
+    const warning = missingUsage ? '接口未返回完整 Chat Token 用量，总成本未知' : '接口未返回完整转写或合成用量，缺少有效估算依据，总成本未知';
     result.warnings.push(warning);
     ctx.say('提示', warning);
   }

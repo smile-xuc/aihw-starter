@@ -5,14 +5,20 @@ import { costOf, parseJson, toBase64, validCount } from './client.js';
 import { validateInput } from './input.js';
 
 const pad = (n) => String(n).padStart(2, '0');
-const speakerLabel = (raw) => (raw == null ? '说话人' : `说话人${Number(raw) + 1}`);
+const speakerLabel = (raw) => (raw == null ? '说话人' : `说话人${raw + 1}`);
 
 function toSentences(items) {
   if (!Array.isArray(items)) throw new Error('转写句子格式无效');
-  return items
-    .filter((it) => it && typeof it === 'object')
-    .map((it) => ({ begin: Number(it.begin_time || 0), end: Number(it.end_time || 0), speaker: speakerLabel(it.speaker_id), text: String(it.text || '').trim() }))
-    .filter((s) => s.text);
+  return items.map((it, index) => {
+    const fail = (field) => { throw new Error(`转写第 ${index + 1} 句${field}无效`); };
+    if (!it || typeof it !== 'object' || Array.isArray(it)) fail('句子格式');
+    if (typeof it.text !== 'string') fail('文字');
+    const begin = it.begin_time === undefined ? 0 : it.begin_time;
+    const end = it.end_time === undefined ? begin : it.end_time;
+    if (!validCount(begin) || !validCount(end) || end < begin) fail('时间');
+    if (it.speaker_id != null && (!Number.isInteger(it.speaker_id) || it.speaker_id < 0)) fail('说话人标识');
+    return { begin, end, speaker: speakerLabel(it.speaker_id), text: it.text.trim() };
+  }).filter((sentence) => sentence.text);
 }
 
 const line = (s) => {
