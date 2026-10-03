@@ -7,6 +7,11 @@
 
 ### 新增
 
+- #37（51109f4）：`02-ai-glasses` 商业卡补 Ray-Ban Meta Audio、Meta Ray-Ban Display；`04-cases` 同步 Display 在售状态
+- #39（60217d9）：网页 APP MVP（`docs/app/`：首页 / 品类 / 方案 / 我的；读 #40 注册表；用户自填百炼 Key）
+- #42（99e013b）：商业卡 StackChan、智能憨憨、NEO、Bumi、大头 BoBo
+- #43（279d3ba）：商业卡 小米手环 11、小天才 Z12、OpenFit 2 AI、Kieslect Open2
+- #44（3880571）：商业卡 EXCITAI 数字人一体机、ED-CLAWBOX、成者 StarryHub Bot30
 - `solutions/by-solution/07-video-dubbing/`：AI 视频翻译配音（多说话人转写、音节预算翻译、声音复刻、零重叠混音），交付配音成片与字幕 JSON
 - `solutions/by-solution/08-qwen-audio-agent.md`：Qwen Audio Agent 开源实时语音 harness 导读；「贡献新方案」写明开源 harness 的收录要点；HTML 大盘补收录
 - Lemonade：awesome 04 开源卡与 HTML 大盘、`06-edge-hybrid.md` §2.1、04 技术方案互链；方案总览 06 行指向这一层；04 商业判断增加「维护者判断（2026-10）」
@@ -31,6 +36,7 @@
 
 ### 变更
 
+- #41（a117b8f）：`CONTRIBUTING.md` 收录门槛（AI 功能）
 - 04 称呼补上「口袋助手」：根 README、品类总览（行业速览、代表场景）、`solutions/README.md`、awesome 开源 04 标题与引言、primer 品类表；网页 APP 注册表同步代表场景
 - 「多模态交互开发套件」统一改为「百炼硬件 Agent 开发平台（Agent Studio for Hardware）」，各页首次出现注明原名。帮助中心页面标题截至 2026-10-02 仍是旧名，见 08 方案页的名称说明
 - 02 / 04 / 06 / 07 技术方案补「随身入口派活给云端或家里电脑上的 Agent」，链回根 README 亮点表
