@@ -91,6 +91,17 @@ export function trace(reg, sol, variant) {
   return traceCache.get(key);
 }
 
+// Keep audit counters typed and bounded to the trace contract, never payloads or headers.
+export function normalizeUsageRecords(records, sanitize = value => String(value ?? '').replace(/(?:https?:\/\/|blob:|data:)[^\s<>"']+/gi,'[临时地址已隐藏]').replace(/Bearer\s+[^\s,;]+/gi,'Bearer [已隐藏]')) {
+  if (!Array.isArray(records)) return [];
+  const counters = ['prompt','completion','input_tokens','output_tokens','characters','duration'];
+  return records.filter(r => r && typeof r === 'object' && !Array.isArray(r)).map(r => ({
+    model:sanitize(typeof r.model === 'string' ? r.model : ''),
+    requestId:sanitize(typeof r.requestId === 'string' ? r.requestId : ''),
+    usage:Object.fromEntries(Object.entries(r.usage || {}).filter(([key,value]) => key === 'known' ? typeof value === 'boolean' : counters.includes(key) && Number.isFinite(value) && value >= 0)),
+  }));
+}
+
 export function normalizeTrace(raw) {
   if (!raw || !/^aihw\/trace@0\./.test(raw.schema || '') || !Array.isArray(raw.events)) {
     throw new DataMissing('不是 aihw/trace@0.x 回放轨迹');
@@ -101,6 +112,7 @@ export function normalizeTrace(raw) {
     ...(raw.runner ? { runner: raw.runner } : {}),
     ...(raw.ran_at ? { ran_at: raw.ran_at } : {}),
     ...(raw.status ? { status: raw.status } : {}),
+    ...(Array.isArray(raw.usageRecords) ? { usageRecords: normalizeUsageRecords(raw.usageRecords) } : {}),
     solution: raw.solution || null,
     variant: raw.variant || null,
     mode: raw.mode || 'mock',

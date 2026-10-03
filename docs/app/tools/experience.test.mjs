@@ -59,3 +59,38 @@ test('02 original mock fixture exposes its result-event answer immediately', () 
  const trace=JSON.parse(readFileSync(new URL('../data/traces/02-ai-glasses.bailian/default.json',import.meta.url)));
  assert.match(E.mainOutput(trace)?.text||'',/宫保鸡丁/);
 });
+
+test('default question initializes only a new draft and explicit reset', () => {
+ const key='draft-empty-question'; const initial={question:'sample question'};
+ assert.equal(E.draftFor(key,initial).question,'sample question');
+ E.draftFor(key).question='';
+ assert.equal(E.draftFor(key,initial).question,'');
+ assert.equal(E.resetDraft(key,initial).question,'sample question');
+});
+test('failed trace import and re-export preserve only typed audit metadata', async () => {
+ const {normalizeTrace}=await import('../js/data.js');
+ const failed=record({result:null,error:Object.assign(Error('minutes failed'),{usageRecords:[{model:'asr',requestId:'request-123',usage:{known:true,duration:10}}]})});
+ failed.usageRecords[0].headers={Authorization:'sk-secret'};
+ failed.usageRecords[0].payload={url:'https://host/private'};
+ Object.assign(failed.usageRecords[0].usage,{headers:'sk-secret',prompt:true,completion:-1,input_tokens:'12',output_tokens:Infinity,characters:20});
+ failed.usageRecords.push({model:'https://host/model?token=private',requestId:'Bearer sk-secret',usage:{known:'yes',duration:2}});
+ failed.usageRecords.push(null);
+ const normalized=normalizeTrace(failed);
+ assert.deepEqual(normalized.usageRecords?.[0],{model:'asr',requestId:'request-123',usage:{known:true,duration:10,characters:20}});
+ assert.equal(normalized.usageRecords.length,2);
+ assert.ok(!JSON.stringify(normalized.usageRecords).includes('https://'));
+ assert.ok(!JSON.stringify(normalized.usageRecords).includes('sk-secret'));
+ const exported=E.safeTrace(normalized);
+ assert.deepEqual(exported.usageRecords,normalized.usageRecords);
+});
+test('temporary speech is accessible beside the answer and absent from imported text results', () => {
+ const slot={innerHTML:'',querySelector(){return null;}};
+ const trace=record(); const speechURL='https://dashscope-result.oss-cn-beijing.aliyuncs.com/reply.wav?token=temporary';
+ E.renderOutcome(slot,trace,{speechURL});
+ assert.match(slot.innerHTML,/<audio[^>]*aria-label="听播报"[^>]*controls/);
+ assert.ok(slot.innerHTML.includes('token=temporary'));
+ assert.ok(!JSON.stringify(E.safeTrace(trace)).includes('token=temporary'));
+ E.renderOutcome(slot,{...trace,outputs:[...trace.outputs,{path:'out/injected.wav',media_type:'audio/wav',url:speechURL}]});
+ assert.ok(!slot.innerHTML.includes('<audio'));
+ assert.ok(!slot.innerHTML.includes('token=temporary'));
+});

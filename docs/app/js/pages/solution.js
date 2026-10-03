@@ -126,9 +126,9 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
   if (!isCurrent()) return null;
   const product = variant.id === 'default' ? PRODUCTS[sol.id] : null;
   const draftKey = `${sol.id}/${variant.id}`;
-  let draft = draftFor(draftKey);
   const sampleQuestion = '这是什么菜？辣不辣？';
-  if (product?.kind === 'image' && !draft.question) draft.question = sampleQuestion;
+  const initialDraft = {question:product?.kind === 'image' ? sampleQuestion : ''};
+  let draft = draftFor(draftKey, initialDraft);
   document.title = `${product?.title || sol.title} · AIHW`;
   const archetype = label(reg.labels.archetypes, variant.archetype || sol.archetype || '');
   const page = mountPage(view, html`
@@ -206,13 +206,28 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
     page.querySelector('[data-own-material]').hidden = draft.source !== 'own';
     for (const b of page.querySelectorAll('[data-source]')) b.setAttribute('aria-pressed',String(b.dataset.source === draft.source));
   };
-  preview();
-  if(product && draft.source==='own' && draft.file && !draft.input){
-    reading=new AbortController();materialError='正在核验素材，请稍候';
-    const resumedDraft=draft, version=++readVersion;
-    decodeFile(draft.file,product.kind,draft.question,{signal:reading.signal}).then(input=>{if(!connected() || version!==readVersion || draft!==resumedDraft)return;draft.input=input;materialError='';preview();mount(page.querySelector('[data-material-status]'),html`<p class="inline-ok">素材核验通过</p>`);}).catch(err=>{if(!connected() || version!==readVersion || draft!==resumedDraft)return;materialError=redact(err.message,secrets);mount(page.querySelector('[data-material-status]'),html`<p class="inline-error">${materialError}</p>`);});
+  async function validateMaterial() {
+    if (!product || draft.source !== 'own' || !draft.file || draft.input) return;
+    reading?.abort();
+    const controller = new AbortController(); reading = controller;
+    const selectedDraft = draft, file = draft.file, version = ++readVersion;
+    const currentRead = () => connected() && !controller.signal.aborted && version === readVersion && draft === selectedDraft && draft.file === file && draft.source === 'own';
+    materialError = '正在核验素材，请稍候';
+    mount(page.querySelector('[data-material-status]'), html`<p class="small">${materialError}</p>`);
+    try {
+      const input = await decodeFile(file, product.kind, draft.question, {signal:controller.signal});
+      if (!currentRead()) return;
+      draft.input = input; materialError = ''; preview();
+      mount(page.querySelector('[data-material-status]'), html`<p class="inline-ok">素材核验通过</p>`);
+    } catch (err) {
+      if (!currentRead()) return;
+      materialError = redact(err.message, secrets);
+      mount(page.querySelector('[data-material-status]'), html`<p class="inline-error">${materialError}</p>`);
+    }
   }
-  if (tr && (!product || (draft.source === 'sample' && (!draft.question || draft.question === sampleQuestion)))) {
+  preview();
+  validateMaterial();
+  if (tr && (!product || (draft.source === 'sample' && (product.kind !== 'image' || draft.question === sampleQuestion)))) {
     const stage = new Stage(host,{reg,sol,badges:[{label:'回放',cls:'accent'},{label:tr.mode === 'mock' ? 'mock 示意' : '真跑记录',cls:''}],mode:tr.mode});
     replay = playTrace(stage,tr);
     renderOutcome(outcome, tr);
@@ -225,29 +240,17 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
     const button=page.querySelector('[data-act="live"]'); if(button) button.textContent=value?'正在体验…':'用我的 Key 真跑';
   }
   page.querySelector('[data-question]')?.addEventListener('input', e=>{if(running)return;draft.question=e.target.value;clearResult();});
-  page.querySelector('[data-material]')?.addEventListener('change', async e=>{
+  page.querySelector('[data-material]')?.addEventListener('change', e=>{
     if(running)return;
     const file=e.target.files?.[0]; if(!file)return;
-    const version=++readVersion; reading?.abort();reading=new AbortController();
-    draft.file=file;draft.input=null;materialError='正在核验素材，请稍候';clearResult();preview();
-    mount(page.querySelector('[data-material-status]'),html`<p class="small">${materialError}</p>`);
-    try {
-      const input=await decodeFile(file,product.kind,draft.question,{signal:reading.signal});
-      if(!connected() || version!==readVersion)return;
-      draft.input=input;materialError='';preview();
-      mount(page.querySelector('[data-material-status]'),html`<p class="inline-ok">素材核验通过</p>`);
-    } catch(err) {
-      if(!connected() || version!==readVersion)return;
-      materialError=redact(err.message,secrets);
-      mount(page.querySelector('[data-material-status]'),html`<p class="inline-error">${materialError}</p>`);
-    }
+    draft.file=file;draft.input=null;clearResult();preview();validateMaterial();
   });
   page.addEventListener('click', e=>{
     const copy=e.target.closest('[data-copy]');if(copy)copyText(copy.dataset.copy);
     const jump=e.target.closest('[data-jump]');if(jump){e.preventDefault();page.querySelector(`#${jump.dataset.jump}`)?.scrollIntoView({behavior:'smooth',block:'start'});}
     const source=e.target.closest('[data-source]');
-    if(source && !running && source.dataset.source!==draft.source){reading?.abort();readVersion++;draft.source=source.dataset.source;materialError='';clearResult();preview();}
-    if(e.target.closest('[data-reset]') && !running){reading?.abort();readVersion++;draft=resetDraft(draftKey);draft.question=product?.kind==='image'?sampleQuestion:'';materialError='';const q=page.querySelector('[data-question]');if(q)q.value=draft.question;page.querySelector('[data-material]').value='';clearResult();preview();mount(page.querySelector('[data-material-status]'),'');}
+    if(source && !running && source.dataset.source!==draft.source){reading?.abort();readVersion++;draft.source=source.dataset.source;materialError='';clearResult();preview();mount(page.querySelector('[data-material-status]'),'');validateMaterial();}
+    if(e.target.closest('[data-reset]') && !running){reading?.abort();readVersion++;draft=resetDraft(draftKey,initialDraft);materialError='';const q=page.querySelector('[data-question]');if(q)q.value=draft.question;page.querySelector('[data-material]').value='';clearResult();preview();mount(page.querySelector('[data-material-status]'),'');}
     const v=e.target.closest('[data-variant]');if(v && !running && v.dataset.variant!==variant.id)location.hash=`#/s/${encodeURIComponent(sol.id)}/${encodeURIComponent(v.dataset.variant)}`;
     const act=e.target.closest('[data-act]')?.dataset.act;
     if(act==='live' && !running){const ctrl=new AbortController();running=ctrl;freeze(true);startLive(ctrl).finally(()=>{if(connected()){running=null;freeze(false);}});}
@@ -297,7 +300,8 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
     const inputs=product && draft.source==='own' ? [{path:`samples/${draft.file.name}`,media_type:draft.input?.mime||draft.file.type,bytes:draft.file.size}] : tr?.inputs||[];
     const record=browserTrace({sol,variant,result,error,events:stage?.events||[],inputs,startedAt,region:cred?.values.DASHSCOPE_API_REGION||'',secrets});
     const saved=saveHistory(record);
-    renderOutcome(outcome,record,{settingsHref:setupRoute(sol,variant),secrets,historyNote:saved.saved?'文字结果已保存到本机体验历史；原始素材和临时语音不保存。':saved.error});
+    const speechURL = sol.id === '02-ai-glasses.bailian' && !error ? result?.outputs?.find(f=>(f.media_type||f.type||'').startsWith('audio/') && f.url)?.url : null;
+    renderOutcome(outcome,record,{settingsHref:setupRoute(sol,variant),secrets,speechURL,historyNote:saved.saved?'文字结果已保存到本机体验历史；原始素材和临时语音不保存。':saved.error});
     if(stage){stage.setOutputs((result?.outputs||error?.outputs||[]).map(f=>({...f,text:f.text==null?f.text:redact(f.text,secrets)})));stage.setFoot(resultLines(record));}
     const box=page.querySelector('.live-cost');if(result){mount(box,html`<p class="inline-ok">本次体验已完成，费用与延迟见上方结果。</p>`);box.classList.remove('hidden');}
     page.querySelector('.process-panel').open=!!error;

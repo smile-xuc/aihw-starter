@@ -1,16 +1,17 @@
 import { fmtCny, html, markdown, mount, copyText, download } from './ui.js';
 import { validateInput } from './live/input.js';
+import { normalizeUsageRecords } from './data.js';
 
 export const PRODUCTS = {
   '02-ai-glasses.bailian': {title:'一看即懂', description:'拍下眼前的画面，问出你想知道的事。得到简明回答，也可以听 AI 播报。',kind:'image',question:'这张图片里有什么？'},
   '07-recorder.bailian': {title:'会议纪要',description:'放入一段录音，得到会议要点、决定和待办，原始转写随时展开查看。',kind:'audio'},
 };
 const drafts = new Map();
-export function draftFor(key) {
-  if (!drafts.has(key)) drafts.set(key,{file:null,input:null,question:'',source:'sample'});
+export function draftFor(key, {question=''}={}) {
+  if (!drafts.has(key)) drafts.set(key,{file:null,input:null,question,source:'sample'});
   return drafts.get(key);
 }
-export function resetDraft(key) {drafts.delete(key); return draftFor(key);}
+export function resetDraft(key, initial) {drafts.delete(key); return draftFor(key, initial);}
 export const sceneRoute = (sol,variant) => `#/s/${encodeURIComponent(sol.id)}/${encodeURIComponent(variant.id)}`;
 export function returnTarget(reg, hash) {
   if (!reg || typeof hash !== 'string' || !/^#\/s\/[^/?#]+\/[^/?#]+$/.test(hash)) return null;
@@ -33,9 +34,7 @@ export function safeFiles(files=[],secrets=[]) {
     return {path:redact(f.path,secrets),media_type:String(f.media_type||f.type||'application/octet-stream'),bytes:text==null?(Number.isInteger(f.bytes)&&f.bytes>=0?f.bytes:0):new TextEncoder().encode(text).length,asset:null,...(text==null?{}:{text})};
   });
 }
-function usageRecords(records=[],secrets=[]) {
-  return records.map(r=>({model:redact(r.model,secrets),requestId:redact(r.requestId,secrets),usage:Object.fromEntries(Object.entries(r.usage||{}).filter(([k,v])=>['known','prompt','completion','input_tokens','output_tokens','characters','duration'].includes(k) && (typeof v==='boolean'||(Number.isFinite(v)&&v>=0))))}));
-}
+const usageRecords = (records, secrets=[]) => normalizeUsageRecords(records, value=>redact(value,secrets));
 export function browserTrace({sol,variant,result=null,error=null,events=[],inputs=[],startedAt=new Date().toISOString(),region='',secrets=[]}) {
   const cost=result?.cost;
   const range=cost==null?null:Array.isArray(cost)?{low:cost[0],high:cost[1]}:typeof cost==='object'?{low:cost.low,high:cost.high}:{low:cost,high:cost};
@@ -78,7 +77,7 @@ export function mainOutput(trace) {
   const derived = trace?.mode === 'mock' ? (trace.events || []).filter(e=>e.kind === 'result').map(e=>[e.text,...(e.lines || [])].join('\n')).join('\n\n') : '';
   return (trace?.outputs||[]).find(f=>/\/(answer\.txt|minutes\.md)$/.test(f.path)) || (trace?.outputs||[]).find(f=>f.text!=null && !/transcript|\.json$/.test(f.path)) || (trace?.outputs||[]).find(f=>f.text!=null && !/transcript/.test(f.path)) || (derived ? {path:'out/answer.txt',media_type:'text/plain',text:derived} : undefined);
 }
-export function renderOutcome(slot, trace, {label='',historyNote='',settingsHref='#/me',secrets=[]}={}) {
+export function renderOutcome(slot, trace, {label='',historyNote='',settingsHref='#/me',secrets=[],speechURL=null}={}) {
   trace=safeTrace(trace,secrets);
   const output=mainOutput(trace); const transcripts=(trace?.outputs||[]).filter(f=>/transcript/.test(f.path)&&f!==output);
   const status=trace?.status==='stopped'?'已停止，可以用当前素材重试':trace?.error?'体验失败，可以重试':trace?.mode==='mock'?'样本效果 · mock 免费回放':'本次结果 · 内容由 AI 生成';
@@ -86,6 +85,7 @@ export function renderOutcome(slot, trace, {label='',historyNote='',settingsHref
     ${trace?.error?html`<p class="inline-error">${trace.error}</p><p class="small">401 / 403 请检查 Key、地域和业务空间；网络错误请检查连接；空内容或响应截断可重试。<a href="${settingsHref}">编辑凭证</a></p>`:''}
     ${output?html`<div class="result-text">${output.media_type==='text/markdown'||output.type==='text/markdown'?markdown(output.text):html`<pre class="wrap">${output.text}</pre>`}</div>
       <div class="btn-row"><button type="button" class="secondary-action" data-result-copy>复制结果</button><button type="button" class="secondary-action" data-result-download>下载结果</button></div>`:html`<p>${status}</p>`}
+    ${speechURL?html`<div class="input-preview"><p class="small">听播报 · AI 合成语音（仅本次临时可用）</p><audio aria-label="听播报" controls preload="none" src="${speechURL}"></audio></div>`:''}
     ${transcripts.map(f=>html`<details><summary>展开原始转写</summary><pre class="wrap">${f.text}</pre></details>`)}
     ${trace?.result?html`<p class="small result-cost">${trace.mode==='mock'?'示例估算（没有产生费用）':costText(trace.result)}</p><div class="metric-list">${metricLines(trace.result).map(l=>html`<span>${l}</span>`)}</div>${(trace.result.warnings||[]).map(w=>html`<p class="info-note">${w}</p>`)}`:''}
     ${historyNote?html`<p class="small history-note">${historyNote}</p>`:''}

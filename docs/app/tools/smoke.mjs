@@ -112,6 +112,14 @@ async function main() {
     if (failureMode === 'partial' && u.pathname.endsWith('chat/completions')) return route.fulfill({status:500,headers:CORS,json:{message:'minutes failed'}});
     if (failureMode === 'unknown' && u.pathname.endsWith('chat/completions')) return route.fulfill({status:200,headers:{...CORS,'content-type':'text/event-stream'},body:'data: {"choices":[{"delta":{"content":"<img src=x onerror=alert(1)>安全结果"}}]}\n\ndata: [DONE]\n\n'});
     const res = await fetch(`http://127.0.0.1:${FAKE_PORT}/${current}${u.pathname}`, { method: req.method(), headers: req.headers(), body: req.postDataBuffer() });
+    if (current==='02-ai-glasses.bailian' && u.pathname.endsWith('SpeechSynthesizer')) {
+      const data=await res.json();data.output.audio.url='https://dashscope-result.oss-cn-beijing.aliyuncs.com/mock-reply.wav?token=temporary-speech';
+      return route.fulfill({status:res.status,headers:CORS,json:data});
+    }
+    if (failureMode==='partial' && u.pathname.endsWith('generation')) {
+      const data=await res.json();data.request_id='smoke-asr-request-123';data.usage={...(data.usage||{}),duration:1};
+      return route.fulfill({status:res.status,headers:CORS,json:data});
+    }
     return route.fulfill({ status: res.status, headers: { ...CORS, 'content-type': res.headers.get('content-type') || 'application/json' }, body: Buffer.from(await res.arrayBuffer()) });
   });
   const results = [];
@@ -157,11 +165,63 @@ async function main() {
   current='02-ai-glasses.bailian'; requests.length=0; await begin();
   const changed=requests.find(r=>r.path.endsWith('chat/completions')).body.messages.at(-1).content;
   assertUI(!changed.some(p=>p.type==='input_audio') && changed.some(p=>p.text==='这张照片有什么？'),'changed sample question did not use text-only question');
-  await page.click('[data-source="own"]');await page.setInputFiles('[data-material]',{name:'mine.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aD1sAAAAASUVORK5CYII=','base64')});
+  const photo=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aD1sAAAAASUVORK5CYII=','base64');
+  // Gate real File reads, while retaining real signature/image decode checks.
+  await page.evaluate(()=>{
+    const original=File.prototype.arrayBuffer;window.materialReads=[];
+    window.restoreMaterialReads=()=>{File.prototype.arrayBuffer=original;};
+    File.prototype.arrayBuffer=function(){
+      const bytes=original.call(this);let release;const gate=new Promise(r=>{release=r;});
+      const read={name:this.name,release,settled:false};window.materialReads.push(read);
+      return gate.then(async()=>{const buffer=await bytes;read.settled=true;return buffer;});
+    };
+  });
+  await page.click('[data-source="own"]');await page.setInputFiles('[data-material]',{name:'mine.png',mimeType:'image/png',buffer:photo});
+  await page.waitForFunction(()=>window.materialReads.length===1);
+  await page.click('[data-source="sample"]');await page.click('[data-source="own"]');
+  assertUI(await page.evaluate(()=>window.materialReads.length)===2,'returning to own material did not resume interrupted decode');
+  await page.evaluate(()=>{window.materialReads[0].release();window.materialReads[1].release();});
+  await page.waitForSelector('[data-material-status] .inline-ok');
+  await page.setInputFiles('[data-material]',{name:'settings.png',mimeType:'image/png',buffer:photo});
+  await page.waitForFunction(()=>window.materialReads.length===3);
+  await page.goto(`${BASE}#/me?return=${encodeURIComponent('#/s/02-ai-glasses.bailian/default')}`);await page.waitForSelector('button[type="submit"]');await page.click('button[type="submit"]');
+  await page.waitForSelector('[data-question]');await page.waitForFunction(()=>window.materialReads.length===4);
+  await page.evaluate(()=>{window.materialReads[2].release();window.materialReads[3].release();});
+  await page.waitForSelector('[data-material-status] .inline-ok');
+  assertUI(await page.evaluate(async()=>{const {draftFor}=await import('./js/experience.js');return draftFor('02-ai-glasses.bailian/default').input.name;})==='settings.png','retained material not validated after settings remount');
+  // A stale invalid read must not replace the newer valid selection or its status.
+  await page.setInputFiles('[data-material]',{name:'stale.png',mimeType:'image/png',buffer:Buffer.from('invalid png')});await page.waitForFunction(()=>window.materialReads.length===5);
+  await page.setInputFiles('[data-material]',{name:'newest.png',mimeType:'image/png',buffer:photo});await page.waitForFunction(()=>window.materialReads.length===6);
+  await page.evaluate(()=>window.materialReads[5].release());await page.waitForSelector('[data-material-status] .inline-ok');
+  await page.evaluate(()=>window.materialReads[4].release());await page.waitForFunction(()=>window.materialReads[4].settled);
+  assertUI(await page.locator('[data-material-status] .inline-ok').count()===1,'stale failure contaminated the current material status');
+  assertUI(await page.evaluate(async()=>{const {draftFor}=await import('./js/experience.js');return draftFor('02-ai-glasses.bailian/default').input.name;})==='newest.png','stale decode replaced selected input');
+  await page.evaluate(()=>window.restoreMaterialReads());
+  await page.fill('[data-question]','');
+  await page.goto(`${BASE}#/me?return=${encodeURIComponent('#/s/02-ai-glasses.bailian/default')}`);await page.waitForSelector('button[type="submit"]');await page.click('button[type="submit"]');
+  await page.waitForSelector('[data-question]');assertUI(await page.inputValue('[data-question]')==='','empty question was replaced on settings return');
+  const beforeEmpty=requests.length;await page.click('[data-act="live"]');await page.waitForSelector('[data-outcome] .inline-error');
+  assertUI((await page.locator('[data-outcome]').innerText()).includes('提问不能为空') && requests.length===beforeEmpty,'empty question reached provider');
+  await page.click('[data-reset]');assertUI(await page.inputValue('[data-question]')==='这是什么菜？辣不辣？','explicit reset did not restore sample question');
+  await page.fill('[data-question]','');
+  await page.goto(`${BASE}#/me?return=${encodeURIComponent('#/s/02-ai-glasses.bailian/default')}`);await page.waitForSelector('button[type="submit"]');await page.click('button[type="submit"]');
+  await page.waitForSelector('[data-question]');assertUI(await page.inputValue('[data-question]')==='' && await page.locator('[data-outcome] .result-text').count()===0,'empty sample question restored the original sample answer');
+  await page.click('[data-reset]');
+  await page.click('[data-source="own"]');await page.setInputFiles('[data-material]',{name:'mine.png',mimeType:'image/png',buffer:photo});
   await page.waitForSelector('[data-material-status] .inline-ok');requests.length=0;await begin();
   const own=requests.find(r=>r.path.endsWith('chat/completions')).body.messages.at(-1).content;
   assertUI(own.find(p=>p.type==='image_url').image_url.url.startsWith('data:image/png;') && !own.some(p=>p.type==='input_audio'),'own PNG payload wrong');
+  assertUI(await page.locator('[data-outcome] audio[aria-label="听播报"][controls]').count()===1,'successful live02 speech control missing beside answer');
+  assertUI(!await page.locator('.process-panel').evaluate(e=>e.open),'successful technical process stayed open');
+  assertUI((await page.locator('[data-outcome] audio').getAttribute('src')).includes('temporary-speech'),'temporary speech URL unavailable');
+  assertUI(await page.evaluate(async()=>{const {draftFor}=await import('./js/experience.js');return draftFor('02-ai-glasses.bailian/default').input.name;})==='mine.png','current draft input did not follow selected file');
   await noOverflow(page);
+  const speechExportEvent=page.waitForEvent('download');await page.click('[data-outcome] [data-export]');
+  const speechExport=await speechExportEvent;const speechStream=await speechExport.createReadStream();let speechExportText='';for await(const chunk of speechStream)speechExportText+=chunk.toString();
+  assertUI(!speechExportText.includes('temporary-speech') && !speechExportText.includes('https://'),'live speech URL escaped into trace export');
+  await page.goto(`${BASE}#/me`);await page.waitForSelector('[data-history-open]');await page.locator('[data-history-open]').first().click();await page.waitForSelector('[data-history-result] [data-export]');
+  assertUI(await page.locator('[data-history-result] audio').count()===0,'saved result exposed temporary speech');
+  await page.goto(`${BASE}#/s/02-ai-glasses.bailian/default`);await page.waitForSelector('[data-question]');
   const saved = await page.evaluate(()=>JSON.parse(localStorage.getItem('aihw.history.v1')));
   assertUI(saved.length>=2 && !JSON.stringify(saved).includes(CRED.values.DASHSCOPE_API_KEY) && !JSON.stringify(saved).includes('data:image') && !JSON.stringify(saved).includes('https://'),'history persisted sensitive material');
   const count=requests.length;
@@ -183,12 +243,17 @@ async function main() {
   const schema = JSON.parse(readFileSync(path.join(docs,'../solutions/demo-standard/trace.schema.json')));
   const checked=spawnSync(process.env.PYTHON || 'python3',['-c','import json,sys,jsonschema\nd=json.load(sys.stdin)\nfor t in d["traces"]: jsonschema.validate(t,d["schema"])'],{input:JSON.stringify({schema,traces:actualTraces}),encoding:'utf8'});
   assertUI(checked.status===0,`actual browser traces violate schema: ${checked.stderr}`);
+  assertUI(actualTraces[0].status==='failed' && actualTraces[0].usageRecords.some(r=>r.requestId==='smoke-asr-request-123'),'failed ASR audit metadata missing');
   await page.goto(`${BASE}#/me`);await page.waitForSelector('[data-history-open]');await page.locator('[data-history-open]').first().click();await page.waitForSelector('[data-history-result] [data-export]');await noOverflow(page);
   const downloadEvent=page.waitForEvent('download');await page.click('[data-history-result] [data-export]');
   const exported=await downloadEvent;const stream=await exported.createReadStream();let exportedText='';for await(const chunk of stream)exportedText+=chunk.toString();
   const exportCheck=spawnSync(process.env.PYTHON || 'python3',['-c','import json,sys,jsonschema\nd=json.load(sys.stdin)\njsonschema.validate(d["trace"],d["schema"])'],{input:JSON.stringify({schema,trace:JSON.parse(exportedText)}),encoding:'utf8'});
   assertUI(exportCheck.status===0,`downloaded browser export invalid: ${exportCheck.stderr}`);
   await page.setInputFiles('[data-act="open-trace"]',{name:'record.json',mimeType:'application/json',buffer:Buffer.from(exportedText)});await page.waitForSelector('[data-slot="local-trace"] [data-export]');
+  const reexportEvent=page.waitForEvent('download');await page.click('[data-slot="local-trace"] [data-export]');
+  const reexported=await reexportEvent;const reexportStream=await reexported.createReadStream();let reexportedText='';for await(const chunk of reexportStream)reexportedText+=chunk.toString();
+  assertUI(JSON.stringify(JSON.parse(reexportedText).usageRecords)===JSON.stringify(JSON.parse(exportedText).usageRecords),'failed imported trace lost request/model/usage metadata');
+  assertUI(await page.locator('[data-slot="local-trace"] audio').count()===0,'imported text record exposed temporary speech');
   await page.reload();await page.waitForSelector('[data-history-open]');assertUI(await page.locator('[data-history-open]').count()>0,'history lost on reload');
   await page.locator('[data-history-delete]').first().click();await page.click('[data-history-clear]');assertUI(await page.locator('[data-history-open]').count()===0,'clear history failed');
   await page.goto(`${BASE}#/me?return=${encodeURIComponent('https://evil.test')}`);await page.waitForSelector('button[type="submit"]');assertUI(await page.locator('button[type="submit"]').textContent()==='保存','invalid return changed generic save');
@@ -199,7 +264,7 @@ async function main() {
   await page.evaluate(()=>window.restoreHistoryStorage());
   // Leaving a pending request must abort and never append history or leave a confirmation overlay.
   const priorHistory=await page.evaluate(()=>localStorage.getItem('aihw.history.v1'));failureMode='hold';await page.click('[data-act="live"]');await page.click('[data-sheet="go"]');await page.waitForSelector('[data-act="live"][disabled]');await page.evaluate(()=>location.hash='#/me');await page.waitForSelector('form[data-form]');await page.waitForTimeout(800);assertUI(await page.evaluate(()=>localStorage.getItem('aihw.history.v1'))===priorHistory,'page-leave added detached history');failureMode='';
-  console.log('体验 UI 回归通过：设置返回、草稿、样本提问、PNG、WAV、损坏/过长素材、401、停止、缺失用量、转写保留、历史重开/删除');
+  console.log('体验 UI 回归通过：设置返回、空提问保留、素材解码切换/重挂载/旧读取隔离、临时播报/导出隔离、样本提问、PNG、WAV、损坏/过长素材、401、停止、缺失用量、转写保留、失败记录导入再导出、历史重开/删除');
   await browser.close();
   console.log(results.join('\n'));
   console.log(`发往的百炼域名：${[...hostsSeen].join('、') || '无'}`);
