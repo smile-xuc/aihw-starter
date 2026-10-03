@@ -1,8 +1,8 @@
 # docs/ — GitHub Pages 门面页
 
-## 功能广场 APP 设计
+## 网页 APP（app/）
 
-站点首页提供「功能广场 APP」入口。完整设计集中在 [`designs/aihw-square/`](./designs/aihw-square/README.md)：
+站点首页入口是网页 APP（[`app/`](./app/)）。`designs/aihw-square/` 下的 HTML 原型为设计存档，说明见 [`designs/aihw-square/`](./designs/aihw-square/README.md)：
 
 - [完整可点击原型](./designs/aihw-square/app-v2.html?screen=home)
 - [18 屏页面总览](./designs/aihw-square/overview.html)
