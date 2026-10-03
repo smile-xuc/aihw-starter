@@ -60,6 +60,28 @@ test('chat reports SSE provider errors and HTTP errors; cancellation propagates'
   const controller=new AbortController();controller.abort();
   await withFetch(async(_url,init)=>{init.signal.throwIfAborted();},async()=>assert.rejects(chat(cred,{}, {signal:controller.signal}),{name:'AbortError'}));
 });
+test('failed SSE retains request identity and usage already delivered for cost reconciliation',async()=>{
+  const c=await constants('02-ai-glasses.bailian'),sol={id:'02-ai-glasses.bailian',samples:[]};
+  await withFetch(async url=>String(url).includes('live-data')?Response.json(c):stream([
+    {request_id:'partial-billed-request',choices:[{delta:{content:'部分回答'}}],usage:{prompt_tokens:100,completion_tokens:5}},
+    {error:{code:'Interrupted',message:'stream failed'}},
+  ]),async()=>assert.rejects(runInBrowser({root:new URL('../data/',import.meta.url)},sol,{id:'default'},cred,{push:()=>({update(){return this;}})},{input:imageInput()}),error=>{
+    assert.equal(error.usageRecords.length,1);
+    assert.equal(error.usageRecords[0].requestId,'partial-billed-request');
+    assert.deepEqual(error.usageRecords[0].usage,{prompt:100,completion:5,known:true});
+    return true;
+  }));
+});
+test('failed HTTP post records unknown possible charge and header request id without credentials',async()=>{
+  const c=await constants('07-recorder.bailian'),sol={id:'07-recorder.bailian',samples:[]};
+  await withFetch(async url=>String(url).includes('live-data')?Response.json(c):new Response(JSON.stringify({code:'Denied',message:'denied'}),{status:403,headers:{'x-request-id':'failed-asr-request'}}),async()=>assert.rejects(runInBrowser({root:new URL('../data/',import.meta.url)},sol,{id:'default'},cred,{push:()=>({update(){return this;}})},{input:audioInput()}),error=>{
+    assert.equal(error.usageRecords.length,1);
+    assert.equal(error.usageRecords[0].requestId,'failed-asr-request');
+    assert.equal(error.usageRecords[0].usage.known,false);
+    assert.ok(!JSON.stringify(error.usageRecords).includes('fixture-only'));
+    return true;
+  }));
+});
 test('02 sends only custom image MIME and typed question, exposes answer and honest timings', async () => {
   const x=context(await constants('02-ai-glasses.bailian'),{input:imageInput()}); const result=await run02(x);
   const content=x.payloads[0].messages[0].content;assert.equal(content.length,2);assert.equal(content[0].image_url.url,`data:image/png;base64,${Buffer.from(png).toString('base64')}`);assert.equal(content[1].text,'这是什么？');assert.deepEqual(x.assets,[]);

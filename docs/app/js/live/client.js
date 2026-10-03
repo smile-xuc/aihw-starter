@@ -104,7 +104,7 @@ async function apiError(res) {
   try { body = await res.json(); } catch { /* 非 JSON 错误体 */ }
   const err = body.error || body;
   return new ApiError(`HTTP ${res.status}${err.code ? ` ${err.code}` : ''}：${err.message || res.statusText || '请求失败'}`, {
-    status: res.status, code: err.code || '', requestId: body.request_id || err.id || '',
+    status: res.status, code: err.code || '', requestId: body.request_id || err.id || res.headers.get('x-request-id') || res.headers.get('x-dashscope-request-id') || '',
   });
 }
 
@@ -156,7 +156,7 @@ export async function chat(cred, payload, { onText, signal, onFallback, service 
   }, onFallback);
   const turn = { text: '', calls: [], usage: { prompt: 0, completion: 0, known: false }, firstTextAt: null, firstCallAt: null, finish_reason: null, requestId: res.headers.get('x-request-id') || res.headers.get('x-dashscope-request-id') || '', id: '' };
   const slots = new Map();
-  for await (const event of sse(res)) {
+  try { for await (const event of sse(res)) {
     if (event.error || event.code) {
       const err = event.error || event;
       throw new ApiError(`流式请求失败：${err.message || err.code || '服务端错误'}`, { code: err.code || '', requestId: event.request_id || turn.requestId });
@@ -186,6 +186,11 @@ export async function chat(cred, payload, { onText, signal, onFallback, service 
       const u = event.usage;
       turn.usage = { prompt: validCount(u.prompt_tokens) ? u.prompt_tokens : 0, completion: validCount(u.completion_tokens) ? u.completion_tokens : 0, known: validCount(u.prompt_tokens) && validCount(u.completion_tokens) };
     }
+  }
+  } catch (error) {
+    error.requestId ||= turn.requestId || turn.id;
+    error.usage ||= turn.usage;
+    throw error;
   }
   turn.calls = [...slots.keys()].sort((a, b) => a - b).map((k) => slots.get(k));
   return turn;

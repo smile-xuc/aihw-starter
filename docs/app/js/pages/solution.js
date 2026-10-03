@@ -9,6 +9,7 @@ import { experienceChips } from './home.js';
 
 import { PRODUCTS, draftFor, resetDraft, setupRoute, decodeFile, browserTrace, renderOutcome, redact } from '../experience.js';
 import { saveHistory } from '../history.js';
+import { PROJECTS, referencePosition } from '../projects.js';
 
 const PER_DAY = 30;
 
@@ -56,6 +57,7 @@ function costSection(reg, sol) {
     </dl>
     <div class="live-cost hidden"></div>
     <p class="info-note">${icon('info')}<span>${c?.note || 'mock 用量为示意值'}，只用来说明量级；真跑以接口返回的 usage 计，最终以账单为准。单价表与查证日期见 demo 说明，替代路线（如套件 License）见品类算账文档。</span></p>
+    <a class="secondary-action block" href="#/cost-lab">用自己的价格说明与运行记录核对账单</a>
   </div>`;
 }
 
@@ -72,6 +74,7 @@ function hardwareSection(reg, sol) {
       <div class="part"><strong>联网</strong><small>Wi-Fi / 4G，或经手机 App 中转；模型在云端</small></div>
     </div>
     <p class="info-note">${icon('info')}<span>芯片与板卡：${[...(hw.chips || []), ...(hw.boards || [])].join('、') || '还没有数据，接入芯片验证后在这里显示'}。</span></p>
+    ${PROJECTS.filter(p=>p.scene===sol.id).map(p=>html`<a class="row-card" href="#/hardware/${p.id}"><span class="grow"><strong>${p.title}</strong><small>完整链路设计、原型 BOM 与研发预算；板卡待验证</small></span>${icon('chevron')}</a>`)}
     <div class="panel"><h3>模型</h3>
       ${(sol.models || []).map((m) => html`<div class="model-row"><code>${m.id}</code><p>${m.role}${m.regions ? `（仅 ${m.regions.map((r) => regionLabel(stack, r)).join('、')}）` : ''}</p></div>`)}
     </div>
@@ -138,7 +141,8 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
       <h1>${product?.title || sol.title}</h1>
       ${product ? html`<p class="small">${sol.title}</p>` : ''}
       <p>${product?.description || sol.summary}</p>
-      <div class="chips">${[...experienceChips(reg, sol), verificationBadge(sol)].map((c) => html`<span class="chip ${c.cls}">${c.label}</span>`)}</div>
+      <div class="chips">${[...experienceChips(reg, sol), verificationBadge(sol), referencePosition(sol)].map((c) => html`<span class="chip ${c.cls}">${c.label}</span>`)}</div>
+      <p class="small">${referencePosition(sol).note} 本仓代码 MIT；模型服务、素材与第三方组件按各自许可 review。</p>
       <nav class="qnav" aria-label="四个问题">
         <a href="#effect" data-jump="effect"><b>效果</b>怎样</a><a href="#cost" data-jump="cost"><b>成本</b>一次多少钱</a>
         <a href="#hardware" data-jump="hardware"><b>硬件</b>要什么</a><a href="#compliance" data-jump="compliance"><b>合规</b>有哪些义务</a>

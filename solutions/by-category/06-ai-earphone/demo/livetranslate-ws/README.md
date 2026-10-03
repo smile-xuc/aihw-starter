@@ -1,5 +1,7 @@
 # livetranslate-ws — AI 耳机同传最小 demo
 
+定位：**社区验证 demo**。用于学习和验证该能力；模型服务、素材／组件权利及产品交付条件须另行核对，当前不标作已完成商业化产品。
+
 演示「音频帧 → `translation.text` / `translation.audio`」回调节奏。
 
 对应文档：[`02-solution.md`](../../02-solution.md)。

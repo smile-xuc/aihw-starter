@@ -1,5 +1,7 @@
 # intent-router — Agent 硬件端侧意图分发
 
+定位：**社区验证 demo**。用于学习和验证该能力；模型服务、素材／组件权利及产品交付条件须另行核对，当前不标作已完成商业化产品。
+
 三分法：`local` / `cloud` / `hybrid`，对应 [`02-solution.md`](../../02-solution.md) 第五节。
 
 ## 运行

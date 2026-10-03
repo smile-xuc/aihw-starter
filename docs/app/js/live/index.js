@@ -95,14 +95,24 @@ export async function runInBrowser(reg, sol, variant, cred, stage, { signal, onF
     assetText: async (path) => (await fetchSample(path)).text(),
     hasAsset: (path) => (sol.samples || []).some((s) => s.path === path),
     chat: async (payload, opts = {}) => {
-      const turn = await chat(cred, payload, { signal, onFallback, ...opts });
+      let turn;
+      try { turn = await chat(cred, payload, { signal, onFallback, ...opts }); }
+      catch (error) {
+        recordUsage(payload.model, error.requestId, error.usage || { known: false });
+        throw error;
+      }
       recordUsage(payload.model, turn.requestId || turn.id, turn.usage);
       if (!turn.usage.known) missingUsage = true;
       if (firstTextAt == null && turn.firstTextAt != null) firstTextAt = turn.firstTextAt;
       return turn;
     },
     post: async (service, path, payload, headers = {}) => {
-      const response = await postJson(cred, service, path, payload, { headers, signal, onFallback });
+      let response;
+      try { response = await postJson(cred, service, path, payload, { headers, signal, onFallback }); }
+      catch (error) {
+        recordUsage(payload.model, error.requestId, { known: false }, 'post');
+        throw error;
+      }
       const known = recordUsage(payload.model, response.request_id, response.usage, payload.model === c.TTS_MODEL ? 'tts' : 'post');
       if (!known) incompletePostUsage = true;
       return response;

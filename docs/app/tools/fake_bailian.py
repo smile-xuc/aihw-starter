@@ -106,7 +106,7 @@ def main() -> None:
     ap.add_argument("--port", type=int, default=8790)
     args = ap.parse_args()
     server = HTTPServer(("127.0.0.1", args.port), Handler)  # 单线程：mock 有会话状态，导入时还要改 sys.path
-    print(f"fake bailian on 127.0.0.1:{args.port}", flush=True)
+    print(f"fake bailian on 127.0.0.1:{server.server_port}", flush=True)
     server.serve_forever()
 
 

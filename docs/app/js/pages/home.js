@@ -5,6 +5,7 @@ import { runnerCount, solutionRunnable } from '../live/index.js';
 import { costInfo, range, verificationBadge } from '../meta.js';
 import { loadCredentials } from '../settings.js';
 import { brandmark, fmtCny, html, icon, mountPage } from '../ui.js';
+import { referencePosition } from '../projects.js';
 
 export function experienceChips(reg, sol) {
   const modes = sol.experience?.modes || [];
@@ -28,6 +29,7 @@ function card(reg, cat) {
     ...experienceChips(reg, sol),
     ...(sol.compliance || []).map((c) => ({ label: c.label, cls: 'stat' })),
     verificationBadge(sol),
+    referencePosition(sol),
   ] : [{ label: '暂无参考方案', cls: '' }];
   return html`<a class="cat-card" href="#/c/${cat.id}">
     <div class="row1">
@@ -70,6 +72,7 @@ export function renderHome(view, reg) {
     </section>
     <section class="featured-grid" aria-label="精选体验">${Object.entries(PRODUCTS).map(([id,p],i)=>html`<a class="featured-card ${i ? 'recorder' : 'vision'}" href="#/s/${id}/default"><span class="feature-art" aria-hidden="true">${icon(i ? 'file' : 'play')}</span><span class="eyebrow">${i ? '听见，然后整理' : '看见，然后理解'}</span><h2>${p.title}</h2><p>${i ? '录音 → 要点、决定、待办' : '照片 + 提问 → 回答与播报'}</p><span class="feature-link">免费示例 / 我的 Key ${icon('chevron')}</span></a>`)}</section>
     ${recent.length ? html`<section class="section"><div class="section-title"><h2>最近体验</h2><a href="#/me">查看历史</a></div><div class="panel">${recent.map(r=>html`<a class="history-preview" href="#/me?history=${encodeURIComponent(r.id)}"><span><strong>${PRODUCTS[r.trace.solution]?.title || r.trace.title}</strong><small>${new Date(r.trace.ran_at).toLocaleString('zh-CN')}</small></span><span class="chip">${statusLabel(r.trace)}</span></a>`)}</div></section>` : ''}
+    <section class="workspace-links" aria-label="继续验证"><a class="panel" href="#/hardware"><strong>把能力做进硬件</strong><p>3 条 ESP32 路线 · BOM、研发节奏与商用条件</p></a><a class="panel" href="#/cost-lab"><strong>准备成本跑测</strong><p>你提供价格说明，用调用证据核对账单</p></a></section>
     ${modeBanner(reg)}
     <section class="section">
       <div class="section-title"><h2>品类 <small>${reg.categories.length}</small></h2><small>品类 × 栈</small></div>

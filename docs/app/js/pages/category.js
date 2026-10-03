@@ -2,6 +2,7 @@ import { repoLink } from '../data.js';
 import { costInfo, PLANNED_STACKS, range, verificationBadge } from '../meta.js';
 import { fmtCny, html, icon, mountPage } from '../ui.js';
 import { experienceChips } from './home.js';
+import { referencePosition } from '../projects.js';
 
 const DOCS = [
   ['readme', '品类概述', 'README'],
@@ -19,7 +20,7 @@ function solutionRow(reg, sol) {
     <span class="row-symbol">${(stack?.name || sol.stack).replace(/^阿里云/, '').slice(0, 2)}</span>
     <span class="grow"><strong>${sol.title.split('·').pop().trim()}</strong>
       <small>${sol.summary}</small>
-      <span class="chips">${[...experienceChips(reg, sol), verificationBadge(sol)].map((x) => html`<span class="chip ${x.cls}">${x.label}</span>`)}${c ? html`<span class="chip stat">¥${fmtCny(range(c.low, c.high))} / 次（${c.label}）</span>` : ''}</span>
+      <span class="chips">${[...experienceChips(reg, sol), verificationBadge(sol), referencePosition(sol)].map((x) => html`<span class="chip ${x.cls}">${x.label}</span>`)}${c ? html`<span class="chip stat">¥${fmtCny(range(c.low, c.high))} / 次（${c.label}）</span>` : ''}</span>
     </span>${icon('chevron')}</a>`;
 }
 
@@ -64,7 +65,7 @@ export function renderCategory(view, reg, id) {
     ${cat.topic_demos?.length ? html`<section class="section">
       <details class="fold"><summary>专题 demo（${cat.topic_demos.length}）</summary>
         <div class="fold-body"><p class="small">参考 demo 之前的专题示例，保留原路径。</p>
-          <div class="link-list">${cat.topic_demos.map((d) => html`<a href="${repoLink(reg, d.path, true)}" rel="noopener">${d.title}<span>GitHub ${icon('link')}</span></a>`)}</div>
+          <div class="link-list">${cat.topic_demos.map((d) => html`<a href="${repoLink(reg, d.path, true)}" rel="noopener"><span>${d.title}<small> · 社区专题 demo · 产品化待 review</small></span><span>GitHub ${icon('link')}</span></a>`)}</div>
         </div></details>
     </section>` : ''}
 

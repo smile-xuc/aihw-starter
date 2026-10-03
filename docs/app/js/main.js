@@ -3,6 +3,8 @@ import { renderCategory } from './pages/category.js';
 import { renderHome } from './pages/home.js';
 import { renderMe } from './pages/me.js';
 import { renderSolution } from './pages/solution.js';
+import { renderHardware } from './pages/hardware.js';
+import { renderCostLab } from './pages/cost-lab.js';
 import { applyTheme } from './settings.js';
 import { html, icon, mountPage } from './ui.js';
 
@@ -40,7 +42,8 @@ async function route() {
   if (deep && !location.hash) history.replaceState(null, '', `${location.pathname}#/s/${encodeURIComponent(deep)}`);
   const parts = (location.hash.replace(/^#\/?/, '').split('?')[0] || '').split('/').filter(Boolean).map(decodeURIComponent);
   const page = parts[0] || '';
-  setNav(page === 'me' ? 'me' : 'home');
+  view.dataset.page = page || 'home';
+  setNav(['me', 'hardware', 'cost-lab'].includes(page) ? page : 'home');
   try {
     if (page === 'me') {
       const reg = await registry().catch(() => null);
@@ -52,6 +55,8 @@ async function route() {
       let result;
       if (page === 'c') result = renderCategory(view, reg, parts[1] || '');
       else if (page === 's') result = await renderSolution(view, reg, parts[1] || '', parts[2] || '', { isCurrent });
+      else if (page === 'hardware') result = renderHardware(view, reg, parts[1] || '');
+      else if (page === 'cost-lab') result = renderCostLab(view, reg);
       else result = renderHome(view, reg);
       if (!isCurrent()) { result?.cleanup?.(); return; }
       cleanup = result?.cleanup || null;

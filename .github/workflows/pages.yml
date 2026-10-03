@@ -58,3 +58,12 @@ jobs:
           PLAYWRIGHT_CORE="$RUNNER_TEMP/pw/node_modules/playwright-core/index.mjs" \
           CHROME="$(command -v google-chrome)" \
           node docs/app/tools/smoke.mjs
+          PLAYWRIGHT_CORE="$RUNNER_TEMP/pw/node_modules/playwright-core/index.mjs" \
+          CHROME="$(command -v google-chrome)" \
+          node docs/app/tools/workspace-smoke.mjs
+          PLAYWRIGHT_CORE="$RUNNER_TEMP/pw/node_modules/playwright-core/index.mjs" \
+          CHROME="$(command -v google-chrome)" \
+          node docs/app/tools/cost-run.mjs --mock \
+            --plan docs/app/tools/cost-fixtures/plan-example.json \
+            --prices docs/app/tools/cost-fixtures/prices-example.json \
+            --out "$RUNNER_TEMP/cost-mock"
