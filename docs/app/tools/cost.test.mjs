@@ -38,6 +38,13 @@ test('mock is excluded; missing dates and effective prices never create a comple
   assert.equal(buildLedger([trace()],missing).total,null);
   assert.equal(buildLedger([],profile()).total,null);
 });
+test('price effective date starts at the billing region midnight in Beijing and Singapore',()=>{
+  for(const region of ['cn-beijing','ap-southeast-1']){
+    const p={...profile(),region,effective_date:'2026-10-04'};
+    assert.equal(buildLedger([trace({region,ran_at:'2026-10-03T15:59:59Z'})],p).total,null);
+    close(buildLedger([trace({region,ran_at:'2026-10-03T16:00:00Z'})],p).total,0.0024);
+  }
+});
 test('overflow cannot serialize a falsely known price or accounting total',()=>{
   const huge=validateProfile({...profile(),rates:[{model:'model',components:[{counter:'prompt',per:1,price:1},{counter:'completion',per:1,price:1}]}]});
   assert.equal(priceUsage(record({usage:{known:true,prompt:1e308,completion:1e308}}),huge,'cn-beijing').cost,null);

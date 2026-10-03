@@ -101,7 +101,8 @@ export function buildLedger(traces,rawProfile,{billAmount=null,billScopeConfirme
       }
       let price=priceUsage(safe,profile,trace.region);
       const when=Date.parse(trace.ran_at||'');
-      if(!Number.isFinite(when)||when<Date.parse(profile.effective_date+'T00:00:00Z'))price={cost:null,reason:'缺少运行日期或早于单价生效日',components:[]};
+      // Both supported billing regions use UTC+8; a regional calendar date is not UTC midnight.
+      if(!Number.isFinite(when)||when<Date.parse(profile.effective_date+'T00:00:00+08:00'))price={cost:null,reason:'缺少运行日期或早于单价生效日',components:[]};
       const row={scene:clean(trace.solution),variant:clean(trace.variant),ran_at:clean(trace.ran_at),status:clean(trace.status)||'unknown',...safe,...price};
       if(!safe.requestId)row.reason+='；缺少请求 ID，不能逐请求核账';
       rows.push(row);if(safe.requestId)seen.set(key,{signature,row});
