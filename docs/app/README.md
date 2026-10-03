@@ -87,7 +87,7 @@ npm install --no-save --prefix /tmp/pw playwright-core
 PLAYWRIGHT_CORE=/tmp/pw/node_modules/playwright-core/index.mjs CHROME=$(command -v google-chrome) node docs/app/tools/smoke.mjs
 ```
 
-冒烟测试使用测试凭证与本地假百炼，不产生云端调用。它检查页面、素材输入、配置返回、结果与历史的行为及手机宽度布局；真实接口、实际手机 Safari / Android Chrome 仍须按 [验收记录](VERIFY_BROWSER.md) 实测。
+冒烟测试使用测试凭证与本地假百炼，不产生云端调用。它检查页面、素材输入、配置返回、结果与历史的行为及手机宽度布局；另用允许 Service Worker 的独立桌面 Chrome 上下文，验证首次安装后的断网刷新、两个精选样本的离线结果/回放/导出和缓存隔离。真实接口、实际手机 Safari / Android Chrome 仍须按 [验收记录](VERIFY_BROWSER.md) 实测。
 
 ## 部署与 CI
 
