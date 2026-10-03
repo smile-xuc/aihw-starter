@@ -33,10 +33,12 @@
 - **定价**：
   - 首发价：待核实
   - 现价：乐乐 $99 USD（含 1 个月试用）· [乐乐产品页](https://folotoy.com/zh/products/teddy/)；Fofo $129 USD（含 1 个月试用）· [Fofo 产品页](https://folotoy.com/zh/products/fofo/) · 查证 2026-09-30
-  - MSRP：待核实
+  - MSRP：乐乐 $99.00 USD（官方常规价）· [FoloToy 官方商店](https://store.folotoy.com/products/folotoy-ai-teddy) · 查证 2026-10-03；Fofo 待核实
   - 订阅：$4.9 USD/月（乐乐、Fofo 产品页均写之后每月 $4.9）· 查证 2026-09-30
 - **目标市场**：儿童陪伴与海外 Mandarin/English 家庭场景
-- **AI 能力**：GPT 等大模型驱动对话、故事、多角色；强调记忆与持续对话
+- **AI 能力**：
+  - AI 功能：乐乐（英文名 Kumma）可对话、讲教育性故事，并按用户的个性和需求调整回应；Fofo 按下中央录音键即可对话，内建多种角色，能记住对话内容做多轮对话。实现方式：产品页写由 GPT 驱动；乐乐内置 AI 魔匣（Magicbox），Fofo 是改造后搭载 AI 芯片的火火兔 G6。公司新闻稿称其 AI 玩具默认不依赖单一大模型提供方，架构为可配置的基础模型层 + 自研安全与审核模块（在模型前后两端运行），安全规则经云端控制层下发（公司层面，非本款实现）（[乐乐产品页](https://folotoy.com/zh/products/teddy/) · [Fofo 产品页](https://folotoy.com/zh/products/fofo/) · [FoloToy 官网新闻（2025-12-20）](https://folotoy.com/news/building-safe-accessible-ai-for-families/)，查证 2026-10-03）
+  - GPT 等大模型驱动对话、故事、多角色；强调记忆与持续对话
 - **大模型方案**：乐乐页写 GPT 驱动、ChatGPT 对话；Fofo 页写支持 ChatGPT（查证 2026-09-30）
 - **公开数据**：待核实
 - **关键差异化**：① 硬件低价 + 明确会员；② 可自托管服务端开源生态（FoloToy Server）；③ 毛绒形态降低 AI 硬件门槛
@@ -100,7 +102,9 @@
   - MSRP：$150 USD · 美国 · [官网首页](https://heycurio.com/) · [Grem 单品页](https://heycurio.com/products/v2/grem-2) · 查证 2026-09-30
   - 订阅：FAQ 写 "Free chat and baseline features will always be available"。Grem 页原文 "no subscription"
 - **目标市场**：儿童语音陪伴。FAQ 写主要面向 3 至 12 岁
-- **AI 能力**：语音对话，App 配置。FAQ 写语音转写后音频会很快删除，转写文本保存 90 天后自动删除
+- **AI 能力**：
+  - AI 功能：按住电源键或摇晃玩具即开机进入聆听模式，孩子说完停顿后玩具自动回应，做无屏语音对话；家长在 App 设置时提供的孩子信息（如怎么称呼孩子）可用来让对话更个性化；对话转写保存最多 90 天，家长可在 App 中查看或删除。实现方式：玩具内装 Curio Voice Box 2，经 Wi-Fi 联网；隐私政策称语音转文字、交给第三方大模型、再转语音；列出的处理方含 Azure、OpenAI、Perplexity，未写分工（[Grem 单品页](https://heycurio.com/products/v2/grem-2) · [FAQ](https://heycurio.com/faq) · [隐私政策](https://heycurio.com/privacy)，查证 2026-10-03）
+  - 语音对话，App 配置。FAQ 写语音转写后音频会很快删除，转写文本保存 90 天后自动删除
 - **大模型方案**：官网未公开具体基座模型（非千问默认绑定）
 - **公开数据**：未见公开销量
 - **关键差异化**：① FAQ 写基础对话持续可用；② 无屏，靠 App 配置
@@ -118,12 +122,14 @@
 - **形态**：带屏的小型桌面儿童陪伴机器人。FAQ 称 Miko Mini 为 "GPT-powered conversational learning robot"
 - **定价**：
   - 首发价：待核实
-  - 现价：Miko Mini $149.00 USD · 美国 · [产品页](https://miko.ai/products/miko-mini) · 查证 2026-09-30。Miko 3 $299.00 USD · [产品页](https://miko.ai/products/miko-3) · 查证 2026-09-30
-  - MSRP：待核实
+  - 现价：Miko Mini $149.00 USD · 美国 · [产品页](https://miko.ai/products/miko-mini) · 查证 2026-09-30。Miko 3 $299.00 USD（官网售价）· [产品页](https://miko.ai/products/miko-3) · 查证 2026-10-03
+  - MSRP：Miko Mini $199.00 USD（官方常规价）· [产品页](https://miko.ai/products/miko-mini) · 查证 2026-10-03；Miko 3 待核实
   - 划线价：Miko Mini $199.00 USD（同页划线价）；Miko 3 同现价
   - 订阅：Miko Max 现价 $89.00 USD/年（划线价 $99.00 USD），月付 $14.99 USD · [Miko Max](https://miko.ai/products/miko-max) · 查证 2026-09-30
 - **目标市场**：儿童对话式学习。Google Cloud 案例写受众为 4 至 12 岁
-- **AI 能力**：FAQ 写 GPT-powered 对话式学习。Google Cloud 案例章节 "Building smarter, safer bots with Gemini" 引用负责人原话，称 Gemini 是实现安全、可靠、符合文化情境的儿童交互的关键；结果栏写加快发布周期，并写识别与减少幻觉
+- **AI 能力**：
+  - AI 功能：说「Hey Miko」唤醒后可随意提问、做知识类对话；Story Maker 让孩子编写并讲述自己的故事；通过平和的对话帮孩子识别情绪、练习正念；能识别并回应用户的声音和面孔；对话按 5–10 岁儿童做年龄适配与内容审核。实现方式：FAQ 称 Miko Mini 为 GPT 驱动的对话式学习机器人，未写型号；机身有摄像头和麦克风（可一键关闭）及 ToF 测距传感器，需连 Wi-Fi；记忆与多语言能力随 Miko Max 订阅解锁（[Miko Mini 产品页](https://miko.ai/products/miko-mini) · [FAQ](https://miko.ai/pages/miko-3-faqs)，查证 2026-10-03）
+  - FAQ 写 GPT-powered 对话式学习。Google Cloud 案例章节 "Building smarter, safer bots with Gemini" 引用负责人原话，称 Gemini 是实现安全、可靠、符合文化情境的儿童交互的关键；结果栏写加快发布周期，并写识别与减少幻觉
 - **大模型方案**：FAQ 写 GPT-powered，未写具体型号。官网未公开具体基座模型（非千问默认绑定）。Google Cloud 案例把 Gemini 写在安全相关章节，不是对话主模型的型号说明
 - **公开数据**：未见公开销量
 - **关键差异化**：① 硬件标价与 Miko Max 年费分开；② FAQ 与 Google Cloud 案例写的是两层：对话方案、安全层；③ 带屏表情互动
@@ -145,7 +151,9 @@
   - MSRP：新闻稿写オープン価格
   - 订阅：新闻稿与产品站写 ¥495 JPY/月起（含税）。产品站另列 ¥990 JPY、¥1,980 JPY、¥3,300 JPY 三档（含税）· [产品站](https://poketomo.com/) · 查证 2026-09-30
 - **目标市场**：日本市场的口袋型陪伴机器人，需配合 App 与月费
-- **AI 能力**：产品站写对话、记住用户、按摄像头看到的内容聊天、写日记、Google 日历联动，以及两台之间对话。博客把 Google 日历联动写为已上线的功能更新
+- **AI 能力**：
+  - AI 功能：用生成 AI 与用户对话，倾听、共情和鼓励，聊得越多越了解用户，之后会主动提起以前聊过的事；和用户一起看风景、出门，把看到的东西存为共同回忆，并写日记回顾每天；两台ポケとも之间可以对话；可与 Google 日历联动；用手势动作和会发出彩虹色光的腹部灯表达情绪；机器人与手机 App 共享记忆。实现方式：靠机身 5M AF 摄像头、语音识别、人脸识别加生成式 AI 实现，另有麦克风和扬声器、Qualcomm Snapdragon 662 处理器与自有 OS；相机相关功能只在机器人上有。未公开模型名（[产品站](https://poketomo.com/) · [Sharp 新闻稿（2025-10-27）](https://corporate.jp.sharp/news/251027-a.html)，查证 2026-10-03）
+  - 产品站写对话、记住用户、按摄像头看到的内容聊天、写日记、Google 日历联动，以及两台之间对话。博客把 Google 日历联动写为已上线的功能更新
 - **大模型方案**：产品站写使用生成 AI 进行对话，未写模型名。官网未公开具体基座模型（非千问默认绑定）
 - **公开数据**：未见公开销量。新闻稿写原定 2025-11-21 发售，后改为 2025-12-05。第 2 弹博客写预计 2026-12 发售并接受预约
 - **关键差异化**：① 本体写オープン価格，服务费按月；② 产品站写使用生成 AI 进行对话；③ 产品站写两台之间对话，并按摄像头内容聊天、写日记
@@ -168,8 +176,10 @@
   - MSRP：待核实（查证 2026-10-01）
   - 订阅：购买指南写目前核心体验不强制月订阅（原文 "no mandatory monthly subscription for Loona Petbot's core experience"）。产品页 FAQ 写 "Loona offers free ChatGPT 4o function for the moment." 政策可能调整，以官网为准
 - **目标市场**：家庭与儿童陪伴。产品页写家庭成员识别、儿童向 Google Blockly，以及 remote monitoring
-- **AI 能力**：产品页写人脸识别并记住偏好、手势与表情识别、室内导航（home navigation）、Google Blockly 编程、App 游戏，以及 remote monitoring。对话写 "Interactive Nature Powered by GPT"，并写在互动中积累记忆、形成个性化陪伴。远程监测是否走 Loona App：待核实（查证 2026-10-01）
-- **大模型方案**：产品页写 "Using Chat GPT" 与 "Powered by GPT"。FAQ 原文为 "ChatGPT 4o"（问句 "Will Loona charge for ChatGPT 4o function?"）。字面「GPT-4o」待核实（查证 2026-10-01）。非千问默认绑定
+- **AI 能力**：
+  - AI 功能：人脸识别家庭成员并记住各自偏好；识别手势与表情；声源定位，会转向说话的人；检测人和障碍物、保持安全距离并规划室内路线，低电量时自行回充；可对话、讲故事、回答知识问题；给 Loona 看物品、图片或周围环境，它会描述并编成故事；按用户口述的想象生成数字画作；在互动中积累记忆、做个性化陪伴。实现方式：720P RGB 相机、3D ToF 传感器、加速度计与陀螺仪、4 麦克风阵列，主处理器 5 TOPS，官网称尽量在机身本地处理数据；语音指令与对话由 Amazon Lex 与 ChatGPT 提供，FAQ 写目前免费提供 ChatGPT 4o 功能（[Loona Petbot 产品页](https://keyirobot.com/products/petbot) · [Loona App 页](https://keyirobot.com/loona-petbot-app)，查证 2026-10-03）
+  - 产品页写人脸识别并记住偏好、手势与表情识别、室内导航（home navigation）、Google Blockly 编程、App 游戏，以及 remote monitoring。对话写 "Interactive Nature Powered by GPT"，并写在互动中积累记忆、形成个性化陪伴。远程监测走 Loona App：KEYi 官方博客写可在 Loona App 里远程操控 Loona 在家中移动并查看画面，视频经 Amazon KVS（Kinesis Video Streams）传输（[KEYi 博客](https://keyirobot.com/blogs/loona-tutorials/getting-started-with-loona-your-app-download-setup-guide-for-a-seamless-robot-pet-experience)，查证 2026-10-03）
+- **大模型方案**：产品页写 "Using Chat GPT" 与 "Powered by GPT"。FAQ 原文为 "ChatGPT 4o"（问句 "Will Loona charge for ChatGPT 4o function?"）。KEYi 博客写 GPT-4o 即将接入（Coming Soon）；是否已上线待核实（[KEYi 博客](https://keyirobot.com/blogs/loona-tutorials/loona-and-gpt-the-journey-of-a-companion-robot)，查证 2026-10-03）。非千问默认绑定
 - **公开数据**：未见公开销量。产品页写 Space Edition 为 "3,000 numbered explorers"、"No restock"
 - **关键差异化**：① 轮式室内导航，并写低电量自行返回充电坞；② Google Blockly 与 App 游戏；③ 人脸识别记住偏好，互动中积累个性化记忆
 - **商业模式**：硬件销售。核心体验按购买指南目前不强制月订阅。政策可能调整，以官网为准
