@@ -41,9 +41,9 @@
   - 订阅：会员年费 One $199 USD / Peak $239 USD / Life $359 USD（含对应硬件）
 - **目标市场**：运动表现与恢复用户
 - **AI 能力**：
-  - AI 功能：WHOOP AI 指导在 App 内以对话回答训练强度、恢复、睡眠、HRV 趋势等问题；每天早上 Daily Outlook 建议该加量还是休息，晚上 Day in Review 回顾当天指标与行为；按用户在 My Memory 中留下的目标与习惯主动推送提醒。实现方式：腕带 24/7 生物数据（HRV、睡眠、Strain、Recovery）+ WHOOP 自有算法与自建机器学习模型 + 微调的大语言模型，指标匿名化后交给第三方大模型合作方，未写模型名（[WHOOP AI guidance](https://www.whoop.com/us/en/thelocker/new-ai-guidance-from-whoop/)，查证 2026-10-03）
+  - AI 功能：App 内 WHOOP Coach 可对话提问，按恢复与训练历史推荐当天 Strain 目标，分析 HRV、静息心率和睡眠负债防止过度训练；早上 Daily Outlook 按 Strain、恢复和天气等环境条件给出活动建议，并预测精力水平与最佳训练时段；训练后 Activity Insights 解释本次 Strain、心率区间与压力表现；晚上 Day in Review 用就寝时间推荐算法给出建议入睡时段；My Memory 可查看、增删 Coach 用来个性化的背景信息。实现方式：腕带生物数据（Strain、Recovery、Sleep、HRV、RHR）+ GPS 与第三方天气 API + WHOOP 算法；对话由第三方大模型提供方 OpenAI 驱动，只传匿名数据，未写模型版本（[WHOOP 支持文：How to Use the AI-Powered WHOOP Coach](https://support.whoop.com/s/article/How-to-Use-the-AI-Powered-WHOOP-Coach?language=en_US) · [WHOOP 支持文：Privacy Principles Applied to the AI-Powered WHOOP Coach](https://support.whoop.com/s/article/Privacy-Principles-Applied-to-the-AI-Powered-WHOOP-Coach)，查证 2026-10-03）
   - 公开含 AI coach / 健康跨度等（视档位）
-- **大模型方案**：WHOOP 2023 年新闻稿写 WHOOP Coach 用 OpenAI GPT-4；现行 AI 指导页写用「fine-tuned large language model」，指标匿名化后交给第三方大模型合作方，未写现用模型名与版本（非千问默认绑定）（[WHOOP Coach 新闻稿（2023-09-26）](https://www.whoop.com/us/en/press-center/whoop-unveils-the-new-whoop-coach-powered-by-openai/) · [WHOOP AI guidance](https://www.whoop.com/us/en/thelocker/new-ai-guidance-from-whoop/)，查证 2026-10-03）
+- **大模型方案**：OpenAI（WHOOP 官方支持文称其为驱动 WHOOP Coach 的第三方大模型提供方；只向 OpenAI 传匿名数据，双方有 Zero Retention Policy）；未写模型名与版本（非千问默认绑定）（[WHOOP 支持文：Privacy Principles Applied to the AI-Powered WHOOP Coach（2025-05-08）](https://support.whoop.com/s/article/Privacy-Principles-Applied-to-the-AI-Powered-WHOOP-Coach)，查证 2026-10-03）
 - **公开数据**：待核实
 - **关键差异化**：① 订阅含硬件；② 取消订阅即失核心体验；③ 无屏专注数据
 - **商业模式**：强制订阅
@@ -128,15 +128,15 @@
 - **官网/渠道**：[The Verge 动手体验（2026-07-22）](https://www.theverge.com/tech/968728/samsung-galaxy-watch-9-ultra-2-hands-on-wearables-smartwatches) · [9to5Google（2026-07-22）](https://9to5google.com/2026/07/22/galaxy-watch-9-watch-ultra-2-are-official-as-samsung-makes-the-jump-to-snapdragon/) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · [AT&T 40 mm](https://www.att.com/buy/wearables/samsung-galaxy-watch9-40mm.html) · [AT&T 44 mm](https://www.att.com/buy/wearables/samsung-galaxy-watch9-44mm.html)
 - **形态**：SammyGuru 写圆形表盘。The Verge 写 40 mm / 44 mm；较小尺寸电池约增 20% 至 390 mAh，较大尺寸由 435 mAh 增至 445 mAh；芯片由 Exynos 换为 Snapdragon Wear Elite
 - **定价**：
-  - 首发价：$379.99 USD 起（蓝牙）/ $429.99 USD 起（LTE）· 美国 · [Samsung 美国新闻稿（2026-07-22）](https://news.samsung.com/us/samsung-galaxy-watch-ultra2-watch9-health-companion) · 新闻稿写 2026-07-22 起美国预购，2026-08-07 正式开售 · 查证 2026-10-03
+  - 首发价：待核实
   - 现价：$379.99 USD · 美国 · 40 mm 蓝牙 · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · 查证 2026-09-30
   - 现价：$409.99 USD · 美国 · 44 mm 蓝牙 · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · 查证 2026-09-30
   - 现价：$559.99 CAD · 加拿大 · 44 mm 蓝牙 · [Aubaine](https://aubaine.ca/en/blog/apple-watch-vs-galaxy-watch-which-smartwatch-should-you-buy-in-2026) · 查证 2026-09-30
   - MSRP：待核实
   - LTE 款：$429.99（40 mm）/ $459.99（44 mm）USD · 美国 · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/) · [AT&T 40 mm](https://www.att.com/buy/wearables/samsung-galaxy-watch9-40mm.html) · [AT&T 44 mm](https://www.att.com/buy/wearables/samsung-galaxy-watch9-44mm.html) · 查证 2026-10-01
-- **目标市场**：注重日常健康、想靠持续的活动与睡眠追踪养成健康习惯的用户；需搭配 Android 13 及以上、内存 1.5 GB 以上的手机（[Samsung 美国新闻稿（2026-07-22）](https://news.samsung.com/us/samsung-galaxy-watch-ultra2-watch9-health-companion)，查证 2026-10-03）
+- **目标市场**：注重日常健康、想靠持续的活动与睡眠追踪养成健康习惯的用户；需搭配 Android 13 及以上、内存 1.5 GB 以上的手机（[Samsung Mobile Press 新闻稿（2026-07-22）](https://samsungmobilepress.com/articles/new-galaxy-watch-ultra2-watch9-health-companions)，查证 2026-10-03）
 - **AI 能力**：
-  - AI 功能：抬腕即可唤起内置 Google Gemini，无需唤醒词或按键，用语音问答、整理任务、跨应用调取信息；Energy Score 按近期睡眠、活动和睡眠心率给出每日恢复评分，并附 Galaxy AI 汇总的洞察；Heart Health Score 按睡眠时长、血压趋势、BMI、高强度活动四项给出心血管健康分与改善建议；睡眠呼吸暂停功能整夜监测血氧，评估中重度阻塞性睡眠呼吸暂停风险（FDA 许可，新闻稿写有 AI 算法支撑）。实现方式：BioActive 传感器（光学生物信号 + 心电 + 生物电阻抗）等传感器 + AI 算法；手表持续感知手臂动作来识别 Raise to talk 手势；Gemini 与 Galaxy AI，Galaxy AI 功能需三星手机与 Samsung Health（[Galaxy Watch9 产品页](https://www.samsung.com/us/watches/galaxy-watch9/) · [Samsung 美国新闻稿（2026-07-22）](https://news.samsung.com/us/samsung-galaxy-watch-ultra2-watch9-health-companion)，查证 2026-10-03）
+  - AI 功能：以 AI 驱动的健康功能为核心：睡眠呼吸暂停功能用 AI 算法统计睡眠中每小时呼吸中断次数并分三级（获 FDA 新许可）；Vitals 在睡眠中用心率、心率变异、呼吸频率、皮肤温度、血氧建立个人基线，出现明显偏离时提醒；Heart Health Score 综合活动量、睡眠、体成分、压力趋势给出心血管健康分与生活方式建议；Daily Cardio Load 给出训练量与预估恢复建议；Fitness Index 按体成分与训练历史评估当前运动量是否合适。实现方式：Samsung BioActive 传感器（光学生物信号 + 心电 + 生物电阻抗）及温度、加速度、气压、陀螺仪等传感器持续采集生物数据 + AI 算法；未写模型名（[Samsung Mobile Press 新闻稿（2026-07-22）](https://samsungmobilepress.com/articles/new-galaxy-watch-ultra2-watch9-health-companions) · [Samsung Mobile Press：Galaxy Unpacked July 2026 First Look（2026-07-22）](https://samsungmobilepress.com/articles/galaxy-unpacked-2026-first-look-watch-ultra2-watch9)，查证 2026-10-03）
   - The Verge 写 Wear OS 7 可以不说 Gemini 唤醒词就 raise to talk，并写抬腕看时间不会误触发。同文写 Heart Health Score：按约 8 天睡眠均值、中高强度活动、BMI 和血管负荷，每天给出 100 分制分数。Daily Cardio Load 按训练强度、最大训练负荷和实时心率，用来看训练与恢复是否平衡。Fitness Index 用雷达图比较力量、柔韧性、耐力、心肺和体成分
 - **大模型方案**：The Verge 写 Gemini（非千问默认绑定）
 - **公开数据**：未见公开销量。The Verge（2026-07-22）写当天开始预购，预计 2026-08-07 起发货。美国开售日 2026-08-07 · [9to5Google（2026-07-22）](https://9to5google.com/2026/07/22/galaxy-watch-9-watch-ultra-2-are-official-as-samsung-makes-the-jump-to-snapdragon/) · [SammyGuru](https://sammyguru.com/samsung-galaxy-watch-9/)
