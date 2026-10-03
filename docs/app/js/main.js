@@ -11,6 +11,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () 
 
 const view = document.getElementById('view');
 let cleanup = null;
+let routeVersion = 0;
 
 function setNav(current) {
   for (const a of document.querySelectorAll('[data-nav]')) {
@@ -31,6 +32,8 @@ function renderError(error) {
 }
 
 async function route() {
+  const version = ++routeVersion;
+  const isCurrent = () => version === routeVersion;
   cleanup?.();
   cleanup = null;
   const deep = new URLSearchParams(location.search).get('s');
@@ -41,19 +44,23 @@ async function route() {
   try {
     if (page === 'me') {
       const reg = await registry().catch(() => null);
+      if (!isCurrent()) return;
       cleanup = renderMe(view, reg)?.cleanup || null;
     } else {
       const reg = await registry();
+      if (!isCurrent()) return;
       let result;
       if (page === 'c') result = renderCategory(view, reg, parts[1] || '');
-      else if (page === 's') result = await renderSolution(view, reg, parts[1] || '', parts[2] || '');
+      else if (page === 's') result = await renderSolution(view, reg, parts[1] || '', parts[2] || '', { isCurrent });
       else result = renderHome(view, reg);
+      if (!isCurrent()) { result?.cleanup?.(); return; }
       cleanup = result?.cleanup || null;
     }
   } catch (e) {
-    console.error(e);
+    if (!isCurrent()) return;
     renderError(e);
   }
+  if (!isCurrent()) return;
   window.scrollTo(0, 0);
   view.focus({ preventScroll: true });
 }

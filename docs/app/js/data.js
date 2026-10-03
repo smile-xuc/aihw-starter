@@ -96,6 +96,11 @@ export function normalizeTrace(raw) {
     throw new DataMissing('不是 aihw/trace@0.x 回放轨迹');
   }
   return {
+    schema: raw.schema,
+    kit: typeof raw.kit === 'string' ? raw.kit : 'imported',
+    ...(raw.runner ? { runner: raw.runner } : {}),
+    ...(raw.ran_at ? { ran_at: raw.ran_at } : {}),
+    ...(raw.status ? { status: raw.status } : {}),
     solution: raw.solution || null,
     variant: raw.variant || null,
     mode: raw.mode || 'mock',

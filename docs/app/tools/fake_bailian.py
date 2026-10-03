@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import sys
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -74,7 +75,18 @@ class Handler(BaseHTTPRequestHandler):
         url = "https://fake.invalid" + rest
         try:
             if rest.startswith("/compatible-mode/"):
-                events = list(mock_for(sol_id).sse(url, headers, payload))
+                content = payload.get("messages", [{}])[-1].get("content", [])
+                custom_image = sol_id == "02-ai-glasses.bailian" and isinstance(content, list) and not any(p.get("type") == "input_audio" for p in content)
+                if custom_image:
+                    # Additive browser-only fixture. Bundled photo+audio still goes through original demo mock.
+                    parts = {p.get("type"): p for p in content}
+                    image = parts.get("image_url", {}).get("image_url", {}).get("url", "")
+                    question = parts.get("text", {}).get("text", "")
+                    if not image.startswith(("data:image/jpeg;base64,", "data:image/png;base64,", "data:image/webp;base64,")) or not base64.b64decode(image.split(",", 1)[1], validate=True) or not question.strip() or len(question) > 2000 or payload.get("reasoning_effort") != "none":
+                        raise ValueError("custom image fixture requires supported image and text question")
+                    events = [{"choices": [{"delta": {"content": "这是自选照片的 mock 回答，仅用于验证界面流程。"}}]}, {"choices": [], "usage": {"prompt_tokens": 80, "completion_tokens": 30}}]
+                else:
+                    events = list(mock_for(sol_id).sse(url, headers, payload))
                 body = "".join(f"data: {json.dumps(e, ensure_ascii=False)}\n\n" for e in events) + "data: [DONE]\n\n"
                 return self.reply(200, body.encode(), "text/event-stream")
             target = BORROW.get((sol_id, rest), sol_id)

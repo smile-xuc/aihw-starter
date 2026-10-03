@@ -1,10 +1,12 @@
 // 离线回放：只缓存本站的 GET 请求；云端接口是跨域请求，这里一律不碰。
-const CACHE = 'aihw-app-v2';
+const CACHE = 'aihw-app-v3';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css',
-  'js/main.js', 'js/ui.js', 'js/meta.js', 'js/data.js', 'js/replay.js', 'js/settings.js',
+  'js/main.js', 'js/experience.js', 'js/history.js', 'js/live/input.js', 'js/ui.js', 'js/meta.js', 'js/data.js', 'js/replay.js', 'js/settings.js',
   'js/pages/home.js', 'js/pages/category.js', 'js/pages/solution.js', 'js/pages/me.js',
   'js/live/index.js', 'js/live/client.js',
+  'js/live/run-01-ipc.js', 'js/live/run-02-ai-glasses.js', 'js/live/run-04-agent-hardware.js',
+  'js/live/run-07-recorder.js', 'js/live/run-08-smart-watch.js', 'js/live/run-09-embodied.js',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
 ];
 
