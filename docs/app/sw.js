@@ -1,7 +1,7 @@
 // 离线回放：只缓存本站的 GET 请求；云端接口是跨域请求，这里一律不碰。
-const CACHE = 'aihw-app-v3';
+const CACHE = 'aihw-app-v4';
 const SHELL = [
-  './', 'index.html', 'manifest.webmanifest', 'css/app.css',
+  './', 'index.html', 'manifest.webmanifest', 'css/app.css', 'data/registry.json',
   'js/main.js', 'js/experience.js', 'js/history.js', 'js/live/input.js', 'js/ui.js', 'js/meta.js', 'js/data.js', 'js/replay.js', 'js/settings.js',
   'js/pages/home.js', 'js/pages/category.js', 'js/pages/solution.js', 'js/pages/me.js',
   'js/live/index.js', 'js/live/client.js',
@@ -16,7 +16,7 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(caches.keys()
-    .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+    .then((keys) => Promise.all(keys.filter((k) => k.startsWith('aihw-app-') && k !== CACHE).map((k) => caches.delete(k))))
     .then(() => self.clients.claim()));
 });
 

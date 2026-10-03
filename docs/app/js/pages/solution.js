@@ -51,7 +51,7 @@ function costSection(reg, sol) {
       <dt>按年折算</dt><dd>${y != null ? `假设每台每天 ${PER_DAY} 次，一年约 ${fmtYuan(y)}` : '—'}</dd>
       ${variants.length > 1 ? html`<dt>各玩法</dt><dd>${variants.map((v) => `${v.title} ¥${fmtCny(range(v.cost.low, v.cost.high))}`).join('；')}</dd>` : ''}
       <dt>计费口径</dt><dd>${sol.cost?.basis || '—'}</dd>
-      <dt>首字延迟</dt><dd>${lat.first_token || '—'}；${lat.measured ? `实测 ${lat.measured.text || ''}` : '还没有实测值'}</dd>
+      <dt>延迟口径</dt><dd>${lat.first_token || '—'}；${lat.measured ? `实测 ${lat.measured.text || ''}` : '还没有实测值'}</dd>
       <dt>地域</dt><dd>${(sol.regions || []).map((r) => regionLabel(reg.stacks.get(sol.stack), r)).join('、')}</dd>
     </dl>
     <div class="live-cost hidden"></div>
@@ -227,19 +227,27 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
   }
   preview();
   validateMaterial();
-  if (tr && (!product || (draft.source === 'sample' && (product.kind !== 'image' || draft.question === sampleQuestion)))) {
+  function showSample() {
+    if (!tr || (product && (draft.source !== 'sample' || (product.kind === 'image' && draft.question !== sampleQuestion)))) return false;
+    replay?.stop();
+    page.querySelector('.live-cost')?.classList.add('hidden');
     const stage = new Stage(host,{reg,sol,badges:[{label:'回放',cls:'accent'},{label:tr.mode === 'mock' ? 'mock 示意' : '真跑记录',cls:''}],mode:tr.mode});
     replay = playTrace(stage,tr);
     renderOutcome(outcome, tr);
-  } else if (product) clearResult();
-  else mount(host,html`<p class="small">这个玩法还没有回放轨迹。</p>`);
+    return true;
+  }
+  const refreshResult = () => {if (!showSample()) clearResult();};
+  if (!showSample()) {
+    if (product) clearResult();
+    else mount(host,html`<p class="small">这个玩法还没有回放轨迹。</p>`);
+  }
 
   function freeze(value) {
     for (const el of page.querySelectorAll('[data-source], [data-material], [data-question], [data-reset], [data-variant], [data-act="live"]')) el.disabled=value;
     page.querySelector('[data-act="stop"]')?.classList.toggle('hidden',!value);
     const button=page.querySelector('[data-act="live"]'); if(button) button.textContent=value?'正在体验…':'用我的 Key 真跑';
   }
-  page.querySelector('[data-question]')?.addEventListener('input', e=>{if(running)return;draft.question=e.target.value;clearResult();});
+  page.querySelector('[data-question]')?.addEventListener('input', e=>{if(running)return;draft.question=e.target.value;refreshResult();});
   page.querySelector('[data-material]')?.addEventListener('change', e=>{
     if(running)return;
     const file=e.target.files?.[0]; if(!file)return;
@@ -249,8 +257,8 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
     const copy=e.target.closest('[data-copy]');if(copy)copyText(copy.dataset.copy);
     const jump=e.target.closest('[data-jump]');if(jump){e.preventDefault();page.querySelector(`#${jump.dataset.jump}`)?.scrollIntoView({behavior:'smooth',block:'start'});}
     const source=e.target.closest('[data-source]');
-    if(source && !running && source.dataset.source!==draft.source){reading?.abort();readVersion++;draft.source=source.dataset.source;materialError='';clearResult();preview();mount(page.querySelector('[data-material-status]'),'');validateMaterial();}
-    if(e.target.closest('[data-reset]') && !running){reading?.abort();readVersion++;draft=resetDraft(draftKey,initialDraft);materialError='';const q=page.querySelector('[data-question]');if(q)q.value=draft.question;page.querySelector('[data-material]').value='';clearResult();preview();mount(page.querySelector('[data-material-status]'),'');}
+    if(source && !running && source.dataset.source!==draft.source){reading?.abort();readVersion++;draft.source=source.dataset.source;materialError='';refreshResult();preview();mount(page.querySelector('[data-material-status]'),'');validateMaterial();}
+    if(e.target.closest('[data-reset]') && !running){reading?.abort();readVersion++;draft=resetDraft(draftKey,initialDraft);materialError='';const q=page.querySelector('[data-question]');if(q)q.value=draft.question;page.querySelector('[data-material]').value='';refreshResult();preview();mount(page.querySelector('[data-material-status]'),'');}
     const v=e.target.closest('[data-variant]');if(v && !running && v.dataset.variant!==variant.id)location.hash=`#/s/${encodeURIComponent(sol.id)}/${encodeURIComponent(v.dataset.variant)}`;
     const act=e.target.closest('[data-act]')?.dataset.act;
     if(act==='live' && !running){const ctrl=new AbortController();running=ctrl;freeze(true);startLive(ctrl).finally(()=>{if(connected()){running=null;freeze(false);}});}
@@ -297,7 +305,7 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
     if(!connected())return;
     if(!result && !error)return;
     if(error && stage)stage.push({tag:'提示',kind:'notice',text:error.name==='AbortError'?'已停止':`出错：${redact(error.message,secrets)}`,lines:error.hint?[redact(error.hint,secrets)]:[]});
-    const inputs=product && draft.source==='own' ? [{path:`samples/${draft.file.name}`,media_type:draft.input?.mime||draft.file.type,bytes:draft.file.size}] : tr?.inputs||[];
+    const inputs=product && draft.source==='own' ? (draft.file ? [{path:`samples/${draft.file.name}`,media_type:draft.input?.mime||draft.file.type,bytes:draft.file.size}] : []) : tr?.inputs||[];
     const record=browserTrace({sol,variant,result,error,events:stage?.events||[],inputs,startedAt,region:cred?.values.DASHSCOPE_API_REGION||'',secrets});
     const saved=saveHistory(record);
     const speechURL = sol.id === '02-ai-glasses.bailian' && !error ? result?.outputs?.find(f=>(f.media_type||f.type||'').startsWith('audio/') && f.url)?.url : null;

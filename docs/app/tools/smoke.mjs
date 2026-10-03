@@ -166,6 +166,32 @@ async function main() {
   const changed=requests.find(r=>r.path.endsWith('chat/completions')).body.messages.at(-1).content;
   assertUI(!changed.some(p=>p.type==='input_audio') && changed.some(p=>p.text==='这张照片有什么？'),'changed sample question did not use text-only question');
   const photo=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aD1sAAAAASUVORK5CYII=','base64');
+  // Final-review regressions: failed local validation must stay readable and recoverable.
+  const finalCheck = async (name, check) => {try {await check();console.log(`final regression PASS: ${name}`);} catch(e) {problems.push(`final regression ${name}: ${e.message}`);}};
+  const sampleActions = async () => {
+    assertUI(await page.locator('[data-outcome] .result-text').count()===1,'free sample result missing');
+    for(const selector of ['[data-outcome] [data-result-copy]','[data-outcome] [data-result-download]','[data-outcome] [data-export]','[data-act="replay"]']) assertUI(await page.locator(selector).count()===1,`sample action missing: ${selector}`);
+    await page.locator('.process-panel').evaluate(e=>e.open=true);await page.click('[data-act="all"]');await page.waitForSelector('.stage-foot:not([hidden])');
+  };
+  for(const id of ['02-ai-glasses.bailian','07-recorder.bailian']) {
+    current=id;await page.goto(`${BASE}#/s/${id}/default`);await page.waitForSelector('[data-reset]');await page.click('[data-reset]');await page.click('[data-source="own"]');
+    await finalCheck(`${id} missing own material`,async()=>{
+      const before=requests.length;await page.click('[data-act="live"]');await page.waitForSelector('[data-act="live"]:not([disabled])');
+      await page.waitForSelector('[data-outcome] .inline-error',{timeout:2000});
+      assertUI((await page.locator('[data-outcome]').innerText()).includes('请先选择并核验你的素材'),'missing file error unreadable');assertUI(requests.length===before,'missing file reached provider');
+    });
+    const before=requests.length;await page.click('[data-source="sample"]');await finalCheck(`${id} back to sample restores outcome`,sampleActions);
+    await page.click('[data-source="own"]');await page.click('[data-reset]');await finalCheck(`${id} reset restores outcome`,sampleActions);assertUI(requests.length===before,'sample restoration triggered provider');
+  }
+  current='02-ai-glasses.bailian';await page.goto(`${BASE}#/s/${current}/default`);await page.waitForSelector('[data-question]');await page.click('[data-reset]');await page.fill('[data-question]','');await page.click('[data-source="own"]');
+  await page.setInputFiles('[data-material]',{name:'recover.png',mimeType:'image/png',buffer:photo});
+  await finalCheck('empty question photo decode recovers without reselection',async()=>{
+    await page.waitForSelector('[data-material-status] .inline-ok',{timeout:2000});
+    const before=requests.length;await page.click('[data-act="live"]');await page.waitForSelector('[data-outcome] .inline-error');assertUI(requests.length===before && (await page.locator('[data-outcome]').innerText()).includes('提问不能为空'),'empty question reached provider');
+    await page.fill('[data-question]','恢复后的有效提问');requests.length=0;await begin();
+    assertUI(requests.find(r=>r.path.endsWith('chat/completions')).body.messages.at(-1).content.some(p=>p.text==='恢复后的有效提问'),'corrected question did not reach provider');
+  });
+  await page.click('[data-reset]');await page.fill('[data-question]','这张照片有什么？');
   // Gate real File reads, while retaining real signature/image decode checks.
   await page.evaluate(()=>{
     const original=File.prototype.arrayBuffer;window.materialReads=[];
@@ -237,6 +263,7 @@ async function main() {
   const wav = seconds=>{const b=Buffer.alloc(44+seconds*16000*2);b.write('RIFF',0);b.writeUInt32LE(b.length-8,4);b.write('WAVEfmt ',8);b.writeUInt32LE(16,16);b.writeUInt16LE(1,20);b.writeUInt16LE(1,22);b.writeUInt32LE(16000,24);b.writeUInt32LE(32000,28);b.writeUInt16LE(2,32);b.writeUInt16LE(16,34);b.write('data',36);b.writeUInt32LE(b.length-44,40);return b;};
   await page.setInputFiles('[data-material]',{name:'meeting.wav',mimeType:'audio/wav',buffer:wav(1)});await page.waitForSelector('[data-material-status] .inline-ok');requests.length=0;await begin();
   assertUI(requests.find(r=>r.path.endsWith('generation')).body.parameters.format==='wav','own WAV format incorrect');
+  assertUI(requests.find(r=>r.path.endsWith('generation')).body.parameters.sample_rate==='16000','fake provider received non-string WAV sample_rate');
   const beforeLong=requests.length;await page.setInputFiles('[data-material]',{name:'long.wav',mimeType:'audio/wav',buffer:wav(181)});await page.waitForSelector('[data-material-status] .inline-error');assertUI((await page.locator('[data-material-status]').innerText()).includes('180'),'long audio not rejected');assertUI(requests.length===beforeLong,'long audio reached provider');
   await page.setInputFiles('[data-material]',{name:'meeting.wav',mimeType:'audio/wav',buffer:wav(1)});await page.waitForSelector('[data-material-status] .inline-ok');failureMode='partial';await begin();assertUI((await page.locator('[data-outcome]').innerText()).includes('展开原始转写'),'failed minutes lost partial transcript');failureMode='';
   const actualTraces = await page.evaluate(()=>JSON.parse(localStorage.getItem('aihw.history.v1')).map(r=>r.trace));
@@ -265,6 +292,66 @@ async function main() {
   // Leaving a pending request must abort and never append history or leave a confirmation overlay.
   const priorHistory=await page.evaluate(()=>localStorage.getItem('aihw.history.v1'));failureMode='hold';await page.click('[data-act="live"]');await page.click('[data-sheet="go"]');await page.waitForSelector('[data-act="live"][disabled]');await page.evaluate(()=>location.hash='#/me');await page.waitForSelector('form[data-form]');await page.waitForTimeout(800);assertUI(await page.evaluate(()=>localStorage.getItem('aihw.history.v1'))===priorHistory,'page-leave added detached history');failureMode='';
   console.log('体验 UI 回归通过：设置返回、空提问保留、素材解码切换/重挂载/旧读取隔离、临时播报/导出隔离、样本提问、PNG、WAV、损坏/过长素材、401、停止、缺失用量、转写保留、失败记录导入再导出、历史重开/删除');
+  // Isolated desktop Chrome regression exercises the actual SW cache and offline reloads.
+  const offlineContext=await browser.newContext({viewport:{width:1280,height:900},locale:'zh-CN',reducedMotion:'reduce',serviceWorkers:'allow'});
+  const offlinePage=await offlineContext.newPage();
+  const offlineErrors=[],offlineFailures=[];
+  offlinePage.on('requestfailed',r=>offlineFailures.push({url:r.url(),error:r.failure()?.errorText}));
+  offlinePage.on('pageerror',e=>offlineErrors.push(e.message));
+  offlinePage.on('console',m=>{if(m.type()==='error')offlineErrors.push(m.text());});
+  await offlineContext.route('**/*',route=>route.request().url().startsWith(BASE)?route.continue():route.abort());
+  try {
+    // Seed same-origin neighbor and old app caches before this app installs its worker.
+    await offlinePage.goto(`${BASE}manifest.webmanifest`);
+    await offlinePage.evaluate(async()=>{
+      await (await caches.open('unrelated-app-sentinel')).put('./unrelated-marker',new Response('preserve neighboring app cache'));
+      await (await caches.open('aihw-app-v2')).put('./old-app-marker',new Response('old app version'));
+    });
+    await offlinePage.goto(BASE);await offlinePage.waitForSelector('.featured-card');
+    await offlinePage.evaluate(()=>navigator.serviceWorker.ready);
+    await offlinePage.waitForFunction(()=>!!navigator.serviceWorker.controller);
+    const activationCaches=await offlinePage.evaluate(()=>caches.keys());
+    assertUI(activationCaches.includes('unrelated-app-sentinel'),'service-worker activation deleted neighboring app cache');
+    assertUI(!activationCaches.includes('aihw-app-v2'),'service-worker activation retained obsolete app cache');
+    const featured=['02-ai-glasses.bailian','07-recorder.bailian'];
+    const warmedAssets=new Set();
+    for(const id of featured) {
+      await offlinePage.goto(`${BASE}#/s/${id}/default`);await offlinePage.waitForSelector('[data-outcome] .result-text');
+      const assets=await offlinePage.evaluate(async id=>{
+        const {registry,trace,assetUrl}=await import('./js/data.js');const reg=await registry(),sol=reg.byId.get(id),tr=await trace(reg,sol,sol.variants.find(v=>v.id==='default'));
+        const urls=[...new Set([...tr.inputs,...tr.outputs].map(f=>assetUrl(reg,f.asset)).filter(Boolean))];
+        for(const url of urls) {const response=await fetch(url);if(!response.ok)throw Error(`warm asset HTTP ${response.status}: ${url}`);await response.arrayBuffer();}
+        return urls;
+      },id);
+      for(const url of assets)warmedAssets.add(url);
+    }
+    const cachedURLs=[...warmedAssets,...['js/experience.js','js/history.js','js/live/input.js','js/pages/solution.js','data/registry.json',...featured.map(id=>`data/traces/${id}/default.json`)].map(p=>new URL(p,BASE).href)];
+    const cacheDeadline=Date.now()+10000;
+    while(true) {
+      const missing=await offlinePage.evaluate(async urls=>{const missing=[];for(const url of urls)if(!await caches.match(url))missing.push(url);return missing;},cachedURLs);
+      if(!missing.length)break;
+      assertUI(Date.now()<cacheDeadline,`offline warm cache missing required resource: ${missing.join(', ')}`);
+      await new Promise(resolve=>setTimeout(resolve,50));
+    }
+    await offlineContext.setOffline(true);
+    for(const id of [...featured].reverse()) {
+      // Reopen via hash routing, then reload to rebuild the app/module graph from cache.
+      await offlinePage.evaluate(id=>{location.hash=`#/s/${id}/default`;},id);
+      await offlinePage.waitForFunction(id=>document.querySelector('h1')?.textContent===(id.startsWith('02')?'一看即懂':'会议纪要'),id);
+      await offlinePage.reload();await offlinePage.waitForSelector('[data-outcome] .result-text');
+      const text=await offlinePage.locator('[data-outcome] .result-text').innerText();assertUI(text.includes(id.startsWith('02')?'宫保鸡丁':'待办'),`${id} offline sample outcome missing`);
+      if(id.startsWith('02'))await offlinePage.waitForFunction(()=>{const image=document.querySelector('[data-preview] img');return image?.complete&&image.naturalWidth>0;});
+      else await offlinePage.waitForFunction(()=>document.querySelector('[data-preview] audio')?.readyState>=1);
+      for(const selector of ['[data-result-copy]','[data-result-download]','[data-outcome] [data-export]','[data-act="replay"]'])assertUI(await offlinePage.locator(selector).count()===1,`${id} offline action missing: ${selector}`);
+      await offlinePage.locator('.process-panel').evaluate(e=>e.open=true);await offlinePage.click('[data-act="all"]');await offlinePage.waitForSelector('.stage-foot:not([hidden])');
+      const exportedEvent=offlinePage.waitForEvent('download');await offlinePage.click('[data-outcome] [data-export]');const exported=await exportedEvent;assertUI(!await exported.failure(),`${id} offline export failed`);
+      await offlinePage.evaluate(async urls=>{for(const url of urls){const response=await fetch(url);if(!response.ok||(await response.arrayBuffer()).byteLength===0)throw Error(`offline asset unavailable: ${url}`);}},[...warmedAssets]);
+    }
+    assertUI(offlineErrors.length===0,`offline page errors: ${offlineErrors.join('; ')}`);
+    console.log('桌面 Chrome 离线回归通过：独立 serviceWorkers-allowed 上下文、预热两场景素材、离线重开/刷新、结果/回放/导出/模块与媒体缓存、无脚本错误');
+  } catch(error) {
+    console.error('offline diagnostics',JSON.stringify({url:offlinePage.url(),text:(await offlinePage.locator('body').innerText().catch(()=>'')).slice(0,800),errors:offlineErrors,failures:offlineFailures,cache:await offlinePage.evaluate(async()=>({controller:!!navigator.serviceWorker.controller,keys:(await Promise.all((await caches.keys()).map(async k=>({name:k,urls:(await (await caches.open(k)).keys()).map(r=>r.url)}))))})).catch(e=>e.message)}));throw error;
+  } finally {await offlineContext.close();}
   await browser.close();
   console.log(results.join('\n'));
   console.log(`发往的百炼域名：${[...hostsSeen].join('、') || '无'}`);

@@ -85,7 +85,7 @@ export default async function run(x) {
   const resp = await x.post('api', '/services/aigc/multimodal-generation/generation', {
     model: c.ASR_MODEL,
     input: { messages: [{ role: 'user', content: [{ type: 'input_audio', input_audio: { data: `data:${input?.mime || 'audio/mpeg'};base64,${toBase64(audio)}` } }] }] },
-    parameters: { format, ...(format === 'wav' ? { sample_rate: wavRate(audio) } : {}), speaker_diarization_enabled: true },
+    parameters: { format, ...(format === 'wav' ? { sample_rate: String(wavRate(audio)) } : {}), speaker_diarization_enabled: true },
   }, { 'X-DashScope-SSE': 'disable' });
   const asrMs = x.now() - t0;
   let output = resp.output || {};

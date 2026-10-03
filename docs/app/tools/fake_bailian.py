@@ -71,6 +71,11 @@ class Handler(BaseHTTPRequestHandler):
         if self.headers.get("Authorization") != f"Bearer {KEY}":
             return self.error(401, "InvalidApiKey", "Invalid API-key provided.")
         payload = json.loads(raw or b"{}")
+        if sol_id == "07-recorder.bailian" and rest.endswith("/generation") and payload.get("parameters", {}).get("format") == "wav":
+            # Official ASR HTTP contract requires sample_rate as a string.
+            rate = payload.get("parameters", {}).get("sample_rate")
+            if not isinstance(rate, str) or not rate.isdigit():
+                return self.error(400, "MockRejected", "WAV sample_rate must be a string")
         headers = dict(self.headers.items())
         url = "https://fake.invalid" + rest
         try:

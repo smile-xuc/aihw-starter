@@ -76,7 +76,7 @@ test('02 preserves answer on TTS error, marks inferred chars estimated, rejects 
 test('02 unavailable TTS keeps text and text-first metric', async()=>{const result=await run02(context(await constants('02-ai-glasses.bailian'),{region:'ap-southeast-1'}));assert.equal(result.outputs[0].path,'out/answer.txt');assert.equal(result.metrics.audioReadyMs,null);assert.ok(result.warnings.length);});
 test('07 sends custom WAV/MP3 and duration without sample metadata', async()=>{
   const c=await constants('07-recorder.bailian');
-  for (const input of [audioInput(),audioInput({buffer:mp3,mime:'audio/mpeg',format:'mp3',name:'new.mp3',durationSeconds:60})]) {const x=context(c,{input,post:async(...args)=>{x.payloads.push(args);return asr({usage:{}});},chat:async()=>turn(minutes())});const result=await run07(x);const p=x.payloads[0][2];assert.equal(p.parameters.format,input.format);if(input.format==='wav')assert.equal(p.parameters.sample_rate,16000);assert.ok(p.input.messages[0].content[0].input_audio.data.startsWith(`data:${input.mime};base64,`));assert.deepEqual(x.assets,[]);assert.ok(result.sample.includes(String(input.durationSeconds)));assert.equal(result.costStatus,'estimated');assert.ok(result.cost[1]>0);assert.equal(result.metrics.audioFirstMs,null);assert.equal(result.metrics.asrMs,10);assert.ok(result.outputs.every(o=>o.media_type));}
+  for (const input of [audioInput(),audioInput({buffer:mp3,mime:'audio/mpeg',format:'mp3',name:'new.mp3',durationSeconds:60})]) {const x=context(c,{input,post:async(...args)=>{x.payloads.push(args);return asr({usage:{}});},chat:async()=>turn(minutes())});const result=await run07(x);const p=x.payloads[0][2];assert.equal(p.parameters.format,input.format);if(input.format==='wav')assert.equal(p.parameters.sample_rate,"16000");assert.ok(p.input.messages[0].content[0].input_audio.data.startsWith(`data:${input.mime};base64,`));assert.deepEqual(x.assets,[]);assert.ok(result.sample.includes(String(input.durationSeconds)));assert.equal(result.costStatus,'estimated');assert.ok(result.cost[1]>0);assert.equal(result.metrics.audioFirstMs,null);assert.equal(result.metrics.asrMs,10);assert.ok(result.outputs.every(o=>o.media_type));}
 });
 test('07 bundled sample still uses metadata and MP3', async()=>{const x=context(await constants('07-recorder.bailian'),{post:async()=>asr(),chat:async()=>turn(minutes())});const result=await run07(x);assert.equal(x.assets.length,2);assert.ok(result.sample.includes('55'));});
 test('07 rejects empty/malformed transcript and minutes with accessible partial transcript', async()=>{
@@ -170,4 +170,12 @@ test('04 empty transcription rejects after billed ASR and retains usage evidence
   const c=await constants('04-agent-hardware.bailian'),reg={root:new URL('../data/',import.meta.url)},sol={id:'04-agent-hardware.bailian',samples:[]};let chatRequests=0;
   await withFetch(async(url)=>{const path=String(url);if(path.includes('live-data'))return Response.json(c);if(path.includes('chat/completions')){chatRequests++;return stream([{choices:[{delta:{content:'已完成'}}],usage:{prompt_tokens:0,completion_tokens:0}}]);}if(path.includes('api/v1'))return Response.json({request_id:'empty-asr',output:{text:'   '},usage:{input_tokens:10,output_tokens:5}});return new Response(wav);},async()=>assert.rejects(runInBrowser(reg,sol,{id:'default'},cred,{push:()=>({update(){return this;}})}),e=>/转写结果为空/.test(e.message) && e.usageRecords?.some(record=>record.requestId==='empty-asr' && record.usage.input_tokens===10 && record.usage.output_tokens===5 && record.usage.known===true)));
   assert.equal(chatRequests,0);
+});
+
+test('02 complete long stop answer is not truncated; length finish still warns',async()=>{
+  const c=await constants('02-ai-glasses.bailian');
+  for(const finish_reason of ['stop','length']) {
+    const result=await run02(context(c,{input:imageInput(),chat:async()=>turn('完整长回答',{finish_reason,usage:{prompt:5,completion:1200,known:true}})}));
+    assert.equal(result.warnings.some(w=>/看图回答.*截断/.test(w)),finish_reason==='length');
+  }
 });

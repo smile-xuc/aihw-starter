@@ -104,11 +104,13 @@ export function fileType(file,kind) {
 }
 export async function decodeFile(file,kind,question, {signal}={}) {
   const mime=fileType(file,kind),buffer=await file.arrayBuffer();
+  // Decode media independently of editable text; inputForRun and the runner validate the current question.
+  const mediaQuestion=kind==='image' ? '素材核验' : question;
   const url=URL.createObjectURL(file);
   try {
     let durationSeconds;
     if(kind==='image') {
-      validateInput({kind,mime,buffer,name:file.name,question});
+      validateInput({kind,mime,buffer,name:file.name,question:mediaQuestion});
       await new Promise((resolve,reject)=>{
         const image=new Image(); const timer=setTimeout(()=>{image.src='';reject(Error('图片解码超时，请换一个文件'));},8000);
         image.onload=()=>{clearTimeout(timer); image.naturalWidth&&image.naturalHeight?resolve():reject(Error('图片为空或损坏'));};
@@ -130,6 +132,7 @@ export async function decodeFile(file,kind,question, {signal}={}) {
       }
     }
     if(signal?.aborted) throw new DOMException('已停止','AbortError');
-    return validateInput({kind,mime,buffer,name:file.name,question,format:mime==='audio/wav'?'wav':'mp3',durationSeconds});
+    const input=validateInput({kind,mime,buffer,name:file.name,question:mediaQuestion,format:mime==='audio/wav'?'wav':'mp3',durationSeconds});
+    return kind==='image' ? {...input,question:typeof question==='string'?question.trim():''} : input;
   } finally {URL.revokeObjectURL(url);}
 }

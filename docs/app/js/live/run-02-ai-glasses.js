@@ -40,7 +40,7 @@ export default async function run(x) {
   }, { onText: (_, all) => { answerEv = answerEv ? answerEv.update({ text: all }) : x.say('眼镜', all); } });
   const answer = turn.text.trim();
   if (!answer) throw new Error('看图回答为空：请重新提问');
-  if (turn.finish_reason === 'length' || turn.usage.completion >= 1000) warn('看图回答可能被截断，请核对完整性');
+  if (turn.finish_reason === 'length') warn('看图回答可能被截断，请核对完整性');
   const omniCost = turn.usage.known === false ? null : (turn.usage.prompt * p.omni_in + turn.usage.completion * p.omni_out) / 1e6;
   let costStatus = omniCost == null ? 'unknown' : 'usage';
   const firstText = turn.firstTextAt == null ? null : turn.firstTextAt - t0;
