@@ -4,7 +4,8 @@
 import { liveConstants, sampleUrl } from '../data.js';
 import { kindOf } from '../meta.js';
 import { missingFields } from '../settings.js';
-import { chat, now, postJson, serviceOf } from './client.js';
+import { chat, now, postJson, serviceOf, validCount } from './client.js';
+import { validateInput } from './input.js';
 
 const RUNNERS = {
   '01-ipc.bailian': { default: { load: () => import('./run-01-ipc.js'), services: ['compatible'], note: '4 帧事件卡 + 检索 + 日报，共 6 次调用。' } },
@@ -58,7 +59,9 @@ export function requiredMissing(reg, sol, variant, values) {
 }
 
 // 跑一次：runner 往舞台上写和 run.py 同样标签的日志行，返回 { models, firstMs, cost, sample, note, outputs }
-export async function runInBrowser(reg, sol, variant, cred, stage, { signal, onFallback } = {}) {
+export async function runInBrowser(reg, sol, variant, cred, stage, { signal, onFallback, input } = {}) {
+  const normalizedInput = validateInput(input);
+  if (normalizedInput && !((sol.id === '02-ai-glasses.bailian' && normalizedInput.kind === 'image') || (sol.id === '07-recorder.bailian' && normalizedInput.kind === 'audio'))) throw new Error('这个玩法不支持此媒体输入');
   const runner = RUNNERS[sol.id][variant.id];
   const [mod, c] = await Promise.all([runner.load(), liveConstants(sol.id)]);
   const t0 = now();
@@ -70,18 +73,56 @@ export async function runInBrowser(reg, sol, variant, cred, stage, { signal, onF
     return res;
   };
   const values = cred.values;
+  const usageRecords = [];
+  const recordUsage = (model, requestId, usage) => {
+    const safeUsage = Object.fromEntries(['prompt', 'completion', 'input_tokens', 'output_tokens', 'characters', 'duration'].filter((key) => validCount(usage?.[key])).map((key) => [key, usage[key]]));
+    safeUsage.known = typeof usage?.known === 'boolean' ? usage.known : (validCount(usage?.input_tokens) && validCount(usage?.output_tokens)) || validCount(usage?.characters);
+    usageRecords.push({ model: typeof model === 'string' ? model : '', requestId: typeof requestId === 'string' ? requestId : '', usage: safeUsage });
+  };
+  let missingUsage = false;
+  let firstTextAt = null;
+  const honestCostText = (text) => missingUsage ? String(text).replace(/¥(?:[\d.,]+(?:[–-][\d.,]+)?|—)/g, '费用未知') : text;
   const ctx = {
     c,
+    input: normalizedInput,
     region: values.DASHSCOPE_API_REGION,
     signal,
     now,
-    say: (tag, text, detail = '') => stage.push({ tag, kind: kindOf(tag), text, lines: detail ? String(detail).split('\n') : [], t_ms: Math.round(now() - t0), assets: [] }),
+    say: (tag, text, detail = '') => stage.push({ tag, kind: kindOf(tag), text: tag === '统计' ? honestCostText(text) : text, lines: detail ? String(tag === '统计' ? honestCostText(detail) : detail).split('\n') : [], t_ms: Math.round(now() - t0), assets: [] }),
     asset: async (path) => (await fetchSample(path)).arrayBuffer(),
     assetText: async (path) => (await fetchSample(path)).text(),
     hasAsset: (path) => (sol.samples || []).some((s) => s.path === path),
-    chat: (payload, opts = {}) => chat(cred, payload, { signal, onFallback, ...opts }),
-    post: (service, path, payload, headers = {}) => postJson(cred, service, path, payload, { headers, signal, onFallback }),
+    chat: async (payload, opts = {}) => {
+      const turn = await chat(cred, payload, { signal, onFallback, ...opts });
+      recordUsage(payload.model, turn.requestId || turn.id, turn.usage);
+      if (!turn.usage.known) missingUsage = true;
+      if (firstTextAt == null && turn.firstTextAt != null) firstTextAt = turn.firstTextAt;
+      return turn;
+    },
+    post: async (service, path, payload, headers = {}) => {
+      const response = await postJson(cred, service, path, payload, { headers, signal, onFallback });
+      recordUsage(payload.model, response.request_id, response.usage);
+      return response;
+    },
   };
   if (!values.DASHSCOPE_WORKSPACE_ID) ctx.say('提示', '未填业务空间 ID，使用通用域名；官方推荐业务空间专属域名');
-  return mod.default(ctx);
+  let result;
+  try { result = await mod.default(ctx); } catch (error) {
+    error.usageRecords = usageRecords;
+    throw error;
+  }
+  result.usageRecords = usageRecords;
+  result.metrics ||= { textFirstMs: firstTextAt == null ? null : firstTextAt - t0, audioFirstMs: null, audioReadyMs: null, totalMs: now() - t0 };
+  result.costStatus ||= result.cost == null ? 'unknown' : 'usage';
+  result.warnings ||= [];
+  if (missingUsage) {
+    result.cost = null;
+    result.costStatus = 'unknown';
+    result.note = honestCostText(result.note);
+    const warning = '接口未返回完整 Chat Token 用量，总成本未知';
+    result.warnings.push(warning);
+    ctx.say('提示', warning);
+  }
+  result.outputs = (result.outputs || []).map((output) => ({ ...output, media_type: output.media_type || output.type || 'application/octet-stream' }));
+  return result;
 }
