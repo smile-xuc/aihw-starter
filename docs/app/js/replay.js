@@ -2,6 +2,7 @@
 // 回放（mock 轨迹）、浏览器真跑、打开本机轨迹都用它。
 
 import { assetUrl } from './data.js';
+import { costText, metricLines } from './experience.js';
 import { eventClass } from './meta.js';
 import { fmtCny, fragment, html, icon, markdown, mount } from './ui.js';
 
@@ -54,6 +55,7 @@ export class Stage {
   }
 
   setInputs(inputs) {
+    inputs = inputs.map(f=>({...f,media_type:f.media_type || f.type || 'application/octet-stream'}));
     for (const f of inputs) this.files.set(f.path, { ...f, role: 'input' });
     const isImage = (f) => f.media_type.startsWith('image/');
     const shown = inputs.filter((f) => this.url(f) && /^(image|audio)\//.test(f.media_type))
@@ -117,6 +119,7 @@ export class Stage {
   }
 
   setOutputs(outputs) {
+    outputs = outputs.map(f=>({...f,media_type:f.media_type || f.type || 'application/octet-stream'}));
     for (const f of outputs) this.files.set(f.path, { ...f, role: 'output' });
     const items = outputs.map((out) => {
       const src = this.url(out);
@@ -149,9 +152,8 @@ export function resultLines(trace) {
   const lines = [];
   if (trace.error) lines.push(`运行失败：${trace.error}`);
   if (r) {
-    const cost = r.cost ? `¥${fmtCny(r.cost.low === r.cost.high ? r.cost.low : [r.cost.low, r.cost.high])}` : '—';
-    const first = r.first_token_ms != null ? `${Math.round(r.first_token_ms)} ms` : '—';
-    lines.push(`单次成本 ${cost} · 首字 ${first} · 输入 ${r.sample || '—'}`);
+    lines.push(`${trace.mode === 'mock' ? '示例估算' : costText(r)} · 输入 ${r.sample || '—'}`);
+    lines.push(...metricLines(r));
     if (r.note) lines.push(`备注：${r.note}`);
   }
   if (trace.mode === 'mock') lines.push('这是 mock 回放：按官方事件结构离线回放，没有调用模型，用量是示意值。');

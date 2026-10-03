@@ -1,3 +1,5 @@
+import { PRODUCTS } from '../experience.js';
+import { readHistory, statusLabel } from '../history.js';
 import { label } from '../data.js';
 import { runnerCount, solutionRunnable } from '../live/index.js';
 import { costInfo, range, verificationBadge } from '../meta.js';
@@ -58,13 +60,16 @@ export const dataNote = (reg) => `方案注册表 · demo 标准 v${reg.standard
 export function renderHome(view, reg) {
   document.title = 'AIHW · AI 硬件方案';
   const saved = savedStacks(reg).length > 0;
+  const recent = readHistory().records.slice(0, 3);
   mountPage(view, html`
     <header class="app-top"><a class="wordmark" href="#/">${brandmark}AIHW</a>
       <a class="chip ${saved ? 'ok' : 'accent'}" href="#/me">${saved ? '已填 Key' : '回放模式'}</a></header>
     <section class="intro">
-      <h1>${reg.categories.length} 个品类的 AI 硬件参考方案</h1>
-      <p>每个方案回答四个问题：效果怎样、一次多少钱、做成产品要什么硬件、有哪些合规义务。</p>
+      <p class="eyebrow">把 AI 硬件的能力，先拿来用</p><h1>一张照片，一段录音。<br>体验就在这里。</h1>
+      <p>先看免费的示例效果，再用自己的 Key 和素材体验。请求直达官方接入点。</p>
     </section>
+    <section class="featured-grid" aria-label="精选体验">${Object.entries(PRODUCTS).map(([id,p],i)=>html`<a class="featured-card ${i ? 'recorder' : 'vision'}" href="#/s/${id}/default"><span class="feature-art" aria-hidden="true">${icon(i ? 'file' : 'play')}</span><span class="eyebrow">${i ? '听见，然后整理' : '看见，然后理解'}</span><h2>${p.title}</h2><p>${i ? '录音 → 要点、决定、待办' : '照片 + 提问 → 回答与播报'}</p><span class="feature-link">免费示例 / 我的 Key ${icon('chevron')}</span></a>`)}</section>
+    ${recent.length ? html`<section class="section"><div class="section-title"><h2>最近体验</h2><a href="#/me">查看历史</a></div><div class="panel">${recent.map(r=>html`<a class="history-preview" href="#/me?history=${encodeURIComponent(r.id)}"><span><strong>${PRODUCTS[r.trace.solution]?.title || r.trace.title}</strong><small>${new Date(r.trace.ran_at).toLocaleString('zh-CN')}</small></span><span class="chip">${statusLabel(r.trace)}</span></a>`)}</div></section>` : ''}
     ${modeBanner(reg)}
     <section class="section">
       <div class="section-title"><h2>品类 <small>${reg.categories.length}</small></h2><small>品类 × 栈</small></div>
