@@ -12,12 +12,14 @@
 - **官网/渠道**：<https://www.unitree.com/go2>；商店 <https://shop.unitree.com/>
 - **形态**：消费/科研向四足机器人；多档 Air / Pro / X（及 EDU/行业配置）
 - **定价**：
-  - 首发价：待核实
+  - 首发价：$1,600 USD 起（Go2 Air，不含税运）· 全球 · [Unitree 新闻稿（PR Newswire，2023-07-18）](https://www.prnewswire.com/news-releases/introducing-unitree-go2---quadruped-robot-of-embodied-ai-301879381.html) · 查证 2026-10-02
   - 现价：官网写 from $1,600 USD。商店：Air $1,600 USD（不带遥控）/ $1,850 USD（带遥控）；Pro $2,800 USD / $3,050 USD；X $4,500 USD（带遥控）· [Go2 商店](https://shop.unitree.com/products/unitree-go2) · 查证 2026-09-30。未含税运
   - MSRP：待核实
 - **目标市场**：教育科研、演示、轻巡检验证、极客消费
-- **AI 能力**：本体运动控制成熟；可叠加语言导航等 VLA（公开有 Qwen-RobotNav 零样本部署叙述）
-- **大模型方案**：待核实
+- **AI 能力**：
+  - AI 功能：经大规模 AI 模拟训练掌握倒立行走、自适应翻身起立、越障攀爬等步态（AI 模式）；用自研 4D 激光雷达 L2 与 App 构建点云地图，按指定路径自主移动；离线语音交互及指令。实现方式：PRO / X / EDU 的 8 核高性能 CPU 支持 AI 模式与 3D 激光建图，PRO 及以上带语音功能（AIR 均不含），EDU 可选配 Orin（40–100 TOPS）高算力模组；官网写「大模型强势赋能」，没有写模型名（[宇树 Go2 中文页](https://www.unitree.com/cn/go2)，查证 2026-10-02）
+  - 本体运动控制成熟；可叠加语言导航等 VLA（公开有 Qwen-RobotNav 零样本部署叙述）
+- **大模型方案**：官方商店原文 "big model GPT empowerment"，官网中文页写「大模型强势赋能，缔造全新物种」，均未写具体模型版本与接入方式（非千问默认绑定）（[Go2 商店](https://shop.unitree.com/products/unitree-go2) · [宇树 Go2 中文页](https://www.unitree.com/cn/go2)，查证 2026-10-02）
 - **公开数据**：待核实
 - **关键差异化**：① 价格带打开四足普及；② 档位清晰；③ 与人形产品线协同品牌
 - **商业模式**：硬件销售；EDU/行业报价制
@@ -36,8 +38,10 @@
   - 现价：$13,500 USD（G1，当前 backordered）；G1 Pro $21,500 USD。官网公开，未含税运。运费 $300 USD–$1,200 USD，关税由买家承担。商店说明基础版不支持二次开发，二次开发需选 EDU 版（联系销售）。查证 2026-09-30
   - MSRP：待核实
 - **目标市场**：科研、演示、算法平台；官网亦提示行业早期与安全距离
-- **AI 能力**：模仿/强化学习运动；UnifoLM 等大模型叙事；DEX 力控灵巧手选配
-- **大模型方案**：待核实
+- **AI 能力**：
+  - AI 功能：运动由模仿学习与强化学习驱动，官网称随 AI 加速持续升级；选配力控三指灵巧手 Dex3-1，以力位混合控制模拟人手做物体精准操作。实现方式：8 核高性能 CPU，EDU 可选配 Orin 等高算力模组；官网写 UnifoLM（Unitree机器人统一大模型），没有写其在出厂 G1 上的具体功能与基座（[宇树 G1 中文页](https://www.unitree.com/cn/g1)，查证 2026-10-02）
+  - 模仿/强化学习运动；UnifoLM 等大模型叙事；DEX 力控灵巧手选配
+- **大模型方案**：官网原文 "UnifoLM (Unified Robot Large Model)"，未写具体基座及其在出厂 G1 上承担的功能（非千问默认绑定）（[Unitree G1](https://www.unitree.com/g1/)，查证 2026-10-02）
 - **公开数据**：待核实
 - **关键差异化**：① 可下单的人形价格锚点；② EDU 二次开发路径；③ 与 Go2 形成腿足产品矩阵
 - **商业模式**：硬件；EDU 报价 + 配件
@@ -57,8 +61,10 @@
   - MSRP：待核实
   - 经销商价：美区经销商公开汇总约 $38,363 USD–$48,000 USD（臂+控制器量级，第三方）；整单元含末端/集成更高
 - **目标市场**：全球制造业、教育、轻组装
-- **AI 能力**：原生偏示教与 UR+ 生态；语言/VLA 多由第三方视觉与软件集成
-- **大模型方案**：待核实
+- **AI 能力**：
+  - AI 功能：选配 AI Accelerator 做计算机视觉辅助决策，并以训练模型增强运动能力，面向 UR Series 与 e-Series 开发 AI 应用。实现方式：内置 NVIDIA Jetson Orin AGX 64GB 计算盒 + Orbbec Gemini 335Lg 3D 相机，基于 PolyScope X，具体模型未公开（[UR AI Accelerator](https://www.universal-robots.com/products/ai-accelerator/)，查证 2026-10-02）
+  - 原生偏示教与 UR+ 生态；语言/VLA 多由第三方视觉与软件集成
+- **大模型方案**：官网未公开具体基座模型（非千问默认绑定）。选配 AI Accelerator 内置 NVIDIA Jetson Orin AGX 64GB 计算盒与 Orbbec Gemini 335Lg 3D 相机，原文 "designed to enable development of AI-powered applications for UR Series & e-Series cobots"（[UR AI Accelerator](https://www.universal-robots.com/products/ai-accelerator/)，查证 2026-10-02）
 - **公开数据**：待核实
 - **关键差异化**：① 协作臂事实标准生态；② 认证与经销网络；③ 二手/残值市场深
 - **商业模式**：硬件 + 经销/集成商项目交付
@@ -98,7 +104,9 @@
   - 现价：待核实（未见公开单价）
   - MSRP：待核实
 - **目标市场**：产线工业场景
-- **AI 能力**：产品页写 BrainNet 2.0 与 Co-Agents。厂商称 Co-Agent 为自研工业智能体，并写产线任务驱动的群体协同
+- **AI 能力**：
+  - AI 功能：头部纯 RGB 双目视觉用基于深度学习的立体深度估计，实时生成高精度稠密深度图；「BrainNet 2.0」+ Co-Agents 双环 AI 系统做产线任务驱动的人形机器人群体协同。实现方式：自研被动双目视觉系统 + 自研工业智能体 Co-Agent，基座模型未公开（[Walker S2 产品页](https://www.ubtrobot.com/en/humanoid/products/walker-s2)，查证 2026-10-02）
+  - 产品页写 BrainNet 2.0 与 Co-Agents。厂商称 Co-Agent 为自研工业智能体，并写产线任务驱动的群体协同
 - **大模型方案**：官网未公开具体基座模型（非千问默认绑定）
 - **公开数据**：未见公开单价。新闻稿（2025-11-17）称首批数百台开始量产交付。2025 年初以来 Walker 系列累计订单超过 ¥800,000,000 CNY（新闻稿 2025-11-17）
 - **关键差异化**：① 产品页写 3 分钟内自主换电；② 负载 15 kg，腰部旋转 ±162°；③ 头部为纯 RGB 双目立体视觉
@@ -137,14 +145,16 @@
 - **形态**：全尺寸交互服务人形。英文页规格：身高 169 cm、体重 69 kg、电池 700 Wh、续航 2 h、可换电、主动自由度 40+。中文页写灵巧手 19 个自由度
 - **定价**：
   - 首发价：A2 青春版开售价 ¥168,000 CNY（2025-08-18）· [界面新闻](https://m.jiemian.com/article/13195641.html)。旗舰版待核实
-  - 现价：待核实
+  - 现价：青春版 ¥198,000 CNY · 中国 · [智元商城（官方）](https://store.agibot.com.cn/goods_detail/66?id=66&isShowTab=false) · 查证 2026-10-02。旗舰版商城页为「联系购买」，未标价，待核实
   - MSRP：待核实
 - **目标市场**：导览、迎宾、讲解等交互服务。中文页写应用场景包括工业、商业、家庭
-- **AI 能力**：英文页原文 "Powered by large language models … full-duplex conversation, and edge deployment"，并写结合 RAG 做企业知识库
+- **AI 能力**：
+  - AI 功能：大模型全双工实时对话，结合 RAG 建企业知识库做营销、业务咨询和导览讲解；多模态模型做声源定位、人脸识别和嘈杂环境唇读；ActionGPT 按语音指令和意图生成拟人动作；HIMUS 3D-SLAM + VectorFlux 规划控制做 L4 级自主移动，结合开放集语义信息智能避障。实现方式：大语言模型 + RAG + 多模态模型，支持端侧部署，没有写模型名（[远征 A2 英文产品页](https://www.agibot.com/products/A2)，查证 2026-10-02）
+  - 英文页原文 "Powered by large language models … full-duplex conversation, and edge deployment"，并写结合 RAG 做企业知识库
 - **大模型方案**：英文页写 large language models 与 RAG，未写具体模型名。官网未公开具体基座模型（非千问默认绑定）
 - **公开数据**：A2 单款销量未见。中文页写 2024-08-18 发布、2024-12-16 量产，并写远征系列累计出货约 1,000 台（系列口径）
 - **关键差异化**：① 英文页写大模型、全双工对话和端侧部署；② 结合 RAG 做企业知识库；③ 中文页写灵巧手 19 个自由度
-- **商业模式**：硬件交付。旗舰版与现价待核实
+- **商业模式**：硬件交付；官方商城在线销售青春版，旗舰版为「联系购买」。旗舰版价格待核实
 - **另见**：[公开案例](../../../solutions/by-category/09-embodied/04-cases.md)
 
 > 来源：[远征 A2 英文产品页](https://www.agibot.com/products/A2) · [官方中文介绍](https://www.agibot.com.cn/article/188/detail/107.html)（均查证 2026-09-30） · [界面新闻（2025-08-18）](https://m.jiemian.com/article/13195641.html)
@@ -199,7 +209,7 @@
 
 ### 大头 BoBo 超能机器狗（维他动力 / Vbot）
 
-- **上市状态**：待核实（渠道待核实，查证 2026-10-02）。官网写「将于2026 年 4 月在国内启动量产交付，全球版本预计于 2026 年第二季度正式上市」（[Vbot 官网](https://www.vbot.cn/)）
+- **上市状态**：待核实（「Vbot维他动力」小程序、Vbot京东自营旗舰店，查证 2026-10-02）。官网写「将于2026 年 4 月在国内启动量产交付，全球版本预计于 2026 年第二季度正式上市」（[Vbot 官网](https://www.vbot.cn/)）；官网订购入口图原文 "「Vbot维他动力」小程序下订""「Vbot京东自营旗舰店」下订"（[Vbot 官网订购图](https://www.vbot.cn/uploadfiles/images/show.jpg?c2hvdy5qcGc=)，查证 2026-10-02）
 - **官网/渠道**：<https://www.vbot.cn/Detail> 官网产品页（有「订购」入口）
 - **形态**：四足机器狗。站立 613×339×569 mm，约 16 kg，14 个关节；深度双目摄像头、360° 16 线激光雷达、四阵列麦克风、360° UWB；交互表情屏 + 耳灯；最大速度 14 km/h（常规运动速度 4 km/h，官网称会通过 OTA 逐步提升）；运动负重 5 kg / 极限 12 kg，稳态拖拽 50 kg / 极限 100 kg；594 Wh 电池，移动续航约 3–5 h；蜂窝网络 + 蓝牙 + Wi-Fi；拓展背板（选配），带 1/4 英寸螺口、磁吸接口和拖挂接口（官网）
 - **定价**：
