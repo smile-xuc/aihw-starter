@@ -168,7 +168,7 @@ export default async function run(x) {
         } else task.asrCostStatus = 'unknown';
       }
       x.say('云端', `听到：${text}（${Math.round(task.asrMs)} ms）`);
-      if (!text) continue;
+      if (!text) throw new Error('转写结果为空：检查录音是否有人声');
     } else {
       x.say('设备', `指令（文本）：${value}`);
       task.said = x.now();
