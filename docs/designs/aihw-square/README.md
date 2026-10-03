@@ -13,7 +13,7 @@
 | [完整 APP 设计说明](./%E5%AE%8C%E6%95%B4APP%E8%AE%BE%E8%AE%A1%E8%AF%B4%E6%98%8E.md) | 页面结构、Demo 映射、平台方向与运行范围 |
 | [首版首页说明](./%E8%AE%BE%E8%AE%A1%E8%AF%B4%E6%98%8E.md) | 首页视觉与交互说明 |
 
-在 [GitHub Pages 站点首页](https://smile-xuc.github.io/aihw-starter/) 点击「功能广场 APP」可直接浏览 HTML。GitHub 仓库里的 HTML 链接显示源文件；下载后也可直接用浏览器打开。
+在 [GitHub Pages 站点首页](https://smile-xuc.github.io/aihw-starter/) 进入网页 APP（[`app/`](../../app/)）。本目录 HTML 为设计存档，可离线打开；GitHub 仓库里的 HTML 链接显示源文件。
 
 主原型、总览、流程和首版首页均内嵌图像、样式及脚本。文件之间的快捷链接使用相对路径，分享整套设计时保持目录结构即可。
 
