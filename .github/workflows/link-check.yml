@@ -6,7 +6,7 @@ name: link-check
 on:
   pull_request:
   schedule:
-    - cron: "0 1 * * *" # 01:00 UTC = 09:00 Beijing
+    - cron: "15 1 * * *" # 01:15 UTC = 09:15 Beijing
   workflow_dispatch:
 
 permissions:
