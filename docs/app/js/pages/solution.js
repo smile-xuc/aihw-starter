@@ -135,7 +135,7 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
   document.title = `${product?.title || sol.title} · AIHW`;
   const archetype = label(reg.labels.archetypes, variant.archetype || sol.archetype || '');
   const page = mountPage(view, html`
-    <div class="subbar"><a class="back-link" href="#/c/${cat.id}">${icon('back')}${cat.name}</a></div>
+    <div class="subbar"><a class="back-link" href="#/c/${cat.id}">${icon('back')}所属品类：${cat.name}</a></div>
     <section class="sol-head page-head">
       <p class="eyebrow">${stack?.name || sol.stack} · ${sol.kind === 'reference' ? '参考方案' : '上游指针'}${archetype ? ` · ${archetype}` : ''}</p>
       <h1>${product?.title || sol.title}</h1>
@@ -196,7 +196,10 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
   const clearResult = () => {
     outcome.replaceChildren(); page.querySelector('.live-cost')?.classList.add('hidden');
     replay?.stop(); host.replaceChildren();
-    mount(outcome, html`<p class="info-note">素材或提问已更改，点击真跑获得当前输入的结果。示例回放不会代表你的素材。</p>`);
+    const missingSample = !tr && draft.source === 'sample' && (product.kind !== 'image' || draft.question === sampleQuestion);
+    mount(outcome, missingSample
+      ? html`<p class="info-note">示例回放暂时无法加载。请联网刷新重试，或在<a href="#/me">「我的」缓存全部回放</a>后离线使用。</p>`
+      : html`<p class="info-note">素材或提问已更改，点击真跑获得当前输入的结果。示例回放不会代表你的素材。</p>`);
   };
   const preview = () => {
     if (!product) return;
@@ -206,7 +209,7 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
     const src = previewURL || (draft.source === 'sample' && sample ? sampleUrl(reg,sol,sample.path) : null);
     mount(page.querySelector('[data-preview]'), src ? (product.kind === 'image'
       ? html`<figure class="input-preview"><img src="${src}" alt="${draft.source === 'sample' ? '示例照片' : '已选照片'}"><figcaption>${draft.source === 'sample' ? '示例照片' : draft.file.name}</figcaption></figure>`
-      : html`<div class="input-preview"><audio controls preload="metadata" src="${src}"></audio><p class="small">${draft.source === 'sample' ? '示例会议录音' : `${draft.file.name} · ${draft.input ? draft.input.durationSeconds.toFixed(1) + ' 秒' : '待验证'}`}</p></div>`) : html`<p class="small">尚未选择素材</p>`);
+      : html`<div class="input-preview"><audio controls preload="metadata" src="${src}"></audio><p class="small">${draft.source === 'sample' ? '示例会议录音' : `${draft.file.name} · ${draft.input ? draft.input.durationSeconds.toFixed(1) + ' 秒' : '待验证'}`}</p></div>`) : html`<p class="small">${draft.source === 'sample' ? '示例素材暂未加载，请联网后重试。' : '尚未选择素材'}</p>`);
     page.querySelector('[data-own-material]').hidden = draft.source !== 'own';
     for (const b of page.querySelectorAll('[data-source]')) b.setAttribute('aria-pressed',String(b.dataset.source === draft.source));
   };
@@ -259,7 +262,7 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
   });
   page.addEventListener('click', e=>{
     const copy=e.target.closest('[data-copy]');if(copy)copyText(copy.dataset.copy);
-    const jump=e.target.closest('[data-jump]');if(jump){e.preventDefault();page.querySelector(`#${jump.dataset.jump}`)?.scrollIntoView({behavior:'smooth',block:'start'});}
+    const jump=e.target.closest('[data-jump]');if(jump){e.preventDefault();page.querySelector(`#${jump.dataset.jump}`)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});}
     const source=e.target.closest('[data-source]');
     if(source && !running && source.dataset.source!==draft.source){reading?.abort();readVersion++;draft.source=source.dataset.source;materialError='';refreshResult();preview();mount(page.querySelector('[data-material-status]'),'');validateMaterial();}
     if(e.target.closest('[data-reset]') && !running){reading?.abort();readVersion++;draft=resetDraft(draftKey,initialDraft);materialError='';const q=page.querySelector('[data-question]');if(q)q.value=draft.question;page.querySelector('[data-material]').value='';refreshResult();preview();mount(page.querySelector('[data-material-status]'),'');}

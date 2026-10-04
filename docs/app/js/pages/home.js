@@ -3,7 +3,7 @@ import { readHistory, statusLabel } from '../history.js';
 import { label } from '../data.js';
 import { runnerCount, solutionRunnable } from '../live/index.js';
 import { loadCredentials } from '../settings.js';
-import { brandmark, html, icon, mountPage } from '../ui.js';
+import { html, icon, mountPage } from '../ui.js';
 import { CATEGORY_BUSINESS, casesFor } from '../positioning.js';
 
 export function experienceChips(reg, sol) {
@@ -45,11 +45,11 @@ export function modeBanner(reg) {
 export const dataNote = (reg) => `方案注册表 · demo 标准 v${reg.standard}`;
 
 export function renderHome(view, reg) {
-  document.title = 'AIHW · AI 硬件方案';
+  document.title = '体验广场 · AIHW Starter';
   const saved = savedStacks(reg).length > 0;
   const recent = readHistory().records.slice(0, 3);
   mountPage(view, html`
-    <header class="app-top"><a class="wordmark" href="#/">${brandmark}AIHW</a>
+    <header class="app-top"><span class="eyebrow">先看样本，再动手体验</span>
       <a class="chip ${saved ? 'ok' : 'accent'}" href="#/me">${saved ? '已填 Key' : '回放模式'}</a></header>
     <section class="intro">
       <p class="eyebrow">把 AI 硬件的能力，先拿来用</p><h1>一张照片，一段录音。<br>体验就在这里。</h1>

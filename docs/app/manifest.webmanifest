@@ -1,7 +1,7 @@
 {
-  "name": "AIHW · AI 硬件方案",
+  "name": "AIHW Starter · 体验广场",
   "short_name": "AIHW",
-  "description": "AI 硬件 9 个品类的参考方案：看回放、算单次成本、看要什么硬件和合规义务。",
+  "description": "探索九个商业化品类，体验照片问答与会议纪要，查看硬件参考设计和成本账本。",
   "lang": "zh-CN",
   "start_url": "./",
   "scope": "./",

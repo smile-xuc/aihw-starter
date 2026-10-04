@@ -57,7 +57,8 @@ export function renderCategory(view, reg, id) {
       <p>${CATEGORY_BUSINESS[id] || cat.capabilities || ''}</p>
     </section>
 
-    <section class="section" aria-label="品类项目">
+    <nav class="category-jumps" aria-label="本页内容"><button type="button" class="secondary-action" data-category-jump="category-projects">项目精选</button><button type="button" class="secondary-action" data-category-jump="category-experiences">体验参考实现</button><button type="button" class="secondary-action" data-category-jump="category-docs">品类资料</button></nav>
+    <section class="section" id="category-projects" tabindex="-1" aria-label="品类项目">
       <div class="section-title"><h2>项目精选 <small>${projects.length}</small></h2></div>
       <p class="small">按项目的交付范围和现有资料判断。商业产品、集成方案与开发者用途可重叠；开发者项目也可用于商业产品。</p>
       <div class="filter-row" role="group" aria-label="项目用途筛选">${[['all','全部'],['commercial','商业产品 / 方案'],['developer','开发者项目']].map(([value,text])=>html`<button type="button" class="secondary-action" data-project-filter="${value}" aria-pressed="${value==='all'}">${text}</button>`)}</div>
@@ -77,7 +78,7 @@ export function renderCategory(view, reg, id) {
       <p class="info-note">${icon('info')}<span>代表场景：${cat.scenes || '—'}。数据来源：${source.url ? html`<a href="${source.url}" rel="noopener">${source.text}</a>` : (source.text || '待核实')}；带「~」的是区间估计。</span></p>
     </section>
 
-    <section class="section">
+    <section class="section" id="category-experiences" tabindex="-1">
       <div class="section-title"><h2>本仓参考实现 <small>按栈体验</small></h2></div>
       <p class="small">以下入口用于理解和验证技术链路；其回放、费用与验证状态只描述本仓代码。</p>
       ${cat.solutions.map((s) => solutionRow(reg, s))}
@@ -93,8 +94,13 @@ export function renderCategory(view, reg, id) {
 
     <section class="section">
       <div class="section-title"><h2>品类文档</h2></div>
-      <div class="link-list">${DOCS.map(([k, text, file]) => (cat.docs?.[k] ? html`<a href="${repoLink(reg, cat.docs[k])}" rel="noopener">${text}<span>${file} ${icon('link')}</span></a>` : ''))}</div>
+      <div class="link-list" id="category-docs" tabindex="-1">${DOCS.map(([k, text, file]) => (cat.docs?.[k] ? html`<a href="${repoLink(reg, cat.docs[k])}" rel="noopener">${text}<span>${file} ${icon('link')}</span></a>` : ''))}</div>
     </section>`);
+  page.querySelectorAll('[data-category-jump]').forEach(button=>button.addEventListener('click',()=>{
+    const target = page.querySelector(`#${button.dataset.categoryJump}`);
+    target.focus({preventScroll:true});
+    target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+  }));
   page.querySelectorAll('[data-project-filter]').forEach(button=>button.addEventListener('click',()=>{
     const selected = button.dataset.projectFilter;
     page.querySelectorAll('[data-project-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));

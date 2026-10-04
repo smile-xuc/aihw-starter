@@ -104,7 +104,7 @@ export function renderMe(view, reg) {
   const secrets=stacks.flatMap(stack=>(stack.fields||[]).filter(f=>f.input==='secret').map(f=>loadCredentials(stack.id)?.values[f.key])).filter(Boolean);
   const page = mountPage(view, html`
     <header class="app-top"><span class="wordmark"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>我的</span></header>
-    ${target ? html`<div class="mode-banner"><div><strong>继续体验：${PRODUCTS[target.sol.id]?.title || target.sol.title} · ${target.variant.title}</strong><p>请补全当前玩法所需凭证。保存后返回素材页面，再由你点击开始，不会自动调用模型。</p></div></div>` : requestedReturn ? html`<p class="inline-error">返回地址无效，请从方案页面重新进入设置。</p>` : ''}
+    ${target ? html`<div class="mode-banner"><div><strong>继续体验：${PRODUCTS[target.sol.id]?.title || target.sol.title} · ${target.variant.title}</strong><p>请补全当前玩法所需凭证。保存后返回素材页面，再由你点击开始，不会自动调用模型。</p><a href="${target.hash}" data-return-experience>暂不配置，返回体验</a></div></div>` : requestedReturn ? html`<p class="inline-error">返回地址无效，请从方案页面重新进入设置。</p>` : ''}
     <section class="section history-panel"><div class="section-title"><h2>体验历史</h2><button type="button" class="secondary-action" data-history-clear>清空历史</button></div><p class="small">文字结果只保存在这台设备。最多 20 条、共 2 MiB；原始照片、录音和临时播报不保存。</p><div class="panel" data-history-list></div><div data-history-result></div></section>
     ${stacks.length ? stacks.map(s=>stackPanel(s,target)) : html`<div class="inline-error">方案数据没有加载出来，填写表单要用注册表里的栈声明。已保存的凭证仍在本机，可以先清除：</div>
       <button type="button" class="secondary-action block danger-action" data-act="clear-all">清除这台设备上保存的全部凭证</button>`}
@@ -122,8 +122,8 @@ export function renderMe(view, reg) {
     <section class="section">
       <div class="section-title"><h2>离线与外观</h2></div>
       <div class="panel">
-        <button type="button" class="secondary-action block" data-act="cache" ${reg ? '' : 'disabled'}>缓存全部回放素材，离线也能看</button>
-        <div data-slot="cache" class="small"></div>
+        <button type="button" class="secondary-action block" data-act="cache" ${reg ? '' : 'disabled'}>缓存全部回放与素材，离线也能看</button>
+        <div data-slot="cache" class="small" role="status" aria-live="polite"></div>
         <div class="field"><span>外观</span>
           <div class="segment" role="group" aria-label="外观">
             ${[['system', '跟随系统'], ['light', '浅色'], ['dark', '深色']].map(([id, text]) => html`<button type="button" data-theme="${id}" aria-pressed="${String(id === theme)}">${text}</button>`)}
@@ -282,16 +282,92 @@ function bindStack(page, stack, reg, target, isActive) {
 
 async function cacheAll(page, reg) {
   const slot = page.querySelector('[data-slot="cache"]');
-  const urls = new Set(reg.solutions.flatMap((s) => (s.samples || []).map((x) => sampleUrl(reg, s, x.path)).filter(Boolean)));
-  let done = 0;
-  let bytes = 0;
-  for (const url of urls) {
+  const button = page.querySelector('[data-act="cache"]');
+  if (!reg || button.disabled) return;
+  button.disabled = true;
+  slot.dataset.cacheState = 'loading';
+  const root = new URL(reg.root);
+  const queue = new Map(), downloaded = new Set(), failures = new Map();
+  let done = 0, bytes = 0;
+  const showProgress = () => {
+    if (page.isConnected) mount(slot, html`<p>正在准备离线回放：已处理 ${done} / ${queue.size} 个资源。</p>`);
+  };
+  const add = (value, kind) => {
+    if (!value) return;
     try {
-      const res = await fetch(url);
-      bytes += (await res.arrayBuffer()).byteLength;
-    } catch { /* 单个失败不影响其他 */ }
-    done += 1;
-    mount(slot, html`<p>已缓存 ${done} / ${urls.size} 个素材（${Math.round(bytes / 1024)} KB）</p>`);
+      const url = new URL(value, root);
+      const allowedPath = root.pathname + (kind === 'trace' ? 'traces/' : 'assets/');
+      const decodedPath = decodeURIComponent(url.pathname);
+      if (url.origin !== location.origin || !url.pathname.startsWith(allowedPath) || !decodedPath.startsWith(allowedPath) || decodedPath.includes('\\') || decodedPath.split('/').some(part=>part==='.'||part==='..') || url.search || url.hash || url.username || url.password) {
+        throw Error('资源不在本站回放目录，已跳过');
+      }
+      if (!queue.has(url.href)) queue.set(url.href, {kind, label:url.pathname.slice(root.pathname.length)});
+    } catch {
+      // Never fetch or display an untrusted external/signed URL from a trace.
+      failures.set(String(value), {label:kind === 'trace' ? '回放轨迹地址' : '素材地址',reason:'资源不在本站回放目录，已跳过'});
+    }
+  };
+  try {
+    for (const solution of reg.solutions) {
+      for (const variant of solution.variants || []) add(variant.trace, 'trace');
+      for (const sample of solution.samples || []) add(sampleUrl(reg, solution, sample.path), 'asset');
+    }
+    showProgress();
+    // The queue grows as each published trace reveals its input/output assets.
+    for (const [url, item] of queue) {
+      try {
+        const response = await fetch(url,{redirect:'error'});
+        if (!response.ok) throw Error(`HTTP ${response.status}`);
+        const buffer = await response.arrayBuffer();
+        if (item.kind === 'trace') {
+          const trace = normalizeTrace(JSON.parse(new TextDecoder().decode(buffer)));
+          for (const file of [...trace.inputs, ...trace.outputs]) add(file.url || file.asset, 'asset');
+        }
+        bytes += buffer.byteLength;
+        downloaded.add(url);
+      } catch (error) {
+        failures.set(url, {label:item.label,reason:/^HTTP \d+$/.test(error.message) ? error.message : '下载或解析失败，请联网重试'});
+      }
+      done++;
+      showProgress();
+    }
+
+    const verified = new Set();
+    let cacheNote = '';
+    if (!navigator.serviceWorker?.controller || !('caches' in window)) {
+      cacheNote = '当前未启用离线缓存；资源下载不代表断网后可用。请使用支持 Service Worker 的浏览器，联网刷新后重试。';
+    } else {
+      // Only inspect this app's cache. Another app's matching response is not proof.
+      const names = (await caches.keys()).filter(name=>name.startsWith('aihw-app-'));
+      if (names.length !== 1) {
+        cacheNote = '离线缓存尚未就绪或正在更新，请联网刷新后重试。';
+      } else {
+        const cache = await caches.open(names[0]);
+        for (const url of downloaded) {
+          const stored = await cache.match(url);
+          if (stored?.ok) verified.add(url);
+        }
+      }
+    }
+    for (const url of downloaded) {
+      if (!verified.has(url)) failures.set(url,{label:queue.get(url).label,reason:'尚未确认写入离线缓存'});
+    }
+    const complete = queue.size > 0 && failures.size === 0 && verified.size === queue.size;
+    const state = complete ? 'complete' : verified.size ? 'partial' : 'failed';
+    slot.dataset.cacheState = state;
+    if (page.isConnected) {
+      mount(slot, html`<p>${complete ? '全部回放与素材已缓存' : '离线缓存未全部完成'}：${verified.size} / ${queue.size} 个资源可离线使用（下载 ${Math.round(bytes / 1024)} KB）。</p>
+        ${cacheNote ? html`<p>${cacheNote}</p>` : ''}
+        ${failures.size ? html`<p>有 ${failures.size} 项未就绪，可以重新点击缓存按钮重试。</p><details><summary>查看未完成的资源</summary><ul>${[...failures.values()].map(failure=>html`<li>${failure.label}：${failure.reason}</li>`)}</ul></details>` : ''}`);
+      toast(complete ? '全部回放与素材已缓存，离线也能看' : '离线缓存未全部完成，请查看未完成的资源');
+    }
+  } catch {
+    slot.dataset.cacheState = 'failed';
+    if (page.isConnected) {
+      mount(slot,html`<p class="inline-error">无法确认离线缓存，请检查浏览器存储权限并重试；已下载不代表已缓存。</p>`);
+      toast('离线缓存未完成');
+    }
+  } finally {
+    button.disabled = false;
   }
-  toast(navigator.serviceWorker?.controller ? '回放素材已缓存，离线也能看' : '已下载；离线缓存需要浏览器支持 Service Worker');
 }
