@@ -4,7 +4,7 @@ GitHub Pages 上的静态网页，可以「添加到主屏幕」当 APP 用（PW
 
 - 地址：<https://smile-xuc.github.io/aihw-starter/app/>（Pages 是「从分支部署」master 的 `/docs`，合并即上线）
 - 没有后端、没有构建链：HTML + CSS + 原生 ES 模块；数据由仓库里的生成器产出并入库
-- 中性色工作区、蓝色操作强调、统一线性图标和轻量微动效；手机底导航、平板紧凑导航与桌面侧栏共用一套页面。当前规范和参考见 [界面设计说明](UI_DESIGN.md)，[早期原型](../designs/aihw-square/)保留为存档
+- 纸白与冰蓝工作区、湖蓝操作强调、薄荷辅助色、统一线性图标和轻量微动效；系统深色和旧外观偏好均使用这一套浅色配色。手机底导航、平板紧凑导航与桌面侧栏共用一套页面。当前规范和参考见 [界面设计说明](UI_DESIGN.md)，[早期原型](../designs/aihw-square/)保留为存档
 
 ## 页面
 
@@ -13,7 +13,7 @@ GitHub Pages 上的静态网页，可以「添加到主屏幕」当 APP 用（PW
 | 首页 | `#/` | 两个精选体验、最近体验、9 个商业化品类的场景与项目入口 |
 | 品类页 | `#/c/<品类>` | 31 个代表项目及交付依据、商业／开发者用途筛选、行业速览、本仓参考实现与品类文档 |
 | 方案页 | `#/s/<方案 id>[/<玩法 id>]`，也可以 `?s=<方案 id>` | ① 效果（回放 / 真跑，多个玩法可切换）② 一次多少钱 ③ 要什么硬件、三步跑通 ④ 合规义务；深入链接 |
-| 我的 | `#/me` | 凭证配置与返回原体验、本机体验历史、打开/导出运行记录、离线缓存、外观 |
+| 我的 | `#/me` | 凭证配置与返回原体验、本机体验历史、打开/导出运行记录、离线缓存 |
 | 硬件方案 | `#/hardware[/<项目 id>]` | 3 条 ESP32 设计路线：链路、原型 BOM、共享研发／服务器成本、进度、许可依据与实机缺口 |
 | 成本账本 | `#/cost-lab` | 导入用户单价与轨迹、按请求 ID 去重、用量计价、账单差额、导出软预算计划；本页不调用模型 |
 
@@ -135,7 +135,7 @@ PLAYWRIGHT_CORE=/tmp/pw/node_modules/playwright-core/index.mjs CHROME=$(command 
 docs/app/
 ├── index.html              入口；CSP 只放行本站和百炼官方接入点
 ├── manifest.webmanifest    PWA 清单    sw.js  离线缓存（只缓存本站 GET，不碰云端接口）
-├── css/app.css             明暗主题、响应式工作区、组件状态与减少动效支持
+├── css/app.css             统一清爽浅色、响应式工作区、组件状态与减少动效支持
 ├── js/main.js              路由    js/pages/  首页、品类页、方案页、我的
 ├── js/data.js              读 data/    js/replay.js  通用回放舞台    js/meta.js  少量界面约定
 ├── js/settings.js          凭证的本机存储与校验（按栈声明）
@@ -147,7 +147,7 @@ docs/app/
 ├── live-data/              真跑常量（tools/build.py 生成）
 ├── tools/build.py          生成 live-data/ 与自检    tools/smoke.mjs + fake_bailian.py  冒烟测试
 ├── tools/*.test.mjs        素材、接口响应、指标、历史与轨迹契约回归
-├── tools/workspace-smoke.mjs 桌面/Pad、品类项目/硬件/账本交互与 SW v8 离线回归
+├── tools/workspace-smoke.mjs 桌面/Pad、品类项目/硬件/账本交互与 SW v9 离线回归
 ├── tools/cost-run.mjs      mock/live 固定样本跑测；默认 mock、凭证只读环境
 ├── ITERATION_REVIEW.md     软硬件链路、费用/工时假设、项目定位与当前缺口
 ├── VERIFY_BROWSER.md       真实接口与真机验收步骤、待验证状态

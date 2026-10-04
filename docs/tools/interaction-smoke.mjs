@@ -74,6 +74,13 @@ try{
   async function settled(page){
     await page.waitForFunction(()=>document.getAnimations().every(a=>a.playState!=='running'),null,{timeout:5000});
   }
+  async function palette(page){
+    return page.evaluate(()=>{
+      const root=getComputedStyle(document.documentElement),body=getComputedStyle(document.body);
+      return {background:body.backgroundColor,foreground:body.color,colorScheme:root.colorScheme,
+        surfaces:['--bg','--surface','--surface-low','--accent','--accent-light'].map(name=>root.getPropertyValue(name).trim())};
+    });
+  }
   async function screenshot(page,name){if(shotDir)await page.screenshot({path:path.join(shotDir,name+'.png')});}
   async function drop(page,files=[],kind='files',event='drop'){
     await page.locator('[data-dropzone]').evaluate((node,{files,kind,event})=>{
@@ -112,22 +119,24 @@ try{
   assert.deepEqual(await vp.locator('.featured-card').nth(1).boundingBox(),siblingBefore,'Hover must not reflow adjacent cards');
   await vp.mouse.move(0,0);await settled(vp);
 
-  // System preference, explicit override and following the system again.
+  // The app has one light appearance regardless of OS preference or previous theme choice.
   await navigate(vp,'#/me','form[data-form]');
-  const bg=()=>vp.evaluate(()=>getComputedStyle(document.body).backgroundColor);
-  const light=await bg();await vp.emulateMedia({colorScheme:'dark'});await settled(vp);const dark=await bg();assert.notEqual(dark,light);
-  await vp.locator('button[data-theme="light"]').click();await settled(vp);assert.equal(await bg(),light);
-  await vp.locator('button[data-theme="dark"]').click();await vp.emulateMedia({colorScheme:'light'});await settled(vp);assert.equal(await bg(),dark);
-  await vp.locator('button[data-theme="system"]').click();await settled(vp);assert.equal(await bg(),light);
+  const light=await palette(vp);assert.equal(light.colorScheme,'light');
+  assert.equal(await vp.locator('button[data-theme]').count(),0,'The removed theme selector must not remain in settings');
+  const themeColor=await vp.locator('meta[name="theme-color"]').first().getAttribute('content');
+  await vp.emulateMedia({colorScheme:'dark'});await settled(vp);assert.deepEqual(await palette(vp),light);
+  await vp.emulateMedia({colorScheme:'light'});await settled(vp);assert.deepEqual(await palette(vp),light);
   await vp.emulateMedia({colorScheme:'dark'});
-  for(const width of [390,1440]){
-    await vp.setViewportSize({width,height:width===390?844:1000});
+  for(const [width,height] of [[390,844],[768,1024],[1440,1000]]){
+    await vp.setViewportSize({width,height});
     for(const [name,hash,selector] of [['home','#/','.featured-card'],['experience',imageRoute,'[data-question]'],['settings','#/me','form[data-form]']]){
-      await navigate(vp,hash,selector);await fits(vp,'dark '+width+' '+name);await settled(vp);await screenshot(vp,'dark-'+width+'-'+name);
+      await navigate(vp,hash,selector);await fits(vp,'OS dark '+width+' '+name);await settled(vp);
+      assert.deepEqual(await palette(vp),light,'OS dark must retain the same light palette on '+name);
+      await screenshot(vp,'os-dark-'+width+'-'+name);
       await focusVisible(vp,'[data-site-home]');
     }
   }
-  // Reduced motion still changes theme and routes, without running visual effects.
+  // Reduced motion still changes routes, without running visual effects.
   await vp.emulateMedia({reducedMotion:'reduce',colorScheme:'light'});await navigate(vp,'#/','.featured-card');
   await vp.locator('.featured-card').first().hover();
   assert.deepEqual(await vp.evaluate(()=>document.getAnimations().filter(a=>a.playState==='running').map(a=>a.constructor.name)),[],'Reduced motion disables entrance/hover animations');
@@ -140,7 +149,71 @@ try{
   assert.equal(await vp.evaluate(()=>document.activeElement?.id),'view');
   await focusVisible(vp,'[data-nav="hardware"]');await vp.keyboard.press('Enter');await mounted(vp,'[data-project-card]');
   await visual.close();
-  console.log('Interaction layout/motion OK: 15 light and 6 dark page/viewport checks, theme overrides, finite effects, reduced motion and keyboard skip/focus.');
+  console.log('Interaction layout/motion OK: 15 OS-light and 9 OS-dark page/viewport checks retain one light appearance, finite effects, reduced motion and keyboard skip/focus.');
+
+  // Migration only normalizes the theme key. These sentinels are intentionally not credentials or model records.
+  const preserved={
+    'aihw.credentials.bailian':JSON.stringify({themeMigrationSentinel:'not-a-credential'}),
+    'aihw.history.v1':JSON.stringify([{id:'theme-migration-sentinel',note:'not-a-model-record'}]),
+    'aihw.unrelated-setting':'preserve-this-value',
+  };
+  const sessionPreserved={'aihw.credentials.bailian':JSON.stringify({themeMigrationSentinel:'not-a-session-credential'})};
+  for(const oldTheme of ['dark','system']){
+    const legacy=await context({colorScheme:'dark'});
+    await legacy.addInitScript(({oldTheme,preserved,sessionPreserved,origin})=>{
+      if(location.origin!==origin)return;
+      localStorage.setItem('aihw.theme',oldTheme);
+      for(const [key,value] of Object.entries(preserved))localStorage.setItem(key,value);
+      for(const [key,value] of Object.entries(sessionPreserved))sessionStorage.setItem(key,value);
+    },{oldTheme,preserved,sessionPreserved,origin:new URL(app).origin});
+    // A previously cached HTML shell can still declare dark metadata while loading new modules.
+    if(oldTheme==='dark'){
+      const oldShell=(await readFile(path.join(docs,'app/index.html'),'utf8'))
+        .replace(/<html[^>]*>/,'<html lang="zh-CN" data-theme="dark">')
+        .replace(/<meta name="color-scheme"[^>]*>/,'<meta name="color-scheme" content="light dark">')
+        .replace(/<meta name="theme-color"[^>]*>/g,'')
+        .replace('</head>','<meta name="theme-color" content="#f8f9fb" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#141619" media="(prefers-color-scheme: dark)"></head>');
+      await legacy.route('**/app/',route=>route.fulfill({status:200,contentType:'text/html',body:oldShell}));
+    }
+    const lp=await legacy.newPage();await navigate(lp,'#/me','form[data-form]');
+    assert.deepEqual(await palette(lp),light,'An old '+oldTheme+' preference cannot reactivate dark mode');
+    assert.equal(await lp.locator('button[data-theme]').count(),0);
+    assert.equal(await lp.locator('html').getAttribute('data-theme'),'light');
+    assert.equal(await lp.locator('meta[name="color-scheme"]').getAttribute('content'),'light');
+    assert.equal(await lp.locator('meta[name="theme-color"]').evaluateAll((nodes,color)=>nodes.length>0&&nodes.every(node=>node.content===color),themeColor),true,'Old browser chrome metadata must also use the light color');
+    // Existing imports remain callable, but cannot switch to a removed appearance.
+    const loaded=await lp.evaluate(async()=>{
+      const settings=await import('./js/settings.js');
+      settings.saveTheme('dark');settings.applyTheme('system');return settings.loadTheme();
+    });
+    assert.equal(loaded,'light');assert.deepEqual(await palette(lp),light);
+    const stored=await lp.evaluate(()=>({local:Object.fromEntries(Object.entries(localStorage)),session:Object.fromEntries(Object.entries(sessionStorage))}));
+    assert.deepEqual(stored.local,{...preserved,'aihw.theme':'light'},'Only the theme preference may change during migration');
+    assert.deepEqual(stored.session,sessionPreserved,'Session credentials must remain byte-for-byte unchanged');
+    await legacy.close();
+  }
+  const noJs=await context({javaScriptEnabled:false,colorScheme:'dark',viewport:{width:390,height:844}}),np=await noJs.newPage();
+  await np.goto(app);await np.locator('noscript').waitFor();assert.deepEqual(await palette(np),light,'The static shell must be light without JavaScript');
+  assert.equal(await np.locator('html').getAttribute('data-theme'),'light');
+  await hit(np,'[data-site-home]');await screenshot(np,'os-dark-no-js');await noJs.close();
+
+  const delayed=await context({colorScheme:'dark',viewport:{width:390,height:844}}),dp=await delayed.newPage(),moduleGate=deferred(),moduleSeen=deferred();
+  await delayed.route('**/app/js/main.js',async route=>{moduleSeen.resolve();await moduleGate.promise;await route.continue();});
+  await dp.goto(app,{waitUntil:'commit'});await moduleSeen.promise;
+  await dp.waitForFunction(()=>[...document.styleSheets].some(sheet=>sheet.href?.endsWith('/css/app.css')));
+  assert.equal(await dp.locator('#boot-note').isVisible(),true);
+  assert.deepEqual(await palette(dp),light,'The first styled frame must be light before application modules execute');
+  assert.equal(await dp.locator('meta[name="color-scheme"]').getAttribute('content'),'light');
+  await screenshot(dp,'os-dark-module-delayed');moduleGate.resolve();await mounted(dp,'.featured-card');await delayed.close();
+
+  const unavailable=await context({colorScheme:'dark'});
+  await unavailable.addInitScript(()=>{
+    for(const name of ['localStorage','sessionStorage'])Object.defineProperty(window,name,{configurable:true,get(){throw new DOMException('Storage disabled for this test','SecurityError');}});
+  });
+  const up=await unavailable.newPage();await navigate(up,'#/','.featured-card');assert.deepEqual(await palette(up),light);
+  await up.locator('[data-nav="me"]').click();await mounted(up,'form[data-form]');assert.deepEqual(await palette(up),light);
+  assert.equal(await up.locator('button[data-theme]').count(),0);await unavailable.close();
+  console.log('Interaction appearance OK: dark/system legacy preferences and old shell metadata normalize to light; credential/history sentinels are unchanged; no-JS, delayed modules and unavailable storage remain light.');
 
   const touch=await context({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'no-preference'}),tp=await touch.newPage();
   await navigate(tp,'#/','.featured-card');assert.equal(await tp.evaluate(()=>matchMedia('(hover: hover)').matches),false);

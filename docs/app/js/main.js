@@ -10,7 +10,6 @@ import { applyTheme } from './settings.js';
 import { html, icon, mountPage, toast } from './ui.js';
 
 applyTheme();
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => applyTheme());
 
 const view = document.getElementById('view');
 let cleanup = null;

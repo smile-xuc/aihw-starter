@@ -3,7 +3,7 @@ import { hostsFor, testConnection } from '../live/client.js';
 import { browserSupport, requiredMissing } from '../live/index.js';
 import { CONNECTION_TEST } from '../meta.js';
 import { playTrace, Stage } from '../replay.js';
-import { clearCredentials, fieldValues, loadCredentials, loadTheme, maskSecret, saveCredentials, saveTheme, validateCredentials } from '../settings.js';
+import { clearCredentials, fieldValues, loadCredentials, maskSecret, saveCredentials, validateCredentials } from '../settings.js';
 import { copyText, fmtCny, html, icon, mount, mountPage, toast } from '../ui.js';
 
 import { PRODUCTS, returnTarget, renderOutcome, redact } from '../experience.js';
@@ -95,7 +95,6 @@ function capabilities(reg) {
 
 export function renderMe(view, reg) {
   document.title = '我的 · AIHW';
-  const theme = loadTheme();
   let active = true, localReplay = null;
   const parameters = new URLSearchParams(location.hash.split('?')[1] || '');
   const requestedReturn = parameters.get('return');
@@ -120,14 +119,10 @@ export function renderMe(view, reg) {
     </section>
 
     <section class="section">
-      <div class="section-title"><h2>离线与外观</h2></div>
+      <div class="section-title"><h2>离线使用</h2></div>
       <div class="panel">
         <button type="button" class="secondary-action block" data-act="cache" ${reg ? '' : 'disabled'}>缓存全部回放与素材，离线也能看</button>
         <div data-slot="cache" class="small" role="status" aria-live="polite"></div>
-        <div class="field"><span>外观</span>
-          <div class="segment" role="group" aria-label="外观">
-            ${[['system', '跟随系统'], ['light', '浅色'], ['dark', '深色']].map(([id, text]) => html`<button type="button" data-theme="${id}" aria-pressed="${String(id === theme)}">${text}</button>`)}
-          </div></div>
       </div>
     </section>
 
@@ -161,11 +156,6 @@ export function renderMe(view, reg) {
   page.addEventListener('click', (e) => {
     const copy = e.target.closest('[data-copy]');
     if (copy) copyText(copy.dataset.copy);
-    const t = e.target.closest('[data-theme]');
-    if (t) {
-      saveTheme(t.dataset.theme);
-      for (const b of page.querySelectorAll('[data-theme]')) b.setAttribute('aria-pressed', String(b === t));
-    }
     const act = e.target.closest('[data-act]')?.dataset.act;
     if (act === 'cache') cacheAll(page, reg);
     if (act === 'clear-all') {

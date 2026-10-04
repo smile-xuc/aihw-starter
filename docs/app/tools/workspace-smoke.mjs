@@ -116,7 +116,8 @@ try {
   const planDownload=page.waitForEvent('download');await page.locator('[data-plan-form] button[type="submit"]').click();
   const pd=await planDownload,planFile=path.join(temp,'plan.json');await pd.saveAs(planFile);
   const plan=JSON.parse(await readFile(planFile,'utf8'));assert.equal(plan.scenes.length,2);assert.equal(plan.acknowledge_billing_risk,false);
-  await page.emulateMedia({colorScheme:'dark'});await fits('dark cost lab');
+  await page.emulateMedia({colorScheme:'dark'});await fits('dark OS, light cost lab');
+  assert.equal(await page.evaluate(()=>getComputedStyle(document.documentElement).colorScheme),'light');
   if(process.env.REVIEW_SCREENSHOTS){
     await mkdir(process.env.REVIEW_SCREENSHOTS,{recursive:true});
     for(const [name,route,width,height,selector] of [['desktop-category','c/05-desktop-pet',1440,900,'[data-case]'],['phone-category','c/03-toys-companion',390,844,'[data-case]'],['desktop-hardware','hardware',1440,900,'[data-project-card]'],['pad-experience','s/02-ai-glasses.bailian/default',1024,768,'.stage'],['phone-cost','cost-lab',390,844,'[data-price-editor]']]){
@@ -128,11 +129,11 @@ try {
   // Seed an old app cache and another same-origin application before first registration.
   const offline=await browser.newContext({viewport:{width:1024,height:768},serviceWorkers:'allow'});
   const op=await offline.newPage();await op.goto(base+'icons/icon-192.png');
-  await op.evaluate(async()=>{await (await caches.open('aihw-app-v7')).put('old',new Response('old'));await (await caches.open('other-app-sentinel')).put('sentinel',new Response('keep'));});
+  await op.evaluate(async()=>{await (await caches.open('aihw-app-v8')).put('old',new Response('old'));await (await caches.open('other-app-sentinel')).put('sentinel',new Response('keep'));});
   await op.goto(base);await op.waitForSelector('.featured-card');
   await op.evaluate(async()=>{await navigator.serviceWorker.ready;if(!navigator.serviceWorker.controller)await new Promise(resolve=>navigator.serviceWorker.addEventListener('controllerchange',resolve,{once:true}));});
-  const cache=await op.evaluate(async()=>({names:await caches.keys(),urls:(await (await caches.open('aihw-app-v8')).keys()).map(r=>r.url)}));
-  assert.ok(cache.names.includes('other-app-sentinel'));assert.ok(!cache.names.includes('aihw-app-v7'));
+  const cache=await op.evaluate(async()=>({names:await caches.keys(),urls:(await (await caches.open('aihw-app-v9')).keys()).map(r=>r.url)}));
+  assert.ok(cache.names.includes('other-app-sentinel'));assert.ok(!cache.names.includes('aihw-app-v8'));
   for(const asset of ['js/projects.js','js/positioning.js','js/cost.js','js/pages/hardware.js','js/pages/cost-lab.js','data/registry.json'])assert.ok(cache.urls.includes(base+asset),asset+' not precached');
   await offline.setOffline(true);
   for(const [route,selector] of [['c/05-desktop-pet','[data-case="stackchan"]'],['hardware','[data-project-card]'],...PROJECTS.map(p=>['hardware/'+p.id,'[data-budget-form]']),['cost-lab','[data-price-editor]']]){
@@ -140,7 +141,7 @@ try {
     assert.doesNotMatch(await op.locator('body').innerText(),/数据暂时不可用/);
   }
   await offline.close();
-  console.log('Workspace smoke OK: '+routes.length*6+' viewport/routes, project classification and filters, budgets, mock exports, accounting, plan, keyboard, dark mode and actual SW v8 offline.');
+  console.log('Workspace smoke OK: '+routes.length*6+' viewport/routes, project classification and filters, budgets, mock exports, accounting, plan, keyboard, dark OS with light palette and actual SW v9 offline.');
 } finally {
   await browser?.close();child.kill();
 }
