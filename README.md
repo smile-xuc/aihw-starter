@@ -10,13 +10,13 @@ AI 硬件行业热门品类的商业化最佳实践案例库
 
 从「这门生意能不能做、怎么搭、怎么算账」出发的工程化案例集
 
-**[项目官网](https://smile-xuc.github.io/aihw-starter/) · [体验中心](https://smile-xuc.github.io/aihw-starter/app/) · [技术方案](./solutions/by-solution/) · [贡献指南](./CONTRIBUTING.md)**
+**[官网](https://smile-xuc.github.io/aihw-starter/) · [体验中心](https://smile-xuc.github.io/aihw-starter/app/) · [技术方案](./solutions/by-solution/) · [贡献](./CONTRIBUTING.md)**
 
 [![License: CC BY 4.0](https://img.shields.io/badge/Docs-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 [![License: MIT](https://img.shields.io/badge/Code-MIT-blue.svg)](./LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
-[快速开始](#快速开始) · [九个品类](#热门品类) · [参考 demo](#百炼参考-demo) · [贡献](#参与贡献)
+[开始](#快速开始) · [九品类](#热门品类) · [参考 demo](#百炼参考-demo) · [贡献](#参与贡献)
 
 </div>
 
