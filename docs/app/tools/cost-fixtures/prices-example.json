@@ -1,0 +1,61 @@
+{
+  "schema": "aihw/prices@0.1",
+  "title": "离线演练单价（不是官方价格）",
+  "source": "仅用于检验计价代码；真实价格由用户提供",
+  "currency": "CNY",
+  "region": "cn-beijing",
+  "effective_date": "2026-10-01",
+  "demo": true,
+  "rates": [
+    {
+      "model": "qwen3.8-omni-flash",
+      "components": [
+        {
+          "counter": "prompt",
+          "per": 1000000,
+          "price": 1
+        },
+        {
+          "counter": "completion",
+          "per": 1000000,
+          "price": 2
+        }
+      ]
+    },
+    {
+      "model": "qwen-audio-3.0-tts-flash",
+      "components": [
+        {
+          "counter": "characters",
+          "per": 10000,
+          "price": 1
+        }
+      ]
+    },
+    {
+      "model": "qwen-audio-3.1-asr-flash",
+      "components": [
+        {
+          "counter": "duration",
+          "per": 60,
+          "price": 0.05
+        }
+      ]
+    },
+    {
+      "model": "qwen3.7-flash",
+      "components": [
+        {
+          "counter": "prompt",
+          "per": 1000000,
+          "price": 0.3
+        },
+        {
+          "counter": "completion",
+          "per": 1000000,
+          "price": 0.6
+        }
+      ]
+    }
+  ]
+}

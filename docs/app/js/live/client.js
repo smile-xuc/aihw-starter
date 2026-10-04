@@ -104,7 +104,7 @@ async function apiError(res) {
   try { body = await res.json(); } catch { /* 非 JSON 错误体 */ }
   const err = body.error || body;
   return new ApiError(`HTTP ${res.status}${err.code ? ` ${err.code}` : ''}：${err.message || res.statusText || '请求失败'}`, {
-    status: res.status, code: err.code || '', requestId: body.request_id || err.id || '',
+    status: res.status, code: err.code || '', requestId: body.request_id || err.id || res.headers.get('x-request-id') || res.headers.get('x-dashscope-request-id') || '',
   });
 }
 
@@ -112,26 +112,38 @@ export async function postJson(cred, serviceId, path, payload, { headers = {}, s
   const res = await send(cred, serviceId, path, {
     method: 'POST', signal, headers: { 'Content-Type': 'application/json', ...headers }, body: JSON.stringify(payload),
   }, onFallback);
-  return res.json();
+  const body = await res.json();
+  if (body && typeof body === 'object' && !Array.isArray(body) && !body.request_id) {
+    const requestId = res.headers.get('x-request-id') || res.headers.get('x-dashscope-request-id');
+    if (requestId) body.request_id = requestId;
+  }
+  return body;
 }
 
 async function* sse(res) {
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
   let buffer = '';
-  for (;;) {
-    const { value, done } = await reader.read();
-    buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
-    let nl;
-    while ((nl = buffer.indexOf('\n')) >= 0) {
-      const line = buffer.slice(0, nl).trim();
-      buffer = buffer.slice(nl + 1);
-      if (!line.startsWith('data:')) continue;
-      const data = line.slice(5).trim();
-      if (data === '[DONE]') return;
-      yield JSON.parse(data);
+  let finished = false;
+  try {
+    for (;;) {
+      const { value, done } = await reader.read();
+      buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+      if (done && buffer && !buffer.endsWith('\n')) buffer += '\n';
+      let nl;
+      while ((nl = buffer.indexOf('\n')) >= 0) {
+        const line = buffer.slice(0, nl).trim();
+        buffer = buffer.slice(nl + 1);
+        if (!line.startsWith('data:')) continue;
+        const data = line.slice(5).trim();
+        if (data === '[DONE]') return;
+        if (data) yield JSON.parse(data);
+      }
+      if (done) { finished = true; return; }
     }
-    if (done) return;
+  } finally {
+    if (!finished) { try { await reader.cancel(); } catch { /* 已取消的流 */ } }
+    reader.releaseLock();
   }
 }
 
@@ -142,10 +154,17 @@ export async function chat(cred, payload, { onText, signal, onFallback, service 
     headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' },
     body: JSON.stringify({ stream: true, stream_options: { include_usage: true }, ...payload }),
   }, onFallback);
-  const turn = { text: '', calls: [], usage: { prompt: 0, completion: 0 }, firstTextAt: null, firstCallAt: null };
+  const turn = { text: '', calls: [], usage: { prompt: 0, completion: 0, known: false }, firstTextAt: null, firstCallAt: null, finish_reason: null, requestId: res.headers.get('x-request-id') || res.headers.get('x-dashscope-request-id') || '', id: '' };
   const slots = new Map();
-  for await (const event of sse(res)) {
+  try { for await (const event of sse(res)) {
+    if (event.error || event.code) {
+      const err = event.error || event;
+      throw new ApiError(`流式请求失败：${err.message || err.code || '服务端错误'}`, { code: err.code || '', requestId: event.request_id || turn.requestId });
+    }
+    turn.id = event.id || turn.id;
+    turn.requestId = event.request_id || turn.requestId;
     for (const choice of event.choices || []) {
+      if (choice.finish_reason != null) turn.finish_reason = choice.finish_reason;
       const delta = choice.delta || {};
       if (delta.content) {
         if (turn.firstTextAt == null) turn.firstTextAt = now();
@@ -163,7 +182,15 @@ export async function chat(cred, payload, { onText, signal, onFallback, service 
         if (turn.firstCallAt == null && slot.name) turn.firstCallAt = now();
       }
     }
-    if (event.usage) turn.usage = { prompt: Number(event.usage.prompt_tokens || 0), completion: Number(event.usage.completion_tokens || 0) };
+    if (event.usage) {
+      const u = event.usage;
+      turn.usage = { prompt: validCount(u.prompt_tokens) ? u.prompt_tokens : 0, completion: validCount(u.completion_tokens) ? u.completion_tokens : 0, known: validCount(u.prompt_tokens) && validCount(u.completion_tokens) };
+    }
+  }
+  } catch (error) {
+    error.requestId ||= turn.requestId || turn.id;
+    error.usage ||= turn.usage;
+    throw error;
   }
   turn.calls = [...slots.keys()].sort((a, b) => a - b).map((k) => slots.get(k));
   return turn;
@@ -203,7 +230,10 @@ export function pyFormat(template, vars) {
 }
 
 // 单价表与 run.py 一致：[(档位上限, 输入, 输出)]，上限 null 表示不封顶
+export const validCount = (n) => typeof n === 'number' && Number.isFinite(n) && n >= 0;
+
 export function costOf(tiers, usage) {
+  if (!usage || usage.known === false || !validCount(usage.prompt) || !validCount(usage.completion)) return null;
   let [pin, pout] = [tiers[tiers.length - 1][1], tiers[tiers.length - 1][2]];
   for (const [limit, a, b] of tiers) {
     if (limit == null || usage.prompt <= limit) { [pin, pout] = [a, b]; break; }

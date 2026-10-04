@@ -1,0 +1,18 @@
+{
+  "schema": "aihw/cost-plan@0.1",
+  "region": "cn-beijing",
+  "budget_cny": 1,
+  "acknowledge_billing_risk": false,
+  "scenes": [
+    {
+      "id": "02-ai-glasses.bailian",
+      "repeat": 1,
+      "ceiling_cny": 0.1
+    },
+    {
+      "id": "07-recorder.bailian",
+      "repeat": 1,
+      "ceiling_cny": 0.1
+    }
+  ]
+}

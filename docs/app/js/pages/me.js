@@ -1,10 +1,13 @@
 import { normalizeTrace, sampleUrl } from '../data.js';
 import { hostsFor, testConnection } from '../live/client.js';
-import { browserSupport } from '../live/index.js';
+import { browserSupport, requiredMissing } from '../live/index.js';
 import { CONNECTION_TEST } from '../meta.js';
 import { playTrace, Stage } from '../replay.js';
 import { clearCredentials, fieldValues, loadCredentials, loadTheme, maskSecret, saveCredentials, saveTheme, validateCredentials } from '../settings.js';
 import { copyText, fmtCny, html, icon, mount, mountPage, toast } from '../ui.js';
+
+import { PRODUCTS, returnTarget, renderOutcome, redact } from '../experience.js';
+import { readHistory, deleteHistory, clearHistory, statusLabel } from '../history.js';
 
 // 百炼：在电脑上用长期 Key 换临时 Key（官方「生成临时 API Key」）
 const TEMP_KEY_CMD = {
@@ -39,7 +42,7 @@ function hostsHtml(stack, values) {
   return html`<ul class="host-list">${shown.map((h) => html`<li>${h}</li>`)}</ul>`;
 }
 
-function stackPanel(stack) {
+function stackPanel(stack, target) {
   const saved = loadCredentials(stack.id);
   const values = fieldValues(stack, saved?.values || {});
   const groups = [['credential', '凭证'], ['endpoint', '接入点']];
@@ -56,7 +59,7 @@ function stackPanel(stack) {
         <label class="check-row"><input type="checkbox" name="remember" ${saved && !saved.remember ? '' : 'checked'}>
           <span>记在这台设备上<small>关掉后只保存在本次打开期间，关闭页面就清掉</small></span></label>
         <div class="btn-row">
-          <button type="submit" class="primary-action">保存</button>
+          <button type="submit" class="primary-action">${target?.sol.stack === stack.id ? '保存并继续体验' : '保存'}</button>
           ${CONNECTION_TEST[stack.id] ? html`<button type="button" class="secondary-action" data-act="test">测试连接</button>` : ''}
         </div>
         <button type="button" class="secondary-action block danger-action" data-act="clear">清除这台设备上的 ${stack.name} 凭证</button>
@@ -93,10 +96,17 @@ function capabilities(reg) {
 export function renderMe(view, reg) {
   document.title = '我的 · AIHW';
   const theme = loadTheme();
+  let active = true, localReplay = null;
+  const parameters = new URLSearchParams(location.hash.split('?')[1] || '');
+  const requestedReturn = parameters.get('return');
+  const target = returnTarget(reg, requestedReturn);
   const stacks = reg ? [...reg.stacks.values()] : [];
+  const secrets=stacks.flatMap(stack=>(stack.fields||[]).filter(f=>f.input==='secret').map(f=>loadCredentials(stack.id)?.values[f.key])).filter(Boolean);
   const page = mountPage(view, html`
     <header class="app-top"><span class="wordmark"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>我的</span></header>
-    ${stacks.length ? stacks.map(stackPanel) : html`<div class="inline-error">方案数据没有加载出来，填写表单要用注册表里的栈声明。已保存的凭证仍在本机，可以先清除：</div>
+    ${target ? html`<div class="mode-banner"><div><strong>继续体验：${PRODUCTS[target.sol.id]?.title || target.sol.title} · ${target.variant.title}</strong><p>请补全当前玩法所需凭证。保存后返回素材页面，再由你点击开始，不会自动调用模型。</p></div></div>` : requestedReturn ? html`<p class="inline-error">返回地址无效，请从方案页面重新进入设置。</p>` : ''}
+    <section class="section history-panel"><div class="section-title"><h2>体验历史</h2><button type="button" class="secondary-action" data-history-clear>清空历史</button></div><p class="small">文字结果只保存在这台设备。最多 20 条、共 2 MiB；原始照片、录音和临时播报不保存。</p><div class="panel" data-history-list></div><div data-history-result></div></section>
+    ${stacks.length ? stacks.map(s=>stackPanel(s,target)) : html`<div class="inline-error">方案数据没有加载出来，填写表单要用注册表里的栈声明。已保存的凭证仍在本机，可以先清除：</div>
       <button type="button" class="secondary-action block danger-action" data-act="clear-all">清除这台设备上保存的全部凭证</button>`}
     ${reg ? capabilities(reg) : ''}
 
@@ -131,7 +141,22 @@ export function renderMe(view, reg) {
       <p class="footnote">${reg ? `数据：方案注册表 · demo 标准 v${reg.standard}` : '方案数据未加载'}</p>
     </section>`);
 
-  for (const stack of stacks) bindStack(page, stack);
+  const stackCleanups = stacks.map(stack=>bindStack(page, stack, reg, target, ()=>active));
+  const showHistory = id => {
+    const record = readHistory().records.find(r=>r.id===id);if(!record)return;
+    renderOutcome(page.querySelector('[data-history-result]'),record.trace,{secrets,label:PRODUCTS[record.trace.solution]?.title || record.trace.title,historyNote:`${new Date(record.trace.ran_at).toLocaleString('zh-CN')} · ${statusLabel(record.trace)} · 原始素材和临时语音未保存。`});
+  };
+  const refreshHistory = () => {
+    const {records,error}=readHistory();
+    mount(page.querySelector('[data-history-list]'),html`${error ? html`<p class="inline-error">${error}</p>` : ''}${records.length ? records.map(r=>html`<div class="history-row"><h3>${PRODUCTS[r.trace.solution]?.title || r.trace.title}</h3><p class="small">${new Date(r.trace.ran_at).toLocaleString('zh-CN')} · ${statusLabel(r.trace)} · ${r.trace.variant}</p><div class="btn-row"><button type="button" class="secondary-action" data-history-open="${r.id}">打开结果</button><button type="button" class="secondary-action" data-history-delete="${r.id}">删除</button></div></div>`) : html`<p class="small">还没有体验记录。真跑后的结果、失败和停止记录会出现在这里。</p>`}`);
+  };
+  refreshHistory();
+  if(parameters.get('history')) showHistory(parameters.get('history'));
+  page.addEventListener('click', e=>{
+    const open=e.target.closest('[data-history-open]');if(open)showHistory(open.dataset.historyOpen);
+    const del=e.target.closest('[data-history-delete]');if(del){const res=deleteHistory(del.dataset.historyDelete);toast(res.error||'记录已删除');page.querySelector('[data-history-result]').replaceChildren();refreshHistory();}
+    if(e.target.closest('[data-history-clear]')){const res=clearHistory();toast(res.error||'历史已清空');page.querySelector('[data-history-result]').replaceChildren();refreshHistory();}
+  });
 
   page.addEventListener('click', (e) => {
     const copy = e.target.closest('[data-copy]');
@@ -156,21 +181,24 @@ export function renderMe(view, reg) {
     if (!file) return;
     try {
       const tr = normalizeTrace(JSON.parse(await file.text()));
+      if (!active) return;
+      localReplay?.stop();
       const sol = reg?.byId.get(tr.solution) || { id: tr.solution || 'local', archetype: null };
-      mount(slot, html`<p class="small">${file.name} · ${tr.solution || '未知方案'}${tr.variant ? ` · ${tr.variant}` : ''} · ${tr.mode === 'mock' ? 'mock' : '真跑'}</p><div data-slot="stage"></div>`);
+      mount(slot, html`<p class="small">${file.name} · ${tr.solution || '未知方案'}${tr.variant ? ` · ${tr.variant}` : ''} · ${tr.mode === 'mock' ? 'mock' : '真跑'}</p><div data-slot="outcome"></div><details class="process-panel"><summary>技术过程</summary><div data-slot="stage"></div></details>`);
       const stage = new Stage(slot.querySelector('[data-slot="stage"]'), {
         reg, sol, mode: tr.mode, aiLabel: tr.mode === 'live' ? '内容由 AI 生成' : '',
         badges: [{ label: '本机记录', cls: 'ok' }, { label: tr.mode === 'mock' ? 'mock' : '真跑', cls: '' }],
       });
-      playTrace(stage, { ...tr, inputs: tr.inputs.map((f) => ({ ...f, asset: null })), outputs: tr.outputs.map((f) => ({ ...f, asset: null })) }, { autoplay: false });
+      renderOutcome(slot.querySelector('[data-slot="outcome"]'), tr,{secrets});
+      localReplay = playTrace(stage, { ...tr, inputs: tr.inputs.map((f) => ({ ...f, asset: null })), outputs: tr.outputs.map((f) => ({ ...f, asset: null })) }, { autoplay: false });
     } catch (err) {
-      mount(slot, html`<p class="inline-error">打不开这个文件：${err.message}</p>`);
+      if (active) mount(slot, html`<p class="inline-error">打不开这个文件：${err.message}</p>`);
     }
   });
-  return null;
+  return { cleanup(){active=false;localReplay?.stop();stackCleanups.forEach(fn=>fn?.());} };
 }
 
-function bindStack(page, stack) {
+function bindStack(page, stack, reg, target, isActive) {
   const root = page.querySelector(`[data-stack="${stack.id}"]`);
   const form = root.querySelector('form');
   const result = root.querySelector('[data-slot="result"]');
@@ -186,14 +214,15 @@ function bindStack(page, stack) {
     mount(root.querySelector('[data-slot="state"]'), stateHtml(stack, saved));
     mount(root.querySelector('[data-slot="hosts"]'), hostsHtml(stack, fieldValues(stack, saved?.values || {})));
   };
-  const show = (errors, warnings, ok) => mount(result, html`
+  const show = (errors, warnings, ok) => {if (!isActive()) return; return mount(result, html`
     ${errors.map((e) => html`<p class="inline-error">${e}</p>`)}
     ${warnings.map((w) => html`<p class="info-note">${icon('alert')}<span>${w}</span></p>`)}
-    ${ok ? html`<p class="inline-ok">${ok}</p>` : ''}`);
+    ${ok ? html`<p class="inline-ok">${ok}</p>` : ''}`);};
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const { errors, warnings, values } = current();
+    if (target?.sol.stack === stack.id) errors.push(...requiredMissing(reg,target.sol,target.variant,values).map(label=>`继续这个玩法还需要：${label}`));
     if (errors.length) return show(errors, warnings);
     try {
       saveCredentials(stack.id, values, form.remember.checked);
@@ -202,6 +231,7 @@ function bindStack(page, stack) {
     }
     show([], warnings, form.remember.checked ? '已保存在这台设备上' : '已保存，关闭页面后清掉');
     refresh();
+    if (target?.sol.stack === stack.id) location.hash = target.hash;
     return undefined;
   });
 
@@ -234,17 +264,20 @@ function bindStack(page, stack) {
       testing = new AbortController();
       try {
         const res = await testConnection({ stack, values }, test, testing.signal);
+        if (!isActive()) return;
         const [pin, pout] = test.price[values.DASHSCOPE_API_REGION] || test.price['cn-beijing'];
         const cost = (res.usage.prompt * pin + res.usage.completion * pout) / 1e6;
-        show([], warnings, `连接正常 · ${res.ms} ms · 回复「${res.text.trim().slice(0, 20)}」· 用量 ${res.usage.prompt} / ${res.usage.completion} Token（约 ¥${fmtCny(cost)}）`);
+        if (res.usage.known === false) {show([],warnings,`连接正常 · ${res.ms} ms · 费用未知（接口未返回完整用量）`); return;}
+        show([], warnings, `连接正常 · ${res.ms} ms · 回复「${redact(res.text.trim(), Object.values(values)).slice(0, 20)}」· 用量 ${res.usage.prompt} / ${res.usage.completion} Token（约 ¥${fmtCny(cost)}）`);
       } catch (err) {
-        show([`测试失败：${err.message}`, ...(err.hint ? [err.hint] : [])], warnings);
+        show([`测试失败：${redact(err.message, Object.values(values))}`, ...(err.hint ? [redact(err.hint,Object.values(values))] : [])], warnings);
       } finally {
         testing = null;
       }
     }
     return undefined;
   });
+  return ()=>testing?.abort();
 }
 
 async function cacheAll(page, reg) {

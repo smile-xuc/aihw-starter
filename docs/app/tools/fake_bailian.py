@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import sys
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -70,11 +71,27 @@ class Handler(BaseHTTPRequestHandler):
         if self.headers.get("Authorization") != f"Bearer {KEY}":
             return self.error(401, "InvalidApiKey", "Invalid API-key provided.")
         payload = json.loads(raw or b"{}")
+        if sol_id == "07-recorder.bailian" and rest.endswith("/generation") and payload.get("parameters", {}).get("format") == "wav":
+            # Official ASR HTTP contract requires sample_rate as a string.
+            rate = payload.get("parameters", {}).get("sample_rate")
+            if not isinstance(rate, str) or not rate.isdigit():
+                return self.error(400, "MockRejected", "WAV sample_rate must be a string")
         headers = dict(self.headers.items())
         url = "https://fake.invalid" + rest
         try:
             if rest.startswith("/compatible-mode/"):
-                events = list(mock_for(sol_id).sse(url, headers, payload))
+                content = payload.get("messages", [{}])[-1].get("content", [])
+                custom_image = sol_id == "02-ai-glasses.bailian" and isinstance(content, list) and not any(p.get("type") == "input_audio" for p in content)
+                if custom_image:
+                    # Additive browser-only fixture. Bundled photo+audio still goes through original demo mock.
+                    parts = {p.get("type"): p for p in content}
+                    image = parts.get("image_url", {}).get("image_url", {}).get("url", "")
+                    question = parts.get("text", {}).get("text", "")
+                    if not image.startswith(("data:image/jpeg;base64,", "data:image/png;base64,", "data:image/webp;base64,")) or not base64.b64decode(image.split(",", 1)[1], validate=True) or not question.strip() or len(question) > 2000 or payload.get("reasoning_effort") != "none":
+                        raise ValueError("custom image fixture requires supported image and text question")
+                    events = [{"choices": [{"delta": {"content": "这是自选照片的 mock 回答，仅用于验证界面流程。"}}]}, {"choices": [], "usage": {"prompt_tokens": 80, "completion_tokens": 30}}]
+                else:
+                    events = list(mock_for(sol_id).sse(url, headers, payload))
                 body = "".join(f"data: {json.dumps(e, ensure_ascii=False)}\n\n" for e in events) + "data: [DONE]\n\n"
                 return self.reply(200, body.encode(), "text/event-stream")
             target = BORROW.get((sol_id, rest), sol_id)
@@ -89,7 +106,7 @@ def main() -> None:
     ap.add_argument("--port", type=int, default=8790)
     args = ap.parse_args()
     server = HTTPServer(("127.0.0.1", args.port), Handler)  # 单线程：mock 有会话状态，导入时还要改 sys.path
-    print(f"fake bailian on 127.0.0.1:{args.port}", flush=True)
+    print(f"fake bailian on 127.0.0.1:{server.server_port}", flush=True)
     server.serve_forever()
 
 

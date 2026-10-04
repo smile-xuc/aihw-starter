@@ -1,21 +1,27 @@
 // 04 Agent 硬件 · 浏览器真跑：流程对照 solutions/by-category/04-agent-hardware/demo/bailian/run.py 与 local_rules.py
 import { fmtCny } from '../ui.js';
-import { costOf, pyFormat, toBase64 } from './client.js';
+import { costOf, pyFormat, toBase64, validCount } from './client.js';
 
 const pad = (n) => String(n).padStart(2, '0');
 
 function wavInfo(buffer) {
   const v = new DataView(buffer);
-  let rate = 16000;
-  let bytes = buffer.byteLength - 44;
+  const idAt = (off) => String.fromCharCode(...new Uint8Array(buffer, off, 4));
+  const fallback = { rate: 16000, seconds: 0, durationKnown: false };
+  if (buffer.byteLength < 44 || idAt(0) !== 'RIFF' || idAt(8) !== 'WAVE' || v.getUint32(4, true) + 8 !== buffer.byteLength) return fallback;
+  let rate = 0, byteRate = 0, bytes = 0;
   for (let off = 12; off + 8 <= buffer.byteLength;) {
-    const id = String.fromCharCode(v.getUint8(off), v.getUint8(off + 1), v.getUint8(off + 2), v.getUint8(off + 3));
-    const size = v.getUint32(off + 4, true);
-    if (id === 'fmt ') rate = v.getUint32(off + 12, true);
-    if (id === 'data') { bytes = size; break; }
+    const id = idAt(off), size = v.getUint32(off + 4, true);
+    if (off + 8 + size > buffer.byteLength) return fallback;
+    if (id === 'fmt ' && size >= 16) {
+      rate = v.getUint32(off + 12, true);
+      byteRate = v.getUint32(off + 16, true);
+    }
+    if (id === 'data') bytes = size;
     off += 8 + size + (size % 2);
   }
-  return { rate, seconds: bytes / 2 / rate };
+  const seconds = bytes / byteRate;
+  return rate > 0 && byteRate > 0 && Number.isFinite(seconds) && seconds > 0 ? { rate, seconds, durationKnown: true } : fallback;
 }
 const CN = { 零: 0, 一: 1, 二: 2, 两: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9 };
 const NUM = '(\\d{1,2}|[一二两三四五六七八九十]{1,3})';
@@ -134,11 +140,11 @@ export default async function run(x) {
   const box = makeBox(x, c.ROOMS);
   const tasks = [];
   for (const [n, [kind, value]] of c.DEFAULT_SESSION.entries()) {
-    const task = { source: kind === 'audio' ? value.split('/').pop() : `文本「${value}」`, route: '', toolCalls: 0, rounds: 0, asrTokens: [0, 0], asrMs: null, firstAt: null, llmTokens: [0, 0], llmCost: 0 };
+    const task = { source: kind === 'audio' ? value.split('/').pop() : `文本「${value}」`, route: '', toolCalls: 0, rounds: 0, asrTokens: [0, 0], asrCostStatus: 'usage', asrCost: 0, asrMs: null, firstAt: null, llmTokens: [0, 0], llmCost: 0 };
     let text = value;
     if (kind === 'audio') {
       const wav = await x.asset(value);
-      const { rate, seconds } = wavInfo(wav);
+      const { rate, seconds, durationKnown } = wavInfo(wav);
       x.say('设备', `麦克风 ← ${task.source}（${seconds.toFixed(1)} s）· 松开按键`);
       task.said = x.now();
       x.say('云端', `转写 ${c.ASR_MODEL}……`);
@@ -151,17 +157,23 @@ export default async function run(x) {
       const out = resp.output || {};
       text = String(out.text || out.sentence?.text || '').trim();
       const u = resp.usage || {};
-      task.asrTokens = [Number(u.input_tokens || 0), Number(u.output_tokens || 0)];
-      if (!task.asrTokens[0] && !task.asrTokens[1]) {
-        task.asrTokens = [Math.trunc(Number(u.duration || 0)) * 25, text.length];
-        task.asrEstimated = true;
+      if (validCount(u.input_tokens) && validCount(u.output_tokens)) {
+        task.asrTokens = [u.input_tokens, u.output_tokens];
+      } else {
+        const duration = validCount(u.duration) && u.duration > 0 ? u.duration : durationKnown ? seconds : null;
+        if (duration != null) {
+          task.asrTokens = [duration * 25, text.length];
+          task.asrEstimated = true;
+          task.asrCostStatus = 'estimated';
+        } else task.asrCostStatus = 'unknown';
       }
       x.say('云端', `听到：${text}（${Math.round(task.asrMs)} ms）`);
-      if (!text) continue;
+      if (!text) throw new Error('转写结果为空：检查录音是否有人声');
     } else {
       x.say('设备', `指令（文本）：${value}`);
       task.said = x.now();
     }
+    task.asrCost = task.asrCostStatus === 'unknown' ? null : task.asrMs != null ? costOf(c.PRICES[c.ASR_MODEL][x.region], { prompt: task.asrTokens[0], completion: task.asrTokens[1], known: true }) : 0;
     const route = classify(c, text);
     const actions = route.route === 'local' ? localActions(c, text, now) : null;
     if (actions) {
@@ -174,7 +186,7 @@ export default async function run(x) {
         return res.ok ? confirmPhrase(name, args) : `没能完成：${res.error}。`;
       });
       x.say('盒子', `好的，${phrases.join('')}`);
-      x.say('统计', `指令 ${n + 1} · 端侧执行 · 工具 ${task.toolCalls} 次 · 不上云 · ¥0`);
+      x.say('统计', `指令 ${n + 1} · 端侧执行 · 工具 ${task.toolCalls} 次 · ${task.asrMs == null ? '不上云' : '端侧编排，含云端转写'} · ${task.asrCost == null ? '费用未知' : `¥${fmtCny(task.asrCost)}`}${task.asrEstimated ? '（转写按时长估算）' : ''}`);
       tasks.push(task);
       continue;
     }
@@ -205,23 +217,28 @@ export default async function run(x) {
       }
     }
     if (!finished) x.say('云端', `${c.MAX_ROUNDS} 轮后仍在调用工具，停止编排`);
-    const asrCost = task.asrTokens[0] || task.asrTokens[1] ? costOf(c.PRICES[c.ASR_MODEL][x.region], { prompt: task.asrTokens[0], completion: task.asrTokens[1] }) : 0;
-    task.asrCost = asrCost;
+    const asrCost = task.asrCost;
     const first = task.firstAt == null ? '—（本条没有调用工具）' : `${Math.round(task.firstAt - task.said)} ms${task.asrMs != null ? `（含转写 ${Math.round(task.asrMs)} ms）` : ''}`;
     const split = asrCost ? `转写 ¥${fmtCny(asrCost)} + 编排 ¥${fmtCny(task.llmCost)}；` : '';
-    x.say('统计', `指令 ${n + 1} · 云端 ${task.rounds} 轮 · 工具 ${task.toolCalls} 次 · 说完指令 → 首个工具调用 ${first} · ¥${fmtCny(task.llmCost + asrCost)}（${split}编排共 ${task.llmTokens[0]} / ${task.llmTokens[1]} Token${task.asrEstimated ? '；转写用量按时长估算' : ''}）`);
+    const totalCost = asrCost == null ? null : task.llmCost + asrCost;
+    x.say('统计', `指令 ${n + 1} · 云端 ${task.rounds} 轮 · 工具 ${task.toolCalls} 次 · 说完指令 → 首个工具调用 ${first} · ${totalCost == null ? '费用未知' : `¥${fmtCny(totalCost)}`}（${split}编排共 ${task.llmTokens[0]} / ${task.llmTokens[1]} Token${task.asrEstimated ? '；转写用量按时长估算' : ''}）`);
     tasks.push(task);
   }
   x.say('设备', `盒子状态：${box.summary()}`);
   const cloud = tasks.filter((t) => t.route === 'cloud');
+  const billed = tasks.filter((task) => task.route === 'cloud' || task.asrMs != null);
   const firstTask = cloud.find((t) => t.firstAt != null);
   const counts = { local: tasks.filter((t) => t.route === 'local').length, cloud: cloud.length };
+  const costStatus = tasks.some((t) => t.asrCostStatus === 'unknown') ? 'unknown' : tasks.some((t) => t.asrCostStatus === 'estimated') ? 'estimated' : 'usage';
+  const warnings = costStatus === 'unknown' ? ['转写 Token 用量及可核验录音时长未知，总成本未知'] : costStatus === 'estimated' ? ['转写 Token 用量未完整返回，按已知录音时长估算费用'] : [];
+  for (const warning of warnings) x.say('提示', warning);
   return {
-    models: [...(tasks.some((t) => t.asrTokens[0] || t.asrTokens[1]) ? [c.ASR_MODEL] : []), ...(cloud.length ? [model] : [])],
+    costStatus, warnings,
+    models: [...(tasks.some((t) => t.asrMs != null) ? [c.ASR_MODEL] : []), ...(cloud.length ? [model] : [])],
     firstMs: firstTask ? firstTask.firstAt - firstTask.said : null,
-    cost: cloud.length ? cloud.reduce((s, t) => s + t.llmCost + t.asrCost, 0) / cloud.length : 0,
+    cost: costStatus === 'unknown' ? null : billed.length ? billed.reduce((sum, task) => sum + task.llmCost + task.asrCost, 0) / billed.length : 0,
     sample: tasks.map((t) => t.source).join(' + '),
-    note: `${tasks.length} 条指令：端侧 ${counts.local}、云端 ${counts.cloud}；成本为云端任务均值；首字=说完指令→首个工具调用（含转写）`,
+    note: `${tasks.length} 条指令：端侧 ${counts.local}、云端 ${counts.cloud}；成本为调用云端的任务均值（含仅转写后端侧执行）；首字=说完指令→首个工具调用（含转写）`,
     outputs: [],
   };
 }

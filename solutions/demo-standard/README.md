@@ -318,3 +318,11 @@ python3 solutions/demo-standard/build_registry.py   # 改了 demo、清单、样
   - 用官方 SDK 的 demo 要求 `dashscope>=1.26.5`
   - 向后兼容：v0.1 的 `Config` 方法签名不变，品类 demo 代码不用改，只需 `check.py sync`
 - **v0.1（2026-10-01）**：目录、`.env.example`、启动命令、三步跑通、`--mock`、`solution.yaml`、验证记录格式、CI
+
+浏览器体验记录仍使用 `aihw/trace@0.1`，可选附加字段由同一 JSON Schema 严格声明：
+顶层 `runner: "browser"`、`ran_at`（ISO 时间字符串）、`status`（success / failed / stopped）、失败时的 `usageRecords`；
+`result` 可带 `metrics`（textFirstMs / audioFirstMs / audioReadyMs / totalMs / asrMs，整数毫秒或 null）、
+`costStatus`（usage / estimated / unknown）、`warnings` 和 `usageRecords`（model、requestId、白名单数字/布尔用量）。
+`first_token_ms` 对新浏览器记录只取文字首响应，不能用工具首响应代替；HTTP 整段语音的就绪时间不是播放延迟。
+浏览器导出以 `kit: "browser"` 标识；输入/输出文件必须包含 path、media_type、bytes、asset，可选 text。
+本机历史最多 20 条、2 MiB，只存脱敏文字与上述元数据，不存原始媒体、凭证、请求头或临时语音 URL；费用为估算或按返回用量计算，均不代表实际账单。
