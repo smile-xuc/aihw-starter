@@ -52,9 +52,12 @@ jobs:
           source: ./docs
           destination: ./_site
 
-      - name: App smoke test
+      - name: Homepage and app browser checks
         run: |
           npm install --no-save --no-audit --no-fund --prefix "$RUNNER_TEMP/pw" playwright-core@1.63.0
+          PLAYWRIGHT_CORE="$RUNNER_TEMP/pw/node_modules/playwright-core/index.mjs" \
+          CHROME="$(command -v google-chrome)" \
+          node docs/tools/home-smoke.mjs
           PLAYWRIGHT_CORE="$RUNNER_TEMP/pw/node_modules/playwright-core/index.mjs" \
           CHROME="$(command -v google-chrome)" \
           node docs/app/tools/smoke.mjs
