@@ -41,19 +41,19 @@ export function modeBanner(reg) {
     return html`<div class="mode-banner live">${icon('key')}<div><strong>已填 ${saved.map((s) => s.name).join('、')} 的 Key</strong>
       <p>${n} 个玩法可以在浏览器里直接真跑（待真 Key 验证）：请求直接发往官方接入点，按你的账单计费；实时语音只能回放。<a href="#/me">管理 Key</a></p></div></div>`;
   }
-  return html`<div class="mode-banner">${icon('info')}<div><strong>回放模式</strong>
-    <p>现在看的是 mock 回放：不调用模型、不花钱，用量是示意值。在「我的」填上自己的百炼 Key，其中 ${n} 个玩法可以在浏览器里真跑。<a href="#/me">去填 Key</a></p></div></div>`;
+  return html`<div class="mode-banner">${icon('info')}<div><strong>先看免费样本</strong>
+    <p>样本展示预先保存的结果，不调用模型、不产生费用。想用自己的素材生成回答或纪要，可从体验页面进入设置、填写百炼 Key，保存后返回再确认开始。<a href="#/me">查看设置与使用说明</a></p></div></div>`;
 }
 
 export const dataNote = (reg) => `方案注册表 · demo 标准 v${reg.standard}`;
 
 export function renderHome(view, reg) {
-  document.title = '体验广场 · AIHW Starter';
+  document.title = '体验中心 · AIHW Starter';
   const saved = savedStacks(reg).length > 0;
   const recent = readHistory().records.slice(0, 3);
   mountPage(view, html`
     <header class="app-top"><span class="eyebrow">探索 · 体验 · 构建</span>
-      <a class="chip ${saved ? 'ok' : 'accent'}" href="#/me"><i aria-hidden="true"></i>${saved ? '已填 Key' : '免费回放模式'}</a></header>
+      <a class="chip ${saved ? 'ok' : 'accent'}" href="#/me"><i aria-hidden="true"></i>${saved ? '已填 Key' : '免费样本'}</a></header>
     <section class="intro home-intro">
       <h1>从一次体验开始。</h1>
       <p>一张照片，一段录音。先看 AI 能做什么，再用自己的素材试一试。</p>
@@ -73,6 +73,6 @@ export function renderHome(view, reg) {
     </section>
     <p class="footnote">
       数据：<a href="${reg.repo.url || 'https://github.com/smile-xuc/aihw-starter'}" rel="noopener">smile-xuc/aihw-starter</a> · ${dataNote(reg)}<br>
-      成本未经真跑的都是估算（mock 用量 × 官方单价），以账单为准 · <a href="../designs/aihw-square/app-v2.html?screen=home">APP 设计原型（存档）</a>
+      免费样本不产生费用；真实调用费用以账单为准 · <a href="../designs/aihw-square/app-v2.html?screen=home">APP 设计原型（存档）</a>
     </p>`);
 }

@@ -120,7 +120,7 @@ async function main() {
     const u = new URL(req.url());
     requests.push({path:u.pathname,query:u.search,method:req.method(),headers:req.headers(),body:req.method()==='POST'?req.postDataJSON():null});
     if (failureMode === '401') return route.fulfill({status:401,headers:CORS,json:{message:'bad key sk-apptest0000000001'}});
-    if (failureMode === 'hold') { await new Promise(r=>setTimeout(r,600)); }
+    if (failureMode === 'hold' || (failureMode === 'hold-tts' && u.pathname.endsWith('SpeechSynthesizer'))) { await new Promise(r=>setTimeout(r,1000)); }
     if (failureMode === 'partial' && u.pathname.endsWith('chat/completions')) return route.fulfill({status:500,headers:CORS,json:{message:'minutes failed'}});
     if (failureMode === 'task-failed' && u.pathname.includes('/tasks/')) return route.fulfill({status:200,headers:CORS,json:{request_id:'smoke-failed-task',output:{task_id:'mock-task-1',task_status:'FAILED',code:'InvalidAudio',message:'mock transcription task failed'}}});
     if (failureMode === 'polling' && u.pathname.includes('/tasks/')) return route.fulfill({status:200,headers:CORS,json:{request_id:'smoke-running-task',output:{task_id:'mock-task-1',task_status:'RUNNING'}}});
@@ -183,7 +183,20 @@ async function main() {
   await page.goto(`${BASE}#/s/02-ai-glasses.bailian/default`); await page.waitForSelector('[data-question]');
   assertUI((await page.locator('.result-text').innerText()).includes('宫保鸡丁'),'02 sample outcome not immediately readable');
   assertUI(await page.locator('[data-result-copy]').count()===1,'02 sample copy action missing');
+  assertUI(await page.locator('[data-question-preset]').count()===4,'photo shortcut choices missing');
+  const presetQuestions={};const beforePresets=requests.length;
+  for(const id of ['identify','read','translate','explain']) {
+    await page.click(`[data-question-preset="${id}"]`);
+    presetQuestions[id]=await page.inputValue('[data-question]');
+    assertUI(presetQuestions[id].includes('看不清')&&presetQuestions[id].length<2000,`${id} lost uncertainty instructions`);
+    assertUI(await page.locator(`[data-question-preset="${id}"]`).getAttribute('aria-pressed')==='true','selected shortcut not announced');
+    assertUI(await page.locator('[data-question-preset][aria-pressed="true"]').count()===1,'multiple shortcuts appear selected');
+    assertUI(await page.locator('[data-outcome] .result-text').count()===0,'shortcut retained an unrelated sample result');
+  }
+  await page.locator('[data-question-preset="read"]').focus();await page.keyboard.press('Enter');
+  assertUI(await page.inputValue('[data-question]')===presetQuestions.read && requests.length===beforePresets,'shortcut keyboard action triggered provider');
   await page.fill('[data-question]','这张照片有什么？');
+  assertUI(await page.locator('[data-question-preset][aria-pressed="true"]').count()===0,'editing kept an outdated shortcut selection');
   await page.click('.live-bar a'); await page.waitForSelector('form[data-form="bailian"]');
   assertUI(await page.locator('button[type="submit"]').textContent()==='保存并继续体验','setup continuation label missing');
   await page.fill('[name="DASHSCOPE_API_KEY"]',CRED.values.DASHSCOPE_API_KEY); await page.click('button[type="submit"]');
@@ -191,9 +204,20 @@ async function main() {
   assertUI((await page.locator('[data-slot="result"]').innerText()).includes('继续这个玩法还需要'),'missing origin credential message');
   await page.fill('[name="DASHSCOPE_WORKSPACE_ID"]',CRED.values.DASHSCOPE_WORKSPACE_ID);await page.click('button[type="submit"]');
   await page.waitForSelector('[data-question]');assertUI(await page.inputValue('[data-question]')==='这张照片有什么？','draft question lost on setup return');
+  await page.click('[data-question-preset="translate"]');
+  await page.goto(`${BASE}#/me?return=${encodeURIComponent('#/s/02-ai-glasses.bailian/default')}`);await page.waitForSelector('button[type="submit"]');await page.click('button[type="submit"]');
+  await page.waitForSelector('[data-question]');
+  assertUI(await page.inputValue('[data-question]')===presetQuestions.translate && await page.locator('[data-question-preset="translate"]').getAttribute('aria-pressed')==='true','shortcut draft lost on settings return');
+  await page.fill('[data-question]','这张照片有什么？');
   current='02-ai-glasses.bailian'; requests.length=0; await begin();
   const changed=requests.find(r=>r.path.endsWith('chat/completions')).body.messages.at(-1).content;
   assertUI(!changed.some(p=>p.type==='input_audio') && changed.some(p=>p.text==='这张照片有什么？'),'changed sample question did not use text-only question');
+  const photoRequest=requests.find(r=>r.path.endsWith('chat/completions')).body;
+  assertUI(photoRequest.messages[0].role==='system'&&photoRequest.messages[0].content.includes('uncertainties'),'custom question bypassed uncertainty instructions');
+  assertUI((await page.locator('.photo-uncertainties').innerText()).includes('小字看不清'),'reported unknown not separated from answer');
+  await page.click('[data-result-copy]');const photoCopy=await page.evaluate(()=>window.copiedTexts.at(-1));
+  assertUI(photoCopy.includes('看不清 / 无法确定')&&photoCopy.includes('小字看不清'),'copy omitted uncertainty');
+  assertUI(await downloadText('[data-result-download]')===photoCopy,'photo export differs from full copy');
   const photo=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aD1sAAAAASUVORK5CYII=','base64');
   // Final-review regressions: failed local validation must stay readable and recoverable.
   const finalCheck = async (name, check) => {try {await check();console.log(`final regression PASS: ${name}`);} catch(e) {problems.push(`final regression ${name}: ${e.message}`);}};
@@ -286,8 +310,21 @@ async function main() {
   const broken=Buffer.alloc(33); Buffer.from([137,80,78,71,13,10,26,10]).copy(broken);broken.writeUInt32BE(13,8);broken.write('IHDR',12);broken.writeUInt32BE(1,16);broken.writeUInt32BE(1,20);
   await page.setInputFiles('[data-material]',{name:'header-only.png',mimeType:'image/png',buffer:broken});await page.waitForSelector('[data-material-status] .inline-error');assertUI((await page.locator('[data-material-status]').innerText()).includes('解码'),'corrupt image decode not checked');
   await page.click('[data-reset]');expectFault=true;failureMode='401';await begin();assertUI((await page.locator('[data-outcome]').innerText()).includes('401'),'401 outcome missing');assertUI(!(await page.locator('[data-outcome]').innerText()).includes(CRED.values.DASHSCOPE_API_KEY),'error exposed secret');
+  const beforeRetry=requests.length;await page.click('[data-outcome-retry]');await page.waitForSelector('[data-sheet="go"]');
+  assertUI(requests.length===beforeRetry,'retry bypassed billing confirmation');await page.click('[data-sheet="cancel"]');await page.waitForSelector('[data-act="live"]:not([disabled])');
+  assertUI(await page.locator('[data-outcome-retry]').evaluate(node=>node===document.activeElement),'retry cancel lost keyboard focus');
+  failureMode='';await page.click('[data-outcome-retry]');await page.click('[data-sheet="go"]');await page.waitForSelector('[data-act="live"]:not([disabled])');
+  assertUI(await page.locator('[data-outcome] .result-text').count()===1&&await page.locator('[data-outcome-retry]').count()===0,'explicit retry did not recover the result');
   failureMode='unknown';await begin();assertUI((await page.locator('.result-cost').innerText()).includes('费用未知'),'unknown usage presented as exact cost');assertUI(await page.locator('.result-text img').count()===0,'model output executed markup');
-  failureMode='hold';await page.click('[data-act="live"]');await page.click('[data-sheet="go"]');await page.waitForSelector('[data-act="live"][disabled]');assertUI(await page.locator('[data-question]').isDisabled(),'input mutable during run');await page.click('[data-act="stop"]');await page.waitForSelector('[data-act="live"]:not([disabled])');assertUI((await page.locator('[data-outcome]').innerText()).includes('已停止'),'stopped state missing');failureMode='';
+  failureMode='hold';await page.click('[data-act="live"]');await page.click('[data-sheet="go"]');await page.waitForSelector('[data-act="live"][disabled]');assertUI(await page.locator('[data-question]').isDisabled(),'input mutable during run');assertUI(await page.locator('[data-question-preset]:disabled').count()===4,'shortcuts mutable during run');await page.click('[data-act="stop"]');await page.waitForSelector('[data-act="live"]:not([disabled])');assertUI((await page.locator('[data-outcome]').innerText()).includes('已停止'),'stopped state missing');failureMode='';
+  await page.click('[data-source="own"]');await page.setInputFiles('[data-material]',{name:'speech-stop.png',mimeType:'image/png',buffer:photo});await page.waitForSelector('[data-material-status] .inline-ok');await page.click('[data-question-preset="read"]');
+  failureMode='hold-tts';const speechStarted=page.waitForRequest(req=>req.url().endsWith('SpeechSynthesizer'));await page.click('[data-act="live"]');await page.click('[data-sheet="go"]');await speechStarted;
+  await page.click('[data-act="stop"]');await page.waitForSelector('[data-act="live"]:not([disabled])');
+  assertUI((await page.locator('[data-outcome]').innerText()).includes('已停止')&&(await page.locator('.photo-uncertainties').innerText()).includes('小字看不清'),'stopping speech lost completed answer or its unknowns');
+  assertUI(await page.locator('[data-result-copy]').count()===1&&await page.locator('[data-outcome-retry]').count()===1,'stopped answer cannot be copied or manually retried');
+  await page.goto(`${BASE}#/me`);await page.waitForSelector('[data-history-open]');await page.locator('[data-history-open]').first().click();await page.waitForSelector('[data-history-result] .photo-uncertainties');
+  assertUI((await page.locator('[data-history-result] .photo-uncertainties').innerText()).includes('小字看不清')&&await page.locator('[data-history-result] [data-outcome-retry]').count()===0,'history lost limits or offered retry without material');
+  failureMode='';
   current='07-recorder.bailian';await page.goto(`${BASE}#/s/07-recorder.bailian/default`);await page.waitForSelector('[data-source="own"]');assertUI((await page.locator('.result-text').innerText()).includes('待办'),'07 sample minutes not immediately readable');await meetingActions('[data-outcome]');await page.click('[data-source="own"]');
   const wav = seconds=>{const b=Buffer.alloc(44+seconds*16000*2);b.write('RIFF',0);b.writeUInt32LE(b.length-8,4);b.write('WAVEfmt ',8);b.writeUInt32LE(16,16);b.writeUInt16LE(1,20);b.writeUInt16LE(1,22);b.writeUInt32LE(16000,24);b.writeUInt32LE(32000,28);b.writeUInt16LE(2,32);b.writeUInt16LE(16,34);b.write('data',36);b.writeUInt32LE(b.length-44,40);return b;};
   await page.setInputFiles('[data-material]',{name:'meeting.wav',mimeType:'audio/wav',buffer:wav(1)});await page.waitForSelector('[data-material-status] .inline-ok');requests.length=0;await begin();
@@ -349,7 +386,7 @@ async function main() {
   await page.evaluate(()=>window.restoreHistoryStorage());
   // Leaving a pending request must abort and never append history or leave a confirmation overlay.
   const priorHistory=await page.evaluate(()=>localStorage.getItem('aihw.history.v1'));failureMode='hold';await page.click('[data-act="live"]');await page.click('[data-sheet="go"]');await page.waitForSelector('[data-act="live"][disabled]');await page.evaluate(()=>location.hash='#/me');await page.waitForSelector('form[data-form]');await page.waitForTimeout(800);assertUI(await page.evaluate(()=>localStorage.getItem('aihw.history.v1'))===priorHistory,'page-leave added detached history');failureMode='';
-  console.log('体验 UI 回归通过：设置返回、空提问保留、素材解码切换/重挂载/旧读取隔离、临时播报/导出隔离、样本提问、PNG、WAV、损坏/过长素材、401、停止、缺失用量、filetrans OSS上传/两次轮询/结果无Key下载、任务失败审计、轮询停止、会议六区复制/下载/历史、失败转写复制/下载、失败记录导入再导出、历史重开/删除');
+  console.log('体验 UI 回归通过：四快捷问题仅填入/键盘/编辑/设置保留，不确定项展示/复制/下载，手动重试计费确认/取消，停止播报保留回答与不确定项并在历史重开，设置返回、空提问保留、素材解码切换/重挂载/旧读取隔离、临时播报/导出隔离、样本提问、PNG、WAV、损坏/过长素材、401、停止、缺失用量、filetrans OSS上传/两次轮询/结果无Key下载、任务失败审计、轮询停止、会议六区复制/下载/历史、失败转写复制/下载、失败记录导入再导出、历史重开/删除');
   // Isolated desktop Chrome regression exercises the actual SW cache and offline reloads.
   const offlineContext=await browser.newContext({viewport:{width:1280,height:900},locale:'zh-CN',reducedMotion:'reduce',serviceWorkers:'allow'});
   const offlinePage=await offlineContext.newPage();
@@ -383,7 +420,7 @@ async function main() {
       },id);
       for(const url of assets)warmedAssets.add(url);
     }
-    const cachedURLs=[...warmedAssets,...['js/experience.js','js/history.js','js/live/input.js','js/pages/solution.js','data/registry.json',...featured.map(id=>`data/traces/${id}/default.json`)].map(p=>new URL(p,BASE).href)];
+    const cachedURLs=[...warmedAssets,...['js/experience.js','js/photo-questions.js','js/photo-results.js','js/history.js','js/live/input.js','js/pages/solution.js','data/registry.json',...featured.map(id=>`data/traces/${id}/default.json`)].map(p=>new URL(p,BASE).href)];
     const cacheDeadline=Date.now()+10000;
     while(true) {
       const missing=await offlinePage.evaluate(async urls=>{const missing=[];for(const url of urls)if(!await caches.match(url))missing.push(url);return missing;},cachedURLs);

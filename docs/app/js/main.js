@@ -58,8 +58,8 @@ function renderError(error) {
 
 function renderNotFound() {
   document.title = '页面未找到 · AIHW Starter';
-  mountPage(view, html`<section class="intro" data-route-missing><p class="eyebrow">链接可能已失效</p><h1>没有找到这个页面</h1><p>可以回体验广场重新选择品类、体验或硬件方案。保存在本机的设置与历史不会因此清除。</p></section>
-    <a class="primary-action" href="#/">返回体验广场</a>`);
+  mountPage(view, html`<section class="intro" data-route-missing><p class="eyebrow">链接可能已失效</p><h1>没有找到这个页面</h1><p>可以回体验中心重新选择品类、体验或硬件方案。保存在本机的设置与历史不会因此清除。</p></section>
+    <a class="primary-action" href="#/">返回体验中心</a>`);
 }
 
 async function route() {

@@ -4,7 +4,7 @@
 
 [`index.html`](./index.html) 是项目官网：介绍 AI 硬件商业化实践库，提供能力预览、九个商业化品类、入门路径与深度阅读入口。品类是商业方向，具体项目的商业交付、开发者用途和集成条件在各项目资料中分别说明。
 
-首页保持单文件 HTML，使用系统字体、内联 SVG 和 CSS 硬件概念插画，不依赖第三方资源。布局参考 [Mole](https://mole.fit/zh/) 与 [Kami](https://kami.tw93.fun/index-zh.html) 的留白和清晰层次，视觉素材与页面实现为本项目独立制作。照片来自仓内既有样本，预览文本不代表在线模型调用；真实 Key 与实机验证状态沿用体验广场。
+首页保持单文件 HTML，使用系统字体、内联 SVG 和 CSS 硬件概念插画，不依赖第三方资源。布局参考 [Mole](https://mole.fit/zh/) 与 [Kami](https://kami.tw93.fun/index-zh.html) 的留白和清晰层次，视觉素材与页面实现为本项目独立制作。照片来自仓内既有样本，预览文本不代表在线模型调用；真实 Key 与实机验证状态沿用体验中心。
 
 交互包括手机导航、支持方向键 / Home / End 的能力预览、克隆命令复制和有限的入场动效，尊重系统的减少动态效果偏好。关闭 JavaScript 时仍可阅读首页并使用导航。
 
@@ -19,7 +19,7 @@ CHROME=/path/to/chromium node docs/tools/home-smoke.mjs
 
 ## 网页 APP（app/）
 
-官网中的「打开体验广场」进入网页 APP（[`app/`](./app/)）。`designs/aihw-square/` 下的 HTML 原型为设计存档，说明见 [`designs/aihw-square/`](./designs/aihw-square/README.md)：
+官网中的「打开体验中心」进入网页 APP（[`app/`](./app/)）。`designs/aihw-square/` 下的 HTML 原型为设计存档，说明见 [`designs/aihw-square/`](./designs/aihw-square/README.md)：
 
 - [完整可点击原型](./designs/aihw-square/app-v2.html?screen=home)
 - [18 屏页面总览](./designs/aihw-square/overview.html)

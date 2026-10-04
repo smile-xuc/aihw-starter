@@ -95,6 +95,30 @@ try{
     await page.goto(app+'#/'+route);await mounted(page,'[data-route-missing]');await returnLink(page);
     await keyClick(page,'[data-nav="home"]');await mounted(page,'.featured-card');
   }
+  // First use and empty history remain useful without credentials; free samples do not create live history.
+  await page.goto(app+'#/me');await mounted(page,'[data-first-visit]');
+  assert.equal(await page.locator('.product-section').innerText(),'体验中心');
+  assert.match(await page.locator('[data-first-visit]').innerText(),/无需 Key/);
+  assert.match(await page.locator('[data-history-empty]').innerText(),/免费样本不会写入历史/);
+  assert.equal(await page.locator('[data-history-empty] a').count(),2);
+  for(const id of ['02-ai-glasses.bailian','07-recorder.bailian']){
+    await keyClick(page,`[data-history-empty] a[href="#/s/${id}/default?sample=1"]`);await mounted(page,'.stage');
+    await page.locator('.process-panel').evaluate(node=>node.open=true);await page.locator('[data-act="all"]').click();await page.locator('.stage-foot:not([hidden])').waitFor();
+    await page.goto(app+'#/me');await mounted(page,'[data-history-empty]');assert.equal(await page.locator('[data-history-open]').count(),0);
+  }
+  await page.goto(app+'#/me?history=deleted-record');await mounted(page,'[data-history-missing]');
+  assert.match(await page.locator('[data-history-missing]').innerText(),/已删除|不在这台浏览器/);
+  assert.equal(await page.locator('[data-history-result] a[href^="#/s/"]').count(),2);
+  await page.evaluate(()=>localStorage.setItem('aihw.history.v1',JSON.stringify([{id:'text-only-history',trace:{schema:'aihw/trace@0.1',solution:'02-ai-glasses.bailian',variant:'default',mode:'live',kit:'browser',runner:'browser',ran_at:'2026-10-04T00:00:00Z',status:'failed',events:[],inputs:[],outputs:[{path:'out/answer.txt',media_type:'text/plain',text:'这是本机历史回归的文字结果。',asset:null,bytes:60}],result:null,error:'本地回归模拟失败'}}])));
+  await page.goto(app+'#/me?history=text-only-history');await mounted(page,'[data-history-result] .result-text');
+  assert.match(await page.locator('[data-history-result] .history-note').innerText(),/不恢复照片、录音或 Key/);
+  assert.match(await page.locator('[data-history-result] .history-note').innerText(),/不会自动重试/);
+  assert.equal(await page.locator('[data-history-experience]').getAttribute('href'),'#/s/02-ai-glasses.bailian/default');
+  assert.equal(await page.locator('[data-history-result] input[type="file"], [data-history-result] audio, [data-history-result] img').count(),0);
+  await keyClick(page,'[data-history-experience]');await mounted(page,'[data-question]');
+  assert.deepEqual(await page.evaluate(()=>[...Object.keys(localStorage),...Object.keys(sessionStorage)].filter(key=>key.startsWith('aihw.credentials.'))),[]);
+  await page.evaluate(()=>localStorage.removeItem('aihw.history.v1'));
+  console.log('Product first-use/history OK: free sample entry without Key, two sample replays leave history empty, stale history recovery and text-only reopening without restored credentials or automatic retry.');
   // Leaving setup without saving returns to the exact draft and never initiates a call.
   const inputs=[['02-ai-glasses.bailian','dish.jpg','image'],['07-recorder.bailian','ask_dish.wav','audio']];
   for(const [id,file,kind] of inputs){
@@ -111,8 +135,22 @@ try{
     if(kind==='image')assert.equal(await page.locator('[data-question]').inputValue(),'保留这张照片和这个问题，暂不配置 Key。');
     assert.equal(await page.locator('[data-preview] '+(kind==='image'?'img':'audio')).evaluate(node=>node.src.startsWith('blob:')),true);
     assert.deepEqual(await page.evaluate(()=>[...Object.keys(localStorage),...Object.keys(sessionStorage)].filter(key=>key.startsWith('aihw.credentials.'))),[]);
+    // An explicit free-sample entry must leave a retained personal draft available without displaying it as the sample.
+    await page.goto(app+'#/me');await mounted(page,'[data-history-empty]');
+    await keyClick(page,`[data-history-empty] a[href="#/s/${id}/default?sample=1"]`);await mounted(page,'.stage');
+    assert.equal(await page.locator('[data-source="sample"]').getAttribute('aria-pressed'),'true');
+    await page.locator('[data-outcome] .result-text').waitFor();
+    if(kind==='image')assert.notEqual(await page.locator('[data-question]').inputValue(),'保留这张照片和这个问题，暂不配置 Key。');
+    await page.locator('[data-source="own"]').click();await page.locator('[data-material-status] .inline-ok').waitFor();
+    assert.match(await page.locator('[data-preview]').innerText(),new RegExp(file.replace('.','\\.')));
+    if(kind==='image')assert.equal(await page.locator('[data-question]').inputValue(),'保留这张照片和这个问题，暂不配置 Key。');
   }
   await main.close();
+
+  const unavailable=await context();await unavailable.addInitScript(()=>{const read=Storage.prototype.getItem;Storage.prototype.getItem=function(key){if(key==='aihw.history.v1')throw new DOMException('Local history unavailable','SecurityError');return read.call(this,key);};});
+  const up=await unavailable.newPage();await up.goto(app+'#/me');await mounted(up,'[data-history-empty]');
+  assert.match(await up.locator('[data-history-list]').innerText(),/无法读取/);assert.doesNotMatch(await up.locator('[data-history-list]').innerText(),/还没有体验记录/);
+  await keyClick(up,'[data-history-empty] a');await mounted(up,'.stage');await unavailable.close();
 
   const missing=await context();
   await missing.route('**/app/data/registry.json',route=>route.fulfill({status:503,body:'Intentional data error'}));
@@ -161,7 +199,7 @@ try{
     const missing=[];for(const asset of assets)if(!await caches.match(new URL(asset,root).href))missing.push(asset);return missing;
   },{root:app+'data/',assets:[...requiredAssets]});
   assert.deepEqual(absent,[],'Successful cache-all must persist every published trace/input/output asset');
-  assert.ok((await op.evaluate(()=>caches.keys())).includes('aihw-app-v11'));
+  assert.ok((await op.evaluate(()=>caches.keys())).includes('aihw-app-v12'));
   await offline.setOffline(true);
   const featured=['02-ai-glasses.bailian','07-recorder.bailian'];
   const ordered=[...variants.filter(([id,variant])=>featured.includes(id)&&variant==='default'),...variants.filter(([id,variant])=>!featured.includes(id)||variant!=='default')];
@@ -197,5 +235,5 @@ try{
   assert.equal(await cacheAll(pp),'complete','A later retry can finish caching after the network recovers');
   await partial.close();
   assert.deepEqual(errors,[],'Product JavaScript errors');assert.deepEqual(external,[],'No external API calls');
-  console.log('Product smoke OK: '+routes.length*5+' route/viewport return journeys, sticky header, articles, missing/data/no-JS recovery, two preserved setup drafts, first-settings real SW v11 caching of '+requiredAssets.size+' published resources and '+variants.length+' offline replays, offline return/reconnect, failed-cache reporting and retry. No external requests.');
+  console.log('Product smoke OK: '+routes.length*5+' route/viewport return journeys, sticky header, articles, missing/data/no-JS recovery, two preserved setup drafts, first-settings real SW v12 caching of '+requiredAssets.size+' published resources and '+variants.length+' offline replays, offline return/reconnect, failed-cache reporting and retry. No external requests.');
 }finally{await browser?.close();child.kill();}

@@ -29,7 +29,7 @@ function fieldHtml(f, value) {
 }
 
 function stateHtml(stack, saved) {
-  if (!saved) return html`<div class="key-state"><span>还没有填，所有方案只放回放</span><span class="chip accent">回放模式</span></div>`;
+  if (!saved) return html`<div class="key-state"><span>还没有配置 Key，可以先看免费样本</span><span class="chip accent">免费样本</span></div>`;
   const values = fieldValues(stack, saved.values);
   const parts = (stack.fields || []).filter((f) => values[f.key]).map((f) => (f.input === 'secret' ? maskSecret(values[f.key])
     : f.options?.find((o) => o.value === values[f.key])?.label || values[f.key]));
@@ -93,6 +93,10 @@ function capabilities(reg) {
   </section>`;
 }
 
+function sampleLinks(reg) {
+  return html`<div class="btn-row">${Object.entries(PRODUCTS).filter(([id])=>reg?.byId.has(id)).map(([id,product])=>html`<a class="secondary-action" href="#/s/${id}/default?sample=1" aria-label="${product.title}免费样本">${product.title}</a>`)}</div>`;
+}
+
 export function renderMe(view, reg) {
   document.title = '我的 · AIHW';
   let active = true, localReplay = null;
@@ -103,9 +107,9 @@ export function renderMe(view, reg) {
   const secrets=stacks.flatMap(stack=>(stack.fields||[]).filter(f=>f.input==='secret').map(f=>loadCredentials(stack.id)?.values[f.key])).filter(Boolean);
   const page = mountPage(view, html`
     <header class="app-top"><span class="wordmark"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>我的</span></header>
-    ${target ? html`<div class="mode-banner"><div><strong>继续体验：${PRODUCTS[target.sol.id]?.title || target.sol.title} · ${target.variant.title}</strong><p>请补全当前玩法所需凭证。保存后返回素材页面，再由你点击开始，不会自动调用模型。</p><a href="${target.hash}" data-return-experience>暂不配置，返回体验</a></div></div>` : requestedReturn ? html`<p class="inline-error">返回地址无效，请从方案页面重新进入设置。</p>` : ''}
-    <section class="section history-panel"><div class="section-title"><h2>体验历史</h2><button type="button" class="secondary-action" data-history-clear>清空历史</button></div><p class="small">文字结果只保存在这台设备。最多 20 条、共 2 MiB；原始照片、录音和临时播报不保存。</p><div class="panel" data-history-list></div><div data-history-result></div></section>
-    ${stacks.length ? stacks.map(s=>stackPanel(s,target)) : html`<div class="inline-error">方案数据没有加载出来，填写表单要用注册表里的栈声明。已保存的凭证仍在本机，可以先清除：</div>
+    ${target ? html`<div class="mode-banner"><div><strong>继续体验：${PRODUCTS[target.sol.id]?.title || target.sol.title} · ${target.variant.title}</strong><p>请补全当前体验所需凭证。保存后返回素材页面，再由你点击开始，不会自动调用模型。本次打开期间可保留已选素材与问题；刷新或关闭页面后需重新选择。</p><a href="${target.hash}" data-return-experience>暂不配置，返回体验</a></div></div>` : requestedReturn ? html`<p class="inline-error">返回地址无效，请从<a href="#/">体验中心</a>重新选择体验，再进入设置。</p>` : !secrets.length && reg ? html`<section class="panel" data-first-visit aria-label="第一次使用"><h2>先看免费样本，无需 Key</h2><p>打开「一看即懂」或「会议纪要」即可查看样本结果、回放和导出，不调用模型、不产生费用。</p>${sampleLinks(reg)}<p class="small">想用自己的素材生成结果时，在体验页面选择素材，再通过填写百炼 Key 的入口进入设置。保存后会回到原体验，由你确认开始；也可先不配置，返回原体验。</p></section>` : ''}
+    <section class="section history-panel"><div class="section-title"><h2>体验历史</h2><button type="button" class="secondary-action" data-history-clear>清空历史</button></div><p class="small">这里只保存本机文字结果与运行记录，最多 20 条、共 2 MiB。历史不保存原始照片、录音、临时播报或 Key；打开记录不会恢复旧素材和旧 Key。</p><div class="panel" data-history-list></div><div data-history-result role="region" aria-label="打开的历史记录"></div></section>
+    ${stacks.length ? stacks.map(s=>stackPanel(s,target)) : html`<div class="inline-error">体验数据暂时无法加载，当前无法配置 Key 或打开新样本。请稍后刷新，或<a href="#/">返回体验中心重试</a>；已保存的凭证与文字历史仍在本机。</div>
       <button type="button" class="secondary-action block danger-action" data-act="clear-all">清除这台设备上保存的全部凭证</button>`}
     ${reg ? capabilities(reg) : ''}
 
@@ -138,12 +142,16 @@ export function renderMe(view, reg) {
 
   const stackCleanups = stacks.map(stack=>bindStack(page, stack, reg, target, ()=>active));
   const showHistory = id => {
-    const record = readHistory().records.find(r=>r.id===id);if(!record)return;
-    renderOutcome(page.querySelector('[data-history-result]'),record.trace,{secrets,label:PRODUCTS[record.trace.solution]?.title || record.trace.title,historyNote:`${new Date(record.trace.ran_at).toLocaleString('zh-CN')} · ${statusLabel(record.trace)} · 本机历史未保存原始素材和临时语音。`});
+    const slot=page.querySelector('[data-history-result]');
+    const {records,error}=readHistory(),record=records.find(r=>r.id===id);
+    if(!record){mount(slot,html`<p class="inline-error" data-history-missing>${error || '这条记录已删除或不在这台浏览器中。可以查看其他历史，或重新打开免费样本。'}</p>${sampleLinks(reg)}`);return;}
+    renderOutcome(slot,record.trace,{secrets,label:PRODUCTS[record.trace.solution]?.title || record.trace.title,historyNote:`${new Date(record.trace.ran_at).toLocaleString('zh-CN')} · ${statusLabel(record.trace)} · 这里只打开已保存的文字与运行记录，不恢复照片、录音或 Key。再次体验时请核对当前素材与 Key，按需重新选择素材后再开始；不会自动重试。`});
+    const destination=returnTarget(reg,`#/s/${encodeURIComponent(record.trace.solution)}/${encodeURIComponent(record.trace.variant)}`);
+    if(destination){const links=document.createElement('div');mount(links,html`<p class="small"><a class="secondary-action" data-history-experience href="${destination.hash}">返回体验页面</a></p>`);slot.append(links);}
   };
   const refreshHistory = () => {
     const {records,error}=readHistory();
-    mount(page.querySelector('[data-history-list]'),html`${error ? html`<p class="inline-error">${error}</p>` : ''}${records.length ? records.map(r=>html`<div class="history-row"><h3>${PRODUCTS[r.trace.solution]?.title || r.trace.title}</h3><p class="small">${new Date(r.trace.ran_at).toLocaleString('zh-CN')} · ${statusLabel(r.trace)} · ${r.trace.variant}</p><div class="btn-row"><button type="button" class="secondary-action" data-history-open="${r.id}">打开结果</button><button type="button" class="secondary-action" data-history-delete="${r.id}">删除</button></div></div>`) : html`<p class="small">还没有体验记录。真跑后的结果、失败和停止记录会出现在这里。</p>`}`);
+    mount(page.querySelector('[data-history-list]'),html`${error ? html`<p class="inline-error">${error}</p>` : ''}${records.length ? records.map(r=>html`<div class="history-row"><h3>${PRODUCTS[r.trace.solution]?.title || r.trace.title}</h3><p class="small">${new Date(r.trace.ran_at).toLocaleString('zh-CN')} · ${statusLabel(r.trace)} · ${r.trace.variant}</p><div class="btn-row"><button type="button" class="secondary-action" data-history-open="${r.id}">打开文字记录</button><button type="button" class="secondary-action" data-history-delete="${r.id}">删除</button></div></div>`) : html`<div data-history-empty><p class="small">${error ? '暂时无法读取历史，仍可先看免费样本。' : '还没有体验记录。免费样本不会写入历史；用 Key 运行后的结果、失败和停止记录会保存在这里。'}</p>${sampleLinks(reg)}</div>`}`);
   };
   refreshHistory();
   if(parameters.get('history')) showHistory(parameters.get('history'));

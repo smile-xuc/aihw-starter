@@ -117,9 +117,9 @@ export async function runInBrowser(reg, sol, variant, cred, stage, { signal, onF
       if (!recordUsage(c.ASR_FILE_MODEL, response.request_id, response.usage, 'post')) incompletePostUsage = true;
       return response;
     },
-    post: async (service, path, payload, headers = {}) => {
+    post: async (service, path, payload, headers = {}, {allowNetworkFallback = true} = {}) => {
       let response;
-      try { response = await postJson(cred, service, path, payload, { headers, signal, onFallback }); }
+      try { response = await postJson(cred, service, path, payload, { headers, signal, onFallback, allowNetworkFallback }); }
       catch (error) {
         recordUsage(payload.model, error.requestId, { known: false }, 'post');
         throw error;

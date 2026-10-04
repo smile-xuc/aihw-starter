@@ -542,6 +542,23 @@ html { scroll-padding-top:90px;scroll-padding-bottom:110px; }
 .material-editor[data-validation-state="invalid"] .material-dropzone { border-color:var(--error-fg); }
 .question-heading { display:flex!important;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap; }
 .question-count { margin:0!important;color:var(--muted);font:10px var(--mono);font-weight:400; }
+.question-shortcuts { margin:16px 0 20px; }
+.question-shortcuts>p { margin-bottom:9px; }
+.question-shortcut-list { display:flex;flex-wrap:wrap;gap:8px; }
+.question-shortcut-list button { min-height:44px;padding:9px 15px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);font-size:12px;transition:background .15s,border-color .15s,color .15s; }
+.question-shortcut-list button[aria-pressed="true"] { border-color:var(--accent);background:var(--accent-light);color:var(--accent-ink); }
+.question-shortcut-list button:focus-visible { outline:3px solid var(--accent);outline-offset:3px; }
+.question-shortcut-list button:disabled { opacity:.5;cursor:not-allowed; }
+@media (max-width:480px) { .question-shortcut-list { display:grid;grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (hover:hover) { .question-shortcut-list button:not(:disabled):hover { border-color:var(--accent);background:var(--accent-light); } }
+.photo-result h3 { margin:0 0 10px;font-size:15px; }
+.photo-answer { padding:10px 0 18px; }
+.photo-answer p,.photo-uncertainties li { white-space:pre-wrap;overflow-wrap:anywhere; }
+.photo-uncertainties { padding:16px;border:1px solid var(--line);border-radius:10px;background:var(--bg); }
+.photo-uncertainties ul { padding-left:20px;margin:0 0 12px; }
+.photo-uncertainties .small { margin-top:8px;font-size:11px; }
+.retry-action { margin-top:18px; }
+.retry-action p { margin-top:8px; }
 .material textarea { border-radius:8px;font-size:16px;background:var(--surface); }
 .material [data-reset] { background:transparent;min-height:40px;border:0;color:var(--muted);font-size:12px; }
 .input-preview { border:1px solid var(--line);border-radius:10px; }
