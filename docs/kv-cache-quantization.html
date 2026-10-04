@@ -32,6 +32,14 @@
   ::-webkit-scrollbar{width:10px; height:10px;}
   ::-webkit-scrollbar-thumb{background:#cfc9b8; border-radius:99px; border:2.5px solid var(--bg);}
   ::-webkit-scrollbar-track{background:transparent;}
+  /* 独立首页入口，不改变正文与 Hero 的布局 */
+  .article-home-nav{position:absolute; top:18px; left:0; right:0; z-index:20;
+    max-width:860px; margin:0 auto; padding:0 22px;}
+  .article-home-nav a{display:inline-flex; align-items:center; gap:8px; min-height:40px;
+    padding:5px 13px; border:1px solid var(--line); border-radius:999px;
+    background:rgba(255,255,255,.75); color:var(--accent); font-size:14px; text-decoration:none;}
+  .article-home-nav a:hover{background:var(--card); border-color:var(--accent);}
+  .article-home-nav a:focus-visible{outline:2px solid var(--accent); outline-offset:4px;}
   /* ============ 顶部阅读进度 ============ */
   #progress{position:fixed; top:0; left:0; height:4px; width:0%; border-radius:0 99px 99px 0;
     background:linear-gradient(90deg,var(--accent),var(--accent2),var(--teal));
@@ -493,6 +501,9 @@
 </style>
 </head>
 <body>
+<nav class="article-home-nav" aria-label="返回网站首页">
+  <a href="./"><span aria-hidden="true">←</span>返回首页</a>
+</nav>
 <div id="progress"></div>
 
 <nav class="toc" id="toc">
