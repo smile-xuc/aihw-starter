@@ -152,12 +152,16 @@ try{
   // This context has never opened an experience: cache from My Settings, then visit every trace offline.
   const offline=await context({serviceWorkers:'allow',viewport:{width:390,height:844}});
   const op=await offline.newPage();await op.goto(app+'#/me');await mounted(op,'[data-act="cache"]');await controlled(op);
+  // The homepage preview belongs to the shell, even before cache-all or visiting an experience.
+  await offline.setOffline(true);await op.goto(app+'#/');await op.reload();await mounted(op,'.featured-card');
+  await op.waitForFunction(()=>document.querySelector('.image-preview img')?.naturalWidth>0);
+  await offline.setOffline(false);await op.goto(app+'#/me');await mounted(op,'[data-act="cache"]');
   assert.equal(await cacheAll(op),'complete');
   const absent=await op.evaluate(async({root,assets})=>{
     const missing=[];for(const asset of assets)if(!await caches.match(new URL(asset,root).href))missing.push(asset);return missing;
   },{root:app+'data/',assets:[...requiredAssets]});
   assert.deepEqual(absent,[],'Successful cache-all must persist every published trace/input/output asset');
-  assert.ok((await op.evaluate(()=>caches.keys())).includes('aihw-app-v7'));
+  assert.ok((await op.evaluate(()=>caches.keys())).includes('aihw-app-v8'));
   await offline.setOffline(true);
   const featured=['02-ai-glasses.bailian','07-recorder.bailian'];
   const ordered=[...variants.filter(([id,variant])=>featured.includes(id)&&variant==='default'),...variants.filter(([id,variant])=>!featured.includes(id)||variant!=='default')];
@@ -193,5 +197,5 @@ try{
   assert.equal(await cacheAll(pp),'complete','A later retry can finish caching after the network recovers');
   await partial.close();
   assert.deepEqual(errors,[],'Product JavaScript errors');assert.deepEqual(external,[],'No external API calls');
-  console.log('Product smoke OK: '+routes.length*5+' route/viewport return journeys, sticky header, articles, missing/data/no-JS recovery, two preserved setup drafts, first-settings real SW v7 caching of '+requiredAssets.size+' published resources and '+variants.length+' offline replays, offline return/reconnect, failed-cache reporting and retry. No external requests.');
+  console.log('Product smoke OK: '+routes.length*5+' route/viewport return journeys, sticky header, articles, missing/data/no-JS recovery, two preserved setup drafts, first-settings real SW v8 caching of '+requiredAssets.size+' published resources and '+variants.length+' offline replays, offline return/reconnect, failed-cache reporting and retry. No external requests.');
 }finally{await browser?.close();child.kill();}

@@ -4,7 +4,7 @@ GitHub Pages 上的静态网页，可以「添加到主屏幕」当 APP 用（PW
 
 - 地址：<https://smile-xuc.github.io/aihw-starter/app/>（Pages 是「从分支部署」master 的 `/docs`，合并即上线）
 - 没有后端、没有构建链：HTML + CSS + 原生 ES 模块；数据由仓库里的生成器产出并入库
-- 视觉沿用 [PR #35 的原型](../designs/aihw-square/)（只保留一套自适应主题）；原型留作设计存档
+- 中性色工作区、蓝色操作强调、统一线性图标和轻量微动效；手机底导航、平板紧凑导航与桌面侧栏共用一套页面。当前规范和参考见 [界面设计说明](UI_DESIGN.md)，[早期原型](../designs/aihw-square/)保留为存档
 
 ## 页面
 
@@ -26,6 +26,7 @@ GitHub Pages 上的静态网页，可以「添加到主屏幕」当 APP 用（PW
 - **一看即懂**：用样本看回放，或上传 JPEG / PNG / WebP 图片并输入问题，用自己的 Key 取得文字回答。北京地域另有 HTTP 整段语音合成；新加坡只出文字。
 - **会议纪要**：用样本看回放，或上传 WAV / MP3 短录音，生成摘要、决策、待办与逐字稿。录音须不超过 180 秒；疑似转写截断会给出提示，需人工核对末句。
 - 原文件大小上限 **7 MiB**，为 Base64 编码留出空间。网页先检查文件头，再解码图片或读取录音时长；格式损坏、空文件、超限和未知时长不能开始真跑。暂不接 HEIC、长录音或视频。
+- 支持原生文件选择与单文件拖放，提供拖入、核验、有效／错误状态和问题字数。多文件、目录、文本链接及格式／体积预检失败不会替换原草稿；实际解码失败会标出当前文件不可用。运行期间不能更换素材，仍可停止；拖放和核验不调用模型。
 - 去配置凭证时，当前图片/录音和问题暂留在本页的 JS 内存中；保存或点击「暂不配置，返回体验」均回到原玩法，由用户点击开始。刷新或关闭页面会丢弃这份素材草稿。
 - 「我的 → 缓存全部回放与素材」下载本站发布的轨迹及其输入、输出素材，确认写入 APP 缓存后才显示完成。下载失败或存储未就绪会列出未完成资源，可重试；不缓存个人上传素材和云端调用。
 - 结果可复制、下载并导出 `aihw/trace@0.1`；技术过程可展开查看。成功、失败和停止的记录均可留在本机历史，刷新后仍可打开文本结果。原图、录音、临时合成音频地址和凭证不存入历史；历史受容量限制，存储失败会提示并保留当前导出能力。
@@ -118,6 +119,7 @@ npm install --no-save --prefix /tmp/pw playwright-core
 PLAYWRIGHT_CORE=/tmp/pw/node_modules/playwright-core/index.mjs CHROME=$(command -v google-chrome) node docs/app/tools/smoke.mjs
 PLAYWRIGHT_CORE=/tmp/pw/node_modules/playwright-core/index.mjs CHROME=$(command -v google-chrome) node docs/app/tools/workspace-smoke.mjs
 PLAYWRIGHT_CORE=/tmp/pw/node_modules/playwright-core/index.mjs CHROME=$(command -v google-chrome) node docs/tools/product-smoke.mjs
+PLAYWRIGHT_CORE=/tmp/pw/node_modules/playwright-core/index.mjs CHROME=$(command -v google-chrome) node docs/tools/interaction-smoke.mjs
 ```
 
 冒烟测试使用测试凭证与本地假百炼，不产生云端调用。它检查页面、素材输入、配置返回、结果与历史的行为及手机宽度布局；另用允许 Service Worker 的独立桌面 Chrome 上下文，验证首次安装后的断网刷新、两个精选样本的离线结果/回放/导出和缓存隔离。真实接口、实际手机 Safari / Android Chrome 仍须按 [验收记录](VERIFY_BROWSER.md) 实测。
@@ -133,7 +135,7 @@ PLAYWRIGHT_CORE=/tmp/pw/node_modules/playwright-core/index.mjs CHROME=$(command 
 docs/app/
 ├── index.html              入口；CSP 只放行本站和百炼官方接入点
 ├── manifest.webmanifest    PWA 清单    sw.js  离线缓存（只缓存本站 GET，不碰云端接口）
-├── css/app.css             视觉令牌与组件（来自 #35 原型）
+├── css/app.css             明暗主题、响应式工作区、组件状态与减少动效支持
 ├── js/main.js              路由    js/pages/  首页、品类页、方案页、我的
 ├── js/data.js              读 data/    js/replay.js  通用回放舞台    js/meta.js  少量界面约定
 ├── js/settings.js          凭证的本机存储与校验（按栈声明）
@@ -145,7 +147,7 @@ docs/app/
 ├── live-data/              真跑常量（tools/build.py 生成）
 ├── tools/build.py          生成 live-data/ 与自检    tools/smoke.mjs + fake_bailian.py  冒烟测试
 ├── tools/*.test.mjs        素材、接口响应、指标、历史与轨迹契约回归
-├── tools/workspace-smoke.mjs 桌面/Pad、品类项目/硬件/账本交互与 SW v7 离线回归
+├── tools/workspace-smoke.mjs 桌面/Pad、品类项目/硬件/账本交互与 SW v8 离线回归
 ├── tools/cost-run.mjs      mock/live 固定样本跑测；默认 mock、凭证只读环境
 ├── ITERATION_REVIEW.md     软硬件链路、费用/工时假设、项目定位与当前缺口
 ├── VERIFY_BROWSER.md       真实接口与真机验收步骤、待验证状态

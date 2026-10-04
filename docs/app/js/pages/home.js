@@ -15,12 +15,15 @@ export function experienceChips(reg, sol) {
   return chips;
 }
 
+export const categoryIcon = (cat) => icon(['camera','glasses','toy','chip','bot','headphones','mic','watch','arm'][Number(cat.no) - 1] || 'chip');
+
 function card(reg, cat) {
   const projects = casesFor(cat.id);
   return html`<a class="cat-card" href="#/c/${cat.id}">
     <div class="row1">
-      <span class="cat-emoji" aria-hidden="true">${cat.emoji || '·'}</span>
+      <span class="cat-emoji" aria-hidden="true">${categoryIcon(cat)}</span>
       <div class="names"><small>${cat.no} · 商业化方向</small><h3>${cat.name}</h3></div>
+      <span class="card-arrow" aria-hidden="true">${icon('arrow')}</span>
     </div>
     <p class="scene">${CATEGORY_BUSINESS[cat.id] || cat.scenes || ''}</p>
     <div class="chips"><span class="chip">${projects.length} 个项目精选</span><span class="chip accent">商业产品 / 开发者项目</span></div>
@@ -49,15 +52,20 @@ export function renderHome(view, reg) {
   const saved = savedStacks(reg).length > 0;
   const recent = readHistory().records.slice(0, 3);
   mountPage(view, html`
-    <header class="app-top"><span class="eyebrow">先看样本，再动手体验</span>
-      <a class="chip ${saved ? 'ok' : 'accent'}" href="#/me">${saved ? '已填 Key' : '回放模式'}</a></header>
-    <section class="intro">
-      <p class="eyebrow">把 AI 硬件的能力，先拿来用</p><h1>一张照片，一段录音。<br>体验就在这里。</h1>
-      <p>先看免费的示例效果，再用自己的 Key 和素材体验。请求直达官方接入点。</p>
+    <header class="app-top"><span class="eyebrow">探索 · 体验 · 构建</span>
+      <a class="chip ${saved ? 'ok' : 'accent'}" href="#/me"><i aria-hidden="true"></i>${saved ? '已填 Key' : '免费回放模式'}</a></header>
+    <section class="intro home-intro">
+      <h1>从一次体验开始。</h1>
+      <p>一张照片，一段录音。先看 AI 能做什么，再用自己的素材试一试。</p>
     </section>
-    <section class="featured-grid" aria-label="精选体验">${Object.entries(PRODUCTS).map(([id,p],i)=>html`<a class="featured-card ${i ? 'recorder' : 'vision'}" href="#/s/${id}/default"><span class="feature-art" aria-hidden="true">${icon(i ? 'file' : 'play')}</span><span class="eyebrow">${i ? '听见，然后整理' : '看见，然后理解'}</span><h2>${p.title}</h2><p>${i ? '录音 → 要点、决定、待办' : '照片 + 提问 → 回答与播报'}</p><span class="feature-link">免费示例 / 我的 Key ${icon('chevron')}</span></a>`)}</section>
+    <section class="featured-grid" aria-label="精选体验">${Object.entries(PRODUCTS).map(([id,p],i)=>html`<a class="featured-card ${i ? 'recorder' : 'vision'}" href="#/s/${id}/default">
+      <div class="feature-heading"><span class="feature-art" aria-hidden="true">${icon(i ? 'mic' : 'glasses')}</span><span><span class="eyebrow">${i ? 'AUDIO → NOTES' : 'IMAGE → ANSWER'}</span><h2>${p.title}</h2></span><span class="card-arrow" aria-hidden="true">${icon('arrow')}</span></div>
+      <p>${i ? '录下讨论，留下要点与下一步。' : '拍下眼前，问出你想知道的事。'}</p>
+      ${i ? html`<div class="feature-preview audio-preview" aria-hidden="true"><div class="audio-sample"><span class="sample-play">${icon('play')}</span><span class="sample-wave">${Array.from({length:28},()=>html`<i></i>`)}</span><span class="sample-time">WAV</span></div><div class="note-sample"><span class="note-label">${icon('file')}会议纪要</span><span class="note-line"></span><span class="note-line short"></span><span class="note-tags"><b>要点</b><b>决定</b><b>待办</b></span></div></div>`
+        : html`<div class="feature-preview image-preview" aria-hidden="true"><img src="${new URL('assets/02-ai-glasses.bailian/samples/dish.jpg',reg.root).href}" alt="" width="640" height="480"><span class="image-frame"></span><span class="preview-caption">示例照片<span>看见 · 理解</span></span></div>`}
+      <span class="feature-link"><span>开始体验 <span class="feature-free">免费样本</span></span>${icon('arrow')}</span></a>`)}</section>
     ${recent.length ? html`<section class="section"><div class="section-title"><h2>最近体验</h2><a href="#/me">查看历史</a></div><div class="panel">${recent.map(r=>html`<a class="history-preview" href="#/me?history=${encodeURIComponent(r.id)}"><span><strong>${PRODUCTS[r.trace.solution]?.title || r.trace.title}</strong><small>${new Date(r.trace.ran_at).toLocaleString('zh-CN')}</small></span><span class="chip">${statusLabel(r.trace)}</span></a>`)}</div></section>` : ''}
-    <section class="workspace-links" aria-label="继续验证"><a class="panel" href="#/hardware"><strong>把能力做进硬件</strong><p>3 条 ESP32 路线 · BOM、研发节奏与商用条件</p></a><a class="panel" href="#/cost-lab"><strong>准备成本跑测</strong><p>你提供价格说明，用调用证据核对账单</p></a></section>
+    <section class="workspace-links" aria-label="继续验证"><a class="panel" href="#/hardware"><span class="workspace-icon">${icon('chip')}</span><span><strong>把能力做进硬件</strong><p>3 条 ESP32 路线与成本规划</p></span>${icon('arrow')}</a><a class="panel" href="#/cost-lab"><span class="workspace-icon">${icon('chart')}</span><span><strong>核对每次调用成本</strong><p>用自己的价格与运行记录算账</p></span>${icon('arrow')}</a></section>
     ${modeBanner(reg)}
     <section class="section">
       <div class="section-title"><h2>商业化品类 <small>${reg.categories.length}</small></h2><small>场景与具体项目</small></div>

@@ -1,7 +1,7 @@
 import { repoLink } from '../data.js';
 import { costInfo, PLANNED_STACKS, range, verificationBadge } from '../meta.js';
 import { fmtCny, html, icon, mountPage } from '../ui.js';
-import { experienceChips } from './home.js';
+import { categoryIcon, experienceChips } from './home.js';
 import { referencePosition } from '../projects.js';
 import { CATEGORY_BUSINESS, POSITIONING_REVIEW_DATE, casesFor } from '../positioning.js';
 
@@ -51,7 +51,7 @@ export function renderCategory(view, reg, id) {
   const page = mountPage(view, html`
     <div class="subbar"><a class="back-link" href="#/">${icon('back')}全部品类</a></div>
     <section class="category-hero">
-      <span class="big-emoji" aria-hidden="true">${cat.emoji || ''}</span>
+      <span class="big-emoji" aria-hidden="true">${categoryIcon(cat)}</span>
       <p class="eyebrow">商业化品类 ${cat.no}</p>
       <h1>${cat.name}</h1>
       <p>${CATEGORY_BUSINESS[id] || cat.capabilities || ''}</p>

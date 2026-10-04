@@ -63,6 +63,18 @@ const PATHS = {
   cloud: '<path d="M6 18a5 5 0 1 1 .7-9.9A6 6 0 0 1 18 9a4.5 4.5 0 0 1 0 9Z"/>',
   alert: '<path d="m12 3 10 18H2Zm0 6v5m0 3v.2"/>',
   check: '<path d="m5 12 4 4L19 6"/>',
+  camera: '<rect x="3" y="6" width="18" height="14" rx="3"/><path d="m7 6 2-3h6l2 3"/><circle cx="12" cy="13" r="4"/>',
+  glasses: '<path d="m3 12 2-7h3m13 7-2-7h-3M9 14h6"/><rect x="2" y="11" width="7" height="7" rx="3"/><rect x="15" y="11" width="7" height="7" rx="3"/>',
+  toy: '<circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><rect x="4" y="6" width="16" height="15" rx="7"/><path d="M8 12h.1M16 12h.1m-6 4h4"/>',
+  chip: '<rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 2v3m6-3v3M9 19v3m6-3v3M2 9h3m-3 6h3m14-6h3m-3 6h3"/>',
+  bot: '<rect x="4" y="6" width="16" height="13" rx="4"/><path d="M12 3v3M8 12h.1m7.9 0h.1M9 16h6M2 10v5m20-5v5"/>',
+  headphones: '<path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="12" width="4" height="8" rx="2"/><rect x="17" y="12" width="4" height="8" rx="2"/>',
+  mic: '<rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4m-4 0h8"/>',
+  watch: '<rect x="6" y="5" width="12" height="14" rx="4"/><path d="m8 5 1-3h6l1 3M8 19l1 3h6l1-3M12 9v4l2 1"/>',
+  arm: '<path d="M4 21h16M7 21v-4l4-5m3-2 3-5 3 2-1 3M6 5l4 5m0-7L7 6"/><circle cx="12" cy="12" r="3"/>',
+  chart: '<path d="M4 3v17h17M8 15v-3m5 3V8m5 7V5"/>',
+  arrow: '<path d="M5 12h14m-6-6 6 6-6 6"/>',
+  upload: '<path d="M12 16V3m-5 5 5-5 5 5M4 16v4h16v-4"/>',
 };
 export const icon = (name, cls = '') =>
   raw(`<svg class="icon ${cls}" viewBox="0 0 24 24" aria-hidden="true">${PATHS[name] || PATHS.info}</svg>`);

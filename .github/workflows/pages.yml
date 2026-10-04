@@ -66,6 +66,9 @@ jobs:
           node docs/tools/product-smoke.mjs
           PLAYWRIGHT_CORE="$RUNNER_TEMP/pw/node_modules/playwright-core/index.mjs" \
           CHROME="$(command -v google-chrome)" \
+          node docs/tools/interaction-smoke.mjs
+          PLAYWRIGHT_CORE="$RUNNER_TEMP/pw/node_modules/playwright-core/index.mjs" \
+          CHROME="$(command -v google-chrome)" \
           node docs/app/tools/smoke.mjs
           PLAYWRIGHT_CORE="$RUNNER_TEMP/pw/node_modules/playwright-core/index.mjs" \
           CHROME="$(command -v google-chrome)" \
