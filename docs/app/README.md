@@ -10,14 +10,14 @@ GitHub Pages 上的静态网页，可以「添加到主屏幕」当 APP 用（PW
 
 | 页面 | 地址 | 内容 |
 |---|---|---|
-| 首页 | `#/` | 两个精选体验、最近体验、9 个品类卡片：单次成本、体验方式、合规标签、验证状态 |
-| 品类页 | `#/c/<品类>` | 速览（出货、营收、AI 占比、公开案例）、按栈列出的方案、专题 demo、品类文档 |
+| 首页 | `#/` | 两个精选体验、最近体验、9 个商业化品类的场景与项目入口 |
+| 品类页 | `#/c/<品类>` | 31 个代表项目及交付依据、商业／开发者用途筛选、行业速览、本仓参考实现与品类文档 |
 | 方案页 | `#/s/<方案 id>[/<玩法 id>]`，也可以 `?s=<方案 id>` | ① 效果（回放 / 真跑，多个玩法可切换）② 一次多少钱 ③ 要什么硬件、三步跑通 ④ 合规义务；深入链接 |
 | 我的 | `#/me` | 凭证配置与返回原体验、本机体验历史、打开/导出运行记录、离线缓存、外观 |
 | 硬件方案 | `#/hardware[/<项目 id>]` | 3 条 ESP32 设计路线：链路、原型 BOM、共享研发／服务器成本、进度、许可依据与实机缺口 |
 | 跑测账本 | `#/cost-lab` | 导入用户单价与轨迹、按请求 ID 去重、用量计价、账单差额、导出软预算计划；本页不调用模型 |
 
-同一套页面适配 320px 手机、768px Pad 竖屏、1024px 横屏和宽屏桌面。768px 起改为侧边导航，桌面展开方案与成本两栏；无需安装原生 APP。社区 demo 与商用候选的逐项判断及硬件规划见 [本轮 review](ITERATION_REVIEW.md)。
+同一套页面适配 320px 手机、768px Pad 竖屏、1024px 横屏和宽屏桌面。768px 起改为侧边导航，桌面展开方案与成本两栏；无需安装原生 APP。九个品类均为商业化方向；具体项目的开发者用途与商业交付可以重叠，本仓验证进度单列。判断规则及九品类例子见 [项目定位分析](PROJECT_POSITIONING.md)，硬件规划见 [本轮 review](ITERATION_REVIEW.md)。
 
 ## 两个精选体验
 
@@ -93,6 +93,7 @@ node docs/app/tools/cost-run.mjs --mock \
 | `data/traces/<方案 id>/<玩法 id>.json` | 回放轨迹，`aihw/trace@0.1` | 同上（各玩法 `run.py --mock --trace`） |
 | `data/assets/<方案 id>/…` | 样本图片、录音、传感器数据；mock 的二进制产出 | 同上 |
 | `live-data/<方案 id>.json` | 浏览器真跑用的模型 ID、提示词、工具定义、单价 | `tools/build.py` 从各 demo 的 `run.py` 直接导入，入库；JS 里不另抄一份 |
+| `js/positioning.js` | 品类商业场景与代表项目定位、交付范围、资料链接 | 人工复核已有项目卡；独立于生成注册表和调用验证，不作实时在售保证 |
 
 - `data/` 的格式见 [demo 标准](../../solutions/demo-standard/README.md)第十四节；这个目录归生成器，APP 只读、不写
 - 通用回放按事件的 `kind`、续行和文件类型渲染；两个精选体验额外提供对应素材输入与结果展示，约定集中在 `js/experience.js`
@@ -139,7 +140,7 @@ docs/app/
 ├── live-data/              真跑常量（tools/build.py 生成）
 ├── tools/build.py          生成 live-data/ 与自检    tools/smoke.mjs + fake_bailian.py  冒烟测试
 ├── tools/*.test.mjs        素材、接口响应、指标、历史与轨迹契约回归
-├── tools/workspace-smoke.mjs 桌面/Pad、硬件/账本交互与 SW v5 离线回归
+├── tools/workspace-smoke.mjs 桌面/Pad、品类项目/硬件/账本交互与 SW v6 离线回归
 ├── tools/cost-run.mjs      mock/live 固定样本跑测；默认 mock、凭证只读环境
 ├── ITERATION_REVIEW.md     软硬件链路、费用/工时假设、项目定位与当前缺口
 ├── VERIFY_BROWSER.md       真实接口与真机验收步骤、待验证状态

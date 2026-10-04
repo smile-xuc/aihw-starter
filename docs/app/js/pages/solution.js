@@ -142,7 +142,7 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
       ${product ? html`<p class="small">${sol.title}</p>` : ''}
       <p>${product?.description || sol.summary}</p>
       <div class="chips">${[...experienceChips(reg, sol), verificationBadge(sol), referencePosition(sol)].map((c) => html`<span class="chip ${c.cls}">${c.label}</span>`)}</div>
-      <p class="small">${referencePosition(sol).note} 本仓代码 MIT；模型服务、素材与第三方组件按各自许可 review。</p>
+      <p class="small">${referencePosition(sol).note} 本仓代码 MIT；模型服务、素材与第三方组件按各自许可核对。<a href="#/c/${cat.id}">查看品类商业方案与具体项目</a>。</p>
       <nav class="qnav" aria-label="四个问题">
         <a href="#effect" data-jump="effect"><b>效果</b>怎样</a><a href="#cost" data-jump="cost"><b>成本</b>一次多少钱</a>
         <a href="#hardware" data-jump="hardware"><b>硬件</b>要什么</a><a href="#compliance" data-jump="compliance"><b>合规</b>有哪些义务</a>

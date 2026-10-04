@@ -2,16 +2,27 @@
 export const REVIEW_DATE = '2026-10-04';
 const source = (repo, commit, path, title) => ({title, url:'https://github.com/'+repo+'/blob/'+commit+'/'+path, commit});
 export const POSITION = {
-  demo: {label:'社区验证 demo', note:'用于学习和验证能力；许可允许使用不代表已具备可售产品的交付条件。', cls:'accent'},
-  candidate: {label:'商用候选 · 有条件', note:'可作为产品组件，仍须完成硬件、服务许可、可靠性与量产验收。', cls:'warn'},
+  reference: {label:'开发者参考实现', note:'仅描述本仓这份百炼示例代码的交付范围；所属品类与上游项目的商业化定位分别判断，实际调用与实机验证状态另列。', cls:'accent'},
+  design: {label:'本仓参考设计', note:'本仓提供链路、预算与验收计划；上游商业集成基础、选用组合条件和本仓验证进度分别说明。', cls:'accent'},
+  unassessed: {label:'未评估', note:'尚未评估该具体实现的交付范围；不能从所属品类、代码许可或本仓验证状态推断其商业化定位。', cls:'warn'},
 };
-export const referencePosition = () => POSITION.demo;
+const referenceIds = new Set([
+  '01-ipc.bailian','02-ai-glasses.bailian','03-toys-companion.bailian',
+  '04-agent-hardware.bailian','05-desktop-pet.bailian','06-ai-earphone.bailian',
+  '07-recorder.bailian','08-smart-watch.bailian','09-embodied.bailian',
+]);
+export const referencePosition = solution => referenceIds.has(solution?.id) ? POSITION.reference : POSITION.unassessed;
 export const PROJECTS = [
   {
     id:'xiaozhi-voice', title:'小智 · Wi-Fi 语音终端', category:'03-toys-companion', scene:'03-toys-companion.bailian', variant:'default',
     summary:'按键或唤醒词收音，流式送到自有服务端，经 ASR → LLM → TTS 返回扬声器。',
-    position:'demo', license:'固件 MIT；社区服务端 MIT；ESP-SR 为 ESPRESSIF MIT（限定乐鑫产品）',
-    licenseNote:'保留各项目许可。所选社区服务端明确提示“请勿在生产环境中使用”；商业服务应另行完成鉴权、配额、租户隔离与安全评估，不能直接包装上线。',
+    assessment:{
+      upstream:'小智固件已有设备语音与协议能力，MIT 允许商业使用，可作为商业设备的终端基础。',
+      combination:'本设计选用的社区后端在固定版本明确提示“请勿在生产环境中使用”；这个限制只作用于该后端组合，产品服务需另行选型与验收。',
+      delivery:'本仓已提供参考链路、预算和固定事件演练；尚未烧录设备、连接实际语音服务或完成整机交付。',
+    },
+    license:'固件 MIT；社区服务端 MIT；ESP-SR 为 ESPRESSIF MIT（限定乐鑫产品）',
+    licenseNote:'小智固件 MIT 许可允许商业使用，须保留许可并分别核对 ESP-SR 等组件条件。所选社区后端的生产限制不适用于所有小智项目；产品服务应另行完成鉴权、配额、租户隔离与交付验收。',
     sources:[
       source('78/xiaozhi-esp32','0d576d3d4c049c6f55eaf879725dc23e516511b4','README.md','固件功能、板卡与 IDF 要求'),
       source('78/xiaozhi-esp32','0d576d3d4c049c6f55eaf879725dc23e516511b4','LICENSE','固件 MIT'),
@@ -40,7 +51,12 @@ export const PROJECTS = [
   {
     id:'skainet-control', title:'ESP-Skainet · 离线语音控制', category:'04-agent-hardware', scene:'04-agent-hardware.bailian', variant:'offline',
     summary:'麦克风 → AFE/WakeNet/MultiNet → 白名单命令 → LED → 状态回执；推理留在设备上。',
-    position:'candidate', license:'ESPRESSIF MIT：仅授权用于乐鑫产品，非无条件的通用 MIT',
+    assessment:{
+      upstream:'ESP-Skainet 与 ESP-SR 提供离线语音组件，在乐鑫产品上可按相应许可用于商业集成。',
+      combination:'S3-Korvo-1、离线命令与 LED 回执仍需集成；芯片限定、模型、唤醒词和商标权利须逐项核对。',
+      delivery:'本仓已提供参考链路、BOM 与演练；LED 映射、状态协议和产品 OTA 尚未交付，实机识别与可靠性待验证。',
+    },
+    license:'ESPRESSIF MIT：仅授权用于乐鑫产品，非无条件的通用 MIT',
     licenseNote:'乐鑫芯片路线可评估商业使用，须保留许可并核对 ESP-SR、模型、唤醒词与商标授权。先控制 LED；继电器、电机等执行器需要独立工程设计。',
     sources:[
       source('espressif/esp-skainet','4f3d8252373fdbbec7c20add928ff084aeff4066','README.md','官方示例、支持板卡与模型'),
@@ -71,7 +87,12 @@ export const PROJECTS = [
   {
     id:'camera-question', title:'ESP32 Camera · 拍照问答终端', category:'02-ai-glasses', scene:'02-ai-glasses.bailian', variant:'default',
     summary:'相机捕获 JPEG，经本机导出与网页上传验证；产品路线经自有 HTTPS 网关调用模型并回传结果。',
-    position:'candidate', license:'esp32-camera 驱动 Apache-2.0；选用的固件框架和第三方组件另行核对',
+    assessment:{
+      upstream:'esp32-camera 具备传感器驱动与 JPEG 捕获能力，Apache-2.0 允许商业使用，可作为摄像设备的软件组件。',
+      combination:'驱动之外还需摄像头固件、设备 HTTPS 网关、身份认证与结果回传；组件许可不等于完整设备交付。',
+      delivery:'本仓网页已有照片上传与问答入口；本设计尚未采集实机照片，设备固件、网关和功耗验证仍待完成。',
+    },
+    license:'esp32-camera 驱动 Apache-2.0；选用的固件框架和第三方组件另行核对',
     licenseNote:'驱动具备可评估商用的许可条件，但摄像头固件、云网关、设备认证、照片隐私和镜头授权没有随驱动交付。不能把驱动直接标成完整可售产品。',
     sources:[
       source('espressif/esp32-camera','2bba0d1d57219ddacd18d2c5701927e1884a51d1','README.md','芯片/传感器、PSRAM 与 JPEG 约束'),

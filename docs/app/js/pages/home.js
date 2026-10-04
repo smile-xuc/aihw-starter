@@ -2,10 +2,9 @@ import { PRODUCTS } from '../experience.js';
 import { readHistory, statusLabel } from '../history.js';
 import { label } from '../data.js';
 import { runnerCount, solutionRunnable } from '../live/index.js';
-import { costInfo, range, verificationBadge } from '../meta.js';
 import { loadCredentials } from '../settings.js';
-import { brandmark, fmtCny, html, icon, mountPage } from '../ui.js';
-import { referencePosition } from '../projects.js';
+import { brandmark, html, icon, mountPage } from '../ui.js';
+import { CATEGORY_BUSINESS, casesFor } from '../positioning.js';
 
 export function experienceChips(reg, sol) {
   const modes = sol.experience?.modes || [];
@@ -16,29 +15,15 @@ export function experienceChips(reg, sol) {
   return chips;
 }
 
-function costCell(sol) {
-  const c = costInfo(sol);
-  if (!c) return html`<b>—</b><small>暂无成本</small>`;
-  return html`<b>¥${fmtCny(range(c.low, c.high))}</b><small>${c.label} / 次</small>`;
-}
-
 function card(reg, cat) {
-  const sol = cat.solutions[0];
-  const stacks = cat.solutions.map((s) => reg.stacks.get(s.stack)?.name?.replace(/^阿里云/, '') || s.stack);
-  const chips = sol ? [
-    ...experienceChips(reg, sol),
-    ...(sol.compliance || []).map((c) => ({ label: c.label, cls: 'stat' })),
-    verificationBadge(sol),
-    referencePosition(sol),
-  ] : [{ label: '暂无参考方案', cls: '' }];
+  const projects = casesFor(cat.id);
   return html`<a class="cat-card" href="#/c/${cat.id}">
     <div class="row1">
       <span class="cat-emoji" aria-hidden="true">${cat.emoji || '·'}</span>
-      <div class="names"><small>${cat.no} · ${stacks.join(' / ') || '待接入'}</small><h3>${cat.name}</h3></div>
-      <div class="cost">${sol ? costCell(sol) : ''}</div>
+      <div class="names"><small>${cat.no} · 商业化方向</small><h3>${cat.name}</h3></div>
     </div>
-    <p class="scene">${cat.scenes || ''}</p>
-    <div class="chips">${chips.map((c) => html`<span class="chip ${c.cls}">${c.label}</span>`)}</div>
+    <p class="scene">${CATEGORY_BUSINESS[cat.id] || cat.scenes || ''}</p>
+    <div class="chips"><span class="chip">${projects.length} 个项目精选</span><span class="chip accent">商业产品 / 开发者项目</span></div>
   </a>`;
 }
 
@@ -75,7 +60,7 @@ export function renderHome(view, reg) {
     <section class="workspace-links" aria-label="继续验证"><a class="panel" href="#/hardware"><strong>把能力做进硬件</strong><p>3 条 ESP32 路线 · BOM、研发节奏与商用条件</p></a><a class="panel" href="#/cost-lab"><strong>准备成本跑测</strong><p>你提供价格说明，用调用证据核对账单</p></a></section>
     ${modeBanner(reg)}
     <section class="section">
-      <div class="section-title"><h2>品类 <small>${reg.categories.length}</small></h2><small>品类 × 栈</small></div>
+      <div class="section-title"><h2>商业化品类 <small>${reg.categories.length}</small></h2><small>场景与具体项目</small></div>
       <div class="cat-list">${reg.categories.map((c) => card(reg, c))}</div>
     </section>
     <p class="footnote">

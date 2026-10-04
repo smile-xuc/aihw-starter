@@ -7,6 +7,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {PROJECTS,hardwareTrace} from '../js/projects.js';
+import {CATEGORY_BUSINESS} from '../js/positioning.js';
 
 const here=path.dirname(fileURLToPath(import.meta.url)),docs=path.resolve(here,'../..');
 const temp=await mkdtemp(path.join(os.tmpdir(),'aihw-workspace-'));
@@ -35,7 +36,7 @@ try {
     const size=await page.evaluate(()=>({actual:document.documentElement.scrollWidth,width:innerWidth}));
     assert.ok(size.actual<=size.width+1,label+' overflows '+JSON.stringify(size));
   }
-  const routes=[['','.featured-card'],['s/02-ai-glasses.bailian/default','.stage'],['s/07-recorder.bailian/default','.stage'],['me','form[data-form]'],['hardware','[data-project-card]'],...PROJECTS.map(p=>['hardware/'+p.id,'[data-budget-form]']),['cost-lab','[data-price-editor]']];
+  const routes=[['','.featured-card'],...Object.keys(CATEGORY_BUSINESS).map(id=>['c/'+id,'[data-case]']),['s/02-ai-glasses.bailian/default','.stage'],['s/07-recorder.bailian/default','.stage'],['me','form[data-form]'],['hardware','[data-project-card]'],...PROJECTS.map(p=>['hardware/'+p.id,'[data-budget-form]']),['cost-lab','[data-price-editor]']];
   for(const [width,height] of [[320,740],[390,844],[768,1024],[1024,768],[1280,900],[1440,900]]){
     await page.setViewportSize({width,height});
     for(const [route,selector] of routes){await go(route,selector);await fits(width+' '+route);}
@@ -44,9 +45,27 @@ try {
     if(width>=768){assert.ok(layout.shell>540);assert.equal(layout.nav,'sticky');}
     else assert.equal(layout.nav,'fixed');
   }
+  await go('','.cat-card');
+  assert.equal(await page.locator('.cat-card').count(),9);
+  assert.doesNotMatch((await page.locator('.cat-card').allTextContents()).join('\n'),/demo|待真 Key|待实测|商用候选|开发者参考实现/);
+  // A sold developer platform belongs to both filters; a limited SDK token does not.
+  await go('c/05-desktop-pet','[data-case="stackchan"]');
+  await page.click('[data-project-filter="commercial"]');
+  assert.equal(await page.locator('[data-case="stackchan"]').isVisible(),true);
+  assert.equal(await page.locator('[data-case="electronbot"]').isVisible(),false);
+  await page.click('[data-project-filter="developer"]');
+  assert.equal(await page.locator('[data-case="stackchan"]').isVisible(),true);
+  assert.equal(await page.locator('[data-case="electronbot"]').isVisible(),true);
+  assert.equal(await page.locator('[data-case="emo"]').isVisible(),false);
+  await page.click('[data-project-filter="all"]');assert.equal(await page.locator('[data-case]:visible').count(),3);
+  await go('c/04-agent-hardware','[data-case="muse-gadget-sdk-token"]');
+  await page.click('[data-project-filter="commercial"]');assert.equal(await page.locator('[data-case="muse-gadget-sdk-token"]').isVisible(),false);
+  await page.click('[data-project-filter="developer"]');assert.equal(await page.locator('[data-case="muse-gadget-sdk-token"]').isVisible(),true);
   await go('hardware','[data-project-card]');
-  await page.click('[data-position="candidate"]');assert.equal(await page.locator('[data-project-card]:visible').count(),2);
-  await page.click('[data-position="demo"]');assert.equal(await page.locator('[data-project-card]:visible').count(),1);
+  assert.equal(await page.locator('[data-reference-design]').count(),3);
+  assert.equal(await page.locator('[data-upstream-basis]').count(),3);
+  assert.equal(await page.locator('[data-integration-boundary]').count(),3);
+  assert.equal(await page.locator('[data-delivery-evidence]').count(),3);
   await page.locator('[data-nav="hardware"]').focus();await page.keyboard.press('Tab');
   assert.equal(await page.evaluate(()=>document.activeElement.dataset.nav),'cost-lab');
   for(const project of PROJECTS){
@@ -100,7 +119,7 @@ try {
   await page.emulateMedia({colorScheme:'dark'});await fits('dark cost lab');
   if(process.env.REVIEW_SCREENSHOTS){
     await mkdir(process.env.REVIEW_SCREENSHOTS,{recursive:true});
-    for(const [name,route,width,height,selector] of [['desktop-hardware','hardware',1440,900,'[data-project-card]'],['pad-experience','s/02-ai-glasses.bailian/default',1024,768,'.stage'],['phone-cost','cost-lab',390,844,'[data-price-editor]']]){
+    for(const [name,route,width,height,selector] of [['desktop-category','c/05-desktop-pet',1440,900,'[data-case]'],['phone-category','c/03-toys-companion',390,844,'[data-case]'],['desktop-hardware','hardware',1440,900,'[data-project-card]'],['pad-experience','s/02-ai-glasses.bailian/default',1024,768,'.stage'],['phone-cost','cost-lab',390,844,'[data-price-editor]']]){
       await page.emulateMedia({colorScheme:'light'});await page.setViewportSize({width,height});await go(route,selector);
       await page.screenshot({path:path.join(process.env.REVIEW_SCREENSHOTS,name+'.png'),fullPage:true});
     }
@@ -109,19 +128,19 @@ try {
   // Seed an old app cache and another same-origin application before first registration.
   const offline=await browser.newContext({viewport:{width:1024,height:768},serviceWorkers:'allow'});
   const op=await offline.newPage();await op.goto(base+'icons/icon-192.png');
-  await op.evaluate(async()=>{await (await caches.open('aihw-app-v4')).put('old',new Response('old'));await (await caches.open('other-app-sentinel')).put('sentinel',new Response('keep'));});
+  await op.evaluate(async()=>{await (await caches.open('aihw-app-v5')).put('old',new Response('old'));await (await caches.open('other-app-sentinel')).put('sentinel',new Response('keep'));});
   await op.goto(base);await op.waitForSelector('.featured-card');
   await op.evaluate(async()=>{await navigator.serviceWorker.ready;if(!navigator.serviceWorker.controller)await new Promise(resolve=>navigator.serviceWorker.addEventListener('controllerchange',resolve,{once:true}));});
-  const cache=await op.evaluate(async()=>({names:await caches.keys(),urls:(await (await caches.open('aihw-app-v5')).keys()).map(r=>r.url)}));
-  assert.ok(cache.names.includes('other-app-sentinel'));assert.ok(!cache.names.includes('aihw-app-v4'));
-  for(const asset of ['js/projects.js','js/cost.js','js/pages/hardware.js','js/pages/cost-lab.js','data/registry.json'])assert.ok(cache.urls.includes(base+asset),asset+' not precached');
+  const cache=await op.evaluate(async()=>({names:await caches.keys(),urls:(await (await caches.open('aihw-app-v6')).keys()).map(r=>r.url)}));
+  assert.ok(cache.names.includes('other-app-sentinel'));assert.ok(!cache.names.includes('aihw-app-v5'));
+  for(const asset of ['js/projects.js','js/positioning.js','js/cost.js','js/pages/hardware.js','js/pages/cost-lab.js','data/registry.json'])assert.ok(cache.urls.includes(base+asset),asset+' not precached');
   await offline.setOffline(true);
-  for(const [route,selector] of [['hardware','[data-project-card]'],...PROJECTS.map(p=>['hardware/'+p.id,'[data-budget-form]']),['cost-lab','[data-price-editor]']]){
+  for(const [route,selector] of [['c/05-desktop-pet','[data-case="stackchan"]'],['hardware','[data-project-card]'],...PROJECTS.map(p=>['hardware/'+p.id,'[data-budget-form]']),['cost-lab','[data-price-editor]']]){
     await op.goto(base+'#/'+route);await op.reload();await op.waitForSelector(selector);
     assert.doesNotMatch(await op.locator('body').innerText(),/数据暂时不可用/);
   }
   await offline.close();
-  console.log('Workspace smoke OK: 54 viewport/routes, filters, budgets, mock exports, accounting, plan, keyboard, dark mode and actual SW v5 offline.');
+  console.log('Workspace smoke OK: '+routes.length*6+' viewport/routes, project classification and filters, budgets, mock exports, accounting, plan, keyboard, dark mode and actual SW v6 offline.');
 } finally {
   await browser?.close();child.kill();
 }

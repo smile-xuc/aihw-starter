@@ -3,6 +3,7 @@ import { costInfo, PLANNED_STACKS, range, verificationBadge } from '../meta.js';
 import { fmtCny, html, icon, mountPage } from '../ui.js';
 import { experienceChips } from './home.js';
 import { referencePosition } from '../projects.js';
+import { CATEGORY_BUSINESS, POSITIONING_REVIEW_DATE, casesFor } from '../positioning.js';
 
 const DOCS = [
   ['readme', '品类概述', 'README'],
@@ -12,6 +13,16 @@ const DOCS = [
   ['cases', '公开案例', '04-cases'],
   ['faq', '常见问答（含合规）', '05-faq'],
 ];
+
+function projectCard(reg, project) {
+  const tags = {commercial:'商业产品 / 集成方案', developer:'面向开发者'};
+  return html`<article class="panel project-case" data-case="${project.id}" data-audiences="${project.audiences.join(' ')}">
+    <div class="chips">${project.audiences.map(a=>html`<span class="chip ${a==='commercial'?'ok':'accent'}">${tags[a]}</span>`)}</div>
+    <h3>${project.title}</h3><p class="small">${project.form} · ${project.status}</p>
+    <p>${project.reason}</p><p class="small">适用范围：${project.boundary}</p>
+    <div class="case-sources">${project.evidence.map((path,i)=>html`<a href="${path.startsWith('https://')?path:repoLink(reg,path)}" rel="noopener">${path.startsWith('https://')?'固定版本依据':`资料 ${i+1}`} ${icon('link')}</a>`)}</div>
+  </article>`;
+}
 
 function solutionRow(reg, sol) {
   const c = costInfo(sol);
@@ -36,13 +47,23 @@ export function renderCategory(view, reg, id) {
   const have = new Set(cat.solutions.map((s) => reg.stacks.get(s.stack)?.name));
   const planned = PLANNED_STACKS.filter((s) => !have.has(s));
   const source = ind.source || {};
-  mountPage(view, html`
+  const projects = casesFor(id);
+  const page = mountPage(view, html`
     <div class="subbar"><a class="back-link" href="#/">${icon('back')}全部品类</a></div>
     <section class="category-hero">
       <span class="big-emoji" aria-hidden="true">${cat.emoji || ''}</span>
-      <p class="eyebrow">品类 ${cat.no}</p>
+      <p class="eyebrow">商业化品类 ${cat.no}</p>
       <h1>${cat.name}</h1>
-      <p>${cat.capabilities || ''}</p>
+      <p>${CATEGORY_BUSINESS[id] || cat.capabilities || ''}</p>
+    </section>
+
+    <section class="section" aria-label="品类项目">
+      <div class="section-title"><h2>项目精选 <small>${projects.length}</small></h2></div>
+      <p class="small">按项目的交付范围和现有资料判断。商业产品、集成方案与开发者用途可重叠；开发者项目也可用于商业产品。</p>
+      <div class="filter-row" role="group" aria-label="项目用途筛选">${[['all','全部'],['commercial','商业产品 / 方案'],['developer','开发者项目']].map(([value,text])=>html`<button type="button" class="secondary-action" data-project-filter="${value}" aria-pressed="${value==='all'}">${text}</button>`)}</div>
+      <p class="small" data-case-count role="status">显示 ${projects.length} 个项目</p>
+      <div class="project-grid">${projects.map(p=>projectCard(reg,p))}</div>
+      <p class="small">${POSITIONING_REVIEW_DATE} 复核仓内资料；销售状态沿用各资料的查证日期，未重新核实今日库存或测试整机。完整项目库：<a href="${repoLink(reg,`awesome/commercial-products/by-category/${id}.md`)}" rel="noopener">商业产品</a> · <a href="${repoLink(reg,`awesome/open-source/by-category/${id}.md`)}" rel="noopener">开源项目</a>。</p>
     </section>
 
     <section class="section">
@@ -57,7 +78,8 @@ export function renderCategory(view, reg, id) {
     </section>
 
     <section class="section">
-      <div class="section-title"><h2>方案 <small>按栈</small></h2></div>
+      <div class="section-title"><h2>本仓参考实现 <small>按栈体验</small></h2></div>
+      <p class="small">以下入口用于理解和验证技术链路；其回放、费用与验证状态只描述本仓代码。</p>
       ${cat.solutions.map((s) => solutionRow(reg, s))}
       ${planned.length ? html`<div class="row-card muted"><span class="grow"><strong>${planned.join(' · ')}</strong><small>其他栈按路线第 2 步接入，接入后在这里并列显示，可以对比同一品类在不同栈上的效果与成本。</small></span></div>` : ''}
     </section>
@@ -65,7 +87,7 @@ export function renderCategory(view, reg, id) {
     ${cat.topic_demos?.length ? html`<section class="section">
       <details class="fold"><summary>专题 demo（${cat.topic_demos.length}）</summary>
         <div class="fold-body"><p class="small">参考 demo 之前的专题示例，保留原路径。</p>
-          <div class="link-list">${cat.topic_demos.map((d) => html`<a href="${repoLink(reg, d.path, true)}" rel="noopener"><span>${d.title}<small> · 社区专题 demo · 产品化待 review</small></span><span>GitHub ${icon('link')}</span></a>`)}</div>
+          <div class="link-list">${cat.topic_demos.map((d) => html`<a href="${repoLink(reg, d.path, true)}" rel="noopener"><span>${d.title}<small> · 本仓开发者示例</small></span><span>GitHub ${icon('link')}</span></a>`)}</div>
         </div></details>
     </section>` : ''}
 
@@ -73,5 +95,15 @@ export function renderCategory(view, reg, id) {
       <div class="section-title"><h2>品类文档</h2></div>
       <div class="link-list">${DOCS.map(([k, text, file]) => (cat.docs?.[k] ? html`<a href="${repoLink(reg, cat.docs[k])}" rel="noopener">${text}<span>${file} ${icon('link')}</span></a>` : ''))}</div>
     </section>`);
+  page.querySelectorAll('[data-project-filter]').forEach(button=>button.addEventListener('click',()=>{
+    const selected = button.dataset.projectFilter;
+    page.querySelectorAll('[data-project-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+    let visible = 0;
+    page.querySelectorAll('[data-case]').forEach(card=>{
+      card.hidden = selected!=='all' && !card.dataset.audiences.split(' ').includes(selected);
+      if (!card.hidden) visible++;
+    });
+    page.querySelector('[data-case-count]').textContent = `显示 ${visible} 个项目`;
+  }));
   return null;
 }

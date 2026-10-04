@@ -1,9 +1,9 @@
 // 离线回放：只缓存本站的 GET 请求；云端接口是跨域请求，这里一律不碰。
-const CACHE = 'aihw-app-v5';
+const CACHE = 'aihw-app-v6';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css', 'data/registry.json',
   'js/main.js', 'js/experience.js', 'js/history.js', 'js/live/input.js', 'js/ui.js', 'js/meta.js', 'js/data.js', 'js/replay.js', 'js/settings.js',
-  'js/projects.js', 'js/cost.js', 'js/pages/hardware.js', 'js/pages/cost-lab.js',
+  'js/projects.js', 'js/positioning.js', 'js/cost.js', 'js/pages/hardware.js', 'js/pages/cost-lab.js',
   'js/pages/home.js', 'js/pages/category.js', 'js/pages/solution.js', 'js/pages/me.js',
   'js/live/index.js', 'js/live/client.js',
   'js/live/run-01-ipc.js', 'js/live/run-02-ai-glasses.js', 'js/live/run-04-agent-hardware.js',

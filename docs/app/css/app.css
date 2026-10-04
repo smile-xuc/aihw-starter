@@ -398,6 +398,11 @@ details.fold .fold-body .link-list { padding: 0; box-shadow: none; }
 .workspace-links a { color:var(--fg);text-decoration:none; }
 .workspace-links strong { display:block;margin-bottom:8px;font-size:17px; }
 .project-grid { margin-top:20px; }
+.project-case h3 { font-size:18px;line-height:1.5;margin:16px 0 8px; }
+.project-case p { overflow-wrap:anywhere; }
+.project-case[hidden] { display:none; }
+.case-sources { display:flex;flex-wrap:wrap;gap:12px;font-size:12px;margin-top:16px; }
+.case-sources a { display:inline-flex;align-items:center;gap:4px; }
 .project-card h2 { font-size:21px;line-height:1.5;margin:18px 0 12px; }
 .project-card h2 a { color:var(--fg);text-decoration:none; }
 .filter-row { display:flex;flex-wrap:wrap;gap:8px;margin-top:20px; }
