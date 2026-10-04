@@ -90,7 +90,7 @@ export function applyTheme() {
   try { localStorage.setItem(THEME_KEY, 'light'); } catch { /* 浅色仍可用，不依赖存储权限 */ }
   document.querySelector('meta[name="color-scheme"]')?.setAttribute('content', 'light');
   for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
-    meta.setAttribute('content', '#f8fcfd');
+    meta.setAttribute('content', '#fafaf8');
     meta.removeAttribute('media');
   }
 }
