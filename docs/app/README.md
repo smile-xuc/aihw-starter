@@ -4,7 +4,7 @@ GitHub Pages 上的静态网页，可以「添加到主屏幕」当 APP 用（PW
 
 - 地址：<https://smile-xuc.github.io/aihw-starter/app/>（Pages 是「从分支部署」master 的 `/docs`，合并即上线）
 - 没有后端、没有构建链：HTML + CSS + 原生 ES 模块；数据由仓库里的生成器产出并入库
-- 纸白与冰蓝工作区、湖蓝操作强调、薄荷辅助色、统一线性图标和轻量微动效；系统深色和旧外观偏好均使用这一套浅色配色。手机底导航、平板紧凑导航与桌面侧栏共用一套页面。当前规范和参考见 [界面设计说明](UI_DESIGN.md)，[早期原型](../designs/aihw-square/)保留为存档
+- 沿用官网的暖白底色、深灰文字、亮蓝主色与中性分隔线，统一线性图标和轻量微动效；系统深色和旧外观偏好均使用这一套浅色配色。手机底导航、平板紧凑导航与桌面侧栏共用一套页面。当前规范和参考见 [界面设计说明](UI_DESIGN.md)，[早期原型](../designs/aihw-square/)保留为存档
 
 ## 页面
 
@@ -147,7 +147,7 @@ docs/app/
 ├── live-data/              真跑常量（tools/build.py 生成）
 ├── tools/build.py          生成 live-data/ 与自检    tools/smoke.mjs + fake_bailian.py  冒烟测试
 ├── tools/*.test.mjs        素材、接口响应、指标、历史与轨迹契约回归
-├── tools/workspace-smoke.mjs 桌面/Pad、品类项目/硬件/账本交互与 SW v9 离线回归
+├── tools/workspace-smoke.mjs 桌面/Pad、品类项目/硬件/账本交互与 SW v10 离线回归
 ├── tools/cost-run.mjs      mock/live 固定样本跑测；默认 mock、凭证只读环境
 ├── ITERATION_REVIEW.md     软硬件链路、费用/工时假设、项目定位与当前缺口
 ├── VERIFY_BROWSER.md       真实接口与真机验收步骤、待验证状态
