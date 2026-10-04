@@ -2,6 +2,8 @@
 import { fmtCny } from '../ui.js';
 import { toBase64, validCount } from './client.js';
 import { validateInput } from './input.js';
+import { PHOTO_INSTRUCTIONS } from '../photo-questions.js';
+import { parsePhotoAnswer, photoResultText, photoSpeechText } from '../photo-results.js';
 
 const ttsChars = (text) => [...text].reduce((n, ch) => n + (ch >= '\u4e00' && ch <= '\u9fff' ? 2 : 1), 0);
 function safeAudioUrl(url) {
@@ -33,18 +35,20 @@ export default async function run(x) {
   if (!speak) warn(`${c.TTS_MODEL} 的非实时 HTTP 合成只在北京地域提供，本地域只出文字`);
   const content = [{ type: 'image_url', image_url: { url: `data:${input?.mime || 'image/jpeg'};base64,${toBase64(image)}` } }];
   if (wav) content.push({ type: 'input_audio', input_audio: { data: `data:;base64,${toBase64(wav)}`, format: 'wav' } });
-  content.push({ type: 'text', text: input?.question || c.ASK_PROMPT });
+  content.push({ type: 'text', text: input?.question || '请回答音频中的提问。' });
   let answerEv = null;
   const turn = await x.chat({
-    model: c.OMNI_MODEL, messages: [{ role: 'user', content }], modalities: ['text'], reasoning_effort: 'none',
-  }, { onText: (_, all) => { answerEv = answerEv ? answerEv.update({ text: all }) : x.say('眼镜', all); } });
-  const answer = turn.text.trim();
-  if (!answer) throw new Error('看图回答为空：请重新提问');
+    model: c.OMNI_MODEL, messages: [{ role: 'system', content: PHOTO_INSTRUCTIONS }, { role: 'user', content }], modalities: ['text'], reasoning_effort: 'none',
+  }, { allowNetworkFallback: false, onText: (_, all) => { const text = `正在整理回答…已收到 ${all.length} 字`; answerEv = answerEv ? answerEv.update({ text }) : x.say('眼镜', text); } });
+  const result = parsePhotoAnswer(turn.text);
+  const answer = photoSpeechText(result);
+  answerEv?.update({ text: photoResultText(result) });
   if (turn.finish_reason === 'length') warn('看图回答可能被截断，请核对完整性');
   const omniCost = turn.usage.known === false ? null : (turn.usage.prompt * p.omni_in + turn.usage.completion * p.omni_out) / 1e6;
   let costStatus = omniCost == null ? 'unknown' : 'usage';
   const firstText = turn.firstTextAt == null ? null : turn.firstTextAt - t0;
-  const outputs = [{ path: 'out/answer.txt', media_type: 'text/plain', type: 'text/plain', text: `${answer}\n` }];
+  const outputs = [{ path: 'out/answer.txt', media_type: 'text/plain', type: 'text/plain', text: result.uncertainties === null ? `${result.answer}\n` : photoResultText(result) },
+    ...(result.uncertainties === null ? [] : [{ path: 'out/answer.json', media_type: 'application/json', type: 'application/json', text: JSON.stringify(result, null, 2) }])];
   let ttsCost = 0;
   let audioReady = null;
   if (speak) {
@@ -52,7 +56,7 @@ export default async function run(x) {
     try {
       const resp = await x.post('api', '/services/audio/tts/SpeechSynthesizer', {
         model: c.TTS_MODEL, input: { text: answer, voice: c.TTS_VOICE, format: 'wav', sample_rate: c.OUT_RATE },
-      });
+      }, {}, { allowNetworkFallback: false });
       if (resp.code || resp.error) throw new Error(resp.message || resp.error?.message || '语音合成服务返回错误');
       const url = safeAudioUrl(resp.output?.audio?.url || '');
       const knownChars = validCount(resp.usage?.characters);
@@ -68,7 +72,7 @@ export default async function run(x) {
         x.say('设备', '耳机 → 整段音频 URL 已就绪（见下方「产出」，点播放）');
       } else warn('语音合成没有返回安全的官方 HTTPS 音频地址，文字回答已保留');
     } catch (error) {
-      if (error.name === 'AbortError' || x.signal?.aborted) throw error;
+      if (error.name === 'AbortError' || x.signal?.aborted) { error.outputs = outputs; error.warnings = warnings; throw error; }
       ttsCost = null;
       costStatus = 'unknown';
       warn(`语音合成失败：${error.message}；文字回答已保留，播报费用未知`);

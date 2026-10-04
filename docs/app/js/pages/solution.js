@@ -7,9 +7,10 @@ import { fieldValues, loadCredentials, validateCredentials } from '../settings.j
 import { copyText, download, fmtCny, fmtYuan, html, icon, mount, mountPage, sheet } from '../ui.js';
 import { experienceChips } from './home.js';
 
-import { PRODUCTS, draftFor, resetDraft, setupRoute, fileType, decodeFile, browserTrace, renderOutcome, redact } from '../experience.js';
+import { PRODUCTS, draftFor, resetDraft, activateSampleDraft, setupRoute, fileType, decodeFile, browserTrace, renderOutcome, redact } from '../experience.js';
 import { saveHistory } from '../history.js';
 import { PROJECTS, referencePosition } from '../projects.js';
+import { PHOTO_QUESTIONS } from '../photo-questions.js';
 
 const PER_DAY = 30;
 
@@ -132,6 +133,7 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
   const sampleQuestion = '这是什么菜？辣不辣？';
   const initialDraft = {question:product?.kind === 'image' ? sampleQuestion : ''};
   let draft = draftFor(draftKey, initialDraft);
+  if(product && new URLSearchParams(location.hash.split('?')[1] || '').get('sample') === '1')activateSampleDraft(draft,initialDraft.question);
   document.title = `${product?.title || sol.title} · AIHW`;
   const archetype = label(reg.labels.archetypes, variant.archetype || sol.archetype || '');
   const page = mountPage(view, html`
@@ -157,7 +159,8 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
         <div class="segment" role="group" aria-label="素材来源"><button type="button" data-source="sample" aria-pressed="${String(draft.source === 'sample')}">示例素材</button><button type="button" data-source="own" aria-pressed="${String(draft.source === 'own')}">我的${product.kind === 'image' ? '照片' : '录音'}</button></div>
         <div data-own-material ${draft.source === 'own' ? '' : 'hidden'}><label class="file-pick material-dropzone" data-dropzone data-dragging="false" data-disabled="false" aria-busy="false"><span class="material-drop-icon" aria-hidden="true">${icon('upload')}</span><span class="material-drop-copy">选择${product.kind === 'image' ? '照片' : '录音'}，或拖放到这里</span><span class="material-drop-hint" id="material-file-hint">${product.kind === 'image' ? 'JPEG / PNG / WebP · 不超过 7 MiB' : 'WAV / MP3 · 不超过 180 秒、7 MiB'}，一次一个文件</span><input type="file" data-material aria-describedby="material-file-hint material-status" accept="${product.kind === 'image' ? '.jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp' : '.wav,.mp3,audio/wav,audio/mpeg'}"></label></div>
         <div data-preview></div>
-        ${product.kind === 'image' ? html`<label class="field" for="experience-question"><span class="question-heading"><span>你想知道什么</span><small class="question-count" data-question-count id="question-count">已输入 ${draft.question.length} / 2000 字符</small></span><textarea id="experience-question" data-question maxlength="2000" rows="3" aria-describedby="question-hint question-count">${draft.question}</textarea><small id="question-hint">示例原始提问使用随附语音；修改后使用照片和文字。</small></label>` : ''}
+        ${product.kind === 'image' ? html`<div class="question-shortcuts" role="group" aria-label="快捷问题"><p class="small">不知道怎么问？先选一个，也可以继续编辑。</p><div class="question-shortcut-list">${PHOTO_QUESTIONS.map(item=>html`<button type="button" data-question-preset="${item.id}" aria-pressed="${String(draft.question.trim() === item.question)}">${item.label}</button>`)}</div></div>
+          <label class="field" for="experience-question"><span class="question-heading"><span>你想知道什么</span><small class="question-count" data-question-count id="question-count">已输入 ${draft.question.length} / 2000 字符</small></span><textarea id="experience-question" data-question maxlength="2000" rows="3" aria-describedby="question-hint question-count">${draft.question}</textarea><small id="question-hint">快捷问题只填入提问，不会自动运行。看不清或无法确定的内容会单独展示；示例原始问题使用随附语音，修改后使用照片和文字。</small></label>` : ''}
         <p class="small">${product.kind === 'image' ? '照片不超过 7 MiB' : '录音不超过 180 秒、7 MiB'} · 本机历史只保存文字结果，不保存原始素材和临时语音。</p>
         <button type="button" class="secondary-action block" data-reset>重置素材与提问</button>
         <div id="material-status" data-material-status role="status" aria-live="polite" aria-atomic="true"></div>
@@ -211,6 +214,7 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
   const updateQuestionCount = () => {
     const count = page.querySelector('[data-question-count]');
     if (count) count.textContent = `已输入 ${draft.question.length} / 2000 字符`;
+    for (const button of page.querySelectorAll('[data-question-preset]')) button.setAttribute('aria-pressed', String(draft.question.trim() === PHOTO_QUESTIONS.find(item=>item.id === button.dataset.questionPreset)?.question));
   };
   const clearResult = () => {
     outcome.replaceChildren(); page.querySelector('.live-cost')?.classList.add('hidden');
@@ -218,7 +222,8 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
     const missingSample = !tr && draft.source === 'sample' && (product.kind !== 'image' || draft.question === sampleQuestion);
     mount(outcome, missingSample
       ? html`<p class="info-note">示例回放暂时无法加载。请联网刷新重试，或在<a href="#/me">「我的」缓存全部回放</a>后离线使用。</p>`
-      : html`<p class="info-note">素材或提问已更改，点击真跑获得当前输入的结果。示例回放不会代表你的素材。</p>`);
+      : draft.source === 'own' && !draft.file ? html`<p class="info-note">先选择${product.kind === 'image' ? '一张照片' : '一段录音'}，或切回“示例素材”查看免费样本。选择素材和快捷问题都不会自动运行。</p>`
+      : html`<p class="info-note">素材或提问已更改。${cred ? '点击“用我的 Key 真跑”获取当前输入的结果。' : '配置自己的 Key 后可以运行，保存设置后会返回这里。'}示例回放不会代表当前输入。</p>`);
   };
   const preview = () => {
     if (!product) return;
@@ -270,13 +275,13 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
   }
 
   function freeze(value) {
-    for (const el of page.querySelectorAll('[data-source], [data-material], [data-question], [data-reset], [data-variant], [data-act="live"]')) el.disabled=value;
+    for (const el of page.querySelectorAll('[data-source], [data-material], [data-question], [data-question-preset], [data-reset], [data-variant], [data-act="live"], [data-outcome-retry]')) el.disabled=value;
     page.querySelector('[data-act="stop"]')?.classList.toggle('hidden',!value);
     const button=page.querySelector('[data-act="live"]'); if(button) button.textContent=value?'正在体验…':'用我的 Key 真跑';
     if (dropzone) dropzone.dataset.disabled = String(value);
     resetDrag();
   }
-  page.querySelector('[data-question]')?.addEventListener('input', e=>{if(running)return;draft.question=e.target.value;updateQuestionCount();refreshResult();});
+  page.querySelector('[data-question]')?.addEventListener('input', e=>{if(running)return;delete draft.resumeQuestion;draft.question=e.target.value;updateQuestionCount();refreshResult();});
   const rejectSelection = message => {
     // A rejected drop does not replace or invalidate an already selected file.
     mount(materialStatus, html`<p class="inline-error">${message}当前素材未更换。</p>`);
@@ -331,13 +336,15 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
   page.addEventListener('click', e=>{
     const copy=e.target.closest('[data-copy]');if(copy)copyText(copy.dataset.copy);
     const jump=e.target.closest('[data-jump]');if(jump){e.preventDefault();page.querySelector(`#${jump.dataset.jump}`)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});}
+    const preset=e.target.closest('[data-question-preset]');
+    if(preset && !running){const item=PHOTO_QUESTIONS.find(item=>item.id === preset.dataset.questionPreset);if(item){delete draft.resumeQuestion;draft.question=item.question;page.querySelector('[data-question]').value=draft.question;updateQuestionCount();refreshResult();}}
     const source=e.target.closest('[data-source]');
-    if(source && !running && source.dataset.source!==draft.source){reading?.abort();readVersion++;resetDrag();draft.source=source.dataset.source;materialError='';refreshResult();preview();materialFeedback('idle');validateMaterial();}
+    if(source && !running && source.dataset.source!==draft.source){reading?.abort();readVersion++;resetDrag();draft.source=source.dataset.source;if(draft.source==='own' && Object.hasOwn(draft,'resumeQuestion')){draft.question=draft.resumeQuestion;delete draft.resumeQuestion;const q=page.querySelector('[data-question]');if(q)q.value=draft.question;updateQuestionCount();}materialError='';refreshResult();preview();materialFeedback('idle');validateMaterial();}
     if(e.target.closest('[data-reset]') && !running){reading?.abort();readVersion++;resetDrag();draft=resetDraft(draftKey,initialDraft);materialError='';const q=page.querySelector('[data-question]');if(q)q.value=draft.question;updateQuestionCount();materialInput.value='';refreshResult();preview();materialFeedback('idle');}
     const v=e.target.closest('[data-variant]');if(v && !running && v.dataset.variant!==variant.id)location.hash=`#/s/${encodeURIComponent(sol.id)}/${encodeURIComponent(v.dataset.variant)}`;
-    const act=e.target.closest('[data-act]')?.dataset.act;
+    const act=e.target.closest('[data-outcome-retry]') ? 'live' : e.target.closest('[data-act]')?.dataset.act;
     if(act==='live' && !running){
-      const opener=e.target.closest('[data-act="live"]');
+      const opener=e.target.closest('[data-outcome-retry], [data-act="live"]');
       const ctrl=new AbortController();
       let restoreFocus=false;
       running=ctrl;freeze(true);
@@ -396,7 +403,7 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
     const record=browserTrace({sol,variant,result,error,events:stage?.events||[],inputs,startedAt,region:cred?.values.DASHSCOPE_API_REGION||'',secrets});
     const saved=saveHistory(record);
     const speechURL = sol.id === '02-ai-glasses.bailian' && !error ? result?.outputs?.find(f=>(f.media_type||f.type||'').startsWith('audio/') && f.url)?.url : null;
-    renderOutcome(outcome,record,{settingsHref:setupRoute(sol,variant),secrets,speechURL,historyNote:saved.saved?'文字结果已保存到本机体验历史；本机历史不保存原始素材和临时语音。':saved.error});
+    renderOutcome(outcome,record,{settingsHref:setupRoute(sol,variant),secrets,speechURL,canRetry:true,historyNote:saved.saved?'文字结果已保存到本机体验历史；本机历史不保存原始素材和临时语音。':saved.error});
     if(stage){stage.setOutputs((result?.outputs||error?.outputs||[]).map(f=>({...f,text:f.text==null?f.text:redact(f.text,secrets)})));stage.setFoot(resultLines(record));}
     const box=page.querySelector('.live-cost');if(result){mount(box,html`<p class="inline-ok">本次体验已完成，费用与延迟见上方结果。</p>`);box.classList.remove('hidden');}
     page.querySelector('.process-panel').open=!!error;

@@ -156,7 +156,10 @@ class Handler(BaseHTTPRequestHandler):
                     question = parts.get("text", {}).get("text", "")
                     if not image.startswith(("data:image/jpeg;base64,", "data:image/png;base64,", "data:image/webp;base64,")) or not base64.b64decode(image.split(",", 1)[1], validate=True) or not question.strip() or len(question) > 2000 or payload.get("reasoning_effort") != "none":
                         raise ValueError("custom image fixture requires supported image and text question")
-                    events = [{"choices": [{"delta": {"content": "这是自选照片的 mock 回答，仅用于验证界面流程。"}}]}, {"choices": [], "usage": {"prompt_tokens": 80, "completion_tokens": 30}}]
+                    photo_result = {"answer": "这是自选照片的 mock 回答，仅用于验证界面流程。", "uncertainties": ["照片中的小字看不清（mock 场景），不能据此补写原文。"]}
+                    if payload.get("messages", [{}])[0].get("role") != "system" or "uncertainties" not in payload["messages"][0].get("content", ""):
+                        raise ValueError("photo questions require shared uncertainty instructions")
+                    events = [{"choices": [{"delta": {"content": json.dumps(photo_result, ensure_ascii=False)}}]}, {"choices": [], "usage": {"prompt_tokens": 80, "completion_tokens": 30}}]
                 else:
                     events = list(mock_for(sol_id).sse(url, headers, payload))
                 body = "".join(f"data: {json.dumps(e, ensure_ascii=False)}\n\n" for e in events) + "data: [DONE]\n\n"
