@@ -78,20 +78,19 @@ export function maskSecret(v) {
   return v.length <= 10 ? `${v.slice(0, 3)}…` : `${v.slice(0, 5)}…${v.slice(-4)}`;
 }
 
-export function loadTheme() {
-  try { return localStorage.getItem(THEME_KEY) || 'system'; } catch { return 'system'; }
-}
+// Keep these exports during service-worker upgrades: cached pages may still import them.
+// The square now has one fresh light palette, including under a dark OS preference.
+export function loadTheme() { return 'light'; }
 
-export function saveTheme(theme) {
-  try {
-    if (theme === 'system') localStorage.removeItem(THEME_KEY);
-    else localStorage.setItem(THEME_KEY, theme);
-  } catch { /* 忽略 */ }
-  applyTheme(theme);
-}
+export function saveTheme() { applyTheme(); }
 
-export function applyTheme(theme = loadTheme()) {
-  const root = document.documentElement;
-  if (theme === 'light' || theme === 'dark') root.dataset.theme = theme;
-  else delete root.dataset.theme;
+export function applyTheme() {
+  document.documentElement.dataset.theme = 'light';
+  // Only migrate appearance. Credentials, drafts and experience history are untouched.
+  try { localStorage.setItem(THEME_KEY, 'light'); } catch { /* 浅色仍可用，不依赖存储权限 */ }
+  document.querySelector('meta[name="color-scheme"]')?.setAttribute('content', 'light');
+  for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
+    meta.setAttribute('content', '#f8fcfd');
+    meta.removeAttribute('media');
+  }
 }
