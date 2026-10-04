@@ -1,4 +1,4 @@
-# docs/app — AIHW 功能广场
+# docs/app — AIHW Starter 体验广场
 
 GitHub Pages 上的静态网页，可以「添加到主屏幕」当 APP 用（PWA，看过的回放离线也能看）。面向产品体验者，首页精选「一看即懂」「会议纪要」，支持用自己的素材和百炼 Key 体验；保留 9 个品类的「方案索引 + 回放」。每个方案页回答四个问题——效果怎样、一次多少钱、做成产品要什么硬件、有哪些合规义务。凭证方向见 [APP 设计初稿评审](../designs/aihw-square/README.md#评审后的方向用户自填-key)。
 
@@ -15,16 +15,19 @@ GitHub Pages 上的静态网页，可以「添加到主屏幕」当 APP 用（PW
 | 方案页 | `#/s/<方案 id>[/<玩法 id>]`，也可以 `?s=<方案 id>` | ① 效果（回放 / 真跑，多个玩法可切换）② 一次多少钱 ③ 要什么硬件、三步跑通 ④ 合规义务；深入链接 |
 | 我的 | `#/me` | 凭证配置与返回原体验、本机体验历史、打开/导出运行记录、离线缓存、外观 |
 | 硬件方案 | `#/hardware[/<项目 id>]` | 3 条 ESP32 设计路线：链路、原型 BOM、共享研发／服务器成本、进度、许可依据与实机缺口 |
-| 跑测账本 | `#/cost-lab` | 导入用户单价与轨迹、按请求 ID 去重、用量计价、账单差额、导出软预算计划；本页不调用模型 |
+| 成本账本 | `#/cost-lab` | 导入用户单价与轨迹、按请求 ID 去重、用量计价、账单差额、导出软预算计划；本页不调用模型 |
 
 同一套页面适配 320px 手机、768px Pad 竖屏、1024px 横屏和宽屏桌面。768px 起改为侧边导航，桌面展开方案与成本两栏；无需安装原生 APP。九个品类均为商业化方向；具体项目的开发者用途与商业交付可以重叠，本仓验证进度单列。判断规则及九品类例子见 [项目定位分析](PROJECT_POSITIONING.md)，硬件规划见 [本轮 review](ITERATION_REVIEW.md)。
+
+全局顶部保留「官网首页」真实链接，各级页面、加载失败和无 JavaScript 时均可返回官网；底部／侧栏的「体验、硬件、成本、我的」只切换广场内部功能。官网在 APP 的离线作用域之外，断网时普通点击或键盘激活会提示需要联网，继续留在可用的广场内。完整产品路径与修复依据见 [产品走查](../PRODUCT_REVIEW.md)。
 
 ## 两个精选体验
 
 - **一看即懂**：用样本看回放，或上传 JPEG / PNG / WebP 图片并输入问题，用自己的 Key 取得文字回答。北京地域另有 HTTP 整段语音合成；新加坡只出文字。
 - **会议纪要**：用样本看回放，或上传 WAV / MP3 短录音，生成摘要、决策、待办与逐字稿。录音须不超过 180 秒；疑似转写截断会给出提示，需人工核对末句。
 - 原文件大小上限 **7 MiB**，为 Base64 编码留出空间。网页先检查文件头，再解码图片或读取录音时长；格式损坏、空文件、超限和未知时长不能开始真跑。暂不接 HEIC、长录音或视频。
-- 去配置凭证时，当前图片/录音和问题暂留在本页的 JS 内存中；保存后返回原玩法，由用户点击开始。刷新或关闭页面会丢弃这份素材草稿。
+- 去配置凭证时，当前图片/录音和问题暂留在本页的 JS 内存中；保存或点击「暂不配置，返回体验」均回到原玩法，由用户点击开始。刷新或关闭页面会丢弃这份素材草稿。
+- 「我的 → 缓存全部回放与素材」下载本站发布的轨迹及其输入、输出素材，确认写入 APP 缓存后才显示完成。下载失败或存储未就绪会列出未完成资源，可重试；不缓存个人上传素材和云端调用。
 - 结果可复制、下载并导出 `aihw/trace@0.1`；技术过程可展开查看。成功、失败和停止的记录均可留在本机历史，刷新后仍可打开文本结果。原图、录音、临时合成音频地址和凭证不存入历史；历史受容量限制，存储失败会提示并保留当前导出能力。
 
 ## 费用、耗时与验证
@@ -36,7 +39,7 @@ GitHub Pages 上的静态网页，可以「添加到主屏幕」当 APP 用（PW
 
 ## 用户价格与实际成本跑测
 
-1. 在「跑测」下载单价模板，填写官方价格说明或合同版本、地域、生效日期。参考 [演练单价](tools/cost-fixtures/prices-example.json) 与 [演练计划](tools/cost-fixtures/plan-example.json)；其中价格明确为演练值，不能用于真实费用结论。模板所有单价为 `null`；ASR 按实际价格选择 Token 或时长字段，Omni 多模态拆分若接口没有返回对应计数，合计须保持未知。
+1. 在「成本」下载单价模板，填写官方价格说明或合同版本、地域、生效日期。参考 [演练单价](tools/cost-fixtures/prices-example.json) 与 [演练计划](tools/cost-fixtures/plan-example.json)；其中价格明确为演练值，不能用于真实费用结论。模板所有单价为 `null`；ASR 按实际价格选择 Token 或时长字段，Omni 多模态拆分若接口没有返回对应计数，合计须保持未知。
 2. 导入运行轨迹或选择本机历史。生效日按所选地域零点（北京／新加坡 UTC+8）起算。账本只计 `mode: live`；同地域同请求 ID 的相同证据去重，冲突变未知。失败、停止或缺用量不推断免费。来源仍需人工确认，导入文件不证明它确实来自服务商。
 3. 提供同账号、业务空间、地域、时间窗的账单金额，并确认范围，才显示账单差额。优惠／缓存／取整按实际规则填入价格表；报告保存模型、请求 ID、计数、价格和金额，不保存回答、媒体、Key 或请求头。
 4. 导出计划供下面的 runner 使用。计划最大 6 场景、每场景 1–10 次；每次预留金额总和不超过预算。浮点边界允许计算误差，不把实质超额当作可执行。
@@ -114,6 +117,7 @@ python3 -m http.server 8000 -d docs              # 打开 http://localhost:8000/
 npm install --no-save --prefix /tmp/pw playwright-core
 PLAYWRIGHT_CORE=/tmp/pw/node_modules/playwright-core/index.mjs CHROME=$(command -v google-chrome) node docs/app/tools/smoke.mjs
 PLAYWRIGHT_CORE=/tmp/pw/node_modules/playwright-core/index.mjs CHROME=$(command -v google-chrome) node docs/app/tools/workspace-smoke.mjs
+PLAYWRIGHT_CORE=/tmp/pw/node_modules/playwright-core/index.mjs CHROME=$(command -v google-chrome) node docs/tools/product-smoke.mjs
 ```
 
 冒烟测试使用测试凭证与本地假百炼，不产生云端调用。它检查页面、素材输入、配置返回、结果与历史的行为及手机宽度布局；另用允许 Service Worker 的独立桌面 Chrome 上下文，验证首次安装后的断网刷新、两个精选样本的离线结果/回放/导出和缓存隔离。真实接口、实际手机 Safari / Android Chrome 仍须按 [验收记录](VERIFY_BROWSER.md) 实测。
@@ -141,7 +145,7 @@ docs/app/
 ├── live-data/              真跑常量（tools/build.py 生成）
 ├── tools/build.py          生成 live-data/ 与自检    tools/smoke.mjs + fake_bailian.py  冒烟测试
 ├── tools/*.test.mjs        素材、接口响应、指标、历史与轨迹契约回归
-├── tools/workspace-smoke.mjs 桌面/Pad、品类项目/硬件/账本交互与 SW v6 离线回归
+├── tools/workspace-smoke.mjs 桌面/Pad、品类项目/硬件/账本交互与 SW v7 离线回归
 ├── tools/cost-run.mjs      mock/live 固定样本跑测；默认 mock、凭证只读环境
 ├── ITERATION_REVIEW.md     软硬件链路、费用/工时假设、项目定位与当前缺口
 ├── VERIFY_BROWSER.md       真实接口与真机验收步骤、待验证状态

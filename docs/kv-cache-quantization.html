@@ -200,6 +200,9 @@
   tr{transition:background .15s;}
   tr:hover td{background:#faf8f1;}
   td.num{font-family:"SF Mono",Menlo,monospace; font-size:14px;}
+  .table-scroll{max-width:100%; overflow-x:auto; margin:16px 0;}
+  .table-scroll table{margin:0;}
+  .table-scroll:focus-visible{outline:2px solid var(--accent); outline-offset:4px; border-radius:var(--r-m);}
   /* ============ bit 滑杆 ============ */
   .slider-box{display:flex; flex-direction:column; gap:10px;}
   .slider-box input[type=range]{width:100%; accent-color:var(--accent); height:26px; cursor:pointer;}
@@ -876,12 +879,14 @@
   <div class="pit"><b>辨析：「对比原始 64 bit，2× 压缩」的口径差异</b>原文这一句是按「每门课 8 bit」的基准算的（8×8=64 bit），与开头设定的 16 bit/门（128 bit）基准不一致。按全文统一口径（表 1、图 4），应为 128 bit → 32 bit，<em>4× 压缩</em>。读文档时以 4× 为准。</div>
 
   <h3>重建效果：误差有多大</h3>
+  <div class="table-scroll" role="region" aria-label="重建效果对照表，可横向滚动查看全部科目" tabindex="0">
   <table>
     <tr><th>科目</th><td>语文</td><td>数学</td><td>英语</td><td>物理</td><td>化学</td><td>生物</td><td>历史</td><td>地理</td></tr>
     <tr><th>原始</th><td class="num">85</td><td class="num">78</td><td class="num">92</td><td class="num">88</td><td class="num">76</td><td class="num">82</td><td class="num">79</td><td class="num">81</td></tr>
     <tr><th>重建</th><td class="num">84</td><td class="num">79</td><td class="num">89</td><td class="num">86</td><td class="num">77</td><td class="num">80</td><td class="num">79</td><td class="num">81</td></tr>
     <tr><th>误差</th><td class="num">1</td><td class="num">1</td><td class="num" style="color:var(--bad); font-weight:700;">3</td><td class="num">2</td><td class="num">1</td><td class="num">2</td><td class="num" style="color:var(--ok);">0</td><td class="num" style="color:var(--ok);">0</td></tr>
   </table>
+  </div>
   <p>平均误差 <em>1.25 分</em>——用 2 bit 替代 16 bit，成绩几乎没变样。但注意英语差了 3 分：这些残余误差，就是下一层 QJL 要处理的对象。</p>
 </section>
 
@@ -1083,12 +1088,14 @@
   <div class="formula">FP16 读取量：16 bit × 参数量 → 高带宽压力<br>2-bit 读取量：&nbsp;2 bit × 参数量 → <b>8× 带宽节省</b></div>
   <p>再加上<em>缓存友好性</em>：70B 模型 FP16 要 140GB，塞不进任何单卡；2-bit 后约 18GB，可以常驻高端 GPU 显存，大幅减少数据搬运。</p>
 
+  <div class="table-scroll" role="region" aria-label="量化前后性能对照表，可横向滚动查看全部指标" tabindex="0">
   <table>
     <tr><th>指标</th><th>量化前（FP16）</th><th>量化后（2-bit）</th></tr>
     <tr><td>TTFT</td><td>内存带宽受限，权重加载慢</td><td>8× 带宽节省，加载快；Hadamard 旋转可融合进矩阵乘法，额外开销很小</td></tr>
     <tr><td>TPS</td><td>权重可能溢出缓存，每步都从主存重读</td><td>权重常驻缓存，避免反复搬运</td></tr>
     <tr><td>反量化开销</td><td>无</td><td>极小（查表 + 乘法，可并行，几乎不加延迟）</td></tr>
   </table>
+  </div>
   <div class="good"><b>实测结论</b>TurboQuant 在保持模型精度的同时，推理速度可提升 2～4 倍；显存越紧张的设备，收益越明显。</div>
 </section>
 

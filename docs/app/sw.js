@@ -1,5 +1,5 @@
 // 离线回放：只缓存本站的 GET 请求；云端接口是跨域请求，这里一律不碰。
-const CACHE = 'aihw-app-v6';
+const CACHE = 'aihw-app-v7';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css', 'data/registry.json',
   'js/main.js', 'js/experience.js', 'js/history.js', 'js/live/input.js', 'js/ui.js', 'js/meta.js', 'js/data.js', 'js/replay.js', 'js/settings.js',
@@ -25,7 +25,9 @@ async function networkFirst(request) {
   const cache = await caches.open(CACHE);
   try {
     const res = await fetch(request);
-    if (res.ok) cache.put(request, res.clone());
+    if (res.ok) {
+      try { await cache.put(request, res.clone()); } catch { /* 在线资源仍可用；缓存界面会报告未写入。 */ }
+    }
     return res;
   } catch (e) {
     const hit = await cache.match(request, { ignoreSearch: true });
@@ -39,7 +41,9 @@ async function cacheFirst(request) {
   const hit = await cache.match(request);
   if (hit) return hit;
   const res = await fetch(request);
-  if (res.ok && res.status === 200) cache.put(request, res.clone());
+  if (res.ok && res.status === 200) {
+    try { await cache.put(request, res.clone()); } catch { /* 在线资源仍可用；缓存界面会报告未写入。 */ }
+  }
   return res;
 }
 
