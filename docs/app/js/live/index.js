@@ -6,6 +6,7 @@ import { kindOf } from '../meta.js';
 import { missingFields } from '../settings.js';
 import { chat, now, postJson, serviceOf, validCount } from './client.js';
 import { validateInput } from './input.js';
+import { transcribeFile } from './file-transcription.js';
 
 const RUNNERS = {
   '01-ipc.bailian': { default: { load: () => import('./run-01-ipc.js'), services: ['compatible'], note: '4 帧事件卡 + 检索 + 日报，共 6 次调用。' } },
@@ -16,7 +17,7 @@ const RUNNERS = {
     },
   },
   '04-agent-hardware.bailian': { default: { load: () => import('./run-04-agent-hardware.js'), services: ['api', 'compatible'], note: '一条端侧指令 + 一条语音指令（先转写，再多轮工具编排）。' } },
-  '07-recorder.bailian': { default: { load: () => import('./run-07-recorder.js'), services: ['api', 'compatible'], note: '样本 55 秒录音走同步转写；超过 3 分钟的录音要先上传临时存储，浏览器版没做。' } },
+  '07-recorder.bailian': { default: { load: () => import('./run-07-recorder.js'), services: ['api', 'compatible'], note: '录音先上传百炼临时存储（48 小时有效，不用于生产环境），再文件识别、生成纪要。当前支持 180 秒、7 MiB 以内 WAV / MP3；上传跨域能力待真 Key 验证。' } },
   '08-smart-watch.bailian': { default: { load: () => import('./run-08-smart-watch.js'), services: ['compatible'], note: '两份日报（平稳日、红线日）；抬腕播报（--speak）只在电脑上演示。' } },
   '09-embodied.bailian': { default: { load: () => import('./run-09-embodied.js'), services: ['compatible'], note: '三条指令：正常、超力矩（安全门改写）、禁止动作（指令级拒绝，不上云）。' } },
 };
@@ -105,6 +106,16 @@ export async function runInBrowser(reg, sol, variant, cred, stage, { signal, onF
       if (!turn.usage.known) missingUsage = true;
       if (firstTextAt == null && turn.firstTextAt != null) firstTextAt = turn.firstTextAt;
       return turn;
+    },
+    transcribeFile: async (audio) => {
+      let response;
+      try { response = await transcribeFile(cred, audio, { model: c.ASR_FILE_MODEL, signal, onFallback, onProgress: message => ctx.say('云端', message) }); }
+      catch (error) {
+        if (error.taskSubmitted) recordUsage(c.ASR_FILE_MODEL, error.requestId, error.usage, 'post');
+        throw error;
+      }
+      if (!recordUsage(c.ASR_FILE_MODEL, response.request_id, response.usage, 'post')) incompletePostUsage = true;
+      return response;
     },
     post: async (service, path, payload, headers = {}) => {
       let response;

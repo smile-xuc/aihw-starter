@@ -43,7 +43,7 @@ try{
     if(prices.demo||!plan.acknowledge_billing_risk||!prices.source||!prices.title)throw Error('尚未确认价格与计费风险，拒绝真实请求');
     for(const scene of plan.scenes){
       const c=JSON.parse(await readFile(path.join(docs,'app/live-data/'+scene.id+'.json'),'utf8'));
-      const models=scene.id.startsWith('02-')?[c.OMNI_MODEL,...(plan.region==='cn-beijing'?[c.TTS_MODEL]:[])]:scene.id.startsWith('07-')?[c.ASR_MODEL,c.LLM_MODEL]:(registry.solutions.find(s=>s.id===scene.id)?.models||[]).filter(m=>!m.regions||m.regions.includes(plan.region)).map(m=>m.id);
+      const models=scene.id.startsWith('02-')?[c.OMNI_MODEL,...(plan.region==='cn-beijing'?[c.TTS_MODEL]:[])]:scene.id.startsWith('07-')?[c.ASR_FILE_MODEL,c.LLM_MODEL]:(registry.solutions.find(s=>s.id===scene.id)?.models||[]).filter(m=>!m.regions||m.regions.includes(plan.region)).map(m=>m.id);
       for(const model of models){
         const rate=prices.rates.find(r=>r.model===model),parts=rate?.components||rate?.tiers.flatMap(t=>t.components);
         if(!parts?.length||parts.some(c=>c.price===null))throw Error('真实请求前必须填齐所选路线可能使用的全部单价：'+model);
@@ -62,15 +62,22 @@ try{
   const page=await context.newPage();
   let current='',requests=0;
   const allowed=/^https:\/\/(dashscope\.aliyuncs\.com|dashscope-intl\.aliyuncs\.com|[a-z0-9-]+\.(cn-beijing|ap-southeast-1)\.maas\.aliyuncs\.com)\//;
-  const cors={'access-control-allow-origin':'*','access-control-allow-headers':'authorization,content-type,x-dashscope-sse','access-control-allow-methods':'GET,POST'};
+  const storage=/^https:\/\/[a-z0-9-]+\.oss-(cn-beijing|ap-southeast-1)\.aliyuncs\.com\//;
+  const cors={'access-control-allow-origin':'*','access-control-allow-headers':'authorization,content-type,x-dashscope-sse,x-dashscope-async,x-dashscope-ossresourceresolve','access-control-allow-methods':'GET,POST'};
   await context.route('**/*',async(route,req)=>{
     if(req.url().startsWith(base)||req.url().startsWith('blob:')||req.url().startsWith('data:'))return route.continue();
-    if(!allowed.test(req.url()))return route.abort();
+    if(!allowed.test(req.url())&&!storage.test(req.url()))return route.abort();
     if(req.method()==='OPTIONS')return mode==='mock'?route.fulfill({status:204,headers:cors}):route.continue();
     if(++requests>100)return route.abort();
     if(mode==='live')return route.continue();
     const u=new URL(req.url());
-    const response=await fetch('http://127.0.0.1:'+fakePort+'/'+current+u.pathname,{method:req.method(),headers:req.headers(),body:req.postDataBuffer()});
+    let endpoint=u.pathname+u.search;
+    if(storage.test(req.url())){
+      if(u.hostname==='dashscope-file-mock.oss-cn-beijing.aliyuncs.com'&&req.method()==='POST')endpoint='/__oss/upload';
+      else if(u.hostname==='dashscope-result.oss-cn-beijing.aliyuncs.com'&&u.pathname==='/transcription.json'&&req.method()==='GET')endpoint='/__oss/result';
+      else return route.abort();
+    }
+    const response=await fetch('http://127.0.0.1:'+fakePort+'/'+current+endpoint,{method:req.method(),headers:req.headers(),...(req.method()==='POST'?{body:req.postDataBuffer()}: {})});
     return route.fulfill({status:response.status,headers:{...cors,'content-type':response.headers.get('content-type')||'application/json'},body:Buffer.from(await response.arrayBuffer())});
   });
   await page.goto(base);await page.waitForSelector('.featured-card');
@@ -90,6 +97,7 @@ try{
     const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('aihw.history.v1')||'[]')[0]);
     if(!saved||saved.id===before)throw Error('调用后没有新的可审计记录；停止本批，不重试。');
     const trace=safeTrace(saved.trace,[key]);
+    if(mode==='mock'&&trace.status!=='success')throw Error('本地模拟流程失败：'+id);
     if(mode==='mock')trace.mode='mock';
     await writeFile(path.join(output,id+'-'+(index+1)+'.json'),JSON.stringify(trace,null,2),{flag:'wx'});
     return trace;

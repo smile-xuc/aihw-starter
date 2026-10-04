@@ -38,8 +38,8 @@ LIVE = {
         "local_rules": ["LOCAL_PATTERNS", "HYBRID_PATTERNS", "ROOMS"],
     },
     "07-recorder.bailian": {
-        "run": ["ASR_MODEL", "LLM_MODEL", "LLM_QUALITY_MODEL", "MINUTES_PROMPT", "ASR_PRICES", "LLM_TIERS",
-                "TOKENS_PER_SECOND_RANGE", "SAMPLE_AUDIO"],
+        "run": ["ASR_MODEL", "ASR_FILE_MODEL", "LLM_MODEL", "LLM_QUALITY_MODEL", "MINUTES_PROMPT", "ASR_PRICES", "LLM_TIERS",
+                "SAMPLE_AUDIO"],
     },
     "08-smart-watch.bailian": {
         "run": ["LLM_MODEL", "QUALITY_MODEL", "SYSTEM", "REPORT_SCHEMA", "LLM_PRICES", "DISCLAIMER", "FIELDS",

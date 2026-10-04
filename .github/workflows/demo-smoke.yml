@@ -32,6 +32,9 @@ jobs:
       - name: Manifests and layout
         run: python solutions/demo-standard/check.py manifests
 
+      - name: Recorder file transcription regressions (no key)
+        run: python -m unittest discover -s solutions/by-category/07-recorder/demo/bailian -p 'test_recorder.py'
+
       # check.py 会把 DASHSCOPE_* 变量从子进程环境里剔除，全部 demo 都在无 Key 的 mock / 离线模式下运行
       - name: Mock smoke (all demos, no key)
         run: python solutions/demo-standard/check.py smoke

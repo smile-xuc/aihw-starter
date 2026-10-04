@@ -248,7 +248,7 @@ solutions/by-category/0X-xxxx/
 
 ### 🎙️ 07 录音卡
 
-`qwen-audio-3.1-asr-flash` 转写 + 说话人分离 → `qwen3.7-flash` 结构化纪要卡片
+录音文件上传 → `qwen-audio-3.1-asr-flash-filetrans` 异步识别 → `qwen3.8-flash` 结构化纪要。单声道尝试说话人分离，双声道完整识别两轨；摘要、决策、待办可分别复制。临时存储 48 小时有效，官方不用于生产；浏览器上传 CORS 与真实模型调用仍待验证。文件识别首响应包含上传、排队和转写，缺完整 Token 时总费用未知。
 
 [`07-recorder/demo/bailian/`](./solutions/by-category/07-recorder/demo/bailian/) · [回放 · 网页真跑](https://smile-xuc.github.io/aihw-starter/app/#/s/07-recorder.bailian)
 

@@ -15,7 +15,7 @@ export class ApiError extends Error {
   }
 
   get hint() {
-    if (this.network) return '请求没有发出去或被浏览器拦下：检查网络；如果只有这个接口失败，多半是它的跨域预检没通过。';
+    if (this.network) return '未能确认请求结果：检查网络或跨域设置；已发出的请求可能继续运行并计费，重试前请核对调用记录。';
     if (this.status === 401) return 'Key 无效，或 Key、地域、业务空间不属于同一地域（三者要一致）。';
     if (this.status === 403) return '这个 Key 没有该模型的权限：检查子业务空间是否授权了这个模型，或 Key 的「可访问模型」列表。';
     if (this.status === 404) return '接口或模型不存在：该模型可能在这个地域不可用。';
@@ -68,7 +68,7 @@ function authHeaders(stack, values) {
 
 const preferred = new Map();
 
-async function send(cred, serviceId, path, init, onFallback) {
+async function send(cred, serviceId, path, init, onFallback, { fallback404 = false, allowNetworkFallback = true } = {}) {
   const { stack, values } = cred;
   const roots = matchingRoots(stack, values);
   if (!roots.length) throw new ApiError('按填写的地域找不到接入点');
@@ -83,6 +83,7 @@ async function send(cred, serviceId, path, init, onFallback) {
         credentials: 'omit',
         referrerPolicy: 'no-referrer',
         cache: 'no-store',
+        redirect: 'error',
         headers: { ...authHeaders(stack, values), ...(init.headers || {}) },
       });
       if (i !== start) {
@@ -92,26 +93,39 @@ async function send(cred, serviceId, path, init, onFallback) {
       if (!res.ok) throw await apiError(res);
       return res;
     } catch (e) {
+      if (e instanceof ApiError && e.status === 404 && fallback404 && i + 1 < roots.length) { lastError = e; continue; }
       if (e.name === 'AbortError' || e instanceof ApiError) throw e;
       lastError = e;
+      // A failed response does not prove that a billable POST was unaccepted.
+      if (!allowNetworkFallback) break;
     }
   }
   throw new ApiError(`网络错误：${lastError?.message || '请求失败'}`, { network: true });
 }
 
+export async function getJson(cred, path, { signal, onFallback, fallback404 = false } = {}) {
+  const res = await send(cred, 'api', path, { method: 'GET', signal, headers: { 'Content-Type': 'application/json' } }, onFallback, { fallback404 });
+  return res.json();
+}
+
 async function apiError(res) {
   let body = {};
   try { body = await res.json(); } catch { /* 非 JSON 错误体 */ }
+  if (!body || typeof body !== 'object' || Array.isArray(body)) body = {};
   const err = body.error || body;
-  return new ApiError(`HTTP ${res.status}${err.code ? ` ${err.code}` : ''}：${err.message || res.statusText || '请求失败'}`, {
+  const error = new ApiError(`HTTP ${res.status}${err.code ? ` ${err.code}` : ''}：${err.message || res.statusText || '请求失败'}`, {
     status: res.status, code: err.code || '', requestId: body.request_id || err.id || res.headers.get('x-request-id') || res.headers.get('x-dashscope-request-id') || '',
   });
+  // Preserve delivered billing evidence without retaining provider bodies or
+  // arbitrary usage fields that may contain credentials or signed file URLs.
+  error.usage = Object.fromEntries(['input_tokens', 'output_tokens', 'duration'].filter(key => validCount(body.usage?.[key])).map(key => [key, body.usage[key]]));
+  return error;
 }
 
-export async function postJson(cred, serviceId, path, payload, { headers = {}, signal, onFallback } = {}) {
+export async function postJson(cred, serviceId, path, payload, { headers = {}, signal, onFallback, allowNetworkFallback = true } = {}) {
   const res = await send(cred, serviceId, path, {
     method: 'POST', signal, headers: { 'Content-Type': 'application/json', ...headers }, body: JSON.stringify(payload),
-  }, onFallback);
+  }, onFallback, { allowNetworkFallback });
   const body = await res.json();
   if (body && typeof body === 'object' && !Array.isArray(body) && !body.request_id) {
     const requestId = res.headers.get('x-request-id') || res.headers.get('x-dashscope-request-id');
@@ -148,12 +162,12 @@ async function* sse(res) {
 }
 
 // OpenAI 兼容 Chat Completions 流式调用：文字增量回调；tool_calls 按 index 拼接 arguments 片段（只有首块带 id 和 name）
-export async function chat(cred, payload, { onText, signal, onFallback, service = 'compatible' } = {}) {
+export async function chat(cred, payload, { onText, signal, onFallback, service = 'compatible', allowNetworkFallback = true } = {}) {
   const res = await send(cred, service, '/chat/completions', {
     method: 'POST', signal,
     headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' },
     body: JSON.stringify({ stream: true, stream_options: { include_usage: true }, ...payload }),
-  }, onFallback);
+  }, onFallback, { allowNetworkFallback });
   const turn = { text: '', calls: [], usage: { prompt: 0, completion: 0, known: false }, firstTextAt: null, firstCallAt: null, finish_reason: null, requestId: res.headers.get('x-request-id') || res.headers.get('x-dashscope-request-id') || '', id: '' };
   const slots = new Map();
   try { for await (const event of sse(res)) {
