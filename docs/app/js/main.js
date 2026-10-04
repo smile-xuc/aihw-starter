@@ -15,6 +15,13 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () 
 const view = document.getElementById('view');
 let cleanup = null;
 let routeVersion = 0;
+const productBar = document.querySelector('.product-bar');
+const routeStatus = document.querySelector('[data-route-status]');
+document.querySelector('.skip-link')?.addEventListener('click', (event) => {
+  event.preventDefault();
+  view.focus({preventScroll:true});
+  view.scrollIntoView({behavior:'auto',block:'start'});
+});
 
 // The project website is outside this PWA's offline scope. Keep a real link,
 // but do not strand an offline reader on a browser error page.
@@ -61,52 +68,70 @@ async function route() {
   const isCurrent = () => version === routeVersion;
   cleanup?.();
   cleanup = null;
-  const deep = new URLSearchParams(location.search).get('s');
-  if (deep && !location.hash) history.replaceState(null, '', `${location.pathname}#/s/${encodeURIComponent(deep)}`);
-  let parts;
-  try {
-    parts = (location.hash.replace(/^#\/?/, '').split('?')[0] || '').split('/').filter(Boolean).map(decodeURIComponent);
-  } catch {
-    view.dataset.page = 'missing';setNav('');renderNotFound();
-    window.scrollTo(0, 0);view.focus({ preventScroll: true });return;
-  }
-  const page = parts[0] || '';
-  view.dataset.page = page || 'home';
-  setNav(['me', 'hardware', 'cost-lab'].includes(page) ? page : 'home');
-  try {
-    const validShape = !parts.length || (['me', 'cost-lab'].includes(page) && parts.length === 1)
-      || (page === 'c' && parts.length === 2) || (page === 's' && [2, 3].includes(parts.length))
-      || (page === 'hardware' && parts.length <= 2);
-    if (!validShape) {
-      setNav('');renderNotFound();
-    } else if (page === 'me') {
-      const reg = await registry().catch(() => null);
-      if (!isCurrent()) return;
-      cleanup = renderMe(view, reg)?.cleanup || null;
-    } else {
-      const reg = await registry();
-      if (!isCurrent()) return;
-      let result;
-      const solution = page === 's' ? reg.byId.get(parts[1]) : null;
-      const missing = (page === 'hardware' && parts[1] && !PROJECTS.some(project => project.id === parts[1]))
-        || (page === 'c' && !reg.catById.has(parts[1])) || (page === 's' && (!solution
-        || (parts[2] && !solution.variants.some(variant => variant.id === parts[2]))));
-      if (missing) {setNav('');renderNotFound();}
-      else if (page === 'c') result = renderCategory(view, reg, parts[1]);
-      else if (page === 's') result = await renderSolution(view, reg, parts[1], parts[2] || '', { isCurrent });
-      else if (page === 'hardware') result = renderHardware(view, reg, parts[1] || '');
-      else if (page === 'cost-lab') result = renderCostLab(view, reg);
-      else result = renderHome(view, reg);
-      if (!isCurrent()) { result?.cleanup?.(); return; }
-      cleanup = result?.cleanup || null;
-    }
-  } catch (e) {
+  view.setAttribute('aria-busy', 'true');
+  productBar?.removeAttribute('data-loading');
+  if (routeStatus) routeStatus.textContent = '';
+  // Avoid a flashing loader on cached routes; preserve the shell during slower requests.
+  const pending = setTimeout(() => {
     if (!isCurrent()) return;
-    renderError(e);
+    productBar?.setAttribute('data-loading', '');
+    if (routeStatus) routeStatus.textContent = '正在加载页面';
+  }, 180);
+  try {
+    const deep = new URLSearchParams(location.search).get('s');
+    if (deep && !location.hash) history.replaceState(null, '', `${location.pathname}#/s/${encodeURIComponent(deep)}`);
+    let parts;
+    try {
+      parts = (location.hash.replace(/^#\/?/, '').split('?')[0] || '').split('/').filter(Boolean).map(decodeURIComponent);
+    } catch {
+      view.dataset.page = 'missing';setNav('');renderNotFound();
+      window.scrollTo(0, 0);view.focus({ preventScroll: true });return;
+    }
+    const page = parts[0] || '';
+    view.dataset.page = page || 'home';
+    setNav(['me', 'hardware', 'cost-lab'].includes(page) ? page : 'home');
+    try {
+      const validShape = !parts.length || (['me', 'cost-lab'].includes(page) && parts.length === 1)
+        || (page === 'c' && parts.length === 2) || (page === 's' && [2, 3].includes(parts.length))
+        || (page === 'hardware' && parts.length <= 2);
+      if (!validShape) {
+        setNav('');renderNotFound();
+      } else if (page === 'me') {
+        const reg = await registry().catch(() => null);
+        if (!isCurrent()) return;
+        cleanup = renderMe(view, reg)?.cleanup || null;
+      } else {
+        const reg = await registry();
+        if (!isCurrent()) return;
+        let result;
+        const solution = page === 's' ? reg.byId.get(parts[1]) : null;
+        const missing = (page === 'hardware' && parts[1] && !PROJECTS.some(project => project.id === parts[1]))
+          || (page === 'c' && !reg.catById.has(parts[1])) || (page === 's' && (!solution
+          || (parts[2] && !solution.variants.some(variant => variant.id === parts[2]))));
+        if (missing) {setNav('');renderNotFound();}
+        else if (page === 'c') result = renderCategory(view, reg, parts[1]);
+        else if (page === 's') result = await renderSolution(view, reg, parts[1], parts[2] || '', { isCurrent });
+        else if (page === 'hardware') result = renderHardware(view, reg, parts[1] || '');
+        else if (page === 'cost-lab') result = renderCostLab(view, reg);
+        else result = renderHome(view, reg);
+        if (!isCurrent()) { result?.cleanup?.(); return; }
+        cleanup = result?.cleanup || null;
+      }
+    } catch (e) {
+      if (!isCurrent()) return;
+      renderError(e);
+    }
+    if (!isCurrent()) return;
+    window.scrollTo(0, 0);
+    view.focus({ preventScroll: true });
+  } finally {
+    clearTimeout(pending);
+    if (isCurrent()) {
+      view.setAttribute('aria-busy', 'false');
+      productBar?.removeAttribute('data-loading');
+      if (routeStatus) routeStatus.textContent = '';
+    }
   }
-  if (!isCurrent()) return;
-  window.scrollTo(0, 0);
-  view.focus({ preventScroll: true });
 }
 
 window.addEventListener('hashchange', route);

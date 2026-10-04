@@ -7,7 +7,7 @@ import { fieldValues, loadCredentials, validateCredentials } from '../settings.j
 import { copyText, download, fmtCny, fmtYuan, html, icon, mount, mountPage, sheet } from '../ui.js';
 import { experienceChips } from './home.js';
 
-import { PRODUCTS, draftFor, resetDraft, setupRoute, decodeFile, browserTrace, renderOutcome, redact } from '../experience.js';
+import { PRODUCTS, draftFor, resetDraft, setupRoute, fileType, decodeFile, browserTrace, renderOutcome, redact } from '../experience.js';
 import { saveHistory } from '../history.js';
 import { PROJECTS, referencePosition } from '../projects.js';
 
@@ -142,7 +142,7 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
       ${product ? html`<p class="small">${sol.title}</p>` : ''}
       <p>${product?.description || sol.summary}</p>
       <div class="chips">${[...experienceChips(reg, sol), verificationBadge(sol), referencePosition(sol)].map((c) => html`<span class="chip ${c.cls}">${c.label}</span>`)}</div>
-      <p class="small">${referencePosition(sol).note} 本仓代码 MIT；模型服务、素材与第三方组件按各自许可核对。<a href="#/c/${cat.id}">查看品类商业方案与具体项目</a>。</p>
+      <details class="reference-note"><summary>参考实现与许可说明</summary><p class="small">${referencePosition(sol).note} 本仓代码 MIT；模型服务、素材与第三方组件按各自许可核对。<a href="#/c/${cat.id}">查看品类商业方案与具体项目</a>。</p></details>
       <nav class="qnav" aria-label="四个问题">
         <a href="#effect" data-jump="effect"><b>效果</b>怎样</a><a href="#cost" data-jump="cost"><b>成本</b>一次多少钱</a>
         <a href="#hardware" data-jump="hardware"><b>硬件</b>要什么</a><a href="#compliance" data-jump="compliance"><b>合规</b>有哪些义务</a>
@@ -152,15 +152,15 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
     <section class="section" id="effect">
       <div class="section-title"><h2><span class="q">①</span>效果怎样</h2><small>${variant.mock_command || sol.run?.mock || ''}</small></div>
       ${sol.variants.length > 1 ? html`<div class="segment variant-switch" role="group" aria-label="玩法">${sol.variants.map((v) => html`<button type="button" data-variant="${v.id}" aria-pressed="${String(v.id === variant.id)}">${v.title}</button>`)}</div>` : ''}
-      ${product ? html`<div class="material panel">
-        <h3>${product.kind === 'image' ? '选择照片，再问一个问题' : '选择一段会议录音'}</h3>
+      ${product ? html`<div class="material material-editor panel" data-material-editor data-validation-state="idle">
+        <div class="material-heading"><h3>${product.kind === 'image' ? '选择照片，再问一个问题' : '选择一段会议录音'}</h3><p class="small">先用示例了解效果，或放入你自己的${product.kind === 'image' ? '照片' : '录音'}。</p></div>
         <div class="segment" role="group" aria-label="素材来源"><button type="button" data-source="sample" aria-pressed="${String(draft.source === 'sample')}">示例素材</button><button type="button" data-source="own" aria-pressed="${String(draft.source === 'own')}">我的${product.kind === 'image' ? '照片' : '录音'}</button></div>
-        <div data-own-material ${draft.source === 'own' ? '' : 'hidden'}><label class="file-pick">选择${product.kind === 'image' ? 'JPEG / PNG / WebP 照片' : 'WAV / MP3 录音'}<input type="file" data-material accept="${product.kind === 'image' ? '.jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp' : '.wav,.mp3,audio/wav,audio/mpeg'}"></label></div>
+        <div data-own-material ${draft.source === 'own' ? '' : 'hidden'}><label class="file-pick material-dropzone" data-dropzone data-dragging="false" data-disabled="false" aria-busy="false"><span class="material-drop-icon" aria-hidden="true">${icon('upload')}</span><span class="material-drop-copy">选择${product.kind === 'image' ? '照片' : '录音'}，或拖放到这里</span><span class="material-drop-hint" id="material-file-hint">${product.kind === 'image' ? 'JPEG / PNG / WebP · 不超过 7 MiB' : 'WAV / MP3 · 不超过 180 秒、7 MiB'}，一次一个文件</span><input type="file" data-material aria-describedby="material-file-hint material-status" accept="${product.kind === 'image' ? '.jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp' : '.wav,.mp3,audio/wav,audio/mpeg'}"></label></div>
         <div data-preview></div>
-        ${product.kind === 'image' ? html`<label class="field" for="experience-question"><span>你想知道什么</span><textarea id="experience-question" data-question maxlength="2000" rows="3">${draft.question}</textarea><small>最多 2000 字符。示例原始提问使用随附语音；修改后使用照片和文字。</small></label>` : ''}
+        ${product.kind === 'image' ? html`<label class="field" for="experience-question"><span class="question-heading"><span>你想知道什么</span><small class="question-count" data-question-count id="question-count">已输入 ${draft.question.length} / 2000 字符</small></span><textarea id="experience-question" data-question maxlength="2000" rows="3" aria-describedby="question-hint question-count">${draft.question}</textarea><small id="question-hint">示例原始提问使用随附语音；修改后使用照片和文字。</small></label>` : ''}
         <p class="small">${product.kind === 'image' ? '照片不超过 7 MiB' : '录音不超过 180 秒、7 MiB'} · 原始素材和临时语音不保存，文字结果保存在本机。</p>
         <button type="button" class="secondary-action block" data-reset>重置素材与提问</button>
-        <div data-material-status aria-live="polite"></div>
+        <div id="material-status" data-material-status role="status" aria-live="polite" aria-atomic="true"></div>
       </div>` : ''}
       <div class="live-bar">${effectActions(reg, sol, variant, cred)}</div>
       <div data-outcome></div>
@@ -189,10 +189,29 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
 
   const host = page.querySelector('.stage-host');
   const outcome = page.querySelector('[data-outcome]');
+  const materialEditor = page.querySelector('[data-material-editor]');
+  const dropzone = page.querySelector('[data-dropzone]');
+  const materialInput = page.querySelector('[data-material]');
+  const materialStatus = page.querySelector('[data-material-status]');
   let replay = null, running = null, active = true, reading = null, previewURL = null, confirmation = null;
-  let materialError = '', readVersion = 0;
+  let materialError = '', readVersion = 0, dragDepth = 0;
   const secrets = (stack?.fields || []).filter(f=>f.input === 'secret').map(f=>cred?.values[f.key]).filter(Boolean);
   const connected = () => active && isCurrent() && page.isConnected;
+  const materialFeedback = (state, message = '') => {
+    if (!materialEditor) return;
+    materialEditor.dataset.validationState = state;
+    dropzone.setAttribute('aria-busy', String(state === 'validating'));
+    materialInput.setAttribute('aria-invalid', String(state === 'invalid'));
+    mount(materialStatus, message ? html`<p class="${state === 'invalid' ? 'inline-error' : state === 'valid' ? 'inline-ok' : 'small'}">${message}</p>` : '');
+  };
+  const resetDrag = () => {
+    dragDepth = 0;
+    if (dropzone) dropzone.dataset.dragging = 'false';
+  };
+  const updateQuestionCount = () => {
+    const count = page.querySelector('[data-question-count]');
+    if (count) count.textContent = `已输入 ${draft.question.length} / 2000 字符`;
+  };
   const clearResult = () => {
     outcome.replaceChildren(); page.querySelector('.live-cost')?.classList.add('hidden');
     replay?.stop(); host.replaceChildren();
@@ -214,22 +233,23 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
     for (const b of page.querySelectorAll('[data-source]')) b.setAttribute('aria-pressed',String(b.dataset.source === draft.source));
   };
   async function validateMaterial() {
-    if (!product || draft.source !== 'own' || !draft.file || draft.input) return;
+    if (!product || draft.source !== 'own' || !draft.file) return;
+    if (draft.input) {materialFeedback('valid', '素材核验通过');return;}
     reading?.abort();
     const controller = new AbortController(); reading = controller;
     const selectedDraft = draft, file = draft.file, version = ++readVersion;
     const currentRead = () => connected() && !controller.signal.aborted && version === readVersion && draft === selectedDraft && draft.file === file && draft.source === 'own';
     materialError = '正在核验素材，请稍候';
-    mount(page.querySelector('[data-material-status]'), html`<p class="small">${materialError}</p>`);
+    materialFeedback('validating', materialError);
     try {
       const input = await decodeFile(file, product.kind, draft.question, {signal:controller.signal});
       if (!currentRead()) return;
       draft.input = input; materialError = ''; preview();
-      mount(page.querySelector('[data-material-status]'), html`<p class="inline-ok">素材核验通过</p>`);
+      materialFeedback('valid', '素材核验通过');
     } catch (err) {
       if (!currentRead()) return;
       materialError = redact(err.message, secrets);
-      mount(page.querySelector('[data-material-status]'), html`<p class="inline-error">${materialError}</p>`);
+      materialFeedback('invalid', materialError);
     }
   }
   preview();
@@ -253,22 +273,81 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
     for (const el of page.querySelectorAll('[data-source], [data-material], [data-question], [data-reset], [data-variant], [data-act="live"]')) el.disabled=value;
     page.querySelector('[data-act="stop"]')?.classList.toggle('hidden',!value);
     const button=page.querySelector('[data-act="live"]'); if(button) button.textContent=value?'正在体验…':'用我的 Key 真跑';
+    if (dropzone) dropzone.dataset.disabled = String(value);
+    resetDrag();
   }
-  page.querySelector('[data-question]')?.addEventListener('input', e=>{if(running)return;draft.question=e.target.value;refreshResult();});
-  page.querySelector('[data-material]')?.addEventListener('change', e=>{
-    if(running)return;
-    const file=e.target.files?.[0]; if(!file)return;
+  page.querySelector('[data-question]')?.addEventListener('input', e=>{if(running)return;draft.question=e.target.value;updateQuestionCount();refreshResult();});
+  const rejectSelection = message => {
+    // A rejected drop does not replace or invalidate an already selected file.
+    mount(materialStatus, html`<p class="inline-error">${message}当前素材未更换。</p>`);
+  };
+  const selectMaterial = files => {
+    if (!connected() || running || draft.source !== 'own') return;
+    if (files.length !== 1) {rejectSelection('请一次只添加 1 个文件。');return;}
+    const file = files[0];
+    if (!(file instanceof File)) {rejectSelection('请添加本机照片或录音文件。');return;}
+    try {fileType(file, product.kind);}
+    catch (error) {rejectSelection(`${redact(error.message, secrets)}。`);return;}
     draft.file=file;draft.input=null;clearResult();preview();validateMaterial();
+  };
+  materialInput?.addEventListener('change', e=>{
+    const files = Array.from(e.target.files || []);
+    if (files.length) selectMaterial(files);
+    // Allow choosing the same file again after a failed decode; the draft owns it.
+    e.target.value = '';
+  });
+  dropzone?.addEventListener('dragenter', e=>{
+    e.preventDefault();
+    if (running || draft.source !== 'own') return;
+    dragDepth++;
+    dropzone.dataset.dragging = 'true';
+  });
+  dropzone?.addEventListener('dragover', e=>{
+    e.preventDefault();
+    if (e.dataTransfer) e.dataTransfer.dropEffect = running ? 'none' : 'copy';
+  });
+  dropzone?.addEventListener('dragleave', e=>{
+    e.preventDefault();
+    dragDepth = Math.max(0, dragDepth - 1);
+    if (!dragDepth) resetDrag();
+  });
+  dropzone?.addEventListener('drop', e=>{
+    e.preventDefault();
+    resetDrag();
+    if (running) {
+      mount(materialStatus, html`<p class="small">正在体验，请先停止后再替换素材。</p>`);
+      return;
+    }
+    const items = Array.from(e.dataTransfer?.items || []);
+    if (items.some(item => item.kind !== 'file' || item.webkitGetAsEntry?.()?.isDirectory)) {
+      rejectSelection('不支持文件夹、链接或文字，请拖入一个本机文件。');
+      return;
+    }
+    const files = Array.from(e.dataTransfer?.files || []);
+    if (!files.length) {rejectSelection('没有读到文件，请使用“选择照片”或“选择录音”。');return;}
+    selectMaterial(files);
+    materialInput.value = '';
   });
   page.addEventListener('click', e=>{
     const copy=e.target.closest('[data-copy]');if(copy)copyText(copy.dataset.copy);
     const jump=e.target.closest('[data-jump]');if(jump){e.preventDefault();page.querySelector(`#${jump.dataset.jump}`)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});}
     const source=e.target.closest('[data-source]');
-    if(source && !running && source.dataset.source!==draft.source){reading?.abort();readVersion++;draft.source=source.dataset.source;materialError='';refreshResult();preview();mount(page.querySelector('[data-material-status]'),'');validateMaterial();}
-    if(e.target.closest('[data-reset]') && !running){reading?.abort();readVersion++;draft=resetDraft(draftKey,initialDraft);materialError='';const q=page.querySelector('[data-question]');if(q)q.value=draft.question;page.querySelector('[data-material]').value='';refreshResult();preview();mount(page.querySelector('[data-material-status]'),'');}
+    if(source && !running && source.dataset.source!==draft.source){reading?.abort();readVersion++;resetDrag();draft.source=source.dataset.source;materialError='';refreshResult();preview();materialFeedback('idle');validateMaterial();}
+    if(e.target.closest('[data-reset]') && !running){reading?.abort();readVersion++;resetDrag();draft=resetDraft(draftKey,initialDraft);materialError='';const q=page.querySelector('[data-question]');if(q)q.value=draft.question;updateQuestionCount();materialInput.value='';refreshResult();preview();materialFeedback('idle');}
     const v=e.target.closest('[data-variant]');if(v && !running && v.dataset.variant!==variant.id)location.hash=`#/s/${encodeURIComponent(sol.id)}/${encodeURIComponent(v.dataset.variant)}`;
     const act=e.target.closest('[data-act]')?.dataset.act;
-    if(act==='live' && !running){const ctrl=new AbortController();running=ctrl;freeze(true);startLive(ctrl).finally(()=>{if(connected()){running=null;freeze(false);}});}
+    if(act==='live' && !running){
+      const opener=e.target.closest('[data-act="live"]');
+      const ctrl=new AbortController();
+      let restoreFocus=false;
+      running=ctrl;freeze(true);
+      startLive(ctrl).then(status=>{restoreFocus=status==='cancelled';}).finally(()=>{
+        if(connected()){
+          running=null;freeze(false);
+          if(restoreFocus)opener?.focus({preventScroll:true});
+        }
+      });
+    }
     if(act==='stop')running?.abort();
   });
 
@@ -299,7 +378,8 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
       const c=costInfo(sol),est=c?`约 ¥${fmtCny(range(c.low,c.high))} / 次（估算，实际用量可能更高）`:'费用以账单为准';
       confirmation=sheet(html`<h2>用你的 Key 真跑</h2><p>浏览器直接调用${stack.name}官方接入点，按你的账号计费。</p><p>${est}</p><p class="small">${hostsFor(stack,cred.values).join('、')} · ${regionLabel(stack,cred.values.DASHSCOPE_API_REGION)}。待真 Key 验证，结果由 AI 生成。</p><div class="btn-row"><button type="button" class="secondary-action" data-sheet="cancel">取消</button><button type="button" class="primary-action" data-sheet="go" data-autofocus>开始真跑</button></div>`,{label:'确认真跑'});
       const answer=await confirmation.done;confirmation=null;
-      if(answer!=='go' || !connected() || ctrl.signal.aborted)return;
+      if(!connected() || ctrl.signal.aborted)return;
+      if(answer!=='go')return 'cancelled';
       replay?.stop();outcome.replaceChildren();page.querySelector('.process-panel').open=true;
       stage=new Stage(host,{reg,sol,controls:false,aiLabel:'内容由 AI 生成',mode:'live',badges:[{label:'真跑 · 你的 Key',cls:'ok'},{label:'待真 Key 验证',cls:'warn'}]});
       if(!input && tr)stage.setInputs(tr.inputs);
