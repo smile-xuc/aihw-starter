@@ -27,6 +27,13 @@ CHROME=/path/to/chromium node docs/tools/home-smoke.mjs
 
 HTML 文件各自内嵌图像、样式和脚本，可以直接离线打开。运行范围和验证说明见该目录的 README；AI 输出与硬件连接均为本地设计样例。
 
+## 深度阅读
+
+- [`omni-runtime-host.html`](./omni-runtime-host.html)：Qwen-Omni-Realtime + harness 的 AI 硬件多模态实时交互方案。沿用官网样式，提供八章侧边目录、手机折叠目录、章节搜索及交互链路示意；协议说明按官方来源核对，参考骨架的集成范围单独标注。
+- [`kv-cache-quantization.html`](./kv-cache-quantization.html)：TurboQuant 交互式学习页，保留原有内容与交互，通过顶部入口返回首页。
+
+子页浏览器检查：`PLAYWRIGHT_CORE=/path/to/playwright-core/index.mjs CHROME=/path/to/chromium node docs/tools/article-smoke.mjs`。沿用首页检查的环境，可用 `REVIEW_SCREENSHOTS` 指定截图目录。
+
 ## 贡献
 
 如果想优化门面页：
