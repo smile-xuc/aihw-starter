@@ -16,7 +16,7 @@ AI 硬件行业热门品类的商业化最佳实践案例库
 [![License: MIT](https://img.shields.io/badge/Code-MIT-blue.svg)](./LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
-[快速开始](#快速开始) · [九品类](#热门品类) · [参考 demo](#百炼参考-demo) · [贡献](#参与贡献)
+[开始](#快速开始) · [九品类](#热门品类) · [参考 demo](#百炼参考-demo) · [贡献](#参与贡献)
 
 </div>
 
