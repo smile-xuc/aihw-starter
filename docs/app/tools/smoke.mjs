@@ -17,8 +17,9 @@ const STATIC_PORT = Number(process.env.STATIC_PORT || 8781);
 const FAKE_PORT = Number(process.env.FAKE_PORT || 8782);
 const BASE = `http://127.0.0.1:${STATIC_PORT}/app/`;
 const ALLOWED = /^https:\/\/(dashscope\.aliyuncs\.com|dashscope-intl\.aliyuncs\.com|[a-z0-9-]+\.(cn-beijing|ap-southeast-1)\.maas\.aliyuncs\.com)\//;
+const MOCK_OSS = /^https:\/\/(dashscope-file-mock|dashscope-result)\.oss-cn-beijing\.aliyuncs\.com\//;
 const CRED = { values: { DASHSCOPE_API_KEY: 'sk-apptest0000000001', DASHSCOPE_API_REGION: 'cn-beijing', DASHSCOPE_WORKSPACE_ID: 'llm-apptest' } };
-const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'authorization,content-type,x-dashscope-sse', 'access-control-allow-methods': 'GET,POST' };
+const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'authorization,content-type,x-dashscope-sse,x-dashscope-async,x-dashscope-ossresourceresolve', 'access-control-allow-methods': 'GET,POST' };
 
 const children = [];
 function serve(args, quiet) {
@@ -54,6 +55,9 @@ async function main() {
 
   const browser = await chromium.launch({ executablePath: process.env.CHROME || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, locale: 'zh-CN', reducedMotion: 'reduce', serviceWorkers: 'block' });
+  // Every provider request must have a later explicit mock handler; never fall through to the network.
+  await context.route('**/*', route => route.request().url().startsWith(BASE) ? route.continue() : route.abort());
+  await context.addInitScript(()=>{window.copiedTexts=[];Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>{window.copiedTexts.push(text);}}});});
   const page = await context.newPage();
   page.on('console', (m) => { if (m.type() === 'error' && !(expectFault && /Failed to load resource:.*status of (401|500)/.test(m.text()))) problems.push(`[${current}] console：${m.text()}`); });
   page.on('pageerror', (e) => problems.push(`[${current}] 脚本异常：${e.message}`));
@@ -61,7 +65,7 @@ async function main() {
   page.on('request', (r) => {
     const url = r.url();
     if (url.startsWith(BASE) || url.startsWith('data:') || url.startsWith('blob:')) return;
-    if (!ALLOWED.test(url)) problems.push(`[${current}] 请求发往了官方接入点以外的地址：${url}`);
+    if (!ALLOWED.test(url) && !MOCK_OSS.test(url)) problems.push(`[${current}] 请求发往了官方接入点以外的地址：${url}`);
     else hostsSeen.add(new URL(url).host);
   });
 
@@ -103,21 +107,27 @@ async function main() {
   await page.evaluate((cred) => localStorage.setItem('aihw.credentials.bailian', JSON.stringify(cred)), CRED);
   const requests = [];
   let failureMode = '';
+  await context.route(MOCK_OSS, async(route,req)=>{
+    if(req.method()==='OPTIONS')return route.fulfill({status:204,headers:CORS});
+    const u=new URL(req.url()),upload=u.hostname.startsWith('dashscope-file-mock.');
+    if(!upload && u.pathname!=='/transcription.json')return route.abort();
+    requests.push({path:upload?'/__oss/upload':'/__oss/result',method:req.method(),headers:req.headers(),body:null});
+    const res=await fetch(`http://127.0.0.1:${FAKE_PORT}/${current}/__oss/${upload?'upload':'result'}`,{method:req.method(),headers:req.headers(),...(req.method()==='POST'?{body:req.postDataBuffer()}: {})});
+    return route.fulfill({status:res.status,headers:{...CORS,'content-type':res.headers.get('content-type')||'application/json'},body:Buffer.from(await res.arrayBuffer())});
+  });
   await context.route(ALLOWED, async (route, req) => {
     if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
     const u = new URL(req.url());
-    requests.push({path:u.pathname,body:req.postDataJSON()});
+    requests.push({path:u.pathname,query:u.search,method:req.method(),headers:req.headers(),body:req.method()==='POST'?req.postDataJSON():null});
     if (failureMode === '401') return route.fulfill({status:401,headers:CORS,json:{message:'bad key sk-apptest0000000001'}});
     if (failureMode === 'hold') { await new Promise(r=>setTimeout(r,600)); }
     if (failureMode === 'partial' && u.pathname.endsWith('chat/completions')) return route.fulfill({status:500,headers:CORS,json:{message:'minutes failed'}});
+    if (failureMode === 'task-failed' && u.pathname.includes('/tasks/')) return route.fulfill({status:200,headers:CORS,json:{request_id:'smoke-failed-task',output:{task_id:'mock-task-1',task_status:'FAILED',code:'InvalidAudio',message:'mock transcription task failed'}}});
+    if (failureMode === 'polling' && u.pathname.includes('/tasks/')) return route.fulfill({status:200,headers:CORS,json:{request_id:'smoke-running-task',output:{task_id:'mock-task-1',task_status:'RUNNING'}}});
     if (failureMode === 'unknown' && u.pathname.endsWith('chat/completions')) return route.fulfill({status:200,headers:{...CORS,'content-type':'text/event-stream'},body:'data: {"choices":[{"delta":{"content":"<img src=x onerror=alert(1)>安全结果"}}]}\n\ndata: [DONE]\n\n'});
-    const res = await fetch(`http://127.0.0.1:${FAKE_PORT}/${current}${u.pathname}`, { method: req.method(), headers: req.headers(), body: req.postDataBuffer() });
+    const res = await fetch(`http://127.0.0.1:${FAKE_PORT}/${current}${u.pathname}${u.search}`, { method: req.method(), headers: req.headers(), ...(req.method()==='POST'?{body: req.postDataBuffer()}: {}) });
     if (current==='02-ai-glasses.bailian' && u.pathname.endsWith('SpeechSynthesizer')) {
       const data=await res.json();data.output.audio.url='https://dashscope-result.oss-cn-beijing.aliyuncs.com/mock-reply.wav?token=temporary-speech';
-      return route.fulfill({status:res.status,headers:CORS,json:data});
-    }
-    if (failureMode==='partial' && u.pathname.endsWith('generation')) {
-      const data=await res.json();data.request_id='smoke-asr-request-123';data.usage={...(data.usage||{}),duration:1};
       return route.fulfill({status:res.status,headers:CORS,json:data});
     }
     return route.fulfill({ status: res.status, headers: { ...CORS, 'content-type': res.headers.get('content-type') || 'application/json' }, body: Buffer.from(await res.arrayBuffer()) });
@@ -147,6 +157,25 @@ async function main() {
   // Personal input/setup/history flows against local mocks. No actual credentials or cloud requests.
   const assertUI = (value, message) => { if (!value) throw new Error(message); };
   const begin = async () => {await page.click('[data-act="live"]');await page.click('[data-sheet="go"]');await page.waitForSelector('[data-act="live"]:not([disabled])');await page.waitForSelector('[data-outcome] [data-export]');};
+  const downloadText = async selector => {
+    const event=page.waitForEvent('download');await page.click(selector);const file=await event;
+    assertUI(!await file.failure(),'meeting download failed');
+    const stream=await file.createReadStream();let text='';for await(const chunk of stream)text+=chunk.toString();return text;
+  };
+  const meetingActions = async scope => {
+    const root=page.locator(scope);await root.locator('.meeting-result').waitFor();
+    assertUI(await root.locator('[data-meeting-copy]').count()===6,'meeting sections/copy actions missing');
+    await root.locator('.meeting-more').evaluate(node=>node.open=true);
+    for(const [key,expected] of [['summary','录音卡'],['decisions','负责人：待确认'],['action_items','周五前'],['agenda','客户拜访'],['open_questions','供应商待定'],['risks','晚一周']]){
+      await root.locator(`[data-meeting-copy="${key}"]`).click();
+      assertUI((await page.evaluate(()=>window.copiedTexts.at(-1))).includes(expected),`meeting ${key} copied incorrect text`);
+    }
+    await root.locator('[data-result-copy]').click();const all=await page.evaluate(()=>window.copiedTexts.at(-1));
+    for(const title of ['摘要','决策','待办','议题','待确认','风险'])assertUI(all.includes(`## ${title}`),`full minutes omitted ${title}`);
+    assertUI(all.includes('说话人2')&&all.includes('周五前'),'meeting copy invented or dropped source assignments');
+    assertUI(await downloadText(`${scope} [data-result-download]`)===all,'meeting Markdown differs from complete copy');
+    await noOverflow(page);
+  };
   current='experience'; await page.goto(BASE); await page.waitForSelector('.featured-card');
   assertUI((await page.locator('.featured-card').allTextContents()).join('').includes('一看即懂'),'home featured missing');
   assertUI(await page.locator('a[href="#/s/02-ai-glasses.bailian/default"]').count(),'02 direct route missing');
@@ -259,13 +288,42 @@ async function main() {
   await page.click('[data-reset]');expectFault=true;failureMode='401';await begin();assertUI((await page.locator('[data-outcome]').innerText()).includes('401'),'401 outcome missing');assertUI(!(await page.locator('[data-outcome]').innerText()).includes(CRED.values.DASHSCOPE_API_KEY),'error exposed secret');
   failureMode='unknown';await begin();assertUI((await page.locator('.result-cost').innerText()).includes('费用未知'),'unknown usage presented as exact cost');assertUI(await page.locator('.result-text img').count()===0,'model output executed markup');
   failureMode='hold';await page.click('[data-act="live"]');await page.click('[data-sheet="go"]');await page.waitForSelector('[data-act="live"][disabled]');assertUI(await page.locator('[data-question]').isDisabled(),'input mutable during run');await page.click('[data-act="stop"]');await page.waitForSelector('[data-act="live"]:not([disabled])');assertUI((await page.locator('[data-outcome]').innerText()).includes('已停止'),'stopped state missing');failureMode='';
-  current='07-recorder.bailian';await page.goto(`${BASE}#/s/07-recorder.bailian/default`);await page.waitForSelector('[data-source="own"]');assertUI((await page.locator('.result-text').innerText()).includes('待办'),'07 sample minutes not immediately readable');await page.click('[data-source="own"]');
+  current='07-recorder.bailian';await page.goto(`${BASE}#/s/07-recorder.bailian/default`);await page.waitForSelector('[data-source="own"]');assertUI((await page.locator('.result-text').innerText()).includes('待办'),'07 sample minutes not immediately readable');await meetingActions('[data-outcome]');await page.click('[data-source="own"]');
   const wav = seconds=>{const b=Buffer.alloc(44+seconds*16000*2);b.write('RIFF',0);b.writeUInt32LE(b.length-8,4);b.write('WAVEfmt ',8);b.writeUInt32LE(16,16);b.writeUInt16LE(1,20);b.writeUInt16LE(1,22);b.writeUInt32LE(16000,24);b.writeUInt32LE(32000,28);b.writeUInt16LE(2,32);b.writeUInt16LE(16,34);b.write('data',36);b.writeUInt32LE(b.length-44,40);return b;};
   await page.setInputFiles('[data-material]',{name:'meeting.wav',mimeType:'audio/wav',buffer:wav(1)});await page.waitForSelector('[data-material-status] .inline-ok');requests.length=0;await begin();
-  assertUI(requests.find(r=>r.path.endsWith('generation')).body.parameters.format==='wav','own WAV format incorrect');
-  assertUI(requests.find(r=>r.path.endsWith('generation')).body.parameters.sample_rate==='16000','fake provider received non-string WAV sample_rate');
+  assertUI(requests[0]?.method==='GET' && requests[0]?.path==='/api/v1/uploads' && new URLSearchParams(requests[0].query).get('model')==='qwen-audio-3.1-asr-flash-filetrans','filetrans upload policy model or order incorrect');
+  const uploaded=requests.findIndex(r=>r.path==='/__oss/upload'),submitted=requests.findIndex(r=>r.path.endsWith('/asr/transcription')),downloaded=requests.findIndex(r=>r.path==='/__oss/result'),summarized=requests.findIndex(r=>r.path.endsWith('/chat/completions'));
+  assertUI(uploaded>0 && submitted>uploaded && downloaded>submitted && summarized>downloaded,'filetrans chain order incorrect');
+  assertUI(requests.filter(r=>r.path.includes('/tasks/')).length===2,'filetrans did not poll RUNNING until SUCCEEDED');
+  assertUI(!requests[uploaded].headers.authorization&&!requests[downloaded].headers.authorization,'API Key sent to OSS upload or result URL');
+  const submission=requests[submitted];
+  assertUI(submission.body.model==='qwen-audio-3.1-asr-flash-filetrans' && submission.body.input.file_urls[0].startsWith('oss://'),'filetrans did not submit uploaded OSS object');
+  assertUI(submission.headers['x-dashscope-async']==='enable'&&submission.headers['x-dashscope-ossresourceresolve']==='enable','filetrans async/OSS resource headers missing');
+  assertUI(requests[summarized].body.model==='qwen3.8-flash'&&!requests.some(r=>r.path.endsWith('/generation')),'07 used old synchronous ASR or incorrect minutes model');
+  await meetingActions('[data-outcome]');
+  await page.goto(`${BASE}#/me`);await page.waitForSelector('[data-history-open]');await page.locator('[data-history-open]').first().click();await meetingActions('[data-history-result]');
+  const meetingHistory=await page.evaluate(()=>localStorage.getItem('aihw.history.v1'));
+  for(const forbidden of [CRED.values.DASHSCOPE_API_KEY,'temporary-transcription','mock-policy','mock-signature','oss://','Authorization','data:audio','blob:'])assertUI(!meetingHistory.includes(forbidden),`meeting history persisted ${forbidden}`);
+  await page.goto(`${BASE}#/s/07-recorder.bailian/default`);await page.waitForSelector('[data-material-status] .inline-ok');
   const beforeLong=requests.length;await page.setInputFiles('[data-material]',{name:'long.wav',mimeType:'audio/wav',buffer:wav(181)});await page.waitForSelector('[data-material-status] .inline-error');assertUI((await page.locator('[data-material-status]').innerText()).includes('180'),'long audio not rejected');assertUI(requests.length===beforeLong,'long audio reached provider');
-  await page.setInputFiles('[data-material]',{name:'meeting.wav',mimeType:'audio/wav',buffer:wav(1)});await page.waitForSelector('[data-material-status] .inline-ok');failureMode='partial';await begin();assertUI((await page.locator('[data-outcome]').innerText()).includes('展开原始转写'),'failed minutes lost partial transcript');failureMode='';
+  await page.setInputFiles('[data-material]',{name:'meeting.wav',mimeType:'audio/wav',buffer:wav(1)});await page.waitForSelector('[data-material-status] .inline-ok');
+  requests.length=0;failureMode='task-failed';await begin();
+  assertUI((await page.locator('[data-outcome]').innerText()).includes('正在转写录音失败'),'failed async task not explained');
+  assertUI(!requests.some(r=>r.path==='/__oss/result'||r.path.endsWith('/chat/completions')),'failed async task continued to result/minutes');
+  const failedTask=await page.evaluate(()=>JSON.parse(localStorage.getItem('aihw.history.v1'))[0].trace);
+  assertUI(failedTask.status==='failed'&&failedTask.usageRecords?.some(r=>r.requestId==='smoke-asr-request-123'),'failed async task audit missing');
+  requests.length=0;failureMode='polling';await page.click('[data-act="live"]');await page.click('[data-sheet="go"]');
+  const pollDeadline=Date.now()+10000;while(!requests.some(r=>r.path.includes('/tasks/'))){assertUI(Date.now()<pollDeadline,'async task polling never started');await page.waitForTimeout(25);}
+  await page.click('[data-act="stop"]');await page.waitForSelector('[data-act="live"]:not([disabled])');
+  const stoppedPollCount=requests.length;await page.waitForTimeout(2200);
+  assertUI(requests.length===stoppedPollCount&&!requests.some(r=>r.path.endsWith('/chat/completions')),'stopped async task continued polling or summarizing');
+  assertUI((await page.locator('[data-outcome]').innerText()).includes('已停止'),'async poll stop outcome missing');
+  assertUI(await page.evaluate(()=>JSON.parse(localStorage.getItem('aihw.history.v1'))[0].trace.status)==='stopped','async poll stop not recorded');
+  failureMode='partial';await begin();await page.locator('.meeting-transcript[open]').waitFor();
+  assertUI((await page.locator('[data-outcome]').innerText()).includes('转写已保留，纪要尚未完成'),'failed minutes lost partial transcript');
+  await page.locator('[data-transcript-copy="0"]').click();const partialText=await page.evaluate(()=>window.copiedTexts.at(-1));
+  assertUI(partialText.includes('说话人')&&partialText.includes('录音卡'),'partial transcript copy missing source text');
+  assertUI(await downloadText('[data-transcript-download="0"]')===partialText,'partial transcript download differs from copy');failureMode='';
   const actualTraces = await page.evaluate(()=>JSON.parse(localStorage.getItem('aihw.history.v1')).map(r=>r.trace));
   const schema = JSON.parse(readFileSync(path.join(docs,'../solutions/demo-standard/trace.schema.json')));
   const checked=spawnSync(process.env.PYTHON || 'python3',['-c','import json,sys,jsonschema\nd=json.load(sys.stdin)\nfor t in d["traces"]: jsonschema.validate(t,d["schema"])'],{input:JSON.stringify({schema,traces:actualTraces}),encoding:'utf8'});
@@ -291,7 +349,7 @@ async function main() {
   await page.evaluate(()=>window.restoreHistoryStorage());
   // Leaving a pending request must abort and never append history or leave a confirmation overlay.
   const priorHistory=await page.evaluate(()=>localStorage.getItem('aihw.history.v1'));failureMode='hold';await page.click('[data-act="live"]');await page.click('[data-sheet="go"]');await page.waitForSelector('[data-act="live"][disabled]');await page.evaluate(()=>location.hash='#/me');await page.waitForSelector('form[data-form]');await page.waitForTimeout(800);assertUI(await page.evaluate(()=>localStorage.getItem('aihw.history.v1'))===priorHistory,'page-leave added detached history');failureMode='';
-  console.log('体验 UI 回归通过：设置返回、空提问保留、素材解码切换/重挂载/旧读取隔离、临时播报/导出隔离、样本提问、PNG、WAV、损坏/过长素材、401、停止、缺失用量、转写保留、失败记录导入再导出、历史重开/删除');
+  console.log('体验 UI 回归通过：设置返回、空提问保留、素材解码切换/重挂载/旧读取隔离、临时播报/导出隔离、样本提问、PNG、WAV、损坏/过长素材、401、停止、缺失用量、filetrans OSS上传/两次轮询/结果无Key下载、任务失败审计、轮询停止、会议六区复制/下载/历史、失败转写复制/下载、失败记录导入再导出、历史重开/删除');
   // Isolated desktop Chrome regression exercises the actual SW cache and offline reloads.
   const offlineContext=await browser.newContext({viewport:{width:1280,height:900},locale:'zh-CN',reducedMotion:'reduce',serviceWorkers:'allow'});
   const offlinePage=await offlineContext.newPage();

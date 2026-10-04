@@ -139,7 +139,7 @@ export function renderMe(view, reg) {
   const stackCleanups = stacks.map(stack=>bindStack(page, stack, reg, target, ()=>active));
   const showHistory = id => {
     const record = readHistory().records.find(r=>r.id===id);if(!record)return;
-    renderOutcome(page.querySelector('[data-history-result]'),record.trace,{secrets,label:PRODUCTS[record.trace.solution]?.title || record.trace.title,historyNote:`${new Date(record.trace.ran_at).toLocaleString('zh-CN')} · ${statusLabel(record.trace)} · 原始素材和临时语音未保存。`});
+    renderOutcome(page.querySelector('[data-history-result]'),record.trace,{secrets,label:PRODUCTS[record.trace.solution]?.title || record.trace.title,historyNote:`${new Date(record.trace.ran_at).toLocaleString('zh-CN')} · ${statusLabel(record.trace)} · 本机历史未保存原始素材和临时语音。`});
   };
   const refreshHistory = () => {
     const {records,error}=readHistory();

@@ -4,16 +4,14 @@ title: 录音卡 / 会议盒子 · 百炼录音纪要
 category: 07-recorder
 stack: bailian
 kind: reference
-summary: 录音卡会后上传录音 → qwen-audio-3.1-asr-flash 转写并分离说话人 → qwen3.7-flash 流式生成结构化纪要卡片
+summary: 录音卡会后上传录音 → qwen-audio-3.1-asr-flash-filetrans 转写（单声道分离说话人，双声道按音轨整理）→ qwen3.8-flash 生成摘要、决策和待办
 models:
-  - id: qwen-audio-3.1-asr-flash
-    role: 同步转写 + 说话人分离（本地文件 Base64，demo 只用于 ≤3 分钟的录音）
   - id: qwen-audio-3.1-asr-flash-filetrans
-    role: 异步转写 + 说话人分离（长录音经百炼临时存储 oss://，或 --audio-url 公网 URL；≤12 小时）
-  - id: qwen3.7-flash
-    role: 结构化纪要，默认档（OpenAI 兼容，流式 JSON，关闭思考）
+    role: 默认文件识别（单声道分离说话人，双声道保留两轨；WAV / MP3 探测声道，其他格式与 URL 必填 --channels 1/2）
   - id: qwen3.8-flash
-    role: 结构化纪要，质量档（--quality）
+    role: 默认结构化纪要（OpenAI 兼容，流式 JSON，关闭思考）
+  - id: qwen-audio-3.1-asr-flash
+    role: 显式 --sync 对比旧同步接口（短单声道 WAV / MP3，本地 Base64，≤3 分钟）
 regions: [cn-beijing, ap-southeast-1]
 env: [DASHSCOPE_API_KEY]
 features: [voice-input, speaker-diarization, long-audio, structured-output]
@@ -47,7 +45,7 @@ run:
   mock: python3 run.py --mock
 metrics:
   first_token: 录音结束（开始上传）→ 纪要首个 token，含转写耗时
-  cost: 转写 usage + 纪要 usage × 模型单价（按地域）
+  cost: 完整有效输入 / 输出 Token usage × 地域单价；显式 0 合法，仅有时长或任一阶段用量不完整时总费用未知
   unit: 每次会议（样本 55 秒）
 verification:
   status: pending-live

@@ -33,17 +33,22 @@
       ]
     },
     {
-      "model": "qwen-audio-3.1-asr-flash",
+      "model": "qwen-audio-3.1-asr-flash-filetrans",
       "components": [
         {
-          "counter": "duration",
-          "per": 60,
-          "price": 0.05
+          "counter": "input_tokens",
+          "per": 1000000,
+          "price": 1
+        },
+        {
+          "counter": "output_tokens",
+          "per": 1000000,
+          "price": 2
         }
       ]
     },
     {
-      "model": "qwen3.7-flash",
+      "model": "qwen3.8-flash",
       "components": [
         {
           "counter": "prompt",

@@ -1,6 +1,7 @@
 import { fmtCny, html, markdown, mount, copyText, download } from './ui.js';
 import { validateInput } from './live/input.js';
 import { normalizeUsageRecords } from './data.js';
+import { readMeetingResult, meetingMarkup, meetingMarkdown, meetingSectionText } from './meeting-results.js';
 
 export const PRODUCTS = {
   '02-ai-glasses.bailian': {title:'一看即懂', description:'拍下眼前的画面，问出你想知道的事。得到简明回答，也可以听 AI 播报。',kind:'image',question:'这张图片里有什么？'},
@@ -79,19 +80,27 @@ export function mainOutput(trace) {
 }
 export function renderOutcome(slot, trace, {label='',historyNote='',settingsHref='#/me',secrets=[],speechURL=null}={}) {
   trace=safeTrace(trace,secrets);
-  const output=mainOutput(trace); const transcripts=(trace?.outputs||[]).filter(f=>/transcript/.test(f.path)&&f!==output);
+  const meeting=readMeetingResult(trace);
+  const output=meeting?{path:'out/minutes.md',media_type:'text/markdown',text:meetingMarkdown(meeting)}:mainOutput(trace);
+  const transcripts=(trace?.outputs||[]).filter(f=>/transcript/.test(f.path)&&f!==output&&typeof f.text==='string'&&f.text.trim());
+  const partialMeeting=trace.solution==='07-recorder.bailian'&&!meeting&&!output&&transcripts.length>0;
   const status=trace?.status==='stopped'?'已停止，可以用当前素材重试':trace?.error?'体验失败，可以重试':trace?.mode==='mock'?'样本效果 · mock 免费回放':'本次结果 · 内容由 AI 生成';
-  mount(slot,html`<div class="outcome panel" aria-live="polite"><div class="section-title"><h2>${label||status}</h2><span class="chip ${trace?.mode==='mock'?'accent':''}">${trace?.mode==='mock'?'mock 示例':trace?.status==='failed'?'失败':trace?.status==='stopped'?'已停止':'本机体验'}</span></div>
+  mount(slot,html`<div class="outcome panel" aria-live="polite"><div class="section-title"><h2>${label||status}</h2><span class="chip ${trace?.mode==='mock'?'accent':''}">${trace?.mode==='mock'?'mock 示例':trace?.status==='failed'?'失败':trace?.status==='stopped'?'已停止':'真跑记录'}</span></div>
     ${trace?.error?html`<p class="inline-error">${trace.error}</p><p class="small">401 / 403 请检查 Key、地域和业务空间；网络错误请检查连接；空内容或响应截断可重试。<a href="${settingsHref}">编辑凭证</a></p>`:''}
-    ${output?html`<div class="result-text">${output.media_type==='text/markdown'||output.type==='text/markdown'?markdown(output.text):html`<pre class="wrap">${output.text}</pre>`}</div>
-      <div class="btn-row"><button type="button" class="secondary-action" data-result-copy>复制结果</button><button type="button" class="secondary-action" data-result-download>下载结果</button></div>`:html`<p>${status}</p>`}
+    ${output?html`<div class="result-text">${meeting?meetingMarkup(meeting):output.media_type==='text/markdown'||output.type==='text/markdown'?markdown(output.text):html`<pre class="wrap">${output.text}</pre>`}</div>
+      <div class="btn-row"><button type="button" class="secondary-action" data-result-copy>${meeting?'复制完整纪要':'复制结果'}</button><button type="button" class="secondary-action" data-result-download>${meeting?'下载纪要':'下载结果'}</button></div>`:partialMeeting?html`<p class="inline-ok">转写已保留，纪要尚未完成。可以先复制或下载转写。</p>`:html`<p>${status}</p>`}
     ${speechURL?html`<div class="input-preview"><p class="small">听播报 · AI 合成语音（仅本次临时可用）</p><audio aria-label="听播报" controls preload="none" src="${speechURL}"></audio></div>`:''}
-    ${transcripts.map(f=>html`<details><summary>展开原始转写</summary><pre class="wrap">${f.text}</pre></details>`)}
+    ${transcripts.map((f,index)=>html`<details class="meeting-transcript" ${partialMeeting?html`open`:''}><summary>原始转写<span class="small">${partialMeeting?'已保留':'点击展开'}</span></summary><pre class="wrap">${f.text}</pre><div class="btn-row"><button type="button" class="secondary-action" data-transcript-copy="${index}">复制转写</button><button type="button" class="secondary-action" data-transcript-download="${index}">下载转写</button></div></details>`)}
     ${trace?.result?html`<p class="small result-cost">${trace.mode==='mock'?'示例估算（没有产生费用）':costText(trace.result)}</p><div class="metric-list">${metricLines(trace.result).map(l=>html`<span>${l}</span>`)}</div>${(trace.result.warnings||[]).map(w=>html`<p class="info-note">${w}</p>`)}`:''}
     ${historyNote?html`<p class="small history-note">${historyNote}</p>`:''}
     <button type="button" class="secondary-action block" data-export>导出本次记录（aihw/trace@0.1）</button></div>`);
   slot.querySelector('[data-result-copy]')?.addEventListener('click',()=>copyText(output.text));
   slot.querySelector('[data-result-download]')?.addEventListener('click',()=>download(output.path.split('/').pop(),output.text,output.media_type||output.type));
+  if(meeting)for(const key of ['summary','decisions','action_items','agenda','open_questions','risks'])slot.querySelector(`[data-meeting-copy="${key}"]`)?.addEventListener('click',()=>copyText(meetingSectionText(meeting,key)));
+  transcripts.forEach((file,index)=>{
+    slot.querySelector(`[data-transcript-copy="${index}"]`)?.addEventListener('click',()=>copyText(file.text));
+    slot.querySelector(`[data-transcript-download="${index}"]`)?.addEventListener('click',()=>download(file.path.split('/').pop(),file.text,file.media_type||'text/plain'));
+  });
   slot.querySelector('[data-export]')?.addEventListener('click',()=>download(`${trace.solution}.${trace.variant}.json`,JSON.stringify(safeTrace(trace),null,2)));
 }
 

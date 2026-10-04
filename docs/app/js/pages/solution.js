@@ -158,7 +158,7 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
         <div data-own-material ${draft.source === 'own' ? '' : 'hidden'}><label class="file-pick material-dropzone" data-dropzone data-dragging="false" data-disabled="false" aria-busy="false"><span class="material-drop-icon" aria-hidden="true">${icon('upload')}</span><span class="material-drop-copy">选择${product.kind === 'image' ? '照片' : '录音'}，或拖放到这里</span><span class="material-drop-hint" id="material-file-hint">${product.kind === 'image' ? 'JPEG / PNG / WebP · 不超过 7 MiB' : 'WAV / MP3 · 不超过 180 秒、7 MiB'}，一次一个文件</span><input type="file" data-material aria-describedby="material-file-hint material-status" accept="${product.kind === 'image' ? '.jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp' : '.wav,.mp3,audio/wav,audio/mpeg'}"></label></div>
         <div data-preview></div>
         ${product.kind === 'image' ? html`<label class="field" for="experience-question"><span class="question-heading"><span>你想知道什么</span><small class="question-count" data-question-count id="question-count">已输入 ${draft.question.length} / 2000 字符</small></span><textarea id="experience-question" data-question maxlength="2000" rows="3" aria-describedby="question-hint question-count">${draft.question}</textarea><small id="question-hint">示例原始提问使用随附语音；修改后使用照片和文字。</small></label>` : ''}
-        <p class="small">${product.kind === 'image' ? '照片不超过 7 MiB' : '录音不超过 180 秒、7 MiB'} · 原始素材和临时语音不保存，文字结果保存在本机。</p>
+        <p class="small">${product.kind === 'image' ? '照片不超过 7 MiB' : '录音不超过 180 秒、7 MiB'} · 本机历史只保存文字结果，不保存原始素材和临时语音。</p>
         <button type="button" class="secondary-action block" data-reset>重置素材与提问</button>
         <div id="material-status" data-material-status role="status" aria-live="polite" aria-atomic="true"></div>
       </div>` : ''}
@@ -376,7 +376,7 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
       const input=await inputForRun(ctrl.signal);
       if(!connected() || ctrl.signal.aborted)return;
       const c=costInfo(sol),est=c?`约 ¥${fmtCny(range(c.low,c.high))} / 次（估算，实际用量可能更高）`:'费用以账单为准';
-      confirmation=sheet(html`<h2>用你的 Key 真跑</h2><p>浏览器直接调用${stack.name}官方接入点，按你的账号计费。</p><p>${est}</p><p class="small">${hostsFor(stack,cred.values).join('、')} · ${regionLabel(stack,cred.values.DASHSCOPE_API_REGION)}。待真 Key 验证，结果由 AI 生成。</p><div class="btn-row"><button type="button" class="secondary-action" data-sheet="cancel">取消</button><button type="button" class="primary-action" data-sheet="go" data-autofocus>开始真跑</button></div>`,{label:'确认真跑'});
+      confirmation=sheet(html`<h2>用你的 Key 真跑</h2><p>浏览器直接调用${stack.name}官方接入点，按你的账号计费。</p><p>${est}</p>${sol.id === '07-recorder.bailian' ? html`<p class="small">录音将上传到百炼临时存储（48 小时有效，官方不用于生产环境）。双声道分别识别、分别计费；停止只结束本机等待，云端任务可能继续运行并计费，重试会创建新任务。</p>` : ''}<p class="small">${hostsFor(stack,cred.values).join('、')} · ${regionLabel(stack,cred.values.DASHSCOPE_API_REGION)}。待真 Key 验证，结果由 AI 生成。</p><div class="btn-row"><button type="button" class="secondary-action" data-sheet="cancel">取消</button><button type="button" class="primary-action" data-sheet="go" data-autofocus>开始真跑</button></div>`,{label:'确认真跑'});
       const answer=await confirmation.done;confirmation=null;
       if(!connected() || ctrl.signal.aborted)return;
       if(answer!=='go')return 'cancelled';
@@ -387,16 +387,16 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
       const safeStage={push(ev){return connected()?stage.push({...ev,text:redact(ev.text,secrets),lines:(ev.lines||[]).map(l=>redact(l,secrets))}):noop;}};
       // Streaming updates are redacted before rendering as well as before history/export.
       safeStage.push=ev=>{if(!connected())return noop;const handle=stage.push({...ev,text:redact(ev.text,secrets),lines:(ev.lines||[]).map(l=>redact(l,secrets))});return {update(next){if(connected())handle.update({...next,...('text' in next?{text:redact(next.text,secrets)}:{}),...('detail' in next?{detail:redact(next.detail,secrets)}:{})});return this;}};};
-      result=await runInBrowser(reg,sol,variant,cred,safeStage,{signal:ctrl.signal,input,onFallback:(from,to)=>safeStage.push({tag:'提示',kind:'notice',text:`接口跨域拦截，本次改走 ${to}`})});
+      result=await runInBrowser(reg,sol,variant,cred,safeStage,{signal:ctrl.signal,input,onFallback:(from,to)=>safeStage.push({tag:'提示',kind:'notice',text:`本次改用 ${to} 官方接入点`})});
     } catch(err){error=err;}
     if(!connected())return;
     if(!result && !error)return;
-    if(error && stage)stage.push({tag:'提示',kind:'notice',text:error.name==='AbortError'?'已停止':`出错：${redact(error.message,secrets)}`,lines:error.hint?[redact(error.hint,secrets)]:[]});
+    if(error && stage)stage.push({tag:'提示',kind:'notice',text:error.name==='AbortError'?(sol.id==='07-recorder.bailian'?'已停止等待；已提交的云端任务可能继续运行并计费':'已停止'):`出错：${redact(error.message,secrets)}`,lines:error.hint?[redact(error.hint,secrets)]:[]});
     const inputs=product && draft.source==='own' ? (draft.file ? [{path:`samples/${draft.file.name}`,media_type:draft.input?.mime||draft.file.type,bytes:draft.file.size}] : []) : tr?.inputs||[];
     const record=browserTrace({sol,variant,result,error,events:stage?.events||[],inputs,startedAt,region:cred?.values.DASHSCOPE_API_REGION||'',secrets});
     const saved=saveHistory(record);
     const speechURL = sol.id === '02-ai-glasses.bailian' && !error ? result?.outputs?.find(f=>(f.media_type||f.type||'').startsWith('audio/') && f.url)?.url : null;
-    renderOutcome(outcome,record,{settingsHref:setupRoute(sol,variant),secrets,speechURL,historyNote:saved.saved?'文字结果已保存到本机体验历史；原始素材和临时语音不保存。':saved.error});
+    renderOutcome(outcome,record,{settingsHref:setupRoute(sol,variant),secrets,speechURL,historyNote:saved.saved?'文字结果已保存到本机体验历史；本机历史不保存原始素材和临时语音。':saved.error});
     if(stage){stage.setOutputs((result?.outputs||error?.outputs||[]).map(f=>({...f,text:f.text==null?f.text:redact(f.text,secrets)})));stage.setFoot(resultLines(record));}
     const box=page.querySelector('.live-cost');if(result){mount(box,html`<p class="inline-ok">本次体验已完成，费用与延迟见上方结果。</p>`);box.classList.remove('hidden');}
     page.querySelector('.process-panel').open=!!error;

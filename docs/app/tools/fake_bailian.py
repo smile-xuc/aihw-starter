@@ -12,8 +12,11 @@ import argparse
 import base64
 import json
 import sys
+from email.parser import BytesParser
+from email.policy import default
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
+from urllib.parse import urlsplit
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build import REPO, load_module  # noqa: E402
@@ -30,6 +33,8 @@ MOCK_ARGS = {
 # 02 在设备上用 WebSocket 播报；浏览器版改走非实时 HTTP 合成，借 08 的 mock（同一个接口）
 BORROW = {("02-ai-glasses.bailian", "/api/v1/services/audio/tts/SpeechSynthesizer"): "08-smart-watch.bailian"}
 _mocks: dict[str, object] = {}
+FILE_HOST = "https://dashscope-file-mock.oss-cn-beijing.aliyuncs.com"
+RESULT_URL = "https://dashscope-result.oss-cn-beijing.aliyuncs.com/transcription.json?token=temporary-transcription"
 
 
 def demo_dir(sol_id: str) -> Path:
@@ -58,6 +63,60 @@ class Handler(BaseHTTPRequestHandler):
     def error(self, status: int, code: str, message: str) -> None:
         self.reply(status, json.dumps({"code": code, "message": message}, ensure_ascii=False).encode())
 
+    def do_GET(self) -> None:  # noqa: N802
+        try:
+            _, sol_id, rest = self.path.split("/", 2)
+            rest = "/" + rest
+            if sol_id != "07-recorder.bailian":
+                return self.error(404, "NotFound", "GET is only mocked for file transcription")
+            mock = mock_for(sol_id)
+            if urlsplit(rest).path == "/__oss/result":
+                if self.headers.get("Authorization"):
+                    raise ValueError("transcription result download must not send Authorization")
+                data = json.loads(mock.get_bytes("mock://transcription.json"))
+                data["file_url"] = getattr(mock, "uploaded_url", "")
+            else:
+                if self.headers.get("Authorization") != f"Bearer {KEY}":
+                    return self.error(401, "InvalidApiKey", "Invalid API-key provided.")
+                data = mock.json("GET", "https://fake.invalid" + rest, dict(self.headers.items()))
+                if rest.startswith("/api/v1/uploads?"):
+                    data["data"]["upload_host"] = FILE_HOST
+                if "/tasks/" in rest:
+                    data["request_id"] = "smoke-task-poll-response"
+                    for result in data.get("output", {}).get("results", []):
+                        result["transcription_url"] = RESULT_URL
+                        result["file_url"] = getattr(mock, "uploaded_url", "")
+            return self.reply(200, json.dumps(data, ensure_ascii=False).encode())
+        except Exception as exc:  # noqa: BLE001
+            return self.error(400, "MockRejected", str(exc))
+
+    def upload(self, sol_id: str, raw: bytes) -> None:
+        if sol_id != "07-recorder.bailian" or self.headers.get("Authorization"):
+            raise ValueError("OSS upload must not send Authorization")
+        message = BytesParser(policy=default).parsebytes(
+            ("Content-Type: " + self.headers.get("Content-Type", "") + "\r\nMIME-Version: 1.0\r\n\r\n").encode() + raw
+        )
+        if not message.is_multipart():
+            raise ValueError("OSS upload must be multipart/form-data")
+        parts = list(message.iter_parts())
+        if not parts or parts[-1].get_param("name", header="content-disposition") != "file":
+            raise ValueError("OSS file must be the last form field")
+        fields = {}
+        for part in parts[:-1]:
+            name = part.get_param("name", header="content-disposition")
+            if not name or name == "file" or name in fields:
+                raise ValueError("OSS form contains a duplicate or unnamed field")
+            fields[name] = part.get_payload(decode=True).decode()
+        audio = parts[-1].get_payload(decode=True)
+        if not audio or len(audio) > 7 * 1024 * 1024:
+            raise ValueError("OSS fixture requires nonempty audio up to 7 MiB")
+        if fields.get("x-oss-object-acl") != "private" or fields.get("x-oss-forbid-overwrite") != "true":
+            raise ValueError("OSS upload must preserve private ACL and forbid overwrite")
+        mock = mock_for(sol_id)
+        status = mock.multipart("mock://dashscope-file-mock.oss-cn-beijing.aliyuncs.com", fields, "file", parts[-1].get_filename(), audio)
+        mock.uploaded_url = "oss://" + fields["key"]
+        return self.reply(status, b"")
+
     def do_POST(self) -> None:  # noqa: N802
         _, sol_id, rest = self.path.split("/", 2)
         rest = "/" + rest
@@ -68,6 +127,11 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply(204, b"")
         if sol_id not in MOCK_ARGS:
             return self.error(404, "NotFound", f"没有 {sol_id} 的 mock")
+        if rest == "/__oss/upload":
+            try:
+                return self.upload(sol_id, raw)
+            except Exception as exc:  # noqa: BLE001
+                return self.error(400, "MockRejected", str(exc))
         if self.headers.get("Authorization") != f"Bearer {KEY}":
             return self.error(401, "InvalidApiKey", "Invalid API-key provided.")
         payload = json.loads(raw or b"{}")
@@ -77,6 +141,9 @@ class Handler(BaseHTTPRequestHandler):
             if not isinstance(rate, str) or not rate.isdigit():
                 return self.error(400, "MockRejected", "WAV sample_rate must be a string")
         headers = dict(self.headers.items())
+        for name in ("X-DashScope-Async", "X-DashScope-OssResourceResolve"):
+            if self.headers.get(name) is not None:
+                headers[name] = self.headers.get(name)
         url = "https://fake.invalid" + rest
         try:
             if rest.startswith("/compatible-mode/"):
@@ -95,7 +162,14 @@ class Handler(BaseHTTPRequestHandler):
                 body = "".join(f"data: {json.dumps(e, ensure_ascii=False)}\n\n" for e in events) + "data: [DONE]\n\n"
                 return self.reply(200, body.encode(), "text/event-stream")
             target = BORROW.get((sol_id, rest), sol_id)
+            if sol_id == "07-recorder.bailian" and rest.endswith("/services/audio/asr/transcription"):
+                mock = mock_for(sol_id)
+                if payload.get("input", {}).get("file_urls") != [getattr(mock, "uploaded_url", None)]:
+                    raise ValueError("filetrans must submit the exact uploaded OSS object")
+                mock.polls = 0
             data = mock_for(target).json("POST", url, headers, payload)
+            if sol_id == "07-recorder.bailian" and rest.endswith("/services/audio/asr/transcription"):
+                data["request_id"] = "smoke-asr-request-123"
             return self.reply(200, json.dumps(data, ensure_ascii=False).encode())
         except Exception as exc:  # noqa: BLE001 — mock 的校验失败原样回给页面
             return self.error(400, "MockRejected", str(exc))

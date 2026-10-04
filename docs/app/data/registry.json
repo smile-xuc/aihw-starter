@@ -2095,7 +2095,7 @@
    "stack": "bailian",
    "kind": "reference",
    "title": "录音卡 / 会议盒子 · 百炼录音纪要",
-   "summary": "录音卡会后上传录音 → qwen-audio-3.1-asr-flash 转写并分离说话人 → qwen3.7-flash 流式生成结构化纪要卡片",
+   "summary": "录音卡会后上传录音 → qwen-audio-3.1-asr-flash-filetrans 转写（单声道分离说话人，双声道按音轨整理）→ qwen3.8-flash 生成摘要、决策和待办",
    "path": "solutions/by-category/07-recorder/demo/bailian",
    "upstream": null,
    "license": "MIT",
@@ -2108,23 +2108,18 @@
    ],
    "models": [
     {
-     "id": "qwen-audio-3.1-asr-flash",
-     "role": "同步转写 + 说话人分离（本地文件 Base64，demo 只用于 ≤3 分钟的录音）",
-     "regions": null
-    },
-    {
      "id": "qwen-audio-3.1-asr-flash-filetrans",
-     "role": "异步转写 + 说话人分离（长录音经百炼临时存储 oss://，或 --audio-url 公网 URL；≤12 小时）",
-     "regions": null
-    },
-    {
-     "id": "qwen3.7-flash",
-     "role": "结构化纪要，默认档（OpenAI 兼容，流式 JSON，关闭思考）",
+     "role": "默认文件识别（单声道分离说话人，双声道保留两轨；WAV / MP3 探测声道，其他格式与 URL 必填 --channels 1/2）",
      "regions": null
     },
     {
      "id": "qwen3.8-flash",
-     "role": "结构化纪要，质量档（--quality）",
+     "role": "默认结构化纪要（OpenAI 兼容，流式 JSON，关闭思考）",
+     "regions": null
+    },
+    {
+     "id": "qwen-audio-3.1-asr-flash",
+     "role": "显式 --sync 对比旧同步接口（短单声道 WAV / MP3，本地 Base64，≤3 分钟）",
      "regions": null
     }
    ],
@@ -2168,23 +2163,14 @@
        ]
       },
       "trace": "traces/07-recorder.bailian/default.json",
-      "cost": {
-       "low": 0.00229,
-       "high": 0.00229
-      }
+      "cost": null
      }
     ]
    },
    "cost": {
     "unit": "每次会议（样本 55 秒）",
-    "basis": "转写 usage + 纪要 usage × 模型单价（按地域）",
-    "estimate": {
-     "low": 0.00229,
-     "high": 0.00229,
-     "source": "mock",
-     "variant": "default",
-     "note": "mock 用量为示意值"
-    },
+    "basis": "完整有效输入 / 输出 Token usage × 地域单价；显式 0 合法，仅有时长或任一阶段用量不完整时总费用未知",
+    "estimate": null,
     "measured": null
    },
    "latency": {
@@ -2259,11 +2245,7 @@
     "evidence": [],
     "record": "solutions/by-category/07-recorder/demo/bailian/VERIFY.md",
     "live_records": 0,
-    "pending_checks": [
-     "同步接口截断",
-     "3.1 ASR 的音频 Token 折算",
-     "上传凭证接口的域名"
-    ]
+    "pending_checks": []
    },
    "run": {
     "cwd": "solutions/by-category/07-recorder/demo/bailian",

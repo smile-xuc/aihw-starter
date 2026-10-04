@@ -26,6 +26,11 @@ const errors=[],unexpected=[];
 const provider=/^https:\/\/(dashscope\.aliyuncs\.com|dashscope-intl\.aliyuncs\.com|[a-z0-9-]+\.(cn-beijing|ap-southeast-1)\.maas\.aliyuncs\.com)\//;
 const imageRoute='#/s/02-ai-glasses.bailian/default',audioRoute='#/s/07-recorder.bailian/default';
 const deferred=()=>{let resolve;const promise=new Promise(done=>{resolve=done;});return {promise,resolve};};
+async function reached(promise,label){
+  let timeout;
+  try{return await Promise.race([promise,new Promise((_,reject)=>{timeout=setTimeout(()=>reject(Error(label+' was not reached; page errors: '+errors.join('; '))),10000);})]);}
+  finally{clearTimeout(timeout);}
+}
 let browser;
 try{
   const port=await new Promise((resolve,reject)=>{
@@ -287,7 +292,7 @@ try{
   await mp.keyboard.press('Escape');await mp.waitForFunction(()=>document.querySelector('[data-act="live"]')===document.activeElement);
   assert.equal(heldRequests,0,'Cancelling confirmation must not send a request');
   await mp.locator('[data-act="live"]').click();await mp.locator('[data-sheet="go"]').click();
-  await Promise.race([requestStarted.promise,new Promise((_,reject)=>setTimeout(()=>reject(Error('Local interception was not reached')),10000))]);
+  await reached(requestStarted.promise,'Local interception');
   assert.equal(await mp.locator('[data-dropzone]').getAttribute('data-disabled'),'true');
   const runningPreview=await mp.locator('[data-preview] img').getAttribute('src');
   await drop(mp,[jpg('during-run.jpg')]);assert.equal(await mp.locator('[data-preview] img').getAttribute('src'),runningPreview);
@@ -312,7 +317,7 @@ try{
     }).observe(document,{attributes:true,subtree:true,attributeFilter:['aria-busy','data-loading']});
   });
   await slow.route('**/app/data/registry.json',async route=>{registrySeen.resolve();await registryGate.promise;await route.fulfill({status:200,contentType:'application/json',body:await readFile(path.join(docs,'app/data/registry.json'))});});
-  await sp.goto(app+'#/');await registrySeen.promise;
+  await sp.goto(app+'#/');await reached(registrySeen.promise,'Registry interception');
   assert.equal(await sp.locator('#view').getAttribute('aria-busy'),'true');
   await sp.waitForFunction(()=>document.querySelector('.product-bar').hasAttribute('data-loading'));
   const timing=await sp.evaluate(()=>window.routeTiming);
@@ -325,11 +330,11 @@ try{
   await slow.route('**/app/data/traces/02-ai-glasses.bailian/default.json',async route=>{
     traceSeen.resolve();await traceGate.promise;await route.fulfill({status:200,contentType:'application/json',body:await readFile(path.join(docs,'app/data/traces/02-ai-glasses.bailian/default.json'))});traceDone.resolve();
   });
-  await sp.locator('.featured-card').first().click();await traceSeen.promise;
+  await sp.locator('.featured-card').first().click();await reached(traceSeen.promise,'Trace interception');
   await sp.waitForFunction(()=>document.querySelector('.product-bar').hasAttribute('data-loading'));
   await sp.locator('[data-nav="me"]').click();await mounted(sp,'form[data-form]');
   assert.equal(await sp.locator('.product-bar').getAttribute('data-loading'),null);
-  traceGate.resolve();await traceDone.promise;
+  traceGate.resolve();await reached(traceDone.promise,'Released trace response');
   // Let the released fetch and its continuation drain before examining the newer view.
   await sp.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
   assert.equal(new URL(sp.url()).hash,'#/me');assert.equal(await sp.locator('form[data-form]').count(),1);
