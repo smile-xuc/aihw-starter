@@ -7,6 +7,7 @@ import { missingFields } from '../settings.js';
 import { chat, now, postJson, serviceOf, validCount } from './client.js';
 import { validateInput } from './input.js';
 import { transcribeFile } from './file-transcription.js';
+import { validateTranscript } from '../meeting-evidence.js';
 
 const RUNNERS = {
   '01-ipc.bailian': { default: { load: () => import('./run-01-ipc.js'), services: ['compatible'], note: '4 帧事件卡 + 检索 + 日报，共 6 次调用。' } },
@@ -60,7 +61,8 @@ export function requiredMissing(reg, sol, variant, values) {
 }
 
 // 跑一次：runner 往舞台上写和 run.py 同样标签的日志行，返回 { models, firstMs, cost, sample, note, outputs }
-export async function runInBrowser(reg, sol, variant, cred, stage, { signal, onFallback, input } = {}) {
+export async function runInBrowser(reg, sol, variant, cred, stage, { signal, onFallback, input, transcript } = {}) {
+  if(transcript && sol.id !== '07-recorder.bailian')throw Error('此体验不支持转写输入');
   const normalizedInput = validateInput(input);
   if (normalizedInput && !((sol.id === '02-ai-glasses.bailian' && normalizedInput.kind === 'image') || (sol.id === '07-recorder.bailian' && normalizedInput.kind === 'audio'))) throw new Error('这个玩法不支持此媒体输入');
   const runner = RUNNERS[sol.id][variant.id];
@@ -88,6 +90,7 @@ export async function runInBrowser(reg, sol, variant, cred, stage, { signal, onF
   const ctx = {
     c,
     input: normalizedInput,
+    transcript: transcript ? validateTranscript(transcript) : null,
     region: values.DASHSCOPE_API_REGION,
     signal,
     now,

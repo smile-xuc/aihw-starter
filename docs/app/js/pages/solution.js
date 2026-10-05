@@ -11,6 +11,7 @@ import { PRODUCTS, draftFor, resetDraft, activateSampleDraft, setupRoute, fileTy
 import { saveHistory, updateHistory } from '../history.js';
 import { PROJECTS, referencePosition } from '../projects.js';
 import { PHOTO_QUESTIONS } from '../photo-questions.js';
+import { mountRealtimeMeeting } from '../realtime-meeting.js';
 
 const PER_DAY = 30;
 
@@ -167,6 +168,7 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
         <div id="material-status" data-material-status role="status" aria-live="polite" aria-atomic="true"></div>
       </div>` : ''}
       <div class="live-bar">${effectActions(reg, sol, variant, cred)}</div>
+      ${product?.kind==='audio'?html`<div data-realtime-slot></div>`:''}
       <div data-outcome></div>
       <details class="process-panel" ${product ? '' : 'open'}><summary>查看技术过程与输出文件</summary><div class="stage-host"><div class="stage"><p class="small">加载回放</p></div></div></details>
     </section>
@@ -197,7 +199,7 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
   const dropzone = page.querySelector('[data-dropzone]');
   const materialInput = page.querySelector('[data-material]');
   const materialStatus = page.querySelector('[data-material-status]');
-  let replay = null, running = null, active = true, reading = null, previewURL = null, confirmation = null;
+  let replay = null, running = null, active = true, reading = null, previewURL = null, confirmation = null, realtime = null;
   let materialError = '', readVersion = 0, dragDepth = 0;
   const secrets = (stack?.fields || []).filter(f=>f.input === 'secret').map(f=>cred?.values[f.key]).filter(Boolean);
   const connected = () => active && isCurrent() && page.isConnected;
@@ -276,6 +278,7 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
   }
 
   function freeze(value) {
+    realtime?.setExternalBusy(value);
     for (const el of page.querySelectorAll('[data-source], [data-material], [data-question], [data-question-preset], [data-reset], [data-variant], [data-act="live"], [data-outcome-retry]')) el.disabled=value;
     page.querySelector('[data-act="stop"]')?.classList.toggle('hidden',!value);
     const button=page.querySelector('[data-act="live"]'); if(button) button.textContent=value?'正在体验…':'用我的 Key 真跑';
@@ -409,5 +412,6 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
     const box=page.querySelector('.live-cost');if(result){mount(box,html`<p class="inline-ok">本次体验已完成，费用与延迟见上方结果。</p>`);box.classList.remove('hidden');}
     page.querySelector('.process-panel').open=!!error;
   }
-  return {cleanup(){active=false;confirmation?.close();reading?.abort();running?.abort();replay?.stop();if(previewURL)URL.revokeObjectURL(previewURL);}};
+  if(product?.kind==='audio')realtime=mountRealtimeMeeting(page.querySelector('[data-realtime-slot]'),{reg,sol,variant,onBusy(value){for(const el of page.querySelectorAll('[data-source], [data-material], [data-reset], [data-variant], [data-act="live"], [data-outcome-retry]'))el.disabled=value;dropzone.dataset.disabled=String(value);if(value){outcome.replaceChildren();replay?.stop();page.querySelector('.process-panel').open=false;}}});
+  return {cleanup(){active=false;realtime?.cleanup();confirmation?.close();reading?.abort();running?.abort();replay?.stop();if(previewURL)URL.revokeObjectURL(previewURL);}};
 }

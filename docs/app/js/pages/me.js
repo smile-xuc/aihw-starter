@@ -65,9 +65,9 @@ function stackPanel(stack, target) {
         <button type="button" class="secondary-action block danger-action" data-act="clear">清除这台设备上的 ${stack.name} 凭证</button>
         <div data-slot="result" aria-live="polite"></div>
       </form>
-      <p class="info-note">${icon('shield')}<span>这些信息只存在这台设备的浏览器存储里（键名 <code>aihw.credentials.${stack.id}</code>，字段名与 .env 相同），不经过任何我们自己的服务器。真跑时凭证只放进请求头，只发往${stack.name}的官方接入点：</span></p>
+      <p class="info-note">${icon('shield')}<span>这些信息保存在这台设备的浏览器存储里（键名 <code>aihw.credentials.${stack.id}</code>，字段名与 .env 相同）。文件识别、摘要等直接请求${stack.name}官方接入点，凭证放在请求头。会议实时录音需由你配置并确认可信网关，Key 和音频会经该网关转发；Key 不写入 URL 或历史。</span></p>
       <div data-slot="hosts">${hostsHtml(stack, values)}</div>
-      <p class="info-note">${icon('info')}<span>页面的内容安全策略（CSP）只允许连接这些官方域名，写错地址也会被浏览器拦下；页面不加载任何第三方脚本。smile-xuc.github.io 下的其他 Pages 页面与本页同源，浏览器存储彼此可见；介意的话关掉「记在这台设备上」，或用临时 Key。</span></p>
+      <p class="info-note">${icon('info')}<span>页面只加载本站脚本。HTTP 调用限定为官方域名；实时录音额外允许用户配置的安全 WebSocket 网关及本机调试地址。smile-xuc.github.io 下的其他 Pages 页面与本页同源，浏览器存储彼此可见；介意的话关掉「记在这台设备上」，或用临时 Key。</span></p>
     </div>
     <div class="panel">
       <h3>把风险控制住</h3>

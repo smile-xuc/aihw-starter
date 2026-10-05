@@ -129,19 +129,19 @@ try {
   // Seed an old app cache and another same-origin application before first registration.
   const offline=await browser.newContext({viewport:{width:1024,height:768},serviceWorkers:'allow'});
   const op=await offline.newPage();await op.goto(base+'icons/icon-192.png');
-  await op.evaluate(async()=>{await (await caches.open('aihw-app-v12')).put('old',new Response('old'));await (await caches.open('other-app-sentinel')).put('sentinel',new Response('keep'));});
+  await op.evaluate(async()=>{await (await caches.open('aihw-app-v13')).put('old',new Response('old'));await (await caches.open('other-app-sentinel')).put('sentinel',new Response('keep'));});
   await op.goto(base);await op.waitForSelector('.featured-card');
   await op.evaluate(async()=>{await navigator.serviceWorker.ready;if(!navigator.serviceWorker.controller)await new Promise(resolve=>navigator.serviceWorker.addEventListener('controllerchange',resolve,{once:true}));});
-  const cache=await op.evaluate(async()=>({names:await caches.keys(),urls:(await (await caches.open('aihw-app-v13')).keys()).map(r=>r.url)}));
-  assert.ok(cache.names.includes('other-app-sentinel'));assert.ok(!cache.names.includes('aihw-app-v12'));
-  for(const asset of ['js/meeting-evidence.js','js/photo-questions.js','js/photo-results.js','js/meeting-results.js','js/live/audio-channels.js','js/live/file-transcription.js','js/projects.js','js/positioning.js','js/cost.js','js/pages/hardware.js','js/pages/cost-lab.js','data/registry.json'])assert.ok(cache.urls.includes(base+asset),asset+' not precached');
+  const cache=await op.evaluate(async()=>({names:await caches.keys(),urls:(await (await caches.open('aihw-app-v14')).keys()).map(r=>r.url)}));
+  assert.ok(cache.names.includes('other-app-sentinel'));assert.ok(!cache.names.includes('aihw-app-v13'));
+  for(const asset of ['js/realtime-meeting.js','js/live/realtime-asr.js','js/live/microphone.js','js/live/pcm.js','js/live/pcm-worklet.js','js/meeting-evidence.js','js/photo-questions.js','js/photo-results.js','js/meeting-results.js','js/live/audio-channels.js','js/live/file-transcription.js','js/projects.js','js/positioning.js','js/cost.js','js/pages/hardware.js','js/pages/cost-lab.js','data/registry.json'])assert.ok(cache.urls.includes(base+asset),asset+' not precached');
   await offline.setOffline(true);
   for(const [route,selector] of [['c/05-desktop-pet','[data-case="stackchan"]'],['hardware','[data-project-card]'],...PROJECTS.map(p=>['hardware/'+p.id,'[data-budget-form]']),['cost-lab','[data-price-editor]']]){
     await op.goto(base+'#/'+route);await op.reload();await op.waitForSelector(selector);
     assert.doesNotMatch(await op.locator('body').innerText(),/数据暂时不可用/);
   }
   await offline.close();
-  console.log('Workspace smoke OK: '+routes.length*6+' viewport/routes, project classification and filters, budgets, mock exports, accounting, plan, keyboard, dark OS with light palette and actual SW v13 offline.');
+  console.log('Workspace smoke OK: '+routes.length*6+' viewport/routes, project classification and filters, budgets, mock exports, accounting, plan, keyboard, dark OS with light palette and actual SW v14 offline.');
 } finally {
   await browser?.close();child.kill();
 }

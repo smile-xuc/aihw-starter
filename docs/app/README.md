@@ -72,8 +72,8 @@ node docs/app/tools/cost-run.mjs --mock \
 
 - 表单按栈声明（`aihw/stack@0.1`，百炼见 [`stacks/bailian.yaml`](../../solutions/demo-standard/stacks/bailian.yaml)）的 `fields` 渲染：百炼是 API Key、地域、业务空间 ID
 - 只存在这台设备的浏览器存储里，键名 `aihw.credentials.<栈>`，字段名与 `.env` 变量名相同：勾「记在这台设备上」存 `localStorage`，不勾存 `sessionStorage`（关页面即清）；「清除」两处都删
-- 请求只发往按栈声明 `endpoints.roots` 推导出的官方接入点（百炼：`dashscope.aliyuncs.com`、`dashscope-intl.aliyuncs.com`、`<业务空间ID>.<地域>.maas.aliyuncs.com`），凭证只放进 `auth` 声明的请求头。代进域名的值只能是字母、数字和连字符，并且要符合字段的 `pattern`
-- `index.html` 的 CSP `connect-src` 放行这些接入点及北京／新加坡官方 OSS 域（临时上传与转写结果下载不携带 API Key），页面不加载任何第三方脚本，也没有我们自己的服务器。以后接新栈时，CSP 要同步加上它的官方域名
+- 文件／摘要等 HTTP 请求发往按栈声明 `endpoints.roots` 推导出的官方接入点（百炼：`dashscope.aliyuncs.com`、`dashscope-intl.aliyuncs.com`、`<业务空间ID>.<地域>.maas.aliyuncs.com`），凭证放进 `auth` 声明的请求头。代进域名的值只能是字母、数字和连字符，并符合字段的 `pattern`。实时会议 ASR 是显式例外：用户确认后，Key 通过第一条 WebSocket 消息发给自选可信网关，由它设置官方建连鉴权头；不写入 URL。
+- `index.html` 的 CSP `connect-src` 放行这些 HTTP 接入点和北京／新加坡官方 OSS 域（临时上传与结果下载不携带 API Key），额外允许 `wss:` 和本机调试的 `ws:` 地址。页面不加载第三方脚本，仓库不提供公共托管网关。以后接新栈时，CSP 与界面中的凭证去向说明须同步更新。
 - 专属域名的某个接口在浏览器里被跨域拦截时（预检失败，请求本身没有发出），本次会话改走下一条匹配的根地址（同地域的通用域名），并在时间线上提示
 - 没填凭证：所有方案只放回放
 - 页面上列出栈声明的 `security_advice`，并提示 `smile-xuc.github.io` 下的其他 Pages 页面与本页同源
@@ -96,7 +96,9 @@ node docs/app/tools/cost-run.mjs --mock \
 | 08 智能手表 | ✅ 待真 Key 验证 | 两份日报；抬腕播报没做 |
 | 09 具身智能 | ✅ 待真 Key 验证 | 本地安全门 + 看图多轮技能调用 |
 
-实时语音为什么跑不了：百炼官方 [Token 鉴权](https://help.aliyun.com/zh/model-studio/realtime-token-authentication) 写明 WebSocket、WebRTC、AOQ 都只在建连时认 `Authorization` 请求头——浏览器的 WebSocket 不能设请求头；WebRTC 的 SDP 交换被浏览器跨域拦截，[官方说明](https://help.aliyun.com/zh/model-studio/best-practice-webrtc-omni-realtime)要由服务端代理；AOQ 只有原生 SDK。[临时 Key](https://help.aliyun.com/zh/model-studio/generate-temporary-api-key) 也走同一个请求头，换成临时 Key 解决不了。2026-10-02 实测：网关会读取 URL 里的 `api_key` 参数（报错从 “No API-key provided” 变成 “Invalid API-key provided”），但官方没有文档，而且会把 Key 放进 URL，不采用。
+会议纪要新增「实时录音纪要」：16 kHz PCM → qwen-audio-3.1-asr-flash-streaming → 确认原句 → qwen3.8-flash。需要用户配置并确认 [自托管 BYOK 网关](../../services/asr-gateway/README.md)，仓库没有公共托管地址。支持暂停／恢复、尾句收尾、断线保留确认转写和仅摘要重试；180 秒上限、总费用未知、原媒体不保存。网关只负责实时 ASR，文件识别和摘要仍沿用现有接入。
+
+其他实时语音入口为什么仍只放回放：百炼官方 [Token 鉴权](https://help.aliyun.com/zh/model-studio/realtime-token-authentication) 写明 WebSocket、WebRTC、AOQ 都只在建连时认 `Authorization` 请求头——浏览器的 WebSocket 不能设请求头；WebRTC 的 SDP 交换被浏览器跨域拦截，[官方说明](https://help.aliyun.com/zh/model-studio/best-practice-webrtc-omni-realtime)要由服务端代理；AOQ 只有原生 SDK。[临时 Key](https://help.aliyun.com/zh/model-studio/generate-temporary-api-key) 也走同一个请求头，换成临时 Key 解决不了。2026-10-02 实测：网关会读取 URL 里的 `api_key` 参数（报错从 “No API-key provided” 变成 “Invalid API-key provided”），但官方没有文档，而且会把 Key 放进 URL，不采用。当前可选网关仅适配会议 ASR，没有将玩具／桌宠／耳机的 Omni 实时交互标成已接通。
 
 ## 数据
 

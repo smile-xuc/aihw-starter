@@ -626,6 +626,22 @@ html { scroll-padding-top:90px;scroll-padding-bottom:110px; }
 .transcript-meta { font-size:11px;color:var(--muted); }
 @media (max-width:480px) { .meeting-source { width:100%; } .meeting-edit-form .btn-row { flex-wrap:wrap; } }
 .outcome .meeting-transcript>.btn-row { padding:12px;margin:0; }
+.realtime-panel { margin:16px 0; }
+.realtime-panel>summary { display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;min-height:52px; }
+.realtime-panel>summary small { display:block;color:var(--muted);font-size:12px;font-weight:400;margin-top:5px; }
+.realtime-panel>summary::after { content:'+';color:var(--accent);font-size:20px; }
+.realtime-panel[open]>summary::after { content:'−'; }
+.realtime-content { padding-top:16px;border-top:1px solid var(--line);margin-top:16px; }
+.realtime-status { display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin:18px 0 12px;color:var(--accent); }
+.realtime-status strong { font-variant-numeric:tabular-nums; }
+.realtime-panel[data-state="recording"] .realtime-status>span::before { content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:8px;animation:recording-pulse 1.5s ease-in-out infinite; }
+.realtime-transcript { border:1px solid var(--line);border-radius:9px;overflow:hidden;margin:16px 0 10px; }
+.realtime-transcript>.meeting-empty { padding:12px; }
+.realtime-partial { background:var(--accent-light);border:1px dashed var(--accent);border-radius:9px;padding:12px;margin-bottom:12px; }
+.realtime-partial p { margin:6px 0 0;white-space:pre-wrap;overflow-wrap:anywhere; }
+.realtime-content>.btn-row { flex-wrap:wrap; }
+@keyframes recording-pulse { 50% { opacity:.35; } }
+@media(prefers-reduced-motion:reduce) { .realtime-panel[data-state="recording"] .realtime-status>span::before { animation:none; } }
 .process-panel>summary { list-style:none;display:flex;align-items:center;justify-content:space-between;background:var(--surface); }
 .process-panel>summary::-webkit-details-marker { display:none; }
 .process-panel>summary::after { content:'+';color:var(--muted);font-size:17px;font-weight:400; }

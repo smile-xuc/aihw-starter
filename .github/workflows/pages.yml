@@ -14,6 +14,7 @@ on:
       - "docs/**"
       - "solutions/by-category/*/demo/bailian/**"
       - "solutions/demo-standard/**"
+      - "services/asr-gateway/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -70,6 +71,9 @@ jobs:
           PLAYWRIGHT_CORE="$RUNNER_TEMP/pw/node_modules/playwright-core/index.mjs" \
           CHROME="$(command -v google-chrome)" \
           node docs/app/tools/smoke.mjs
+          PLAYWRIGHT_CORE="$RUNNER_TEMP/pw/node_modules/playwright-core/index.mjs" \
+          CHROME="$(command -v google-chrome)" \
+          node docs/app/tools/realtime-smoke.mjs
           PLAYWRIGHT_CORE="$RUNNER_TEMP/pw/node_modules/playwright-core/index.mjs" \
           CHROME="$(command -v google-chrome)" \
           node docs/app/tools/workspace-smoke.mjs
