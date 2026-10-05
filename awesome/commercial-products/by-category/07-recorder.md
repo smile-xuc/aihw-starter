@@ -17,7 +17,9 @@
   - MSRP：待核实
   - 订阅：设备含 Starter **300 min/mo**。Pro $99.99 USD/年（约 $8.33 USD/月，1200 min）、Unlimited $239.99 USD/年 · [产品页](https://www.plaud.ai/products/plaud-note-ai-voice-recorder) · [套餐页](https://www.plaud.ai/pages/plaud-ai-plan-pricing) · 查证 2026-09-30
 - **目标市场**：商务会议、访谈、通话纪要；全球零售（以官网销售区域为准）
-- **AI 能力**：112+ 语种转写、说话人标注、多维摘要与大量专业模板、Ask Plaud、桌面端会议录音工作流（官网表述）
+- **AI 能力**：
+  - AI 功能：在手机通话与现场对话两种录音模式间切换，配合 Plaud Desktop 录线上会议，也可打字、加图片、按键标记重点；Plaud Intelligence 把录音转写为 112 种语言并标注说话人，用 10,000+ 专业模板生成结构化 AI 摘要，可用 Ask Plaud 以自然语言检索、提问全部录音。实现方式：设备本地录音（最多 64 GB），在 Plaud App / Web / Desktop 中由 Plaud Intelligence 转写和摘要；套餐页「AI models (LLM)」一栏各档均列 GPT-5.5、Gemini 3.1 Pro、Claude Sonnet 4.6 等（[产品页](https://www.plaud.ai/products/plaud-note-ai-voice-recorder) · [套餐页](https://www.plaud.ai/pages/plaud-ai-plan-pricing)，查证 2026-10-05）
+  - 112+ 语种转写、说话人标注、多维摘要与大量专业模板、Ask Plaud、桌面端会议录音工作流（官网表述）
 - **大模型方案**：官网套餐页列出多模型（如 GPT / Gemini / Claude 等系列，随版本更新）；**国内大模型方案未作为默认公开绑定**
 - **公开数据**：持续主推「硬件 + AI Membership」；订阅档位见下条 Plaud 套餐
 - **关键差异化**：① 卡片形态 + 磁吸配件降低携带摩擦；② 开箱即送转写分钟降低试用门槛；③ 摘要模板与工作流（日历 / Zapier / MCP 等）做续费锚点
@@ -38,7 +40,9 @@
   - 现价：**US$189**（查证 2026-09-30）
   - MSRP：待核实
 - **目标市场**：更高频录音的专业用户（销售、咨询、内容等）
-- **AI 能力**：与 Plaud Intelligence 同生态（转写、摘要、Ask、多端管理）
+- **AI 能力**：
+  - AI 功能：4 颗 MEMS 麦克风最远 16.4 ft 拾音，自动在现场与通话录音间切换，Plaud Desktop 录线上会议；Auto Transfer 自动把录音传到 Plaud App，AutoFlow 自动转写并生成摘要；Plaud Intelligence 以 112 种语言转写并标注说话人，整理出行动项、决策和跟进事项，模板可按角色与行业定制；0.95 英寸 AMOLED InstantView 屏。实现方式：同 Plaud Note，转写与摘要由 Plaud Intelligence 完成；套餐页「AI models (LLM)」一栏各档均列 GPT-5.5、Gemini 3.1 Pro、Claude Sonnet 4.6 等（[产品页](https://www.plaud.ai/products/plaud-note-pro) · [套餐页](https://www.plaud.ai/pages/plaud-ai-plan-pricing)，查证 2026-10-05）
+  - 与 Plaud Intelligence 同生态（转写、摘要、Ask、多端管理）
 - **大模型方案**：同 Plaud 订阅体系（多模型，以套餐页为准）
 - **公开数据**：相对 Note 提升硬件档位与标价；软件能力主要仍由 Membership 解锁
 - **关键差异化**：在已验证的「卡片机 + 订阅」模型上做硬件升级，而不是另起软件闭环
