@@ -9,6 +9,7 @@ import uuid
 from aiohttp import web, ClientSession, WSMsgType, ClientTimeout
 
 MODEL = "qwen-audio-3.1-asr-flash-streaming"
+CAPABILITIES = {"service": "aihw-byok-asr", "protocol": 1, "model": MODEL, "max_seconds": 180}
 MAX_BYTES = 180 * 16000 * 2
 ORIGINS = web.AppKey("origins", frozenset)
 STATE = web.AppKey("state", dict)
@@ -30,7 +31,7 @@ def finish_task(task_id):
     return {"header": {"action": "finish-task", "task_id": task_id, "streaming": "duplex"}, "payload": {"input": {}}}
 
 async def health(request):
-    return web.json_response({"service": "aihw-byok-asr", "protocol": 1, "model": MODEL, "max_seconds": 180})
+    return web.json_response(CAPABILITIES)
 
 async def asr(request):
     if request.query_string or request.headers.get("Origin") not in request.app[ORIGINS]:
@@ -47,6 +48,11 @@ async def asr(request):
         if message.type != WSMsgType.TEXT:
             raise ValueError("缺少会话配置")
         config = json.loads(message.data)
+        # Check the same Upgrade/Origin path without accepting credentials or
+        # opening a provider connection. A probe cannot become an ASR session.
+        if config == {"type": "probe"}:
+            await client.send_json({"type": "probe", **CAPABILITIES})
+            return client
         key = config.get("key")
         if config.get("type") != "start" or not isinstance(key, str) or not key.strip() or len(key) > 512 or any(c in key for c in "\r\n"):
             raise ValueError("会话凭证无效")

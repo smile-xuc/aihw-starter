@@ -57,6 +57,21 @@ class GatewayTests(unittest.IsolatedAsyncioTestCase):
         self.fail_provider=True;ws=await self.connect();await ws.send_bytes(b'\x00\x00');message=await ws.receive_json();self.assertEqual(message['type'],'error');self.assertNotIn('test-key',str(message));await ws.close()
     async def test_health_is_not_a_provider_call(self):
         response=await self.http.get(self.gateway.make_url('/health'));data=await response.json();self.assertEqual(data['max_seconds'],180);self.assertEqual(self.starts,[])
+    async def test_probe_checks_actual_upgrade_without_credentials_or_provider(self):
+        ws=await self.http.ws_connect(self.gateway.make_url('/asr'),headers={'Origin':ORIGIN})
+        await ws.send_json({'type':'probe'})
+        self.assertEqual(await ws.receive_json(),{'type':'probe','service':'aihw-byok-asr','protocol':1,'model':MODEL,'max_seconds':180})
+        self.assertEqual((await ws.receive()).type,WSMsgType.CLOSE)
+        self.assertEqual(self.targets,[]);self.assertEqual(self.headers,[]);self.assertEqual(self.starts,[]);self.assertEqual(self.frames,[])
+        await ws.close()
+        # Probe has released its slot and cannot start an upstream task.
+        recording=await self.connect();await recording.close()
+        await asyncio.wait_for(self.provider_closed.wait(),2);self.assertEqual(len(self.starts),1)
+    async def test_probe_with_extra_fields_is_rejected_without_provider(self):
+        for payload in [{'type':'probe','key':'test-key'},{'type':'probe','region':'cn-beijing'}]:
+            ws=await self.http.ws_connect(self.gateway.make_url('/asr'),headers={'Origin':ORIGIN})
+            await ws.send_json(payload);self.assertEqual((await ws.receive_json())['type'],'error');await ws.close()
+        self.assertEqual(self.targets,[]);self.assertEqual(self.starts,[])
     async def test_duration_limit_enforced_on_actual_pcm_bytes(self):
         ws=await self.connect()
         for _ in range(MAX_BYTES//64000+1):await ws.send_bytes(b'\x00'*64000)

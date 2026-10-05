@@ -8,6 +8,35 @@ export function gatewayURL(value) {
   return url.href;
 }
 
+// Deliberately accepts no credentials; only contacts the user-selected gateway.
+export function probeGateway({url,signal,WebSocketImpl=WebSocket,timeoutMs=8000}) {
+  const target=gatewayURL(url);
+  if(signal?.aborted)return Promise.reject(new DOMException('已取消连接检查','AbortError'));
+  return new Promise((resolve,reject)=>{
+    const socket=new WebSocketImpl(target);
+    let settled=false;
+    const finish=(error,value)=>{
+      if(settled)return;settled=true;clearTimeout(timer);signal?.removeEventListener('abort',abort);
+      socket.close();if(error)reject(error);else resolve(value);
+    };
+    const abort=()=>finish(new DOMException('已取消连接检查','AbortError'));
+    const timer=setTimeout(()=>finish(Error('网关未及时响应；检查服务是否启动及 /asr 反向代理，旧版网关需更新以支持连接检查')),timeoutMs);
+    socket.onopen=()=>{if(settled)return;try{socket.send(JSON.stringify({type:'probe'}));}catch{finish(Error('无法发送连接检查；请检查网关与网络'));}};
+    socket.onmessage=({data})=>{
+      if(settled)return;
+      let value;try{value=JSON.parse(data);}catch{}
+      if(value?.type!=='probe'||value.service!=='aihw-byok-asr'||value.protocol!==1||value.model!==STREAM_MODEL||value.max_seconds!==180){
+        finish(Error('网关未返回兼容的连接检查协议；请更新网关并检查 /asr 路径'));return;
+      }
+      // Do not surface arbitrary gateway text or save the response in history.
+      finish(null,{service:value.service,protocol:value.protocol,model:value.model,max_seconds:value.max_seconds});
+    };
+    socket.onerror=()=>finish(Error('连接检查失败；核对地址、TLS 证书、WebSocket 转发、页面来源白名单及网络'));
+    socket.onclose=()=>finish(Error('网关在检查完成前断开；请检查来源白名单、并发容量并更新网关'));
+    signal?.addEventListener('abort',abort,{once:true});if(signal?.aborted)abort();
+  });
+}
+
 export class TranscriptBuffer {
   constructor() { this.confirmed = new Map(); this.partial = ''; }
   accept(value) {
@@ -37,7 +66,7 @@ export function connectASR({url,values,signal,onSentence,onAudit,WebSocketImpl=W
   const clear = () => { clearTimeout(timer); signal?.removeEventListener('abort',abort); };
   const fail = error => { if(settled)return;settled=true;clear();rejectReady(error);rejectDone(error);socket.close(); };
   const abort = () => fail(new DOMException('已停止等待，已确认转写会保留','AbortError'));
-  socket.onopen = () => { if(signal?.aborted)return abort();socket.send(JSON.stringify({type:'start',key:values.DASHSCOPE_API_KEY,region:values.DASHSCOPE_API_REGION,workspace:values.DASHSCOPE_WORKSPACE_ID || ''})); };
+  socket.onopen = () => { if(settled)return;if(signal?.aborted)return abort();try{socket.send(JSON.stringify({type:'start',key:values.DASHSCOPE_API_KEY,region:values.DASHSCOPE_API_REGION,workspace:values.DASHSCOPE_WORKSPACE_ID || ''}));}catch{fail(Error('实时网关连接已不可用；请检查网络后手动开始'));} };
   socket.onmessage = ({data}) => {
     if(settled)return;
     try {
