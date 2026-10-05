@@ -43,6 +43,7 @@ test('disconnect and send backlog reject once and never create a replacement soc
 test('early task finish is rejected and the tail timeout preserves external confirmed data',async()=>{
   const c=connection({timeoutMs:20});const socket=ready();await c.ready;socket.event({type:'finished'});await assert.rejects(c.done,/提前结束/);
   const d=connection({timeoutMs:20});ready();await d.ready;await assert.rejects(d.finish(),/最后一段转写超时/);
+  let accepted=false;const e=connection({onSentence(){accepted=true;}});const malformed=ready();await e.ready;malformed.event({type:'sentence',text:['invalid'],begin_ms:0,end_ms:1000,final:true});await assert.rejects(e.done,/文字格式无效/);assert.equal(accepted,false);
 });
 test('abort rejects both pending operations and closes the current socket',async()=>{
   const ctrl=new AbortController(),c=connection({signal:ctrl.signal});const opened=assert.rejects(c.ready,{name:'AbortError'}),done=assert.rejects(c.done,{name:'AbortError'});ctrl.abort();await Promise.all([opened,done]);assert.equal(Socket.last.closed,true);

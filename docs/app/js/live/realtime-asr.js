@@ -45,7 +45,7 @@ export function connectASR({url,values,signal,onSentence,onAudit,WebSocketImpl=W
       if(value.type==='error')throw Error('实时转写未完成：'+(typeof value.message==='string'?value.message:'网关或模型响应异常'));
       if(value.type==='submitted'){if(taskId || typeof value.task_id!=='string')throw Error('实时任务状态无效');taskId=value.task_id;onAudit?.({requestId:taskId,usage:{known:false}});}
       else if(value.type==='ready') { if(ready || typeof value.task_id!=='string' || value.task_id!==taskId)throw Error('实时任务状态无效');ready=true;clearTimeout(timer);onAudit?.({requestId:taskId,usage:{known:false}});resolveReady(); }
-      else if(value.type==='sentence') { if(!ready)throw Error('实时转写早于任务就绪');onSentence(value); }
+      else if(value.type==='sentence') { if(!ready)throw Error('实时转写早于任务就绪');if(typeof value.text!=='string')throw Error('实时转写文字格式无效；已确认内容会保留');onSentence(value); }
       else if(value.type==='finished') { if(!ready || !closing)throw Error('实时任务提前结束');finished=true;settled=true;clear();onAudit?.({requestId:taskId,usage:{known:false,...(Number.isFinite(value.duration)&&value.duration>=0?{duration:value.duration}:{})}});resolveDone();socket.close(); }
       else throw Error('未知的实时转写消息');
     } catch(error) { fail(error); }
