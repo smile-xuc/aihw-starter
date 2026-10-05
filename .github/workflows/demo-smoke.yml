@@ -42,3 +42,9 @@ jobs:
       # docs/app/data/ 由 build_registry.py 生成：在这里重新生成一遍，与提交的文件逐字节比对
       - name: Registry and replay traces up to date
         run: python solutions/demo-standard/check.py registry
+
+      # 可选网关有独立依赖；不改变上方全部 demo 的标准库 mock 检查。
+      - name: BYOK ASR gateway regressions (local fake provider, no key)
+        run: |
+          pip install -r services/asr-gateway/requirements.txt
+          python -m unittest discover -s services/asr-gateway -p 'test_*.py'
