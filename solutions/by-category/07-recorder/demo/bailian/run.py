@@ -19,6 +19,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import base64
 import json
 import math
@@ -55,13 +56,30 @@ LLM_TIERS = {
     },
 }
 
-MINUTES_PROMPT = """你是会议纪要助手。输入是录音转写稿，每行格式为「[分:秒] 说话人N：内容」，或「[分:秒] 声道N：内容」。
+MINUTES_SCHEMA = {
+    "type": "object", "additionalProperties": False,
+    "required": ["title", "summary", "agenda", "decisions", "action_items", "open_questions", "risks"],
+    "properties": {
+        "title": {"type": "string"}, "summary": {"type": "string"},
+        **{key: {"type": "array", "items": {"type": "string"}}
+           for key in ("agenda", "open_questions", "risks")},
+        **{key: {"type": "array", "items": {
+            "type": "object", "additionalProperties": False,
+            "required": [*fields, "source_ids"],
+            "properties": {**{field: {"type": "string"} for field in fields},
+                           "source_ids": {"type": "array", "items": {"type": "string"}}},
+        }} for key, fields in (("decisions", ["content", "owner"]),
+                               ("action_items", ["task", "owner", "due"]))},
+    },
+}
+
+MINUTES_PROMPT = """你是会议纪要助手。输入是录音转写稿，每行格式为「[s001] [分:秒] 说话人N：内容」，或「[s001] [分:秒] 声道N：内容」。s001 是原句编号，不是说话人。
 只依据转写稿，输出一个 JSON 对象，不要输出其他文字：
 {"title": "会议主题，20 字以内",
  "summary": "两三句话的会议摘要",
  "agenda": ["议题"],
- "decisions": [{"content": "已拍板的事项", "owner": "明确指定的负责人；未知为空字符串"}],
- "action_items": [{"task": "明确提出的行动", "owner": "明确指定的负责人；未知为空字符串", "due": "原话中的期限；未知为空字符串"}],
+ "decisions": [{"content": "已拍板的事项", "owner": "明确指定的负责人；未知为空字符串", "source_ids": ["s001"]}],
+ "action_items": [{"task": "明确提出的行动", "owner": "明确指定的负责人；未知为空字符串", "due": "原话中的期限；未知为空字符串", "source_ids": ["s001"]}],
  "open_questions": ["待定 / 未决事项"],
  "risks": ["风险"]}
 规则：
@@ -74,17 +92,20 @@ MINUTES_PROMPT = """你是会议纪要助手。输入是录音转写稿，每行
 - 期限照抄原话（如「周五前」）；不推算具体日期、不补年份，不猜真实人名、职位、数字
 - 矛盾或含糊的信息放 open_questions，不替参会者拍板；转写错字可按上下文理解，但不改数字
 - summary、title 和 risks 也必须有转写依据；风险不凭行业常识额外添加"""
+MINUTES_PROMPT += "\n- 每条决策和待办的 source_ids 列出实际支持该内容、负责人、期限的原句编号，可引用多句；只能使用输入已有编号。找不到支持原句时用空数组，不编造编号，也不将无依据的结论写成事实。"
 
 
 @dataclass
 class Sentence:
-    begin_ms: int
-    end_ms: int
+    begin_ms: int | None
+    end_ms: int | None
     speaker: str
     text: str
 
     def line(self) -> str:
-        m, s = divmod(self.begin_ms // 1000, 60)
+        if self.begin_ms is None:
+            return f"[时间未提供] {self.speaker}：{self.text}"
+        m, s = divmod(int(self.begin_ms) // 1000, 60)
         return f"[{m:02d}:{s:02d}] {self.speaker}：{self.text}"
 
 
@@ -126,8 +147,11 @@ def to_sentences(items: list[dict], channel_labels: bool = False) -> list[Senten
         text = (item.get("text") or "").strip()
         if text:
             label = f"声道{int(item.get('channel_id') or 0) + 1}" if channel_labels else speaker_label(item.get("speaker_id"))
-            out.append(Sentence(int(item.get("begin_time") or 0), int(item.get("end_time") or 0), label, text))
-    return sorted(out, key=lambda sentence: (sentence.begin_ms, sentence.end_ms))
+            begin, end = item.get("begin_time"), item.get("end_time")
+            if any(value is not None and (isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value < 0) for value in (begin, end)) or (begin is not None and end is not None and end < begin):
+                raise kit.HttpError("转写时间无效")
+            out.append(Sentence(begin, end, label, text))
+    return sorted(out, key=lambda sentence: (sentence.begin_ms, sentence.end_ms)) if all(s.begin_ms is not None and s.end_ms is not None for s in out) else out
 
 
 # ───────────────────────── 转写 ─────────────────────────
@@ -248,7 +272,7 @@ def sync_truncation(stats: Stats, sentences: list[Sentence], seconds: float) -> 
     """同步接口单次最多输出 1,024 Token；输出接近上限或结尾缺一大段时，判为疑似截断。"""
     if stats.asr_tokens and stats.asr_tokens[1] >= SYNC_MAX_OUTPUT_TOKENS * 0.95:
         return f"输出 {stats.asr_tokens[1]} Token，接近 {SYNC_MAX_OUTPUT_TOKENS} 上限"
-    if seconds and sentences and sentences[-1].end_ms / 1000 < seconds - 10:
+    if seconds and sentences and sentences[-1].end_ms is not None and sentences[-1].end_ms / 1000 < seconds - 10:
         return f"最后一句结束于 {sentences[-1].end_ms / 1000:.0f} s，录音长 {seconds:.0f} s"
     return None
 
@@ -317,12 +341,16 @@ def transcribe_url(http, cfg: kit.Config, url: str, speakers: int | None, stats:
 # ───────────────────────── 纪要 ─────────────────────────
 
 def summarize(http, cfg: kit.Config, transcript: str, stats: Stats) -> dict:
+    source_ids = re.findall(r"^\[(s\d{3,})\]", transcript, re.MULTILINE)
+    schema = copy.deepcopy(MINUTES_SCHEMA)
+    for key in ("decisions", "action_items"):
+        schema["properties"][key]["items"]["properties"]["source_ids"]["items"]["enum"] = source_ids
     payload = {
         "model": stats.llm_model,
         "messages": [{"role": "system", "content": MINUTES_PROMPT}, {"role": "user", "content": transcript}],
         "stream": True,
         "stream_options": {"include_usage": True},
-        "response_format": {"type": "json_object"},
+        "response_format": {"type": "json_schema", "json_schema": {"name": "meeting_minutes", "strict": True, "schema": schema}},
         "enable_thinking": False,
     }
     kit.say("云端", f"纪要 {stats.llm_model}（流式）……")
@@ -347,6 +375,11 @@ def summarize(http, cfg: kit.Config, transcript: str, stats: Stats) -> dict:
     except json.JSONDecodeError as exc:
         raise kit.HttpError(f"纪要不是合法 JSON（{exc}）：{text[:200]}") from None
     validate_minutes(result)
+    for key in ("decisions", "action_items"):
+        for item in result[key]:
+            refs = item.get("source_ids")
+            if not isinstance(refs, list) or any(ref not in source_ids for ref in refs) or len(set(refs)) != len(refs):
+                raise kit.HttpError("纪要来源编号无效；转写已保留，请核对后手动重试")
     return result
 
 
@@ -487,15 +520,20 @@ def main() -> None:
         if truncated:
             kit.say("提示", f"同步转写结果可能被截断（{truncated}）；去掉 --sync 改走默认 filetrans 对比")
         transcript = "\n".join(s.line() for s in sentences)
-        seconds = seconds or stats.asr_seconds or max(s.end_ms for s in sentences) / 1000
+        seconds = seconds or stats.asr_seconds or max((s.end_ms for s in sentences if s.end_ms is not None), default=0) / 1000
         out = DEMO_DIR / "out"
         out.mkdir(exist_ok=True)
         (out / "transcript.txt").write_text(transcript + "\n", encoding="utf-8")
+        source = {"schema": "aihw/transcript@0.1", "sentences": [
+            {"id": f"s{i + 1:03d}", "begin_ms": s.begin_ms, "end_ms": s.end_ms,
+             "speaker": s.speaker, "text": s.text} for i, s in enumerate(sentences)]}
+        (out / "transcript.json").write_text(json.dumps(source, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         # 不让上次生成的纪要与本次转写混在一起；失败时仍可取走本次原文。
         for name in ("minutes.json", "minutes.md"):
             (out / name).unlink(missing_ok=True)
         kit.say("App", "转写已保存 → out/transcript.txt；纪要失败时仍可取用原文")
-        minutes = summarize(http, cfg, transcript, stats)
+        linked_transcript = "\n".join(f"[s{i + 1:03d}] {s.line()}" for i, s in enumerate(sentences))
+        minutes = summarize(http, cfg, linked_transcript, stats)
         first_ms = None if stats.llm_first_at is None else stats.llm_first_at - t_end
     except kit.HttpError as exc:
         sys.exit(f"[云端] {exc}")

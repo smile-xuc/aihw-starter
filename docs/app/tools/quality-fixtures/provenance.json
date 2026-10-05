@@ -1,0 +1,54 @@
+{
+  "source": "Public synthetic samples already in this repository; no private media or model-generated scoring",
+  "ffmpeg": "ffmpeg version 7.1.5-0+deb13u1 Copyright (c) 2000-2026 the FFmpeg developers",
+  "files": [
+    {
+      "file": "audio/agenda.mp3",
+      "source": "docs/app/data/assets/07-recorder.bailian/samples/meeting.mp3",
+      "source_start_seconds": 0,
+      "source_end_seconds": 7.8,
+      "duration_seconds": 7.884,
+      "channels": 1
+    },
+    {
+      "file": "audio/quote.mp3",
+      "source": "docs/app/data/assets/07-recorder.bailian/samples/meeting.mp3",
+      "source_start_seconds": 8.05,
+      "source_end_seconds": 20.65,
+      "duration_seconds": 12.672,
+      "channels": 1
+    },
+    {
+      "file": "audio/risk.mp3",
+      "source": "docs/app/data/assets/07-recorder.bailian/samples/meeting.mp3",
+      "source_start_seconds": 21.075,
+      "source_end_seconds": 39.55,
+      "duration_seconds": 18.576,
+      "channels": 1
+    },
+    {
+      "file": "audio/closing.mp3",
+      "source": "docs/app/data/assets/07-recorder.bailian/samples/meeting.mp3",
+      "source_start_seconds": 45.675,
+      "source_end_seconds": 54.5,
+      "duration_seconds": 8.928,
+      "channels": 1
+    },
+    {
+      "file": "audio/stereo-duplicate.mp3",
+      "source": "docs/app/data/assets/07-recorder.bailian/samples/meeting.mp3",
+      "source_start_seconds": 8.05,
+      "source_end_seconds": 20.65,
+      "duration_seconds": 12.672,
+      "channels": 2
+    },
+    {
+      "file": "audio/silence.wav",
+      "source": "ffmpeg anullsrc, digital silence",
+      "source_start_seconds": null,
+      "source_end_seconds": null,
+      "duration_seconds": 3.0,
+      "channels": 1
+    }
+  ]
+}

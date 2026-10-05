@@ -194,7 +194,7 @@ test('07 missing ASR usage cannot create a zero cost from unknown duration',asyn
   const x=context(await constants('07-recorder.bailian'),{hasAsset:()=>false,transcribeFile:async()=>asr({usage:{}}),chat:async()=>turn(minutes())});const result=await run07(x);assert.equal(result.cost,null);assert.equal(result.costStatus,'unknown');assert.ok(result.warnings.some(w=>w.includes('费用未知')));
 });
 test('07 records truncation warnings even when partial minutes JSON fails',async()=>{
-  await assert.rejects(run07(context(await constants('07-recorder.bailian'),{transcribeFile:async()=>asr(),chat:async()=>turn('{',{finish_reason:'length',usage:{prompt:1,completion:1000,known:true}})})),e=>e.outputs?.length===1 && e.warnings?.some(w=>/纪要.*截断/.test(w)));
+  await assert.rejects(run07(context(await constants('07-recorder.bailian'),{transcribeFile:async()=>asr(),chat:async()=>turn('{',{finish_reason:'length',usage:{prompt:1,completion:1000,known:true}})})),e=>e.outputs?.some(f=>f.path==='out/transcript.txt') && e.outputs?.some(f=>f.path==='out/transcript.json') && e.warnings?.some(w=>/纪要.*截断/.test(w)));
 });
 test('07 invalid custom recording fails before provider calls, zero ending warns incomplete',async()=>{
   let calls=0;const c=await constants('07-recorder.bailian');await assert.rejects(run07(context(c,{input:audioInput({durationSeconds:Infinity}),transcribeFile:async()=>{calls++;return asr();}})),/时长/);assert.equal(calls,0);
@@ -317,7 +317,7 @@ const malformedSentences = [
 for(const [name,sentence] of malformedSentences)test(`07 rejects malformed sentence ${name} before minutes request`,async()=>{
   let calls=0;const x=context(await constants('07-recorder.bailian'),{transcribeFile:async()=>asr({output:{sentences:[sentence]}}),chat:async()=>{calls++;return turn(minutes());}});await assert.rejects(run07(x),/转写.*(文字|时间|说话人|句子)/);assert.equal(calls,0);
 });
-test('07 optional omitted sentence timestamps and speaker stay supported',async()=>{const result=await run07(context(await constants('07-recorder.bailian'),{transcribeFile:async()=>asr({output:{sentences:[{text:'仅有文字'}]}}),chat:async()=>turn(minutes())}));assert.ok(result.outputs.find(o=>o.path==='out/transcript.txt').text.includes('[00:00] 说话人：仅有文字'));});
+test('07 optional omitted timestamps stay unknown and available text remains usable',async()=>{const result=await run07(context(await constants('07-recorder.bailian'),{transcribeFile:async()=>asr({output:{sentences:[{text:'仅有文字'}]}}),chat:async()=>turn(minutes())}));assert.ok(result.outputs.find(o=>o.path==='out/transcript.txt').text.includes('[时间未提供] 说话人：仅有文字'));const source=JSON.parse(result.outputs.find(o=>o.path==='out/transcript.json').text);assert.equal(source.sentences[0].begin_ms,null);assert.equal(source.sentences[0].end_ms,null);});
 test('07 mono transcript channel metadata must not replace an actual speaker label',async()=>{
   const x=context(await constants('07-recorder.bailian'),{input:audioInput(),transcribeFile:async()=>asr({output:{sentences:[{begin_time:0,end_time:55000,text:'单声道第二位发言人',channel_id:0,speaker_id:1}]}}),chat:async()=>turn(minutes())});
   const result=await run07(x);

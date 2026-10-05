@@ -3,6 +3,7 @@ import { validateInput } from './live/input.js';
 import { normalizeUsageRecords } from './data.js';
 import { readMeetingResult, meetingMarkup, meetingMarkdown, meetingSectionText } from './meeting-results.js';
 import { readPhotoResult, photoMarkup, photoResultText } from './photo-results.js';
+import { readTranscript, timestamp, editMeetingTrace } from './meeting-evidence.js';
 
 export const PRODUCTS = {
   '02-ai-glasses.bailian': {title:'一看即懂', description:'拍下眼前的画面，问出你想知道的事。得到简明回答，也可以听 AI 播报。',kind:'image',question:'这张图片里有什么？'},
@@ -84,13 +85,15 @@ export function mainOutput(trace) {
   const derived = trace?.mode === 'mock' ? (trace.events || []).filter(e=>e.kind === 'result').map(e=>[e.text,...(e.lines || [])].join('\n')).join('\n\n') : '';
   return (trace?.outputs||[]).find(f=>/\/(answer\.txt|minutes\.md)$/.test(f.path)) || (trace?.outputs||[]).find(f=>f.text!=null && !/transcript|\.json$/.test(f.path)) || (trace?.outputs||[]).find(f=>f.text!=null && !/transcript/.test(f.path)) || (derived ? {path:'out/answer.txt',media_type:'text/plain',text:derived} : undefined);
 }
-export function renderOutcome(slot, trace, {label='',historyNote='',settingsHref='#/me',secrets=[],speechURL=null,canRetry=false}={}) {
+export function renderOutcome(slot, trace, options={}) {
+  const {label='',historyNote='',settingsHref='#/me',secrets=[],speechURL=null,canRetry=false,onChange=null,editNotice='',experienceHref=''}=options;
   trace=safeTrace(trace,secrets);
   const meeting=readMeetingResult(trace);
   let output=meeting?{path:'out/minutes.md',media_type:'text/markdown',text:meetingMarkdown(meeting)}:mainOutput(trace);
   const photo=readPhotoResult(trace,output);
   if(photo)output={path:'out/answer.txt',media_type:'text/plain',text:photoResultText(photo)};
-  const transcripts=(trace?.outputs||[]).filter(f=>/transcript/.test(f.path)&&f!==output&&typeof f.text==='string'&&f.text.trim());
+  const source=readTranscript(trace);
+  const transcripts=(trace?.outputs||[]).filter(f=>/transcript/.test(f.path)&&!f.path.endsWith('.json')&&f!==output&&typeof f.text==='string'&&f.text.trim());
   const partialMeeting=trace.solution==='07-recorder.bailian'&&!meeting&&!output&&transcripts.length>0;
   const status=trace?.status==='stopped'?(canRetry?'已停止，已得到的文字仍可查看':'已停止的记录'):trace?.error?(canRetry?'本次未完成，请检查后手动重试':'未完成的记录'):trace?.mode==='mock'?'免费样本 · 预录回放':'本次结果 · 内容由 AI 生成';
   mount(slot,html`<div class="outcome panel" aria-live="polite"><div class="section-title"><h2>${label||status}</h2><span class="chip ${trace?.mode==='mock'?'accent':''}">${trace?.mode==='mock'?'mock 示例':trace?.status==='failed'?'失败':trace?.status==='stopped'?'已停止':'真跑记录'}</span></div>
@@ -98,10 +101,12 @@ export function renderOutcome(slot, trace, {label='',historyNote='',settingsHref
     ${trace.status==='stopped' ? html`<p class="info-note">只停止了本机等待，已提交的云端任务可能继续运行并计费。已得到的文字可以继续复制或下载。</p>` : ''}
     ${output?html`<div class="result-text">${meeting?meetingMarkup(meeting):photo?photoMarkup(photo):output.media_type==='text/markdown'||output.type==='text/markdown'?markdown(output.text):html`<pre class="wrap">${output.text}</pre>`}</div>
       <div class="btn-row"><button type="button" class="secondary-action" data-result-copy>${meeting?'复制完整纪要':'复制结果'}</button><button type="button" class="secondary-action" data-result-download>${meeting?'下载纪要':'下载结果'}</button></div>`:partialMeeting?html`<p class="inline-ok">转写已保留，纪要尚未完成。可以先复制或下载转写。</p>`:html`<p>${status}</p>`}
+    ${meeting?html`<p class="small meeting-save-status" data-meeting-save-status role="status">${editNotice || (onChange ? '人工修正会更新这条本机历史，并保留 AI 原值。' : '可试着修正信息；修正仅保留在当前页面，也可复制或导出。')}</p>`:''}
     ${speechURL?html`<div class="input-preview"><p class="small">听播报 · AI 合成语音（仅本次临时可用）</p><audio aria-label="听播报" controls preload="none" src="${speechURL}"></audio></div>`:''}
-    ${transcripts.map((f,index)=>html`<details class="meeting-transcript" ${partialMeeting?html`open`:''}><summary>原始转写<span class="small">${partialMeeting?'已保留':'点击展开'}</span></summary><pre class="wrap">${f.text}</pre><div class="btn-row"><button type="button" class="secondary-action" data-transcript-copy="${index}">复制转写</button><button type="button" class="secondary-action" data-transcript-download="${index}">下载转写</button></div></details>`)}
+    ${transcripts.map((f,index)=>html`<details class="meeting-transcript" ${partialMeeting?html`open`:''} ${source && index===0 ? html`data-meeting-transcript`:''}><summary>原始转写<span class="small">${partialMeeting?'已保留':'点击展开'}</span></summary>${source && index===0 ? html`<p class="small">以下是 ASR 转写，原句关联可帮助核对，但不代表识别内容已确认。发言标签不代表真实身份。</p><ol class="transcript-sentences">${source.sentences.map(s=>html`<li data-transcript-id="${s.id}" tabindex="-1"><span class="transcript-meta">${s.id} · ${timestamp(s.begin_ms)} · ${s.speaker}</span><p>${s.text}</p></li>`)}</ol>` : html`<pre class="wrap">${f.text}</pre>`}<div class="btn-row"><button type="button" class="secondary-action" data-transcript-copy="${index}">复制转写</button><button type="button" class="secondary-action" data-transcript-download="${index}">下载转写</button></div></details>`)}
     ${trace?.result?html`<p class="small result-cost">${trace.mode==='mock'?'示例估算（没有产生费用）':costText(trace.result)}</p><div class="metric-list">${metricLines(trace.result).map(l=>html`<span>${l}</span>`)}</div>${(trace.result.warnings||[]).map(w=>html`<p class="info-note">${w}</p>`)}`:''}
     ${historyNote?html`<p class="small history-note">${historyNote}</p>`:''}
+    ${experienceHref?html`<p class="small"><a class="secondary-action" data-history-experience href="${experienceHref}">返回体验页面</a></p>`:''}
     ${canRetry && (trace.status==='failed' || trace.status==='stopped') ? html`<div class="retry-action"><button type="button" class="secondary-action" data-outcome-retry>检查后重新运行</button><p class="small">可修改上方的素材和提问。重新运行需要再次确认计费；不会自动重试。</p></div>` : ''}
     <button type="button" class="secondary-action block" data-export>导出本次记录（aihw/trace@0.1）</button></div>`);
   slot.querySelector('[data-result-copy]')?.addEventListener('click',()=>copyText(output.text));
@@ -112,6 +117,38 @@ export function renderOutcome(slot, trace, {label='',historyNote='',settingsHref
     slot.querySelector(`[data-transcript-download="${index}"]`)?.addEventListener('click',()=>download(file.path.split('/').pop(),file.text,file.media_type||'text/plain'));
   });
   slot.querySelector('[data-export]')?.addEventListener('click',()=>download(`${trace.solution}.${trace.variant}.json`,JSON.stringify(safeTrace(trace),null,2)));
+  const root=slot.querySelector('.outcome');
+  const saveEdit=(key,changes,restore=false)=>{
+    const [section,rawIndex]=key.split(':');
+    const next=editMeetingTrace(trace,section,Number(rawIndex),changes,{restore});
+    const effective=readMeetingResult(next);
+    const markdown=meetingMarkdown(effective);
+    const file=next.outputs.find(f=>f.path==='out/minutes.md');
+    if(file){file.text=markdown;file.bytes=new TextEncoder().encode(markdown).length;}
+    let notice=onChange?'修正已保存到这条本机历史，AI 原值仍保留。':'修正仅保留在当前页面；复制、下载和导出会包含修正。';
+    if(onChange){const saved=onChange(next);if(saved && !saved.saved)notice=saved.error+' 修正仍可复制、下载和导出。';}
+    renderOutcome(slot,next,{...options,editNotice:restore?'已恢复 AI 原值。 '+notice:notice});
+    slot.querySelector(`[data-meeting-edit="${key}"]`)?.focus();
+  };
+  root?.addEventListener('click',event=>{
+    const jump=event.target.closest('[data-meeting-source]');
+    if(jump){
+      const node=slot.querySelector(`[data-transcript-id="${jump.dataset.meetingSource}"]`);
+      if(node){node.closest('details').open=true;for(const old of slot.querySelectorAll('.transcript-sentences .is-linked'))old.classList.remove('is-linked');node.classList.add('is-linked');node.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});node.focus({preventScroll:true});}
+    }
+    const edit=event.target.closest('[data-meeting-edit]');
+    if(edit){const form=slot.querySelector(`[data-meeting-edit-form="${edit.dataset.meetingEdit}"]`);form.hidden=!form.hidden;edit.setAttribute('aria-expanded',String(!form.hidden));if(!form.hidden)form.querySelector('input').focus();else form.reset();}
+    const cancel=event.target.closest('[data-meeting-edit-cancel]');
+    if(cancel){const form=cancel.closest('form');form.hidden=true;form.reset();form.querySelector('[data-meeting-edit-error]').textContent='';const button=slot.querySelector(`[data-meeting-edit="${form.dataset.meetingEditForm}"]`);button.setAttribute('aria-expanded','false');button.focus();}
+    const restore=event.target.closest('[data-meeting-restore]');
+    if(restore)saveEdit(restore.dataset.meetingRestore,{},true);
+  });
+  root?.addEventListener('submit',event=>{
+    const form=event.target.closest('[data-meeting-edit-form]');if(!form)return;
+    event.preventDefault();
+    try{saveEdit(form.dataset.meetingEditForm,Object.fromEntries(new FormData(form)));}
+    catch(error){form.querySelector('[data-meeting-edit-error]').textContent=error.message;}
+  });
 }
 
 export function fileType(file,kind) {

@@ -5,8 +5,8 @@ import { costOf, parseJson, validCount } from './client.js';
 import { validateInput } from './input.js';
 import { validateMinutes, confirmationText } from '../meeting-results.js';
 import { audioChannels } from './audio-channels.js';
+import { sentenceId, transcriptText, groundedResponseFormat, validateSources } from '../meeting-evidence.js';
 
-const pad = (n) => String(n).padStart(2, '0');
 const speakerLabel = (raw) => (raw == null ? '说话人' : `说话人${raw + 1}`);
 
 function toSentences(items, channels) {
@@ -15,19 +15,14 @@ function toSentences(items, channels) {
     const fail = (field) => { throw new Error(`转写第 ${index + 1} 句${field}无效`); };
     if (!it || typeof it !== 'object' || Array.isArray(it)) fail('句子格式');
     if (typeof it.text !== 'string') fail('文字');
-    const begin = it.begin_time === undefined ? 0 : it.begin_time;
-    const end = it.end_time === undefined ? begin : it.end_time;
-    if (!validCount(begin) || !validCount(end) || end < begin) fail('时间');
+    const begin = it.begin_time ?? null;
+    const end = it.end_time ?? null;
+    if ((begin !== null && !validCount(begin)) || (end !== null && !validCount(end)) || (begin !== null && end !== null && end < begin)) fail('时间');
     if (it.speaker_id != null && (!Number.isInteger(it.speaker_id) || it.speaker_id < 0)) fail('说话人标识');
     if (channels === 2 && ![0, 1].includes(it.channel_id)) fail('声道标识');
-    return { begin, end, speaker: channels === 2 ? `声道${it.channel_id + 1}` : speakerLabel(it.speaker_id), text: it.text.trim() };
+    return { begin_ms: begin, end_ms: end, speaker: channels === 2 ? `声道${it.channel_id + 1}` : speakerLabel(it.speaker_id), text: it.text.trim() };
   }).filter((sentence) => sentence.text);
 }
-
-const line = (s) => {
-  const sec = Math.floor(s.begin / 1000);
-  return `[${pad(Math.floor(sec / 60))}:${pad(sec % 60)}] ${s.speaker}：${s.text}`;
-};
 
 function render(minutes, speakers, seconds, models) {
   const bullet = (items, fmt) => (items.length ? items.map((i) => `- ${fmt(i)}`) : ['- （无）']);
@@ -72,10 +67,14 @@ export default async function run(x) {
   const sentences = toSentences(output.sentences || (output.sentence ? [output.sentence] : []), channels);
   if (!sentences.length) throw new Error('转写结果为空：检查录音是否有人声');
   const speakers = new Set(sentences.map((s) => s.speaker)).size;
-  const transcript = sentences.map(line).join('\n');
-  const outputs = [{ path: 'out/transcript.txt', media_type: 'text/plain', type: 'text/plain', text: `${transcript}\n` }];
-  const lastEnd = Math.max(...sentences.map((s) => Number.isFinite(s.end) ? s.end : 0)) / 1000;
-  if (seconds > 0 && seconds - lastEnd > 10) warn('转写可能不完整：最后一句结束时间距离录音结尾超过 10 秒，请核对录音');
+  const source = { schema: 'aihw/transcript@0.1', sentences: sentences.map((s, i) => ({ id: sentenceId(i), ...s })) };
+  const transcript = transcriptText(source);
+  const outputs = [{ path: 'out/transcript.txt', media_type: 'text/plain', type: 'text/plain', text: `${transcript}\n` },
+    { path: 'out/transcript.json', media_type: 'application/json', type: 'application/json', text: JSON.stringify(source, null, 2) }];
+  const ends = sentences.filter(s => s.end_ms != null).map(s => s.end_ms);
+  const lastEnd = ends.length === sentences.length ? Math.max(...ends) / 1000 : null;
+  if (seconds > 0 && lastEnd !== null && seconds - lastEnd > 10) warn('转写可能不完整：最后一句结束时间距离录音结尾超过 10 秒，请核对录音');
+  if (lastEnd === null) warn('转写未提供结束时间，无法判断尾句是否完整，请核对录音');
   if (resp.finish_reason === 'length' || output.finish_reason === 'length') warn('转写可能被截断，请核对完整性');
   x.say('云端', `转写完成 · ${sentences.length} 句 · ${speakers} 个发言标签 · ${(asrMs / 1000).toFixed(1)} s`, transcript);
   const usage = resp.usage || {};
@@ -93,11 +92,11 @@ export default async function run(x) {
     x.say('云端', `纪要 ${model}（流式）……`);
     const card = x.say('App', '纪要生成中……');
     const turn = await x.chat({ model,
-      messages: [{ role: 'system', content: c.MINUTES_PROMPT }, { role: 'user', content: transcript }],
-      response_format: { type: 'json_object' }, enable_thinking: false,
+      messages: [{ role: 'system', content: c.MINUTES_PROMPT }, { role: 'user', content: transcriptText(source, { ids: true }) }],
+      response_format: groundedResponseFormat(c.MINUTES_SCHEMA, source), enable_thinking: false,
     }, { allowNetworkFallback: false, onText: (_, all) => card.update({ text: `纪要生成中……已收到 ${all.length} 字` }) });
     if (turn.finish_reason === 'length') warn('纪要可能被截断，请核对完整性');
-    const minutes = validateMinutes(parseJson(turn.text, '纪要'));
+    const minutes = validateSources(validateMinutes(parseJson(turn.text, '纪要')), source);
     seconds = seconds || lastEnd;
     const markdown = render(minutes, speakers, seconds, models);
     card.update({ text: '推送纪要卡片 → out/minutes.md（另存 minutes.json、transcript.txt）', detail: markdown });
