@@ -23,6 +23,15 @@ export function deleteHistory(id,store) {
   try {(store||storage()).setItem(KEY,JSON.stringify(readHistory(store).records.filter(r=>r.id!==id)));return {saved:true,error:''};}
   catch {return {saved:false,error:'历史删除失败：本机存储不可用'};}
 }
+export function updateHistory(id,trace,store) {
+  try {
+    const target=store||storage(),previous=readHistory(target);
+    if(previous.error || !previous.records.some(record=>record.id===id))throw Error('记录不存在');
+    const records=previous.records.map(record=>record.id===id?{id,trace:safeTrace(trace)}:record);
+    if(new TextEncoder().encode(JSON.stringify(records)).length>MAX_BYTES)throw Error('容量不足');
+    target.setItem(KEY,JSON.stringify(records));return {saved:true,error:''};
+  } catch {return {saved:false,error:'修正未保存到历史：记录已删除、本机存储不可用或容量不足。'};}
+}
 export function clearHistory(store) {
   try {(store||storage()).setItem(KEY,'[]');return {saved:true,error:''};}
   catch {return {saved:false,error:'历史清除失败：本机存储不可用'};}

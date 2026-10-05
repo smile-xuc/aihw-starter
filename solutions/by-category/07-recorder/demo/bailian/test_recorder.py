@@ -58,7 +58,13 @@ class RecorderTests(unittest.TestCase):
                 self.assertTrue(any("/uploads?action=getPolicy" in url for url, _ in calls))
                 models = [payload["model"] for _, payload in calls if payload and "model" in payload]
                 self.assertEqual(models, ["qwen-audio-3.1-asr-flash-filetrans", "qwen3.8-flash"])
-                self.assertEqual(set(files), {"transcript.txt", "minutes.json", "minutes.md"})
+                self.assertEqual(set(files), {"transcript.txt", "transcript.json", "minutes.json", "minutes.md"})
+                sources = json.loads(files["transcript.json"])["sentences"]
+                self.assertEqual(sources[0]["id"], "s001")
+                self.assertEqual(sources[0]["begin_ms"], 0)
+                request = calls[-1][1]
+                self.assertTrue(request["response_format"]["json_schema"]["strict"])
+                self.assertEqual(request["response_format"]["json_schema"]["schema"]["properties"]["action_items"]["items"]["properties"]["source_ids"]["items"]["enum"], [s["id"] for s in sources])
                 self.assertEqual(json.loads(files["minutes.json"])["decisions"][0]["owner"], "")
                 self.assertIn("负责人：待确认", files["minutes.md"])
                 self.assertEqual(finish.call_args.kwargs["models"], models)
@@ -83,7 +89,7 @@ class RecorderTests(unittest.TestCase):
                 raise kit.HttpError("模拟总结服务超时")
 
         files, output, finish = self.invoke(http_class=FailedSummary, fail=True)
-        self.assertEqual(set(files), {"transcript.txt"})
+        self.assertEqual(set(files), {"transcript.txt", "transcript.json"})
         self.assertIn("[00:00] 说话人1", files["transcript.txt"])
         self.assertIn("转写已保存", output)
         finish.assert_not_called()
@@ -94,7 +100,7 @@ class RecorderTests(unittest.TestCase):
                 yield {"choices": [{"delta": {"content": "[]"}}]}
 
         files, _, _ = self.invoke(http_class=InvalidSummary, fail=True)
-        self.assertEqual(set(files), {"transcript.txt"})
+        self.assertEqual(set(files), {"transcript.txt", "transcript.json"})
 
     def test_missing_summary_usage_is_not_free(self):
         class NoUsage(provider.MockHttp):
@@ -169,6 +175,9 @@ class RecorderTests(unittest.TestCase):
                     {"channel_id":1,"sentences":[{"begin_time":5000,"end_time":10000,"text":"右声道","speaker_id":0}]},
                     {"channel_id":0,"sentences":[{"begin_time":0,"end_time":60000,"text":"左声道","speaker_id":0}]}
                 ]}).encode()
+            def sse(self, *args, **kwargs):
+                minutes = {"title":"双声道测试", "summary":"左右声道识别完成", "agenda":[], "decisions":[], "action_items":[], "open_questions":[], "risks":[]}
+                yield {"choices":[{"delta":{"content":json.dumps(minutes)}}]}
         files, _, _ = self.invoke(("--audio-url","https://example.com/stereo.wav","--channels","2"), Stereo)
         self.assertEqual(calls[0]["parameters"], {"channel_id":[0,1],"diarization_enabled":False})
         self.assertLess(files["transcript.txt"].index("声道1"), files["transcript.txt"].index("声道2"))
@@ -177,13 +186,30 @@ class RecorderTests(unittest.TestCase):
         with self.assertRaises(kit.HttpError):
             run.transcribe_url(provider.MockHttp(run.DEMO_DIR/"samples"/"meeting.json"), kit.Config("mock","test","cn-beijing"), "https://example.com/a.wav", None, run.Stats(), 2)
 
+    def test_invalid_source_reference_keeps_both_transcript_outputs(self):
+        class BadReference(provider.MockHttp):
+            def sse(self, *args, **kwargs):
+                minutes = copy.deepcopy(provider.MINUTES)
+                minutes["action_items"][0]["source_ids"] = ["s999"]
+                yield {"choices":[{"delta":{"content":json.dumps(minutes)}}]}
+        files, _, _ = self.invoke(http_class=BadReference, fail=True)
+        self.assertEqual(set(files), {"transcript.txt", "transcript.json"})
+
+    def test_missing_time_is_not_fabricated_as_zero(self):
+        sentences = run.to_sentences([{"text":"日期还没定。", "speaker_id":0}])
+        self.assertIsNone(sentences[0].begin_ms)
+        self.assertIsNone(sentences[0].end_ms)
+        self.assertIn("时间未提供", sentences[0].line())
+        with self.assertRaises(kit.HttpError):
+            run.to_sentences([{"text":"坏时间", "begin_time":100, "end_time":99}])
+
     def test_sse_error_after_json_is_failure_and_keeps_transcript(self):
         class LateFailure(provider.MockHttp):
             def sse(self, *args, **kwargs):
                 yield from super().sse(*args, **kwargs)
                 yield {"error":{"code":"InternalError","message":"untrusted details"}}
         files, output, finish = self.invoke(http_class=LateFailure, fail=True)
-        self.assertEqual(set(files), {"transcript.txt"})
+        self.assertEqual(set(files), {"transcript.txt", "transcript.json"})
         finish.assert_not_called()
 
     def test_unidentified_speaker_does_not_claim_known_person_count(self):

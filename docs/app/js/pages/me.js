@@ -7,7 +7,7 @@ import { clearCredentials, fieldValues, loadCredentials, maskSecret, saveCredent
 import { copyText, fmtCny, html, icon, mount, mountPage, toast } from '../ui.js';
 
 import { PRODUCTS, returnTarget, renderOutcome, redact } from '../experience.js';
-import { readHistory, deleteHistory, clearHistory, statusLabel } from '../history.js';
+import { readHistory, deleteHistory, clearHistory, statusLabel, updateHistory } from '../history.js';
 
 // 百炼：在电脑上用长期 Key 换临时 Key（官方「生成临时 API Key」）
 const TEMP_KEY_CMD = {
@@ -145,9 +145,8 @@ export function renderMe(view, reg) {
     const slot=page.querySelector('[data-history-result]');
     const {records,error}=readHistory(),record=records.find(r=>r.id===id);
     if(!record){mount(slot,html`<p class="inline-error" data-history-missing>${error || '这条记录已删除或不在这台浏览器中。可以查看其他历史，或重新打开免费样本。'}</p>${sampleLinks(reg)}`);return;}
-    renderOutcome(slot,record.trace,{secrets,label:PRODUCTS[record.trace.solution]?.title || record.trace.title,historyNote:`${new Date(record.trace.ran_at).toLocaleString('zh-CN')} · ${statusLabel(record.trace)} · 这里只打开已保存的文字与运行记录，不恢复照片、录音或 Key。再次体验时请核对当前素材与 Key，按需重新选择素材后再开始；不会自动重试。`});
     const destination=returnTarget(reg,`#/s/${encodeURIComponent(record.trace.solution)}/${encodeURIComponent(record.trace.variant)}`);
-    if(destination){const links=document.createElement('div');mount(links,html`<p class="small"><a class="secondary-action" data-history-experience href="${destination.hash}">返回体验页面</a></p>`);slot.append(links);}
+    renderOutcome(slot,record.trace,{secrets,onChange:updated=>updateHistory(record.id,updated),experienceHref:destination?.hash,label:PRODUCTS[record.trace.solution]?.title || record.trace.title,historyNote:`${new Date(record.trace.ran_at).toLocaleString('zh-CN')} · ${statusLabel(record.trace)} · 这里只打开已保存的文字与运行记录，不恢复照片、录音或 Key。再次体验时请核对当前素材与 Key，按需重新选择素材后再开始；不会自动重试。`});
   };
   const refreshHistory = () => {
     const {records,error}=readHistory();

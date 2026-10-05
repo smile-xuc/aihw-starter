@@ -100,7 +100,7 @@ test('summary failure or stop keeps the entire transcript visible and copyable a
     const host = slot();renderOutcome(host,reopened);
     assert.equal(reopened.status,name==='AbortError'?'stopped':'failed');
     assert.match(host.innerHTML,/转写已保留，纪要尚未完成/);
-    assert.match(host.innerHTML,/<details class="meeting-transcript" open>/);
+    assert.match(host.innerHTML,/<details class="meeting-transcript" open\s*[^>]*>/);
     assert.ok(host.innerHTML.includes('说话人2：日期还没决定。'));
     assert.ok(host.innerHTML.includes('data-transcript-copy="0"'));
     assert.ok(host.innerHTML.includes('data-transcript-download="0"'));

@@ -8,7 +8,7 @@ import { copyText, download, fmtCny, fmtYuan, html, icon, mount, mountPage, shee
 import { experienceChips } from './home.js';
 
 import { PRODUCTS, draftFor, resetDraft, activateSampleDraft, setupRoute, fileType, decodeFile, browserTrace, renderOutcome, redact } from '../experience.js';
-import { saveHistory } from '../history.js';
+import { saveHistory, updateHistory } from '../history.js';
 import { PROJECTS, referencePosition } from '../projects.js';
 import { PHOTO_QUESTIONS } from '../photo-questions.js';
 
@@ -162,6 +162,7 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
         ${product.kind === 'image' ? html`<div class="question-shortcuts" role="group" aria-label="快捷问题"><p class="small">不知道怎么问？先选一个，也可以继续编辑。</p><div class="question-shortcut-list">${PHOTO_QUESTIONS.map(item=>html`<button type="button" data-question-preset="${item.id}" aria-pressed="${String(draft.question.trim() === item.question)}">${item.label}</button>`)}</div></div>
           <label class="field" for="experience-question"><span class="question-heading"><span>你想知道什么</span><small class="question-count" data-question-count id="question-count">已输入 ${draft.question.length} / 2000 字符</small></span><textarea id="experience-question" data-question maxlength="2000" rows="3" aria-describedby="question-hint question-count">${draft.question}</textarea><small id="question-hint">快捷问题只填入提问，不会自动运行。看不清或无法确定的内容会单独展示；示例原始问题使用随附语音，修改后使用照片和文字。</small></label>` : ''}
         <p class="small">${product.kind === 'image' ? '照片不超过 7 MiB' : '录音不超过 180 秒、7 MiB'} · 本机历史只保存文字结果，不保存原始素材和临时语音。</p>
+        ${product.kind === 'audio' ? html`<p class="info-note" data-byok-storage>使用自己的百炼 Key（BYOK）处理录音，费用计入你的百炼账号。录音上传至百炼临时存储，文件有效期 48 小时；当前用于体验验证。原录音和临时地址不写入本机历史。<a href="${setupRoute(sol,variant)}">设置我的 Key</a></p>` : ''}
         <button type="button" class="secondary-action block" data-reset>重置素材与提问</button>
         <div id="material-status" data-material-status role="status" aria-live="polite" aria-atomic="true"></div>
       </div>` : ''}
@@ -403,7 +404,7 @@ export async function renderSolution(view, reg, id, variantId = '', { isCurrent 
     const record=browserTrace({sol,variant,result,error,events:stage?.events||[],inputs,startedAt,region:cred?.values.DASHSCOPE_API_REGION||'',secrets});
     const saved=saveHistory(record);
     const speechURL = sol.id === '02-ai-glasses.bailian' && !error ? result?.outputs?.find(f=>(f.media_type||f.type||'').startsWith('audio/') && f.url)?.url : null;
-    renderOutcome(outcome,record,{settingsHref:setupRoute(sol,variant),secrets,speechURL,canRetry:true,historyNote:saved.saved?'文字结果已保存到本机体验历史；本机历史不保存原始素材和临时语音。':saved.error});
+    renderOutcome(outcome,record,{settingsHref:setupRoute(sol,variant),secrets,speechURL,canRetry:true,onChange:saved.saved?updated=>updateHistory(saved.record.id,updated):null,historyNote:saved.saved?'文字结果已保存到本机体验历史；本机历史不保存原始素材和临时语音。':saved.error});
     if(stage){stage.setOutputs((result?.outputs||error?.outputs||[]).map(f=>({...f,text:f.text==null?f.text:redact(f.text,secrets)})));stage.setFoot(resultLines(record));}
     const box=page.querySelector('.live-cost');if(result){mount(box,html`<p class="inline-ok">本次体验已完成，费用与延迟见上方结果。</p>`);box.classList.remove('hidden');}
     page.querySelector('.process-panel').open=!!error;

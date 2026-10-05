@@ -1,9 +1,9 @@
 // 离线回放：只缓存本站的 GET 请求；云端接口是跨域请求，这里一律不碰。
-const CACHE = 'aihw-app-v12';
+const CACHE = 'aihw-app-v13';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css', 'data/registry.json',
   'data/assets/02-ai-glasses.bailian/samples/dish.jpg',
-  'js/main.js', 'js/experience.js', 'js/meeting-results.js', 'js/photo-questions.js', 'js/photo-results.js', 'js/history.js', 'js/live/input.js', 'js/ui.js', 'js/meta.js', 'js/data.js', 'js/replay.js', 'js/settings.js',
+  'js/main.js', 'js/experience.js', 'js/meeting-results.js', 'js/meeting-evidence.js', 'js/photo-questions.js', 'js/photo-results.js', 'js/history.js', 'js/live/input.js', 'js/ui.js', 'js/meta.js', 'js/data.js', 'js/replay.js', 'js/settings.js',
   'js/projects.js', 'js/positioning.js', 'js/cost.js', 'js/pages/hardware.js', 'js/pages/cost-lab.js',
   'js/pages/home.js', 'js/pages/category.js', 'js/pages/solution.js', 'js/pages/me.js',
   'js/live/index.js', 'js/live/client.js', 'js/live/file-transcription.js', 'js/live/audio-channels.js',

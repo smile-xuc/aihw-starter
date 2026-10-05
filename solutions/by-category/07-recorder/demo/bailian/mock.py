@@ -20,12 +20,12 @@ MINUTES = {
                "麦克风阵列交期可能晚一周，列为风险跟进；德语包装文案的翻译供应商待定。",
     "agenda": ["新款录音卡试产排期", "下周星云科技客户拜访"],
     "decisions": [
-        {"content": "十月十二号按计划试产", "owner": ""},
-        {"content": "星云科技拜访由销售牵头", "owner": "销售"},
+        {"content": "十月十二号按计划试产", "owner": "", "source_ids": ["s004", "s008"]},
+        {"content": "星云科技拜访由销售牵头", "owner": "销售", "source_ids": ["s002", "s008"]},
     ],
     "action_items": [
-        {"task": "准备星云科技报价单，发给说话人1", "owner": "说话人2", "due": "周五前"},
-        {"task": "与麦克风阵列供应商确认交期", "owner": "说话人3", "due": "周三前"},
+        {"task": "准备星云科技报价单，发给说话人1", "owner": "说话人2", "due": "周五前", "source_ids": ["s002", "s003"]},
+        {"task": "与麦克风阵列供应商确认交期", "owner": "说话人3", "due": "周三前", "source_ids": ["s005", "s006"]},
     ],
     "open_questions": ["德语包装文案的翻译供应商待定，下次再议"],
     "risks": ["麦克风阵列供应商交期可能晚一周，影响试产"],
@@ -96,6 +96,9 @@ class MockHttp:
             raise HttpError(f"mock：未模拟的流式接口 {url}")
         if payload.get("model") != "qwen3.8-flash":
             raise HttpError("mock：纪要必须使用 qwen3.8-flash")
+        fmt = payload.get("response_format", {})
+        if fmt.get("type") != "json_schema" or not fmt.get("json_schema", {}).get("strict"):
+            raise HttpError("mock：纪要必须使用严格 JSON Schema")
         text = json.dumps(MINUTES, ensure_ascii=False)
         for i in range(0, len(text), 32):
             yield {"choices": [{"index": 0, "delta": {"content": text[i:i + 32]}}]}
