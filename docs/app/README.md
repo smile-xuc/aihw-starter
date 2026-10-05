@@ -98,6 +98,8 @@ node docs/app/tools/cost-run.mjs --mock \
 
 会议纪要新增「实时录音纪要」：16 kHz PCM → qwen-audio-3.1-asr-flash-streaming → 确认原句 → qwen3.8-flash。需要用户配置并确认 [自托管 BYOK 网关](../../services/asr-gateway/README.md)，仓库没有公共托管地址。支持暂停／恢复、尾句收尾、断线保留确认转写和仅摘要重试；180 秒上限、总费用未知、原媒体不保存。网关只负责实时 ASR，文件识别和摘要仍沿用现有接入。
 
+录音前提供浏览器／凭证／网关配置清单，显示当前页面 Origin，便于配置网关来源白名单。「检查网关连接」只在用户确认目标后向自选网关发送 `probe`，无需 Key、不申请麦克风、不发送音频、不连接模型；只验证 WebSocket 和兼容协议，不验证真实模型或费用。旧网关需更新后才能支持检查；修改地址、取消检查和离开页面均会使检查结束，不自动重试。摘要重试、诊断与录音操作防止重复提交，停止时释放麦克风，包括权限请求迟到返回的情况。
+
 其他实时语音入口为什么仍只放回放：百炼官方 [Token 鉴权](https://help.aliyun.com/zh/model-studio/realtime-token-authentication) 写明 WebSocket、WebRTC、AOQ 都只在建连时认 `Authorization` 请求头——浏览器的 WebSocket 不能设请求头；WebRTC 的 SDP 交换被浏览器跨域拦截，[官方说明](https://help.aliyun.com/zh/model-studio/best-practice-webrtc-omni-realtime)要由服务端代理；AOQ 只有原生 SDK。[临时 Key](https://help.aliyun.com/zh/model-studio/generate-temporary-api-key) 也走同一个请求头，换成临时 Key 解决不了。2026-10-02 实测：网关会读取 URL 里的 `api_key` 参数（报错从 “No API-key provided” 变成 “Invalid API-key provided”），但官方没有文档，而且会把 Key 放进 URL，不采用。当前可选网关仅适配会议 ASR，没有将玩具／桌宠／耳机的 Omni 实时交互标成已接通。
 
 ## 数据
@@ -122,11 +124,14 @@ node docs/app/tools/cost-run.mjs --mock \
 python3 -m pip install pyyaml jsonschema        # 生成器检查与轨迹契约测试依赖，建议在虚拟环境内安装
 python3 docs/app/tools/build.py --check          # live-data/ 与 run.py 一致、注册表引用齐全
 node --test docs/app/tools/*.test.mjs            # 素材、流式响应、指标、历史与路由回归（Node 22+，使用当前 python3）
+python3 -m pip install -r services/asr-gateway/requirements.txt # 可选网关／实时浏览器回归依赖，建议在临时虚拟环境内安装
+python3 -m unittest discover -s services/asr-gateway -p 'test_*.py'
 python3 -m http.server 8000 -d docs              # 打开 http://localhost:8000/app/
 
 # 冒烟测试（CI 同款）：全部页面和玩法无报错、390 px 不横向溢出；能网页真跑的玩法对着各 demo 的 mock.py 完整跑一遍
 npm install --no-save --prefix /tmp/pw playwright-core
 PLAYWRIGHT_CORE=/tmp/pw/node_modules/playwright-core/index.mjs CHROME=$(command -v google-chrome) node docs/app/tools/smoke.mjs
+PLAYWRIGHT_CORE=/tmp/pw/node_modules/playwright-core/index.mjs CHROME=$(command -v google-chrome) node docs/app/tools/realtime-smoke.mjs
 PLAYWRIGHT_CORE=/tmp/pw/node_modules/playwright-core/index.mjs CHROME=$(command -v google-chrome) node docs/app/tools/workspace-smoke.mjs
 PLAYWRIGHT_CORE=/tmp/pw/node_modules/playwright-core/index.mjs CHROME=$(command -v google-chrome) node docs/tools/product-smoke.mjs
 PLAYWRIGHT_CORE=/tmp/pw/node_modules/playwright-core/index.mjs CHROME=$(command -v google-chrome) node docs/tools/interaction-smoke.mjs

@@ -5,13 +5,21 @@ export async function microphone({ onPCM, onDuration, onLimit, onError, signal }
   let stream, context, node, input, muted, ended = false, paused = true, count = 0, queue = [], bytes = 0;
   const flush = () => { if (!bytes) return; const out = new Uint8Array(bytes); let offset = 0; for (const b of queue) { out.set(b, offset); offset += b.length; } queue = []; bytes = 0; onPCM(out.buffer); };
   let releasing;
-  const release = () => releasing ||= (async () => { ended = true; stream?.getTracks().forEach(t => t.stop()); input?.disconnect(); node?.disconnect(); muted?.disconnect(); if (context && context.state !== 'closed') await context.close(); signal?.removeEventListener('abort', abort); })();
+  const release = () => {
+    // Permission may resolve after cancellation. Always stop newly acquired
+    // tracks, even when an earlier release already completed without a stream.
+    ended = true; stream?.getTracks().forEach(t => t.stop());
+    return releasing ||= (async () => { input?.disconnect(); node?.disconnect(); muted?.disconnect(); if (context && context.state !== 'closed') await context.close(); signal?.removeEventListener('abort', abort); })();
+  };
   const abort = () => { void release(); };
   try {
+    if (signal?.aborted) throw new DOMException('已停止', 'AbortError');
+    signal?.addEventListener('abort', abort, { once: true });
     stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true }, video: false });
     if (signal?.aborted) throw new DOMException('已停止', 'AbortError');
     stream.getAudioTracks().forEach(t => { t.enabled = false; t.addEventListener('ended', () => { if (!ended) onError(Error('麦克风已断开；已确认转写会保留')); }); });
     context = new AudioContext(); await context.resume();
+    if (signal?.aborted) throw new DOMException('已停止', 'AbortError');
     await context.audioWorklet.addModule(new URL('./pcm-worklet.js', import.meta.url));
     if (signal?.aborted) throw new DOMException('已停止', 'AbortError');
     input = context.createMediaStreamSource(stream); node = new AudioWorkletNode(context, 'aihw-pcm-capture'); muted = context.createGain(); muted.gain.value = 0;
@@ -24,7 +32,6 @@ export async function microphone({ onPCM, onDuration, onLimit, onError, signal }
       if (allowed > 0) { queue.push(new Uint8Array(data.buffer, 0, allowed)); bytes += allowed; count += allowed; if (bytes >= 3200) flush(); onDuration(count / (SAMPLE_RATE * 2)); }
       if (count >= MAX_SECONDS * SAMPLE_RATE * 2) { paused = true; flush(); onLimit(); }
     };
-    signal?.addEventListener('abort', abort, { once: true });
     return {
       resume() { if (ended) return; paused = false; stream.getAudioTracks().forEach(t => { t.enabled = true; }); node.port.postMessage({ type: 'pause', paused: false }); },
       pause() { paused = true; stream.getAudioTracks().forEach(t => { t.enabled = false; }); node.port.postMessage({ type: 'pause', paused: true }); flush(); },

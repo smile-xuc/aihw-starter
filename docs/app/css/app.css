@@ -632,6 +632,10 @@ html { scroll-padding-top:90px;scroll-padding-bottom:110px; }
 .realtime-panel>summary::after { content:'+';color:var(--accent);font-size:20px; }
 .realtime-panel[open]>summary::after { content:'−'; }
 .realtime-content { padding-top:16px;border-top:1px solid var(--line);margin-top:16px; }
+.realtime-setup { padding:16px;background:var(--accent-light);border-radius:9px;margin-bottom:16px; }
+.realtime-setup ol { padding-left:20px;margin:10px 0 0;font-size:13px;line-height:1.7; }
+.realtime-setup li+li { margin-top:6px; }
+.realtime-origin code { overflow-wrap:anywhere;white-space:normal; }
 .realtime-status { display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin:18px 0 12px;color:var(--accent); }
 .realtime-status strong { font-variant-numeric:tabular-nums; }
 .realtime-panel[data-state="recording"] .realtime-status>span::before { content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:8px;animation:recording-pulse 1.5s ease-in-out infinite; }

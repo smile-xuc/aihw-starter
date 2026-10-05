@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {PCMResampler} from '../js/live/pcm.js';
-import {gatewayURL,TranscriptBuffer,connectASR} from '../js/live/realtime-asr.js';
+import {gatewayURL,probeGateway,STREAM_MODEL,TranscriptBuffer,connectASR} from '../js/live/realtime-asr.js';
 const sentence=(text,final=true,begin=0,end=1000)=>({text,final,begin_ms:begin,end_ms:end});
 test('PCM resampling retains phase across chunks and emits mono little-endian clipped samples',()=>{
   for(const rate of [16000,44100,48000]){
@@ -47,4 +47,27 @@ test('early task finish is rejected and the tail timeout preserves external conf
 });
 test('abort rejects both pending operations and closes the current socket',async()=>{
   const ctrl=new AbortController(),c=connection({signal:ctrl.signal});const opened=assert.rejects(c.ready,{name:'AbortError'}),done=assert.rejects(c.done,{name:'AbortError'});ctrl.abort();await Promise.all([opened,done]);assert.equal(Socket.last.closed,true);
+});
+const capabilities={type:'probe',service:'aihw-byok-asr',protocol:1,model:STREAM_MODEL,max_seconds:180};
+const probe=(options={})=>probeGateway({url:'wss://example.org/asr',WebSocketImpl:Socket,...options});
+test('connection probe sends only a probe and accepts compatible metadata without echoing extras',async()=>{
+  const result=probe(),socket=Socket.last;socket.onopen();assert.deepEqual(socket.sent,['{"type":"probe"}']);
+  socket.event({...capabilities,unexpected:'test-key'});assert.deepEqual(await result,{service:capabilities.service,protocol:1,model:STREAM_MODEL,max_seconds:180});assert.equal(socket.closed,true);
+  socket.onopen();assert.equal(socket.sent.length,1);
+});
+test('probe rejects wrong service/model/protocol, early close, network failure and timeout with no retry',async()=>{
+  for(const value of [{...capabilities,model:'other'},{...capabilities,protocol:2},{...capabilities,max_seconds:300},{type:'error',message:'test-key'},{type:'ready'}]){
+    const result=probe(),socket=Socket.last;socket.onopen();socket.event(value);await assert.rejects(result,error=>/兼容/.test(error.message)&&!error.message.includes('test-key'));assert.equal(socket.closed,true);assert.equal(socket.sent.length,1);
+  }
+  const closed=probe();Socket.last.onclose();await assert.rejects(closed,/断开/);
+  const failed=probe();Socket.last.onerror();await assert.rejects(failed,/白名单/);
+  const timeout=probe({timeoutMs:10}),socket=Socket.last;await assert.rejects(timeout,/及时响应/);assert.equal(Socket.last,socket);assert.equal(socket.closed,true);assert.deepEqual(socket.sent,[]);
+});
+test('probe cancellation closes its socket and pre-abort opens no connection',async()=>{
+  const ctrl=new AbortController(),result=probe({signal:ctrl.signal}),socket=Socket.last;ctrl.abort();await assert.rejects(result,{name:'AbortError'});assert.equal(socket.closed,true);socket.onopen();assert.deepEqual(socket.sent,[]);
+  await assert.rejects(probe({signal:ctrl.signal}),{name:'AbortError'});assert.equal(Socket.last,socket);
+});
+test('a canceled ASR connection never sends a late start message',async()=>{
+  const ctrl=new AbortController(),c=connection({signal:ctrl.signal}),socket=Socket.last;
+  ctrl.abort();await assert.rejects(c.ready,{name:'AbortError'});await assert.rejects(c.done,{name:'AbortError'});socket.onopen();assert.deepEqual(socket.sent,[]);
 });
