@@ -72,8 +72,8 @@ node docs/app/tools/cost-run.mjs --mock \
 
 - 表单按栈声明（`aihw/stack@0.1`，百炼见 [`stacks/bailian.yaml`](../../solutions/demo-standard/stacks/bailian.yaml)）的 `fields` 渲染：百炼是 API Key、地域、业务空间 ID
 - 只存在这台设备的浏览器存储里，键名 `aihw.credentials.<栈>`，字段名与 `.env` 变量名相同：勾「记在这台设备上」存 `localStorage`，不勾存 `sessionStorage`（关页面即清）；「清除」两处都删
-- 请求只发往按栈声明 `endpoints.roots` 推导出的官方接入点（百炼：`dashscope.aliyuncs.com`、`dashscope-intl.aliyuncs.com`、`<业务空间ID>.<地域>.maas.aliyuncs.com`），凭证只放进 `auth` 声明的请求头。代进域名的值只能是字母、数字和连字符，并且要符合字段的 `pattern`
-- `index.html` 的 CSP `connect-src` 放行这些接入点及北京／新加坡官方 OSS 域（临时上传与转写结果下载不携带 API Key），页面不加载任何第三方脚本，也没有我们自己的服务器。以后接新栈时，CSP 要同步加上它的官方域名
+- 文件／摘要等 HTTP 请求发往按栈声明 `endpoints.roots` 推导出的官方接入点（百炼：`dashscope.aliyuncs.com`、`dashscope-intl.aliyuncs.com`、`<业务空间ID>.<地域>.maas.aliyuncs.com`），凭证放进 `auth` 声明的请求头。代进域名的值只能是字母、数字和连字符，并符合字段的 `pattern`。实时会议 ASR 是显式例外：用户确认后，Key 通过第一条 WebSocket 消息发给自选可信网关，由它设置官方建连鉴权头；不写入 URL。
+- `index.html` 的 CSP `connect-src` 放行这些 HTTP 接入点和北京／新加坡官方 OSS 域（临时上传与结果下载不携带 API Key），额外允许 `wss:` 和本机调试的 `ws:` 地址。页面不加载第三方脚本，仓库不提供公共托管网关。以后接新栈时，CSP 与界面中的凭证去向说明须同步更新。
 - 专属域名的某个接口在浏览器里被跨域拦截时（预检失败，请求本身没有发出），本次会话改走下一条匹配的根地址（同地域的通用域名），并在时间线上提示
 - 没填凭证：所有方案只放回放
 - 页面上列出栈声明的 `security_advice`，并提示 `smile-xuc.github.io` 下的其他 Pages 页面与本页同源
