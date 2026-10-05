@@ -111,6 +111,27 @@
 
 ---
 
+### Ropet KAMOMO（ropet）
+
+- **上市状态**：在售（官方商店 KAMOMO Pro 及两款毛皮套装可购；KAMOMO Basic 显示售罄，查证 2026-10-05）
+- **官网/渠道**：<https://ropetai.com/> 官网；<https://ropetai.com/products/ropet%E2%84%A2-ai-comfort-companion-plush-robot> 官方商店产品页
+- **形态**：毛绒外壳 AI 宠物机器人，可换毛皮 / 面罩，屏幕眼睛可在 App 中更换样式；内置摄像头与麦克风，触摸响应，表面「39°C」温感；满电续航约 2.5–3.5 小时，可插电常驻（官网 / 官方商店产品页）
+- **定价**：
+  - 首发价：待核实
+  - 现价：KAMOMO Pro（含充电底座）$349.00 USD；Pro Purple Fur / Panda 套装各 $359.00 USD；KAMOMO Basic（不含充电底座）$299.00 USD，显示售罄 · [官方商店](https://ropetai.com/products/ropet%E2%84%A2-ai-comfort-companion-plush-robot) · 查证 2026-10-05
+  - MSRP：KAMOMO Pro $469.00 USD（官方常规价）；Pro Purple Fur 套装 $489.00 USD（官方常规价）；Pro Panda 套装 $499.00 USD（官方常规价）；KAMOMO Basic $469.00 USD（官方常规价）· [官方商店](https://ropetai.com/products/ropet%E2%84%A2-ai-comfort-companion-plush-robot) · 查证 2026-10-05
+- **目标市场**：桌面 / 居家 / 睡前陪伴；官方商店标准配送覆盖美国本土 48 州及华盛顿特区、加拿大部分地址、欧洲 16 国、新加坡、台湾、泰国、澳大利亚、新西兰
+- **AI 能力**：
+  - AI 功能：用摄像头识别熟悉的人脸、识别手势并作出回应，可语音对话，也会回应抚摸与音乐；喂食、抱抱、安抚、哄睡等日常照料会逐步塑造性格（Joybean / Crybaby / Fireball / Cold Brew 四种方向）；开启 Dream Sketch 后，对它比 ✌️ 即拍下所见，生成手绘插画并配上以 Ropet 视角写的描述。实现方式：官方称日常互动由本地离线 AI 模型在设备端处理，图像与音频不上传，可完全离线运行；官方称对话由 Gemini AI 支持（未公开型号与运行位置）；Dream Sketch 需在 App 中手动开启，照片先由本地模型加密，再上传云端 AI 模型生成插画（云端模型名官方未公开）（[官网](https://ropetai.com/) · [KAMOMO 产品页](https://ropetai.com/products/ropet%E2%84%A2-ai-comfort-companion-plush-robot) · [Dream Sketch 博客（2025-12-23）](https://ropetai.com/blogs/news/dream-sketch-goes-live-a-new-ai-era-begins-for-ropet)，查证 2026-10-05）
+- **大模型方案**：官方称对话由 Gemini 支持（未公开型号与运行位置）；官方称日常互动由本地离线模型在设备端处理；Dream Sketch 用云端 AI 模型（未公开模型名）（非千问默认绑定）
+- **公开数据**：未见官方公开销量
+- **关键差异化**：① 本地离线 AI 为主、日常不上传图像音频，隐私作为卖点；② 毛绒 + 温感 + 触摸，同时有屏幕眼睛与摄像头，可识别主人；③ 性格养成 + Dream Sketch 回忆插画，做长期陪伴而非问答工具
+- **商业模式**：硬件销售；官方商店另售毛皮、面罩等配件
+
+> 来源：[ropet 官网](https://ropetai.com/) · [KAMOMO 官方商店](https://ropetai.com/products/ropet%E2%84%A2-ai-comfort-companion-plush-robot) · [About ropet](https://ropetai.com/pages/about-ropet) · [Dream Sketch 博客（2025-12-23）](https://ropetai.com/blogs/news/dream-sketch-goes-live-a-new-ai-era-begins-for-ropet)（均查证 2026-10-05）
+
+---
+
 ## 待补充清单
 
 - [ ] 国内工位桌宠 / 潮玩品牌公开 SKU
