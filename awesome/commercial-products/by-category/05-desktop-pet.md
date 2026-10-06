@@ -13,8 +13,8 @@
 - **形态**：充电头/底座机器人，复用手机屏幕与算力作表情与视觉
 - **定价**：
   - 首发价：众筹早鸟 $119 USD
-  - 现价：LOOI Solo $239 USD（划线价 $259 USD）；LOOI Twins $468 USD（划线价 $518 USD）· [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-09-30。国内价与日本 Makuake 价待核实
-  - MSRP：待核实
+  - 现价：LOOI Solo $239 USD；LOOI Twins $468 USD · [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-09-30。国内价与日本 Makuake 价待核实
+  - MSRP：LOOI Solo $259.00 USD（官方常规价）；LOOI Twins $518.00 USD（官方常规价）· [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-10-06
 - **目标市场**：工位 / 桌面潮玩；轻硬件软件定义体验
 - **AI 能力**：App 集成 LLM / GPT 向对话；2026 更新提到 Live Agent 更低延迟多模态表达
 - **大模型方案**：待核实
@@ -76,8 +76,8 @@
 - **形态**：桌面情感机器人，触摸 + 表情 + 多机互动
 - **定价**：
   - 首发价：待核实
-  - 现价：$139.99 USD（划线价 $149.99 USD）· [官方商店](https://store.energizelab.com/products/eilik) · 查证 2026-09-30
-  - MSRP：待核实
+  - 现价：$139.99 USD · [官方商店](https://store.energizelab.com/products/eilik) · 查证 2026-09-30
+  - MSRP：$149.99 USD（官方常规价）· [官方商店](https://store.energizelab.com/products/eilik) · 查证 2026-10-06
 - **目标市场**：入门桌宠 / 礼品
 - **AI 能力**：偏本地规则与表情互动；无 LLM 亦可成立的品类对照样板
 - **大模型方案**：待核实
