@@ -211,6 +211,29 @@
 
 ---
 
+### La Mallow（Mallow）
+
+- **上市状态**：预售（官网可订购；官网 FAQ 写首批发货自 2026-10-14 起，查证 2026-10-05）
+- **官网/渠道**：<https://mallow.fr/> 官网；<https://mallow.fr/products/lenceinte-mallow> 官方商店产品页
+- **形态**：无屏幕儿童语音游戏音箱；孩子把公仔放到音箱上，用语音与角色对话、选择、发明、闯关；公仔内含芯片，供音箱识别并加载对应互动内容（官方 CGV）；含入门公仔 Zorp、贴纸、说明书与 USB-C 充电线（不含电源适配器）；游戏模式需 Wi-Fi（官网产品页 / FAQ）
+- **定价**：
+  - 首发价：待核实
+  - 现价：€99.99 EUR（官网售价）· [产品页](https://mallow.fr/products/lenceinte-mallow) · 查证 2026-10-05
+  - MSRP：€119.99 EUR（官方常规价）· [产品页](https://mallow.fr/products/lenceinte-mallow) · 查证 2026-10-05
+  - 订阅：无强制订阅。官方 CGV（2026-09-30）：购买音箱与 / 或公仔为一次性购买，不含任何订阅或强制循环付款；购价含为期至少 2 年的数字内容与 AI 功能访问 · [CGV PDF](https://cdn.shopify.com/s/files/1/0985/3049/2759/files/Conditions_Generales_de_Vente_Mallow.pdf?v=1790583943) · 查证 2026-10-05
+- **目标市场**：法国 / 欧盟，面向 4–10 岁儿童及家长；无屏幕、用语音玩互动音频游戏
+- **AI 能力**：
+  - AI 功能：孩子把公仔放到音箱上后，用语音与角色对话、回答、选择、发明并推进冒险；AI 会适配孩子的节奏与难度，在作者设定的框架内理解语音并作出回应。内容由人类创作团队撰写（创作总监、儿童认知专家、作者、narrative designers 等），生成式 AI 只用于受控的语音理解与回应，不是通用对话助手。实现方式：游戏模式需联网，语音理解与回应在官方服务端完成；官方未公开模型名（[L’IA et nous](https://mallow.fr/pages/lia-et-nous) · [Notre histoire](https://mallow.fr/pages/notre-histoire) · [产品页 FAQ](https://mallow.fr/products/lenceinte-mallow)，查证 2026-10-05）
+- **大模型方案**：官方未公开模型名（非千问默认绑定）；官方称内容由人类作者撰写，AI 只在作者设定的框架内理解与回应
+- **公开数据**：未见官方公开销量
+- **关键差异化**：① 无屏幕、公仔 + 语音驱动的互动音频游戏，而不是开放式聊天玩具；② 官方明确人类作者写内容、AI 只做受控语音理解与回应；③ 无强制订阅，购机含至少 2 年数字内容与 AI 访问
+- **商业模式**：硬件销售（音箱 + 另售公仔）；无强制订阅
+- **联合创始人**：Cédric O（官网法律声明写其为 Société 的 Président / Directeur de la publication）与 Flore（官网 Notre histoire / 首页只写名，未写姓）· [Mentions légales](https://mallow.fr/pages/mentions-legales) · [Notre histoire](https://mallow.fr/pages/notre-histoire) · 查证 2026-10-05
+
+> 来源：[mallow.fr](https://mallow.fr/) · [产品页](https://mallow.fr/products/lenceinte-mallow) · [L’IA et nous](https://mallow.fr/pages/lia-et-nous) · [Notre histoire](https://mallow.fr/pages/notre-histoire) · [Mentions légales](https://mallow.fr/pages/mentions-legales) · [CGV PDF（2026-09-30）](https://cdn.shopify.com/s/files/1/0985/3049/2759/files/Conditions_Generales_de_Vente_Mallow.pdf?v=1790583943)（均查证 2026-10-05）
+
+---
+
 ## 待补充清单
 
 - [ ] **阳仔 AI 陪伴机**（方直科技）
