@@ -185,6 +185,28 @@
 
 ---
 
+### viaim RecDot（viaim）
+
+- **上市状态**：在售（viaim 官方商店，查证 2026-10-06）
+- **官网/渠道**：<https://store.viaim.ai/products/viaim-recdot> 官方商店产品页（美国 / 加拿大站）
+- **形态**：入耳式 ANC 录音耳机；11 mm 钛涂层动圈，48 dB 主动降噪，三麦克风 + 骨传导麦克风，蓝牙 5.2，双设备连接；单耳 4.8 g，耳机 9 小时、连充电盒 36 小时；耳机与充电盒均可一键录音（官方商店）
+- **定价**：
+  - 首发价：待核实
+  - 现价：$229.00 USD（官网售价，RecDot 单机，黑 / 银同价）· [官方商店](https://store.viaim.ai/products/viaim-recdot) · 查证 2026-10-06
+  - MSRP：待核实
+  - 订阅：Basic 免费，每月 600 分钟转写；Pro $9.99 USD/月或 $79.99 USD/年（每月 1,800 分钟）；Ultra $19.99 USD/月或 $159.99 USD/年（不限时长）· [官方商店](https://store.viaim.ai/products/viaim-recdot) · 查证 2026-10-06
+- **目标市场**：会议、通话与采访多的职场用户；官方商店分美国 / 加拿大、日本、中东站
+- **AI 能力**：
+  - AI 功能：一键录下现场对话与手机 / 网络通话，78 种语言实时转写（含口音识别），会后生成摘要与待办，可用行业模板或自定义模板，并用指令改写摘要；翻译模式边录原声边实时翻译，译文可在耳机里直接播放；Vitana 助手基于用户自己的录音、笔记与文档回答问题。实现方式：官方称 FlashRecord 录音存在耳机本地（最多 4 小时）、“No app, no cloud”；官方称转写与摘要在 viaim App 中进行并计入套餐分钟（官方未写运行位置）；套餐页列出所用模型：Basic 为 Gemini 3.1 Pro Preview、GPT‑5.6 Luna、Claude Haiku 4.5，Pro / Ultra 为 GPT‑5.6 Sol、Gemini 3.6 Flash、Claude Sonnet 5（[官方商店产品页](https://store.viaim.ai/products/viaim-recdot) · [语言支持页](https://store.viaim.ai/pages/language-support)，查证 2026-10-06）
+- **大模型方案**：官方商店套餐表列出多家模型（Gemini / GPT / Claude 系列，按套餐分档；非千问默认绑定）
+- **公开数据**：未见官方公开销量
+- **关键差异化**：① 把录音笔放进日常 ANC 耳机，耳机与充电盒都能一键录；② 通话、会议、面对面翻译一套 App 处理；③ 免费档每月 600 分钟，订阅只卖更多时长与更高档模型
+- **商业模式**：硬件销售 + 可选 AI 订阅（Pro / Ultra）；官方商店另售 RecDot + NoteKit / 年度套餐组合
+
+> 来源：[viaim 官方商店 · RecDot](https://store.viaim.ai/products/viaim-recdot) · [语言支持](https://store.viaim.ai/pages/language-support) · [条款（运营主体 HONG KONG FUTURE INTELLIGENT TECHNOLOGY CO., LIMITED）](https://store.viaim.ai/pages/terms-conditions)（均查证 2026-10-06）
+
+---
+
 ## 待补充清单
 
 ### 品牌 TWS + 系统翻译
