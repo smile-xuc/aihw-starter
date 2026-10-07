@@ -13,7 +13,7 @@
 - **形态**：入耳式双向同传耳机；支持多人双语模式（公开宣称最多 6 人）
 - **定价**：
   - 首发价：待核实
-  - 现价：Online & Offline $279.99 USD（划线价 $349.99 USD）· [产品页](https://www.timekettle.co/products/wt2-edge-online-voice-language-translator-earbuds) · 查证 2026-09-30
+  - 现价：Online & Offline $279.99 USD（官方常规价 $349.99 USD，查证 2026-10-07）· [产品页](https://www.timekettle.co/products/wt2-edge-online-voice-language-translator-earbuds) · 查证 2026-09-30
   - MSRP：Online & Offline $349.99 USD（官方常规价）· [产品页](https://www.timekettle.co/products/wt2-edge-online-voice-language-translator-earbuds) · 查证 2026-10-03
 - **目标市场**：商务会议、留学、跨境生活
 - **AI 能力**：
@@ -35,7 +35,7 @@
 - **形态**：旅行向翻译耳机（翻译 + 音乐 + 通话）
 - **定价**：
   - 首发价：待核实
-  - 现价：Online & Offline $119.99 USD（划线价 $149.99 USD）· [产品页](https://www.timekettle.co/products/m3-travel-translator-earbuds) · 查证 2026-09-30。仅在线版 $119.99 USD（缺货）· [产品页](https://www.timekettle.co/products/m3-travel-translator-earbuds) · 查证 2026-10-03
+  - 现价：Online & Offline $119.99 USD（官方常规价 $149.99 USD，查证 2026-10-07）· [产品页](https://www.timekettle.co/products/m3-travel-translator-earbuds) · 查证 2026-09-30。仅在线版 $119.99 USD（缺货）· [产品页](https://www.timekettle.co/products/m3-travel-translator-earbuds) · 查证 2026-10-03
   - MSRP：Online & Offline $149.99 USD（官方常规价）· [产品页](https://www.timekettle.co/products/m3-travel-translator-earbuds) · 查证 2026-10-03
 - **目标市场**：旅游、短期跨境沟通
 - **AI 能力**：
@@ -79,8 +79,8 @@
 - **形态**：AI Interpreter 耳机系列。W4 Plus 商品页写骨传导拾音与 VoiceFocus，单次续航 3 h，含充电盒共 18 h
 - **定价**：
   - 首发价：W4 $349 USD / €349 EUR · [Timekettle 新闻稿（PR Newswire，2025-09-05）](https://www.prnewswire.com/news-releases/the-timekettle-w4-ai-interpreter-earbuds-debut-at-ifa-2025-with-bone-voiceprint-sensor-capture-and-llm-powered-context-aware-translation-to-distinguish-phonetically-similar-phrases-302547499.html) · 新闻稿写 2025-09-05 起在官网与 Amazon 发售；W4 Plus 买断版 $379 USD、订阅版 $299 USD · [Timekettle 新闻稿（PR Newswire，2026-09-04）](https://www.prnewswire.com/news-releases/timekettle-unveils-w4-plus-ai-interpreter-earbuds-at-ifa-2026-bringing-ai-powered-translation-to-conversations-calls-and-digital-content-302868977.html) · 新闻稿写 2026-09-06 起在官网与 Amazon 发售 · 查证 2026-10-03；W4 Pro 待核实
-  - 现价：W4 $279.20 USD（划线价 $349 USD）· [产品页](https://www.timekettle.co/products/w4-ai-interpreter-earbuds)；W4 Pro $449.00 USD · [对比页](https://www.timekettle.co/pages/product-compare) · 查证 2026-09-30
-  - 现价：W4 Plus 买断版 $379.00 USD（划线价 $399.00 USD）；订阅版硬件 $299.00 USD（划线价 $319.00 USD）· [W4 Plus 商品页](https://www.timekettle.co/products/w4-plus-ai-interpreter-earbuds) · 查证 2026-09-30
+  - 现价：W4 $279.20 USD（官方常规价 $349.00 USD，查证 2026-10-07）· [产品页](https://www.timekettle.co/products/w4-ai-interpreter-earbuds)；W4 Pro $449.00 USD · [对比页](https://www.timekettle.co/pages/product-compare) · 查证 2026-09-30
+  - 现价：W4 Plus 买断版 $379.00 USD（官方常规价 $399.00 USD，查证 2026-10-07）；订阅版硬件 $299.00 USD（官方常规价 $319.00 USD，查证 2026-10-07）· [W4 Plus 商品页](https://www.timekettle.co/products/w4-plus-ai-interpreter-earbuds) · 查证 2026-09-30
   - MSRP：W4 $349.00 USD（官方常规价）· [产品页](https://www.timekettle.co/products/w4-ai-interpreter-earbuds) · 查证 2026-10-03
   - MSRP：W4 Plus 待核实
   - 订阅：W4 Plus 订阅版月费 $14.99 USD/月（Unlimited Plan；美国以外由应用商店按当地汇率与税费调整）· [W4 Plus 商品页](https://www.timekettle.co/products/w4-plus-ai-interpreter-earbuds) · 查证 2026-10-03。订阅版写双人对话与现场旁听永久免费；媒体翻译、通话翻译和高级 AI 功能 7 天试用后按月订阅。买断版写一次购买后不再按月收费 · [W4 Plus 商品页](https://www.timekettle.co/products/w4-plus-ai-interpreter-earbuds) · 查证 2026-09-30
