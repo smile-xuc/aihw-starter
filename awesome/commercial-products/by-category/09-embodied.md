@@ -229,6 +229,29 @@
 
 ---
 
+### Matic（Matic Robots）
+
+- **上市状态**：在售（Matic 官网，查证 2026-10-07）；官网 FAQ 写 “Currently, Matic is only available to ship within the United States.”；公司页时间线写 2023 年 “Launch day. April 12, 9am.”，2024 年 “Production begins. First 400 shipped.”（[公司页](https://maticrobots.com/company)）
+- **官网/渠道**：<https://maticrobots.com/product> 官网购买页（仅发美国）
+- **形态**：扫拖一体家用机器人。机身 11" × 9.4" × 7.8"（长 × 宽 × 高），清洁头 4.1" × 9.4" × 3.0"；5 个 RGB-IR 摄像头、纯视觉导航，机载 NVIDIA 处理器；红外补光，可在暗光下清扫；HEPA 集尘袋同时收干湿垃圾，水箱 600 mL；满电吸尘 2.5 h / 拖地 3 h，低电自动回座充电后接着扫；没有大型基站；App 支持 iOS 17.2+ / Android 14+（官网购买页、Innovation 页）
+- **定价**：
+  - 首发价：待核实（查证 2026-10-07）
+  - 现价：官网售价 $1,495.00 USD（1 台 + 1 个充电座）；1 台 + 2 个充电座 $1,593.00 USD；2 台 + 2 个充电座 $2,990.00 USD · 美国 · [官网购买页](https://maticrobots.com/product)（查证 2026-10-07）
+  - MSRP：待核实（查证 2026-10-07）
+  - 订阅：Annual Bag Pass 集尘袋年费 $120.00 USD/台（可选）· [官网购买页](https://maticrobots.com/product)（查证 2026-10-07）
+- **目标市场**：美国家庭（官网按有孩家庭、养宠家庭、忙碌家庭分场景介绍）；官网称海外发货暂无时间表
+- **AI 能力**：
+  - AI 功能：用 5 个 RGB-IR 摄像头做计算机视觉，识别日常物体、检测低矮障碍并实时调整路线，暗光和杂乱环境下也能用；把摄像头画面转成 1 cm³ 体素，建出全屋 3D 地图并自我定位，家具挪动后地图跟着更新；能分辨地毯和硬地，分别吸尘或拖地；Matic Cues 支持「Hey Matic」语音（70+ 种语言，10 米内可听到）和指向手势下指令。实现方式：视觉与导航跑在机载 NVIDIA 处理器上（AI 识别，未公开模型名）；官方称唤醒词在设备端检测，之后的请求由 Gemini 匿名处理、不存储（未公开 Gemini 具体版本）（[Innovation 页](https://maticrobots.com/innovation) · [Hey Matic 页](https://maticrobots.com/hey-matic)，查证 2026-10-07）
+  - 靠软件更新持续加功能，官网列出已上线镜面识别、更好的电线识别、更快的沿边清扫（Innovation 页）
+- **大模型方案**：官方称语音请求由 Gemini 处理（Hey Matic 页）；视觉 / 导航模型未公开名称。官网 FAQ 另称 “Matic's intelligence is localized on the device, and it never sends any of your data to the cloud for processing.”（非千问默认绑定）
+- **公开数据**：Innovation 页称 Matic Cues 于 2026 年 8 月 “enabled voice and gesture capabilities on all 10,000+ Matic robots ever shipped”；公司页统计栏写 “Robots in homes 12,000+”（厂商称）。公司层面：公司页写 “Total funding $115M”、团队 100+ 人
+- **关键差异化**：① 纯视觉加端侧处理，把隐私当卖点；② 立式机身抬高摄像头，低矮清洁头能进墙角和踢脚线下，不需要大型基站；③ 语音和手势指令通过软件更新推给所有已售机器
+- **商业模式**：硬件买断 + 可选集尘袋年费；Matic Care 延保（延到 2 年并含意外损坏）$180.00 USD/台；6 个月退货期（条款适用）；符合条件的客户可用 HSA/FSA 付款
+
+> 来源：[Matic 官网购买页](https://maticrobots.com/product) · [Hey Matic](https://maticrobots.com/hey-matic) · [Innovation](https://maticrobots.com/innovation) · [公司页](https://maticrobots.com/company)（均查证 2026-10-07）
+
+---
+
 ## 待补充清单
 
 - [x] 工业四足产品（云深处绝影 X30）
