@@ -196,6 +196,26 @@
 
 > 来源：[ClawBox 官网](https://clawbox.com/) · [ClawBox 价格页](https://clawbox.com/clawbox-price) · [ClawBox 硬件页](https://clawbox.com/local-ai-hardware) · [关于 ClawBox](https://clawbox.com/about)（均查证 2026-10-08）
 
+### Ubo Pod（Ubo Technology LLC）
+
+- **上市状态**：预售（官方商店商品名写 "Ubo Agentic Assistant, Pro 4 and 5 Models (Pre-Order)"，页面写 "Pre-Order either Ubo Pro 4 or Pro 5 We will confirm details via email before shipping."，查证 2026-10-08）。官方称交期 "2-3 weeks after your order"。官方又称 "there is a 4-5 week lead-time before you receive your order."
+- **官网/渠道**：<https://www.getubo.com/> 官网；官方商店 <https://shop.getubo.com/products/ubo-pro-4-and-5>；开源代码 <https://github.com/ubopod/ubo_app>
+- **形态**：给 Raspberry Pi 4 / 5 用的桌面 AI 助手外壳 + 扩展套件，商店页写 "This unit ships as a kit WITHOUT Raspberry Pi and you need to assemble."，套件不含 Raspberry Pi，需要自行组装；1.54 英寸 240×240 彩屏、7 键硅胶键盘、双麦克风、立体声扬声器、27 颗 RGB LED 灯环、5MP 摄像头、红外收发、温度和环境光传感器；摄像头物理遮挡帘、麦克风硬件断开开关；130 × 99 × 52 mm，340 g；Ubo Pro 5 支持 NVMe 硬盘或 AI 加速器（[官方商店](https://shop.getubo.com/products/ubo-pro-4-and-5) · [硬件页](https://www.getubo.com/hardware)）
+- **定价**：
+  - 首发价：待核实（查证 2026-10-08）
+  - 现价：Pro 4 官网售价 $159.00 USD（官方常规价 $169.00 USD）；Pro 5 官网售价 $199.00 USD（官方常规价 $209.00 USD）· [官方商店](https://shop.getubo.com/products/ubo-pro-4-and-5) · 查证 2026-10-08
+  - MSRP：待核实（查证 2026-10-08）。官方称 "Ubo Pro 4 - $159 ($20 off MSRP)"、"Ubo Pro 5 - $199 ($20 off MSRP)"；官方商店数据里官方常规价只比官网售价高 $10，两处说法对不上
+- **目标市场**：开发者和想自托管 AI 助手的 Raspberry Pi 用户；首页写 "Give your Raspberry Pi a polished UX."，首页按钮写 "Developer Edition"
+- **AI 能力**：
+  - AI 功能：可配置多个分工不同的助手（首页写 "Build a crew of assistants each focusing on specific area of expertise."），用语音或内置图形界面控制设备；语音自然语言调用工具，托管 MCP 工具与网关；一键安装 Hermes、OpenClaw、n8n、Home Assistant、Ollama 等 Docker 应用；视觉 AI 识别二维码、字符、手势或物体；红外万能遥控，可接 Home Assistant 当语音卫星。实现方式：开源 Ubo App 跑在 Raspberry Pi 上，大模型名称未公开（[官网首页](https://www.getubo.com/) · [Ubo App 开源仓库](https://github.com/ubopod/ubo_app)，查证 2026-10-08）
+  - 端侧推理：混合。首页写 "Run AI models locally and offline. Privacy by verifiability."；软件页写 "Build voice and vision AI assistants with both cloud and local AI models."；开源仓库写 "To run LLM models locally, we recommend a Raspberry Pi 5 with at least 8GB of RAM."。本地语音引擎：开源仓库写 "VOSK, Moonshine, Piper, KoKoro for local voice"；大模型名称与参数量未公开。芯片：Raspberry Pi 4 或 5（套件不含），NPU 算力与内存未公开（[官网首页](https://www.getubo.com/) · [软件页](https://www.getubo.com/software) · [Ubo App 开源仓库](https://github.com/ubopod/ubo_app)，查证 2026-10-08）
+- **大模型方案**：本地和云端模型都可接，官网未写默认模型（非千问默认绑定）；Ollama 作为可一键安装的应用列在开源仓库里
+- **公开数据**：未见公开销量
+- **关键差异化**：① 硬件、软件、机械设计全部开源（首页写 "All designs including mechanical, software, and electrical are open source with complete documentation."）；② 摄像头遮挡帘和麦克风硬件断开开关；③ 红外万能遥控和可插拔传感器扩展（厂商称）
+- **商业模式**：硬件套件销售；商店页另列选购配件：MicroSD 升级、NVMe 硬盘（仅 Pro 5）、红外遥控器、AI 加速器用 A/E-key 转接板（仅 Pro 5）
+
+> 来源：[Ubo 官网](https://www.getubo.com/) · [Ubo 官方商店](https://shop.getubo.com/products/ubo-pro-4-and-5) · [硬件页](https://www.getubo.com/hardware) · [软件页](https://www.getubo.com/software) · [Ubo App 开源仓库](https://github.com/ubopod/ubo_app)（均查证 2026-10-08）
+
 ## 待补充清单
 
 - [ ] DFRobot AI 智能体盒子正式定价后补卡
