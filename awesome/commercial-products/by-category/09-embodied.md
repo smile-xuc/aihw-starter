@@ -187,13 +187,13 @@
 ### Bumi 小布米（松延动力 / NOETIX）
 
 - **上市状态**：待核实（渠道待核实，查证 2026-10-02）
-- **官网/渠道**：<https://www.noetixrobotics.com/detail/Bumi> 官网产品页；<https://web.noetixrobotics.com/docs/> 官方文档
+- **官网/渠道**：<https://www.noetixrobotics.com/detail/Bumi/> 官网产品页；<https://web.noetixrobotics.com/docs/> 官方文档
 - **形态**：小型双足人形。站立 98×35×20 cm，带电池约 17 kg，21 自由度（单腿 6、单臂 4、腰 1），关节最大扭矩 70 N·m；EDU 版可加 NVIDIA Jetson Orin（Nano Super / NX）算力模块；快拆 48 V 5100 mAh 电池（官网 / 官方文档）。页面不一致：每日经济新闻、界面新闻（2025-10-24）引述的官方介绍写约 94 cm、约 12 kg，卡片取现行官网和官方文档
 - **定价**：
   - 首发价：待核实（查证 2026-10-02）
   - 现价：待核实（查证 2026-10-02）
   - MSRP：待核实（查证 2026-10-02）
-  - 估算：官网称「万元级消费级人形机器人」，没有写具体金额（[松延动力官网 Bumi 页](https://www.noetixrobotics.com/detail/Bumi)，查证 2026-10-02）
+  - 估算：官网称「万元级消费级人形机器人」，没有写具体金额（[松延动力官网 Bumi 页](https://www.noetixrobotics.com/detail/Bumi/)，查证 2026-10-02）
 - **目标市场**：家庭陪伴、创客 / 编程教育；EDU 版面向开发者
 - **AI 能力**：
   - AI 功能：官方文档写 EDU 版 SDK 可「接入大模型，根据输入动态生成并调用原厂控制动作（具备一定风险，需要严格安全策略）」，并可「结合语音交互模块，实现自然语言控制」；运控板语音交互 agent 的唤醒词可配置。实现方式：运控板语音交互 agent + 开发者自接的大模型，具体模型未公开（[Bumi 官方文档](https://web.noetixrobotics.com/docs/)，查证 2026-10-02）
@@ -203,7 +203,7 @@
 - **关键差异化**：① 官网定位「万元级消费级人形机器人，让高性能人形机器人走进家庭与日常生活」；② 普通版 / EDU 版分层，SDK 公开（HighController / LowController / MediaController）；③ 官方文档写明「盲走」限制和使用禁区，可作为消费级具身的安全教育样本
 - **商业模式**：硬件销售；官网称结合图形化编程平台和内容生态
 
-> 来源：[松延动力官网 Bumi 页](https://www.noetixrobotics.com/detail/Bumi) · [Bumi 官方文档](https://web.noetixrobotics.com/docs/) · [每日经济新闻（2025-10-24）](https://m.nbd.com.cn/articles/2025-10-24/4104720.html) · [界面新闻（2025-10-24）](https://www.jiemian.com/article/13515891.html)（均查证 2026-10-02）
+> 来源：[松延动力官网 Bumi 页](https://www.noetixrobotics.com/detail/Bumi/) · [Bumi 官方文档](https://web.noetixrobotics.com/docs/) · [每日经济新闻（2025-10-24）](https://m.nbd.com.cn/articles/2025-10-24/4104720.html) · [界面新闻（2025-10-24）](https://www.jiemian.com/article/13515891.html)（均查证 2026-10-02）
 
 ---
 
@@ -252,10 +252,34 @@
 
 ---
 
+### Isaac 0（Weave Robotics）
+
+- **上市状态**：在售，仅限美国加州（Weave 官网订购页，查证 2026-10-08）；产品页写 “Shipments have started for California residents. Limited quantities available.”；FAQ 称其为 “an early-release prototype”；[官方发布文（2026-02-11）](https://www.weaverobotics.com/stories/isaac-0-announcement)写 2026 年 2 月起先发旧金山湾区住户
+- **官网/渠道**：<https://www.weaverobotics.com/isaac-0/order> 官网订购页（加州住户；订购页写预计 4–6 周交付）
+- **形态**：固定式双臂叠衣机器人。占地 18" × 19"（宽 × 深），高 2'6"–5'7"，建议配 48" × 30" 桌面；自由度：颈 4、臂 2 × 6、手 2 × 1、躯干 1；功耗 600W，120V（美国）；以太网或 Wi-Fi（2.4 / 5 GHz）；用 iOS App 控制，暂无 Android 版（官网产品页）
+- **定价**：
+  - 首发价：待核实（查证 2026-10-08）
+  - 现价：官网售价 $3,999.00 USD 一次性 + $49.00 USD/月（优先交付，2 年保修）· 美国加州 · [官网订购页](https://www.weaverobotics.com/isaac-0/order)（查证 2026-10-08）
+  - MSRP：待核实（查证 2026-10-08）
+  - 订阅：$249.00 USD/月，无前期费用，订阅期内保修 · [官网订购页](https://www.weaverobotics.com/isaac-0/order)（查证 2026-10-08）；下单先付 $250.00 USD 可退订金，交付时再选付款方式
+- **目标市场**：加州家庭（洗衣量大、想尝鲜的早期用户）；另有面向商户的订购渠道
+- **AI 能力**：
+  - AI 功能：把洗好的衣物叠好并按类别堆放（T 恤 / 长袖、裤子 / 短裤、毛巾、枕套等）；官方原文另写 “group socks” 和 “inside-out most clothes”；平均一筐 30–90 分钟。实现方式：机器人尽量自主完成，驱动动作的 AI 模型官方称每周更新、从每次纠正中学习；遇到难叠的衣物，由 Weave 专员远程接管 5–10 秒纠正后交回机器人；官方称 T 恤、短裤、长袖常常几乎全自主完成，其他衣物需要更多协助；未公开模型名（[Isaac 0 产品页](https://www.weaverobotics.com/isaac-0) · [官方发布文（2026-02-11）](https://www.weaverobotics.com/stories/isaac-0-announcement)，查证 2026-10-08）
+  - 模型、软件和改进通过 OTA 推送；Weave 负责上门安装，交付当天几小时内可开始工作（产品页）
+- **大模型方案**：自研机器人动作模型 + 远程遥操作兜底；未公开模型名和运行位置（非千问默认绑定）
+- **公开数据**：产品页写 “2,000+ Hours run in the field”“1,000+ lbs Laundry folded every week”（厂商称）；未见公开销量。公司层面：官方发布文写 2024 年夏天创立 Weave，公司在旧金山
+- **关键差异化**：① 自主 + 远程遥操作混合，装好当天就能叠；② 固定式、只做叠衣，先把单一家务做扎实，移动版 Isaac 1 另行开发；③ 买断 + 月费或纯订阅两种付费方式
+- **商业模式**：硬件买断 + 月费，或纯订阅；含上门安装与持续支持；另接商用订单
+- **风险事件**：远程专员接管时可看到家中画面，官方 FAQ 写专员只能看到头部和手腕摄像头画面及诊断信息、不采集音频。产品页称能叠 “bed sheets”；FAQ 另称 “Isaac 0 does not yet fold large blankets or bed sheets.”
+
+> 来源：[Isaac 0 产品页](https://www.weaverobotics.com/isaac-0) · [官网订购页](https://www.weaverobotics.com/isaac-0/order) · [官方发布文（2026-02-11）](https://www.weaverobotics.com/stories/isaac-0-announcement)（均查证 2026-10-08）
+
+---
+
 ## 待补充清单
 
 - [x] 工业四足产品（云深处绝影 X30）
-- [x] 工业四足公开项目价 / 标案：宇树 B2-W-pro 成交单价 ¥450,000 CNY（中国政府采购网成交公告，2026-06-26）· [成交公告](http://www.ccgp.gov.cn/cggg/dfgg/cjgg/202606/t20260626_26820485.htm)
+- [x] 工业四足公开项目价 / 标案：宇树 B2-W-pro 成交单价 ¥450,000 CNY（中国政府采购网成交公告，2026-06-26）· [成交公告](https://www.ccgp.gov.cn/cggg/dfgg/cjgg/202606/t20260626_26820485.htm)
 - [ ] Figure / Apptronik 等海外人形试点公开合同
 - [ ] 节卡 / 法奥等国内协作臂卡片
 
