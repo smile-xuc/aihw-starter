@@ -1,6 +1,6 @@
 # 商业产品 · Agent 硬件 / 口袋助手 / 桌面盒子
 
-> 本页收录 Agent 硬件方向已上市或公开众筹达成的产品，形态包括口袋助手、桌面盒子、家庭中枢，以及胸针、语音戒指等。
+> 本页收录 Agent 硬件方向已上市或公开众筹达成的产品，分两类：一是开箱即用的 agent 设备，包括口袋助手、桌面 agent 盒子、家庭中枢，以及胸针、语音戒指等；二是为本地大模型和 agent 提供算力的端侧推理硬件，包括本地大模型主机、桌面 AI 工作站、开发板 / 加速模组。
 > 文件名编号与 [`solutions/by-category/`](../../../solutions/by-category/) 对齐。
 > 精选横评见 [`solutions/by-category/04-agent-hardware/04-cases.md`](../../../solutions/by-category/04-agent-hardware/04-cases.md)。
 
@@ -175,6 +175,26 @@
 - **商业模式**：硬件销售
 
 > 来源：[ED-CLAWBOX 官网](https://edatec.cn/zh/clawbox)（查证 2026-10-02）
+
+### ClawBox（ID Robots Ltd）
+
+- **上市状态**：在售（官网直销，查证 2026-10-08）
+- **官网/渠道**：<https://clawbox.com/> 官网直销，价格页写 "no resellers, no marketplaces, no markup"；价格页 <https://clawbox.com/clawbox-price>；硬件页 <https://clawbox.com/local-ai-hardware>
+- **形态**：桌面常开 agent 盒子；NVIDIA Jetson Orin Nano 8GB（1024 核 Ampere GPU），67 TOPS，8 GB LPDDR5 统一内存，512 GB NVMe SSD；典型功耗 15 W，待机 7 W，峰值 25 W（[硬件页](https://clawbox.com/local-ai-hardware)）
+- **定价**：
+  - 首发价：待核实（查证 2026-10-08）
+  - 现价：官网售价 €749.00 EUR（一次性）· [价格页](https://clawbox.com/clawbox-price) · 查证 2026-10-08
+  - MSRP：待核实（查证 2026-10-08）
+- **目标市场**：想在自有硬件上全天候运行 AI 助手的个人用户；首页写 "Your always-on AI assistant, on hardware you own."，官网另设 ClawBox for Teams 页面
+- **AI 能力**：
+  - AI 功能：预装 OpenClaw 或 Hermes Agent，首页写 "OpenClaw, or Hermes Agent by Nous Research" 和 "You pick which one at checkout"；用 Telegram、WhatsApp、Discord 或语音下发任务，内置 Chromium 浏览器自动化和定时任务（cron）；Coding Agent 接到一句话任务后在盒子上写代码并提交 commit。官方称 "switching between OpenClaw and Hermes Agent takes one click on the device"。官方又称 "Max runs on DeepSeek V4.1 and adds a one-click switch between OpenClaw and Hermes."。实现方式：agent 框架运行在盒子上，模型可选本地模型或云端（ClawBox AI、GPT、Claude、Gemini），模型名见下一行（[官网首页](https://clawbox.com/) · [价格页](https://clawbox.com/clawbox-price)，查证 2026-10-08）
+  - 端侧推理：混合。价格页写 "Local AI works without a subscription, and you can optionally connect cloud providers when you want more power."；硬件页写 "All inference happens on the device. Your queries never touch a server."；ClawBox AI 套餐另提供托管云端模型（Free、Pro 为 DeepSeek V4.1 Flash，Max 为 DeepSeek V4.1）。官方称价格页所列本地模型为 "Llama 3.1 8B, CodeLlama, Whisper"。官方称硬件页所列本地模型为 Llama 3.2 1B (Q4) ~45 tok/s、Gemma 2 2B (Q4) ~26 tok/s、Qwen2.5 3B (Q4) ~23 tok/s、Phi-3 Mini 3.8B (Q4) ~22 tok/s，以及 Whisper Large v3、Kokoro TTS。官方称首页设置界面的 Gemma 4 "runs entirely on the box"，参数量未公开。芯片：NVIDIA Jetson Orin Nano，67 TOPS，8 GB LPDDR5 统一内存（[价格页](https://clawbox.com/clawbox-price) · [硬件页](https://clawbox.com/local-ai-hardware) · [官网首页](https://clawbox.com/)，查证 2026-10-08）
+- **大模型方案**：本地模型由 Ollama 管理，硬件页写 "All models managed via Ollama. Pull any model with one command."；云端可接 GPT、Claude、Gemini 或 ClawBox AI（非千问默认绑定）
+- **公开数据**：未见公开销量；硬件页写模型速度 "measured on a production unit"
+- **关键差异化**：① 同一硬件可运行 OpenClaw 或 Hermes Agent；② 本地模型和云端模型在同一设置界面里选；③ 硬件一次性买断，订阅可选（厂商称）
+- **商业模式**：硬件一次性销售 + 可选 ClawBox AI 订阅：Free €0.00 EUR；Pro €9.00 EUR/月或 €89.00 EUR/年；Max €49.00 EUR/月或 €479.00 EUR/年。Coding Agent 需要 ClawBox AI Pro 或 Max 套餐（首页原文 "It needs a ClawBox AI Pro or Max plan."）；Memory Shard、云端语音回复和固定远程地址同样在 Pro / Max 套餐内
+
+> 来源：[ClawBox 官网](https://clawbox.com/) · [ClawBox 价格页](https://clawbox.com/clawbox-price) · [ClawBox 硬件页](https://clawbox.com/local-ai-hardware) · [关于 ClawBox](https://clawbox.com/about)（均查证 2026-10-08）
 
 ## 待补充清单
 
