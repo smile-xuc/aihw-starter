@@ -82,7 +82,7 @@
   - 现价：W4 $279.20 USD（官方常规价 $349.00 USD，查证 2026-10-07）· [产品页](https://www.timekettle.co/products/w4-ai-interpreter-earbuds)；W4 Pro $449.00 USD · [对比页](https://www.timekettle.co/pages/product-compare) · 查证 2026-09-30
   - 现价：W4 Plus 买断版 $379.00 USD（官方常规价 $399.00 USD，查证 2026-10-07）；订阅版硬件 $299.00 USD（官方常规价 $319.00 USD，查证 2026-10-07）· [W4 Plus 商品页](https://www.timekettle.co/products/w4-plus-ai-interpreter-earbuds) · 查证 2026-09-30
   - MSRP：W4 $349.00 USD（官方常规价）· [产品页](https://www.timekettle.co/products/w4-ai-interpreter-earbuds) · 查证 2026-10-03
-  - MSRP：W4 Plus 待核实
+  - MSRP：W4 Plus 买断版 $399.00 USD（官方常规价）；订阅版硬件 $319.00 USD（官方常规价）· [W4 Plus 商品页](https://www.timekettle.co/products/w4-plus-ai-interpreter-earbuds) · 查证 2026-10-08
   - 订阅：W4 Plus 订阅版月费 $14.99 USD/月（Unlimited Plan；美国以外由应用商店按当地汇率与税费调整）· [W4 Plus 商品页](https://www.timekettle.co/products/w4-plus-ai-interpreter-earbuds) · 查证 2026-10-03。订阅版写双人对话与现场旁听永久免费；媒体翻译、通话翻译和高级 AI 功能 7 天试用后按月订阅。买断版写一次购买后不再按月收费 · [W4 Plus 商品页](https://www.timekettle.co/products/w4-plus-ai-interpreter-earbuds) · 查证 2026-09-30
 - **目标市场**：W4 新闻稿写面向休闲旅行者和普通用户，W4 Pro 面向企业与专业用户（[Timekettle 新闻稿（PR Newswire，2025-09-05）](https://www.prnewswire.com/news-releases/the-timekettle-w4-ai-interpreter-earbuds-debut-at-ifa-2025-with-bone-voiceprint-sensor-capture-and-llm-powered-context-aware-translation-to-distinguish-phonetically-similar-phrases-302547499.html)，查证 2026-10-03）。W4 Plus 商品页写商务会议与跨境沟通
 - **AI 能力**：
