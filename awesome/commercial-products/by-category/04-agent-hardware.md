@@ -216,6 +216,26 @@
 
 > 来源：[Ubo 官网](https://www.getubo.com/) · [Ubo 官方商店](https://shop.getubo.com/products/ubo-pro-4-and-5) · [硬件页](https://www.getubo.com/hardware) · [软件页](https://www.getubo.com/software) · [Ubo App 开源仓库](https://github.com/ubopod/ubo_app)（均查证 2026-10-08）
 
+### SenseCAP Watcher W1-A（Seeed Studio）
+
+- **上市状态**：在售（官方商店页显示 "In Stock"，查证 2026-10-09）
+- **官网/渠道**：官方商店 <https://www.seeedstudio.com/SenseCAP-Watcher-W1-A-p-5979.html>；快速上手 <https://wiki.seeedstudio.com/getting_started_with_watcher/>；本地部署说明 <https://wiki.seeedstudio.com/watcher_local_deploy/>；SenseCraft AI 套餐说明 <https://wiki.seeedstudio.com/watcher_price/>
+- **形态**：桌面 / 壁挂的视觉 + 语音 AI 小设备，W1-A 为透明外壳款；1.45 英寸 412×412 触摸屏、滚轮、OV5647 120° 摄像头、单麦克风、1 W 扬声器、RGB 指示灯；3.7 V 400 mAh 备用电池；69 × 65 × 20 mm；背面 Grove I2C 接口可接 100+ 种 Grove 传感器。商店页写本款为 "AI Vision Edition"，并写 "It is NOT compatible with the XiaoZhi AI Chatting firmware"（[官方商店](https://www.seeedstudio.com/SenseCAP-Watcher-W1-A-p-5979.html)）
+- **定价**：
+  - 首发价：待核实（查证 2026-10-09）
+  - 现价：官网售价 $54.90 USD（10 件及以上 $50.90 USD）· [官方商店](https://www.seeedstudio.com/SenseCAP-Watcher-W1-A-p-5979.html) · 查证 2026-10-09
+  - MSRP：待核实（查证 2026-10-09）
+- **目标市场**：想让设备「看到指定事件再行动」的家庭、楼宇用户和开发者；快速上手写 "SenseCAP Watcher is an AI watcher to help you monitor anomalies within a space and then take actions."
+- **AI 能力**：
+  - AI 功能：用 Push to Talk 或 SenseCraft App 下达监看任务，检测到指定事件后用语音回应、在 App 推送消息或闪灯；可作为行为传感器接入 Home Assistant、Node-RED，也可通过 UART、HTTP 或 USB 给 Arduino、ESP32、Raspberry Pi 等设备加上 agent 能力。实现方式：设备端模型先检测目标，再把关键帧交给大模型分析，商店页写 "we use the architecture of on-device AI + LLMs"；大模型由 SenseCraft 软件套件调用，SenseCraft AI 云服务的模型名未公开（[官方商店](https://www.seeedstudio.com/SenseCAP-Watcher-W1-A-p-5979.html) · [快速上手](https://wiki.seeedstudio.com/getting_started_with_watcher/)，查证 2026-10-09）
+  - 端侧推理：混合。商店页写 "Running on-device AI models, SenseCAP Watcher can detect different things: people, apples, pets, etc."，又写 "The on-device AI model on Watcher detects the target, which is then analyzed by LLM to generate accurate and actionable insights."，检测到目标后 "this keyframe is sent to LLM for further analysis"。设备端检测模型名称与参数量未公开。大模型由 SenseCraft 提供：可用 SenseCraft AI 云服务，也可按本地部署说明装在用户自己的 Windows / macOS / Linux 电脑或 NVIDIA Jetson AGX Orin 上，本地可选 "Llama 3.1 + LLaVA"（参数量未公开）。芯片：ESP32-S3 @240MHz（8MB PSRAM）+ Himax HX6538（Cortex-M55 + Ethos-U55），NPU 算力未公开；Flash 为 ESP32-S3 32MB、HX6538 16MB（[官方商店](https://www.seeedstudio.com/SenseCAP-Watcher-W1-A-p-5979.html) · [本地部署说明](https://wiki.seeedstudio.com/watcher_local_deploy/)，查证 2026-10-09）
+- **大模型方案**：SenseCraft AI 云服务模型名未公开；本地部署可选 Llama 3.1 + LLaVA 或 OpenAI（非千问默认绑定）。官方称本地部署时 "everything is stored and running privately, ensuring that your models and data are not streamed to any public LLMs or public clouds."。官方又称本地部署可选 OpenAI 模型，"If you prefer to use OpenAI's models, you need to prepare your OpenAI API key in advance."
+- **公开数据**：未见公开销量；本地部署说明列出官方设备上的响应时间，如 NVIDIA Jetson AGX Orin 32GB 任务分析 18s、图像分析 7s
+- **关键差异化**：① 设备端模型先筛选，只把关键帧发给大模型，商店页写 "This tremendously reduces LLMs' cost."；② SenseCraft 可本地部署，大模型跑在用户自己的电脑或 Jetson 上；③ 开源，可接 Home Assistant、Node-RED（厂商称）
+- **商业模式**：硬件销售 + 可选 SenseCraft AI 服务：Basic 免费，商店页写 "15min/request for image analysis, 200 chats/month with LLMs"；Pro $6.90 USD，商店页写 "pay only for what you consume, NO commitment to recurring subscription fees!"，且 "each NEW device includes a FREE $6.90 Pro package"；On-Premise 本地部署，商店页写 "Just deploy and use with no additional costs!"
+
+> 来源：[SenseCAP Watcher W1-A 官方商店](https://www.seeedstudio.com/SenseCAP-Watcher-W1-A-p-5979.html) · [快速上手](https://wiki.seeedstudio.com/getting_started_with_watcher/) · [本地部署说明](https://wiki.seeedstudio.com/watcher_local_deploy/) · [SenseCraft AI 套餐说明](https://wiki.seeedstudio.com/watcher_price/)（均查证 2026-10-09）
+
 ## 待补充清单
 
 - [ ] DFRobot AI 智能体盒子正式定价后补卡
