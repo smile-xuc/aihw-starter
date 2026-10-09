@@ -236,6 +236,26 @@
 
 > 来源：[SenseCAP Watcher W1-A 官方商店](https://www.seeedstudio.com/SenseCAP-Watcher-W1-A-p-5979.html) · [快速上手](https://wiki.seeedstudio.com/getting_started_with_watcher/) · [本地部署说明](https://wiki.seeedstudio.com/watcher_local_deploy/) · [SenseCraft AI 套餐说明](https://wiki.seeedstudio.com/watcher_price/)（均查证 2026-10-09）
 
+### Home Assistant Voice Preview Edition（Nabu Casa / Home Assistant）
+
+- **上市状态**：在售（经销商渠道，查证 2026-10-09）。产品页时间线写 2024-12 "Voice Preview Edition launches"；产品页 "Buy now" 按北美、亚洲、澳洲、欧洲列出各地经销商，官网没有直营商店
+- **官网/渠道**：产品页 <https://www.home-assistant.io/voice-pe/>（列出经销商）；本地语音助手设置说明 <https://www.home-assistant.io/voice_control/voice_remote_local_assistant/>；LLM 对话代理说明 <https://www.home-assistant.io/voice_control/assist_create_open_ai_personality/>；开源固件 <https://github.com/esphome/home-assistant-voice-pe>
+- **形态**：桌面语音助手，84 × 84 × 21 mm，96 g；内置扬声器、双麦克风阵列、多色 LED 灯环、多功能按键、旋钮；麦克风静音开关 "Physically cuts power to the microphones for guaranteed privacy"；3.5 mm 音频输出（TI AIC3204 DAC）、Grove 接口；USB-C 供电，不附带充电器和线缆（[产品页](https://www.home-assistant.io/voice-pe/)）
+- **定价**：
+  - 首发价：待核实（查证 2026-10-09）
+  - 现价：待核实。官网不直接销售，产品页只列经销商，并写 "Prices differ between regions due to varying local market costs and conditions, and are subject to individual retailers."（查证 2026-10-09）
+  - MSRP：$69.00 USD / €59.00 EUR（建议零售价），产品页写 "* Recommended MSRP. USD prices exclude taxes, while EUR prices include applicable taxes." · [产品页](https://www.home-assistant.io/voice-pe/) · 查证 2026-10-09
+- **目标市场**：Home Assistant 用户；产品页写 "The best way to get started with voice"，并写 "Built for Home Assistant"
+- **AI 能力**：
+  - AI 功能：用唤醒词或按键唤醒后说话，控制 Home Assistant 里的设备，如开灯、查温度、设定时器、往购物清单加东西，设备用语音和灯环回应。实现方式：设备负责拾音、唤醒和播放，语音识别、意图理解和语音合成由 Home Assistant 的 Assist 流水线完成；可选接入 LLM 作为对话代理，产品页写 "it is possible to either fully replace our voice assistant’s conversation agent with an LLM or use it as a fallback for commands that Home Assistant does not understand natively"，并称智能家居里使用 AI 属于 "experimental"。LLM 由用户自选，模型名未公开（[产品页](https://www.home-assistant.io/voice-pe/) · [LLM 对话代理说明](https://www.home-assistant.io/voice_control/assist_create_open_ai_personality/)，查证 2026-10-09）
+  - 端侧推理：混合，按环节分别运行。产品页写 "Run voice fully locally, or offload speech processing to our privacy-first cloud."。① 唤醒词在设备上运行：产品页写 "This is provided by the on-device wake word engine called microWakeWord."，默认唤醒词可选 Okay Nabu、Hey Jarvis、Hey Mycroft，模型参数量未公开。② 语音转文字在用户的 Home Assistant 系统或云端运行：本地可选 Speech-to-Phrase（产品页称只限预设的家居控制语句）或 OpenAI Whisper（产品页写 "we recommend using at least an Intel N100 or equivalent processor"，可选 Whisper Base / Small / Large，参数量未公开）；也可用 Home Assistant Cloud，产品页写其 "leverages the enterprise services of Microsoft Azure for its industry-leading speech processing"。③ 文字转语音：本地用 Piper，设置说明写 "Piper is a fast, local neural text-to-speech system that sounds great and is optimized for the Raspberry Pi 4."，参数量未公开；也可用 Home Assistant Cloud。④ LLM 对话代理（可选）：说明页写 "Pick the LLM provider of your choice, either local or cloud, as long as it has a conversational agent."，本地可接 Ollama，模型名与参数量未公开。芯片：ESP32-S3（16 MB Flash、8 MB octal PSRAM）+ XMOS XU316 音频处理器（回声消除、稳态降噪、自动增益），NPU 算力未公开（[产品页](https://www.home-assistant.io/voice-pe/) · [本地语音助手设置说明](https://www.home-assistant.io/voice_control/voice_remote_local_assistant/) · [LLM 对话代理说明](https://www.home-assistant.io/voice_control/assist_create_open_ai_personality/)，查证 2026-10-09）
+- **大模型方案**：LLM 为可选项，可完全替换 Assist 自带的对话代理，或只处理 Home Assistant 本身听不懂的指令；本地（如 Ollama）或云端由用户自选，官网未写默认模型（非千问默认绑定）
+- **公开数据**：未见公开销量
+- **关键差异化**：① 唤醒词在设备上运行，语音处理可以全本地或用 Home Assistant Cloud；② 麦克风静音开关物理断电；③ 软件、固件和硬件全部开源，产品页写 "Fully open software, firmware, and hardware allows you to make it work best for your needs."（厂商称）
+- **商业模式**：硬件经销商销售 + 可选 Home Assistant Cloud；产品页写 "Nabu Casa designs and builds official Home Assistant hardware. As a commercial partner of the Open Home Foundation, Nabu Casa contributes the majority of its profits to the foundation."
+
+> 来源：[Home Assistant Voice Preview Edition 产品页](https://www.home-assistant.io/voice-pe/) · [本地语音助手设置说明](https://www.home-assistant.io/voice_control/voice_remote_local_assistant/) · [LLM 对话代理说明](https://www.home-assistant.io/voice_control/assist_create_open_ai_personality/) · [开源固件](https://github.com/esphome/home-assistant-voice-pe)（均查证 2026-10-09）
+
 ## 待补充清单
 
 - [ ] DFRobot AI 智能体盒子正式定价后补卡
