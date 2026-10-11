@@ -278,6 +278,26 @@
 
 > 来源：[Tiiny Pocket 产品介绍页](https://www.tiiny.ai/pages/tiiny-pocket) · [Tiiny Pocket 商品页](https://www.tiiny.ai/products/tiiny-pocket) · [Tiiny 公司页](https://www.tiiny.ai/pages/about-us)（均查证 2026-10-11）
 
+### Olares One（Olares）
+
+- **上市状态**：在售（查证 2026-10-11）。官方商店写 "In Stock - Ships within 24 Hours"
+- **官网/渠道**：产品页 <https://www.olares.com/one>；官方商店 <https://shop.olares.com/products/olares-one>；Olares OS 开源仓库 <https://github.com/beclab/Olares>；官网页脚署名 "Bytefuture (HK) Limited"
+- **形态**：桌面 AI 主机，官方称 "Olares One is a dedicated personal cloud device designed for local AI."；320 × 197 × 55 mm，2.15 kg（含电源 3.1 kg）；Thunderbolt 5、2.5G 网口、USB-A、HDMI 2.1 各 1 个，Wi-Fi 7、蓝牙 5.4；电源 330W；预装开源的 Olares OS，也可换装 Windows。官方称噪音 "Whisper-Quiet at Idle 38.8"、"Quiet at Full Power (GPU 175W + CPU 55W) 43.8 (Max)"（产品页散热段）。官方称 "In lab testing, the device generates 19dB when idle and remains under 39dB under maximum load."（产品页 FAQ）（[产品页](https://www.olares.com/one)）
+- **定价**：
+  - 首发价：待核实（查证 2026-10-11）
+  - 现价：官网售价 $4,999.00 USD · [官方商店](https://shop.olares.com/products/olares-one) · 查证 2026-10-11
+  - MSRP：待核实（查证 2026-10-11）
+- **目标市场**：想在自己硬件上跑本地 AI、agent 和自托管服务的个人、创作者和小团队；产品页写 "World’s best desktop to run OpenClaw locally"，并以 5 人团队分摊 3 年计算成本
+- **AI 能力**：
+  - AI 功能：预装 Olares OS，可一键部署 200+ 应用，产品页列出 ComfyUI、ACE-Step、DeerFlow、Hunyuan3D、Dify、Open WebUI 等 AI 应用；可常开运行 OpenClaw 等本地 agent，产品页写 "Run local models, fully sandboxed, always on, entirely yours."；另可做私有云盘、密码库、Steam 串流和 Windows 虚拟机（[产品页](https://www.olares.com/one) · [官方商店](https://shop.olares.com/products/olares-one)，查证 2026-10-11）
+  - 端侧推理：本地，模型在 Olares One 上运行。产品页写 "All your AI projects and data are 100% locally processed, powered by Olares OS."；官方商店写 "Build, run, and orchestrate AI agents locally."。模型名与参数量未公开，由用户在应用市场自选。芯片：Intel Core Ultra 9 275HX（24 核，最高 5.4GHz）+ NVIDIA GeForce RTX 5090 Mobile，"AI TOPS 1824"，24GB GDDR7 显存，Max TGP 175 W；内存 96GB DDR5 5600MHz（2×48GB，官方称最高可升级到 128GB）；存储 2TB NVMe SSD（PCIe 4.0）（[产品页](https://www.olares.com/one) · [官方商店](https://shop.olares.com/products/olares-one)，查证 2026-10-11）
+- **大模型方案**：本地运行开源模型和应用，用户在 Olares 应用市场自选，官网未写默认模型（非千问默认绑定）
+- **公开数据**：产品页写 "See why over 3,900 developers love Olares."；未见公开销量
+- **关键差异化**：① RTX 5090 Mobile + 96GB 内存的桌面主机，产品页写 "Olares One utilizes the NVIDIA CUDA stack on x86 architecture."；② 自带开源的 Olares OS，应用沙箱隔离、一键部署；③ 数据留在本机，可通过 Olares ID 远程访问（厂商称）
+- **商业模式**：硬件一次性销售，系统免费；产品页写 "Olares OS and all future system updates are completely free."
+
+> 来源：[Olares One 产品页](https://www.olares.com/one) · [Olares One 官方商店](https://shop.olares.com/products/olares-one) · [Olares OS GitHub](https://github.com/beclab/Olares)（均查证 2026-10-11）
+
 ## 待补充清单
 
 - [ ] DFRobot AI 智能体盒子正式定价后补卡
