@@ -298,6 +298,26 @@
 
 > 来源：[Olares One 产品页](https://www.olares.com/one) · [Olares One 官方商店](https://shop.olares.com/products/olares-one) · [Olares OS GitHub](https://github.com/beclab/Olares)（均查证 2026-10-11）
 
+### Framework Desktop（Framework Computer）
+
+- **上市状态**：AI Max 300 系列在售，AI Max PRO 400 系列预订（查证 2026-10-12）。300 系列配置页写 "Ships within 5 business days"，其中 Max 385 - 32GB 显示 "Out of stock"；400 系列配置页标 "Pre-order"，写 "Secure your pre-order with a deposit. Cancel any time before shipment for a full refund."，定金 $100.00，批次写 "Limited Batch 1 Ships December - Sold Out" 和 "Limited Batch 2 Ships Nov"
+- **官网/渠道**：产品页 <https://frame.work/desktop>；规格页 <https://frame.work/desktop?slug=desktop-diy-amd-aimax300&tab=specs>；AI Max 300 系列 DIY 版配置页 <https://frame.work/products/desktop-diy-amd-aimax300/configuration/new>；AI Max PRO 400 系列 DIY 版配置页 <https://frame.work/products/desktop-diy-amd-aimax400/configuration/new>
+- **形态**：4.5L 迷你桌面工作站，96.8 × 205.5 × 226.1 mm，3.1 kg；标准 Mini-ITX 主板、FlexATX 400W 电源、120mm CPU 风扇；2 个 M.2 2280 插槽；后置 HDMI 2.1、2 × DP 2.1、2 × USB4、5G 网口、2 × USB-A，前置 2 个可换接口的扩展卡槽；Wi-Fi 7；有 DIY 版（自备系统，可装 Linux 或 Windows）和预装 Fedora 的整机版（[产品页](https://frame.work/desktop) · [规格页](https://frame.work/desktop?slug=desktop-diy-amd-aimax300&tab=specs)）
+- **定价**：
+  - 首发价：待核实（查证 2026-10-12）
+  - 现价：官网售价 $1,269.00 USD 起（DIY 版 AI Max 300 系列，Max 385 - 32GB）（该配置当前缺货）；AI Max PRO 400 系列 $6,799.00 USD 起（DIY 版，Max+ PRO 495 - 192GB，预订）；价格不含税费 · [300 系列配置页](https://frame.work/products/desktop-diy-amd-aimax300/configuration/new) · [400 系列配置页](https://frame.work/products/desktop-diy-amd-aimax400/configuration/new) · 查证 2026-10-12
+  - MSRP：待核实（查证 2026-10-12）
+- **目标市场**：想在自有硬件上跑大模型的开发者和工作站用户，也面向游戏和创作；产品页写 "Run large AI models on hardware you own."
+- **AI 能力**：
+  - AI 功能：本地运行开源大模型和 agent，产品页写 "Up to 16 high-performance Zen 5 CPU cores means your OpenClaw or Hermes Agent can power through application and tool-calling too."；可通过 USB4 或 PCIe 网卡多机组集群跑更大的模型（[产品页](https://frame.work/desktop)，查证 2026-10-12）
+  - 端侧推理：本地，模型在 Framework Desktop 上运行。产品页写 "Run large AI models on hardware you own."，并写 "Run 300B-class models at 4-bit quantization with headroom to spare for extra context length."。模型：产品页 "Recommended model (as of Sept 2026)" 表列出 Max 385 - 32GB 跑 Qwen3.8-27B（UD-Q4_K_XL，占用 17.6GB）、Max+ 395 - 64GB 跑 Qwen3.5-122B-A10B（Q3_K_S，52.5GB）、Max+ 395 - 128GB 跑 DeepSeek V4 Flash 0731（UD-IQ2_XXS，90.9GB）、Max+ PRO 495 - 192GB 跑 DeepSeek V4.1 Flash Q2（163GB）。芯片：AMD Ryzen AI Max 385（8 核，Radeon 8050S，32 CU）、Ryzen AI Max+ 395（16 核，Radeon 8060S，40 CU）、Ryzen AI Max+ PRO 495（16 核，40 CU）；NPU 算力 300 系列 "Up to 50 TOPS"，400 系列 "Up to 55 TOPS"，GPU 算力未公开。内存：32GB / 64GB / 128GB / 192GB 板载 LPDDR5x（不可升级），256-bit 位宽，PRO 495 为 LPDDR5x-8533（[产品页](https://frame.work/desktop) · [规格页](https://frame.work/desktop?slug=desktop-diy-amd-aimax300&tab=specs)，查证 2026-10-12）
+- **大模型方案**：本地运行开源模型，产品页推荐表按内存给出 Qwen 和 DeepSeek 等模型，由用户自选和部署，官网未写默认模型（非千问默认绑定）
+- **公开数据**：未见公开销量
+- **关键差异化**：① 4.5L 机身最高 192GB 板载内存，官方称可跑 300B 级 4-bit 模型；② 标准 Mini-ITX 主板、FlexATX 电源和 120mm 风扇，可拆出主板自行组装；③ 支持多机集群，产品页写 "USB4 offers a simple and convenient path for enabling pipeline parallelism or multi-agent clusters."（厂商称）
+- **商业模式**：硬件一次性销售（官网直销，DIY 版和整机版），另售存储、系统授权、扩展卡和延保等选配
+
+> 来源：[Framework Desktop 产品页](https://frame.work/desktop) · [规格页](https://frame.work/desktop?slug=desktop-diy-amd-aimax300&tab=specs) · [AI Max 300 系列配置页](https://frame.work/products/desktop-diy-amd-aimax300/configuration/new) · [AI Max PRO 400 系列配置页](https://frame.work/products/desktop-diy-amd-aimax400/configuration/new)（均查证 2026-10-12）
+
 ## 待补充清单
 
 - [ ] DFRobot AI 智能体盒子正式定价后补卡
