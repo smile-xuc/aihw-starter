@@ -318,6 +318,26 @@
 
 > 来源：[Framework Desktop 产品页](https://frame.work/desktop) · [规格页](https://frame.work/desktop?slug=desktop-diy-amd-aimax300&tab=specs) · [AI Max 300 系列配置页](https://frame.work/products/desktop-diy-amd-aimax300/configuration/new) · [AI Max PRO 400 系列配置页](https://frame.work/products/desktop-diy-amd-aimax400/configuration/new)（均查证 2026-10-12）
 
+### Jetson Orin Nano Super Developer Kit（NVIDIA）
+
+- **上市状态**：在售，经授权分销商销售（查证 2026-10-12）。产品页写 "Purchase from one of our partners."，并写 "It can be purchased through NVIDIA authorized distributors worldwide."；官方博客 2024-12-17 发布时写 "Available today"
+- **官网/渠道**：产品页 <https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/>（"Where to Buy" 列出合作伙伴）；Jetson FAQ <https://developer.nvidia.com/embedded/faq>；官方博客 <https://blogs.nvidia.com/blog/jetson-generative-ai-supercomputer/>；NVIDIA 技术博客 <https://developer.nvidia.com/blog/nvidia-jetson-orin-nano-developer-kit-gets-a-super-boost/>
+- **形态**：边缘 AI 开发套件，由 Jetson Orin Nano 8GB 模组和参考载板组成，官方博客写 "The developer kit consists of a Jetson Orin Nano 8GB system-on-module (SoM) and a reference carrier board, providing an ideal platform for prototyping edge AI applications."；支持 SD 卡和外接 NVMe，最多 4 路摄像头；功耗 7W–25W。FAQ 写 "The Jetson Orin Nano Super has no physical hardware and package differences compared to the Jetson Orin Nano Developer Kit."，性能提升来自软件更新（[产品页](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/) · [官方博客](https://blogs.nvidia.com/blog/jetson-generative-ai-supercomputer/) · [Jetson FAQ](https://developer.nvidia.com/embedded/faq)）
+- **定价**：
+  - 首发价：$249.00 USD，官方博客 2024-12-17 写 "And the price is now $249, down from $499." · [官方博客](https://blogs.nvidia.com/blog/jetson-generative-ai-supercomputer/) · 查证 2026-10-12
+  - 现价：待核实。NVIDIA 官网不直接销售，产品页只列合作伙伴 · [产品页](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/) · 查证 2026-10-12
+  - MSRP：$399.00 USD，Jetson FAQ 价格表前写 "Here is a summary of volume suggested pricing at 1KU+."，表中 "MSRP (USD)" 一栏写 Jetson Orin Nano Super Developer Kit "$399" · [Jetson FAQ](https://developer.nvidia.com/embedded/faq) · 查证 2026-10-12
+- **目标市场**：学习和开发生成式 AI、机器人和计算机视觉的开发者、学生和创客；产品页写 "Ideal for students, educators, and researchers"
+- **AI 能力**：
+  - AI 功能：开发平台，不带现成的 agent 应用，需开发者自行搭建；官方博客写 "Whether creating LLM chatbots based on retrieval-augmented generation, building a visual AI agent, or deploying AI-based robots, the Jetson Orin Nano Super is an ideal solution to fetch."；可运行 NVIDIA Isaac、Metropolis、Holoscan 等软件（[官方博客](https://blogs.nvidia.com/blog/jetson-generative-ai-supercomputer/)，查证 2026-10-12）
+  - 端侧推理：本地，模型在开发套件上运行。产品页写 "The NVIDIA Jetson Orin Nano™ Super Developer Kit is a compact, yet powerful computer that redefines generative AI for small edge devices."，并写 "Bring generative AI to the edge with NVIDIA Jetson™."。模型：产品页只写 "like vision transformers, large language models, vision-language models, and more"；NVIDIA 技术博客写 "This compact yet powerful system can effortlessly handle a wide range of LLMs, VLMs, and Vision Transformers (ViTs), from smaller models to those with up to 8B parameters, such as the Llama-3.1-8B model."，其 Orin Nano Super 基准表列出 Llama 3.1 8B、Llama 3.2 3B、Qwen2.5 7B、Gemma 2 2B、Gemma 2 9B、Phi 3.5 3B、SmolLM2（参数量未公开）（LLM，INT4），以及 VILA 1.5 3B / 8B、LLAVA 1.6 7B、Qwen2 VL 2B、InternVL2.5 4B、PaliGemma2 3B、SmolVLM 2B（VLM）。算力：官方称 "67 INT8 TOPS"（产品页）。官方称 "67 Sparse TOPs"（NVIDIA 技术博客）。GPU 为 NVIDIA Ampere 架构 GPU（1024 CUDA 核心、32 Tensor 核心），6 核 Arm Cortex-A78AE CPU。内存：8GB 128-bit LPDDR5，102 GB/s（[产品页](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/) · [NVIDIA 技术博客](https://developer.nvidia.com/blog/nvidia-jetson-orin-nano-developer-kit-gets-a-super-boost/)，查证 2026-10-12）
+- **大模型方案**：由开发者自选开源模型部署，NVIDIA 技术博客写 "Jetson supports the same ML frameworks and optimized inferencing infrastructure as other platforms, such as HuggingFace Transformers, Ollama, llama.cpp, vLLM, MLC, NVIDIA TensorRT-LLM, and more."，官网未写默认模型（非千问默认绑定）
+- **公开数据**：未见公开销量
+- **关键差异化**：① NVIDIA 称其为 "The most affordable generative AI supercomputer."；② 软件升级把算力从 40 提到 67 TOPS、内存带宽提到 102 GB/s，旧款 Orin Nano 开发套件也能升级（厂商称）；③ 与其他 Jetson 共用 JetPack / CUDA 软件栈
+- **商业模式**：硬件经授权分销商销售
+
+> 来源：[Jetson Orin Nano Super Developer Kit 产品页](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/) · [Jetson FAQ](https://developer.nvidia.com/embedded/faq) · [NVIDIA 官方博客（2024-12-17）](https://blogs.nvidia.com/blog/jetson-generative-ai-supercomputer/) · [NVIDIA 技术博客（2024-12-17）](https://developer.nvidia.com/blog/nvidia-jetson-orin-nano-developer-kit-gets-a-super-boost/)（均查证 2026-10-12）
+
 ## 待补充清单
 
 - [ ] DFRobot AI 智能体盒子正式定价后补卡
