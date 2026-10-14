@@ -35,7 +35,7 @@
 - **形态**：旅行向翻译耳机（翻译 + 音乐 + 通话）
 - **定价**：
   - 首发价：待核实
-  - 现价：Online & Offline $119.99 USD（官方常规价 $149.99 USD，查证 2026-10-07）· [产品页](https://www.timekettle.co/products/m3-travel-translator-earbuds) · 查证 2026-09-30。仅在线版 $119.99 USD（缺货）· [产品页](https://www.timekettle.co/products/m3-travel-translator-earbuds) · 查证 2026-10-03
+  - 现价：Online & Offline 官网售价 $97.49 USD（官方常规价 $149.99 USD）· [产品页](https://www.timekettle.co/products/m3-travel-translator-earbuds) · 查证 2026-10-09。仅在线版 官网售价 $119.99 USD（缺货）· [产品页](https://www.timekettle.co/products/m3-travel-translator-earbuds) · 查证 2026-10-09
   - MSRP：Online & Offline $149.99 USD（官方常规价）· [产品页](https://www.timekettle.co/products/m3-travel-translator-earbuds) · 查证 2026-10-03
 - **目标市场**：旅游、短期跨境沟通
 - **AI 能力**：
