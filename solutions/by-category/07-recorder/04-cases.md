@@ -36,7 +36,7 @@
 | **讯飞 SR502 星火版** | 科大讯飞 | 带屏录音笔 | 讯飞星火 / 听见转写 | 离线转写、OCR、会议向 | [¥2499 官网标价](https://www.iflytekrecord.com/Goods_parms/1/511.html) |
 | **HiDock H1 Lite** | HiDock | USB-C 桌面扬声器电话 | HiNotes；产品页列 GPT-5.4 / Claude 4.6 / Gemini 3.1 Pro | BlueCatch 双端录音，无会议 bot；Call / Room | [官网 $189](https://www.hidock.com/products/hidock-h1-lite)；[Amazon $189.99](https://www.amazon.com/HiDock-Conference-Speakerphone-Noise-Canceling-Transcription/dp/B0GZ3GZ3DT) |
 | **Limitless Pendant** | Limitless（Meta 收购后公开停售） | 挂件可穿戴 | 云端转写 + 日记式检索 | 持续录音、隐私声明 | 历史公开约 $99；[官网说明停售](https://www.limitless.ai/) |
-| **Bee Pioneer** | Bee（已加入 Amazon） | 腕带 / 夹扣可穿戴 | 未公开具体基座模型；实时转写后不存音频 | 摘要、to-do、Daily Insights、Voice Notes；邮件 / 日历 Actions | [官网 $49.99](https://bee.computer/bee-pioneer)；Premium 待定 |
+| **Bee Frontier**（前代 Pioneer 已换代） | Bee（已加入 Amazon） | 腕带 / 夹扣可穿戴 | 未公开具体基座模型；音频处理后即删 | 摘要、要点、建议待办、对话搜索、语音笔记；Bee Pro 集成邮件 / 日历 | [官网 $74.99](https://bee.computer/products/frontier)；[Bee Pro](https://bee.computer/bee-pro) $11.99/月 |
 | **通义听悟** | 阿里云 | 纯 SaaS | Paraformer + 纪要 Agent | 开箱转写 / 纪要 | 按听悟套餐（非硬件） |
 | **钉钉 AI 听记** | 钉钉 | 会议软件内嵌 | 钉钉 / 通义能力（公开表述） | 会中字幕与纪要 | 随钉钉商业化 |
 
@@ -56,7 +56,7 @@
   硬件+订阅    可穿戴探索*
 ```
 
-\*Limitless Pendant：公开信息称 2025-12 起不再向新用户销售，作历史对标。Bee Pioneer 为仍在官网在售的可穿戴对照（$49.99，Premium 待定），见 [商业产品卡][rec]。
+\*Limitless Pendant：公开信息称 2025-12 起不再向新用户销售，作历史对标。Bee Frontier（前代 Pioneer 已换代）为仍在官网在售的可穿戴对照（$74.99，Bee Pro $11.99/月或 $99.99/年），见 [商业产品卡][rec]。
 
 ---
 
@@ -90,10 +90,10 @@
 - **可借鉴点**：全天候录音的产品想象力强，但隐私、区域合规与告知义务成本高——创业团队需谨慎
 - **另见**：[Limitless 商业产品卡][rec]
 
-### 案例：Bee Pioneer（Bee / Amazon）— 腕带 / 夹扣可穿戴
+### 案例：Bee Frontier（Bee / Amazon）— 腕带 / 夹扣可穿戴
 
 - **公开信息源**：About Amazon 报道与商业产品卡，链接见亮点
-- **亮点**：Bee Pioneer（腕带 / 夹扣）官网标价 $49.99，并写新订单 1–2 个工作日发出。About Amazon 原文："After joining Amazon last year, Bee shipped several major features, including Voice Notes, which lets you capture any thought in an instant."（[2026-01-05](https://www.aboutamazon.com/news/devices/bee-amazon-wearable-ai-device-new-features)）。完整字段见 [商业产品卡](../../../awesome/commercial-products/by-category/07-recorder.md)
+- **亮点**：Bee Frontier（腕带 / 夹扣，前代 Pioneer 已换代）官网售价 $74.99（查证 2026-10-19），产品页写 "Eligible for Amazon Prime Delivery"。About Amazon 原文："After joining Amazon last year, Bee shipped several major features, including Voice Notes, which lets you capture any thought in an instant."（[2026-01-05](https://www.aboutamazon.com/news/devices/bee-amazon-wearable-ai-device-new-features)）。完整字段见 [商业产品卡](../../../awesome/commercial-products/by-category/07-recorder.md)
 - **可借鉴点**：待核实
 - **另见**：[Bee 商业产品卡][rec]
 

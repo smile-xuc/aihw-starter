@@ -118,25 +118,27 @@
 
 ---
 
-### Bee Pioneer（Bee / Amazon）
+### Bee Frontier（前代 Pioneer 已换代 / 已停售）（Bee / Amazon）
 
-- **上市状态**：在售（官网与 Pioneer 页标价 $49.99 USD，查证 2026-09-30）
+- **上市状态**：在售（官网，查证 2026-10-19）。Frontier 产品页写 "Get your Bee Frontier for $74.99"，并写 "Eligible for Amazon Prime Delivery"。前代 Bee Pioneer 已换代：原 Pioneer 产品页已下线；Bee Pro FAQ 写 "If you purchased your Bee Pioneer prior to 10/15/2026, you will keep the same feature set you have always had, for free."
 
-- **官网/渠道**：<https://bee.computer/>；Pioneer 产品页 <https://bee.computer/bee-pioneer>
-- **形态**：腕带 / 夹扣模块化可穿戴。官网写设备可从随附腕带取下，并以多种方式佩戴；盒内另有夹扣，可夹在口袋或腰带。产品 FAQ 写盒内为黄、黑两条可换腕带加夹扣。双麦，背面 USB-C。官网与 About Amazon 均写单按按键启停采集，采集时绿灯亮、停止时灯灭。产品页在可自定义动作按钮处另写 "Hold and speak to talk to Bee or leave a note for later"，以及 "Double-press to process or bookmark a conversation"。FAQ 将短按标为 Mute/unmute、长按标为 walk-and-talk，与首页的单按启停一并列出。Pioneer 硬件当前仅支持 iOS（首页原文 "Bee Pioneer currently supports iOS only"）。首页同时写可通过 Pioneer、iOS 或 Android App、Apple Watch 与 Bee 对话；FAQ 称可与 Apple Watch 协同。Android 为 Play Store 早期版本（摘要、建议 to-do、聊天助手），官方称目前未在积极维护
+- **官网/渠道**：<https://bee.computer/>；Frontier 产品页 <https://bee.computer/products/frontier>；Bee Pro 订阅页 <https://bee.computer/bee-pro>
+- **形态**：腕带 / 夹扣模块化可穿戴。产品页写 "Bee Frontier wears on your wrist or clips to your clothing"，并写 "You can remove Bee Frontier from the wristband and attach it to your clothing with the included clip accessory."。双麦加降噪（"Dual microphones and advanced noise filtering"），IP67，背面 USB-C 充电。单按启停采集，绿灯表示开启；长按创建语音笔记。产品页写 "App available on iOS and Android."。续航：FAQ "up to 7 day battery life (up to 160 hours)"。未按键停止时，默认在一段静音后关闭麦克风，可选 5 分钟至 24 小时
 - **定价**：
   - 首发价：待核实
-  - 现价：$49.99 USD · [Bee Pioneer](https://bee.computer/bee-pioneer) · 查证 2026-09-30
+  - 现价：$74.99 USD（官网售价）· [Bee Frontier](https://bee.computer/products/frontier) · 查证 2026-10-19
   - MSRP：待核实
-  - 订阅：Premium 订阅：**待定**（产品 FAQ 称未来上线，原文 "Details will be forthcoming"，页面未给出金额）
-- **目标市场**：目前仅向美国发货（首页 "Bee currently ships only to the United States"）。About Amazon 称客户最初多用于会议、课堂与对话记录，后来也用于工作之外的日常
-- **AI 能力**：实时转写后不保存音频。产品 FAQ："We never store audio recordings." About Amazon："Bee processes conversations in real-time and no audio is ever stored." 摘要与要点、建议 to-do、Daily Insights、Voice Notes；Actions 连接邮件与日历（About Amazon：提到要发邮件或约会议时，可起草邮件并创建邀请）。产品 FAQ 列出的集成是 Gmail、Google Calendar、Google Contacts。语言：首页与产品页 "up to 40 different languages"，FAQ 写 "supports 40 languages"。续航：首页 "Up to 7 days" / "up to 160 hours"；产品页要点 "7 days of battery life per charge"；FAQ "7-day battery life (160+ hours)"。FAQ 另写：未按键停止时，默认在一段静音后停止，可选 5 分钟至 24 小时
+  - 订阅：Bee Pro $11.99 USD/月或 $99.99 USD/年；新设备含 30 天 Bee Pro，试用结束后可续订或改用 Bee Basic · [Bee Pro](https://bee.computer/bee-pro) · 查证 2026-10-19。产品页写 "Select features require a Bee Pro subscription."
+- **目标市场**：个人日常与工作对话记录；产品页 FAQ 列出 "Manages professional meetings and client interactions"。发货地区：待核实（Frontier 页未见此前 "ships only to the United States" 的表述）
+- **AI 能力**：
+  - AI 功能：把电话与面对面对话转成摘要、要点、洞察和建议待办，并可搜索（产品页 "converts conversations into clear takeaways, summaries, and insights, plus relevant to-dos"、"Conversation summaries and search."）。官网首页写可向 Bee 提问，并把待办转成邮件和日历事件。Bee Pro 档写记忆不限于 14 天（"remembered forever and not just for 14 days"）、提供 Mac / Windows 桌面端，并连接 Gmail、Google Calendar、Photos、Health、Outlook、Alexa 与 Amazon Shopping。语言：产品页 "Bee supports up to 40 languages"
+  - 实现方式：设备双麦采集，音频在内存中处理后立即删除（产品页 "audio is processed in memory and immediately deleted"）；生成式 AI 处理在 Amazon 隔离环境中运行（"All generative AI processing runs in Amazon’s isolated environment, with no access from external providers."）；密钥由客户持有（"Customer-owned keys never leave the device"）（[Bee Frontier](https://bee.computer/products/frontier)，查证 2026-10-19）
 - **大模型方案**：官网与 About Amazon 未公开具体基座模型名称（**非千问默认绑定**）
-- **公开数据**：未见独立销量。加入 Amazon 后仍在售：About Amazon 原文："After joining Amazon last year, Bee shipped several major features, including Voice Notes, which lets you capture any thought in an instant."（[2026-01-05](https://www.aboutamazon.com/news/devices/bee-amazon-wearable-ai-device-new-features)）。官网当前仍写 "New orders ship in 1-2 business days"，标价 $49.99。Bee Private Compute（[2026-09-23](https://www.aboutamazon.com/news/devices/bee-private-compute-data-protection)）原文："Only you hold the keys to your information. Amazon has no master key that can unlock your content." 同文："The transcripts and insights generated from that conversation are encrypted using keys that only your device creates and controls." The Verge 2025-03 评测将售价记为约 $50，并写作者使用中续航约 3–7 天（随静音习惯变化；此为评测观察，与规格页分开记录）
-- **关键差异化**：① 低客单腕带 / 夹扣，对照 Plaud / Notta 卡片机加转写分钟包，以及 HiDock 桌面扬声器电话；② 按键启停采集，实时转写后不存音频，公开隐私叙事是客户设备持有密钥的 Bee Private Compute；③ 对照 Limitless Pendant 在收购后停止向新客户销售，Bee 加入 Amazon 后官网仍接受新订单，填「可穿戴仍在售」这一档
-- **商业模式**：硬件销售（$49.99）。Premium 订阅价格**待定**（官方称未来上线，未公布金额）
+- **公开数据**：未见独立销量。About Amazon 原文："After joining Amazon last year, Bee shipped several major features, including Voice Notes, which lets you capture any thought in an instant."（[2026-01-05](https://www.aboutamazon.com/news/devices/bee-amazon-wearable-ai-device-new-features)）。Bee Private Compute（[2026-09-23](https://www.aboutamazon.com/news/devices/bee-private-compute-data-protection)）原文："Only you hold the keys to your information. Amazon has no master key that can unlock your content." 同文："The transcripts and insights generated from that conversation are encrypted using keys that only your device creates and controls." 前代 Pioneer 曾标价 $49.99 USD（本卡 2026-09-30 查证）；The Verge 2025-03 评测（Pioneer）将售价记为约 $50
+- **关键差异化**：① 低客单腕带 / 夹扣，对照 Plaud / Notta 卡片机加转写分钟包，以及 HiDock 桌面扬声器电话；② 按键启停采集，音频处理后即删，公开隐私叙事是客户持有密钥的 Bee Private Compute；③ 对照 Limitless Pendant 在收购后停止向新客户销售，Bee 加入 Amazon 后换代为 Frontier 并继续销售，填「可穿戴仍在售」这一档
+- **商业模式**：硬件销售（$74.99）+ Bee Pro 订阅（$11.99/月或 $99.99/年）
 
-> 来源：[Bee 首页](https://bee.computer/) · [Bee Pioneer](https://bee.computer/bee-pioneer) · [About Amazon：加入 Amazon 后的功能（2026-01-05）](https://www.aboutamazon.com/news/devices/bee-amazon-wearable-ai-device-new-features) · [About Amazon：Bee Private Compute（2026-09-23）](https://www.aboutamazon.com/news/devices/bee-private-compute-data-protection) · [The Verge 评测（2025-03-12）](https://www.theverge.com/reviews/627056/bee-review-ai-wearable)
+> 来源：[Bee 首页](https://bee.computer/) · [Bee Frontier](https://bee.computer/products/frontier) · [Bee Pro](https://bee.computer/bee-pro) · [About Amazon：加入 Amazon 后的功能（2026-01-05）](https://www.aboutamazon.com/news/devices/bee-amazon-wearable-ai-device-new-features) · [About Amazon：Bee Private Compute（2026-09-23）](https://www.aboutamazon.com/news/devices/bee-private-compute-data-protection) · [The Verge 评测（Pioneer，2025-03-12）](https://www.theverge.com/reviews/627056/bee-review-ai-wearable)
 
 ---
 
