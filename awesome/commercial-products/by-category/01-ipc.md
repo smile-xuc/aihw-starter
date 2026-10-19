@@ -115,7 +115,7 @@
 ### Tapo D260（Tapo / TP-Link）
 
 - **上市状态**：在售（美国官方商店，查证 2026-09-30）
-- **官网/渠道**：<https://www.tapo.com/us/product/smart-doorbell/tapo-d260/>；商店 <https://us.store.tapo.com/products/tapo-d260>；Tapo Care <https://www.tp-link.com/us/tapocare/>
+- **官网/渠道**：<https://www.tapo.com/us/product/tapo-d260-smart-doorbell/>；商店 <https://us.store.tapo.com/products/tapo-d260>；Tapo Care <https://www.tp-link.com/us/tapocare/>
 - **形态**：4K 可视门铃，180° 从头到脚视角，电池或有线。商品页写雷达移动侦测、microSD 最大 512 GB，并称无线续航最长 180 天
 - **定价**：
   - 首发价：待核实（商品页与商店页均未标注首发价）
@@ -130,7 +130,7 @@
 - **商业模式**：硬件销售 + 可选 Tapo Care 订阅
 - **另见**：[公开案例](../../../solutions/by-category/01-ipc/04-cases.md)
 
-> 来源：[Tapo D260 商品页](https://www.tapo.com/us/product/smart-doorbell/tapo-d260/) · [美国官方商店](https://us.store.tapo.com/products/tapo-d260) · [Tapo Care](https://www.tp-link.com/us/tapocare/) · [Tapo Care FAQ](https://www.tapo.com/us/faq/101/)（均查证 2026-09-30）
+> 来源：[Tapo D260 商品页](https://www.tapo.com/us/product/tapo-d260-smart-doorbell/) · [美国官方商店](https://us.store.tapo.com/products/tapo-d260) · [Tapo Care](https://www.tp-link.com/us/tapocare/) · [Tapo Care FAQ](https://www.tapo.com/us/faq/101/)（均查证 2026-09-30）
 
 ---
 

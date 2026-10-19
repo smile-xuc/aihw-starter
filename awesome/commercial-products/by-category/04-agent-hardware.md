@@ -260,23 +260,23 @@
 
 ### Tiiny Pocket（Tiiny）
 
-- **上市状态**：未开售（查证 2026-10-11）。商品页显示 "Sold Out"，并写 "Sign up to be notified when Tiiny Pocket goes on sale."。官方称 "Tiiny Pocket is launching this October."
-- **官网/渠道**：产品介绍页 <https://www.tiiny.ai/pages/tiiny-pocket>；商品页 <https://www.tiiny.ai/products/tiiny-pocket>；公司页 <https://www.tiiny.ai/pages/about-us>（"About Tiiny Inc."）
-- **形态**：口袋大小的本地大模型主机，连接笔记本或台式机使用，商品页写 "Simply connect Tiiny AI Pocket to your laptop or PC to turn your device into a powerful local AI terminal."；300g，Type-C × 3，Wi-Fi 802.11a/b/g/n/ac/ax、蓝牙 5.3，内置数字麦克风和单声道音频输出；TDP 30W，需 65W 适配器；双风扇散热，官方称运行噪音 "under 35 dB"；兼容 Windows 11 及以上、macOS 15 及以上。官方称尺寸 "142 × 80 × 22 mm"（[产品介绍页](https://www.tiiny.ai/pages/tiiny-pocket)）。官方称 "Measuring 142.0mm(L) × 80.0mm(W) × 25.3mm(H)"（[公司页](https://www.tiiny.ai/pages/about-us)）
+- **上市状态**：未开售（查证 2026-10-18）。产品介绍页写 "Tiiny Pocket is launching this November."，并有 "Get a Launch Discount" 入口；原商品页已下线
+- **官网/渠道**：产品介绍页 <https://www.tiiny.ai/pages/tiiny-pocket>；官网 <https://tiiny.ai/>；公司页 <https://www.tiiny.ai/pages/about-us>（"About Tiiny Inc."）
+- **形态**：口袋大小的本地大模型主机，连接笔记本或台式机使用（连接方式说明待核实）；300g，Type-C × 3，Wi-Fi 802.11a/b/g/n/ac/ax、蓝牙 5.3，内置数字麦克风和单声道音频输出；TDP 30W，需 65W 适配器；双风扇散热，官方称运行噪音 "under 35 dB"；兼容 Windows 11 及以上、macOS 15 及以上。官方称尺寸 "142 × 80 × 22 mm"（[产品介绍页](https://www.tiiny.ai/pages/tiiny-pocket)）。官方称 "Measuring 142.0mm(L) × 80.0mm(W) × 25.3mm(H)"（[公司页](https://www.tiiny.ai/pages/about-us)）
 - **定价**：
-  - 首发价：待核实（查证 2026-10-11）
-  - 现价：待核实（页面未标价；官方商品数据为 $2,099.00 USD，状态缺货）· [商品页](https://www.tiiny.ai/products/tiiny-pocket) · 查证 2026-10-11
-  - MSRP：待核实（查证 2026-10-11）
+  - 首发价：待核实（查证 2026-10-18）
+  - 现价：待核实（产品介绍页未标价）· 查证 2026-10-18
+  - MSRP：待核实（查证 2026-10-18）
 - **目标市场**：想在本地运行大模型和 agent、不想按 token 付费或在意数据隐私的个人用户；产品介绍页写 "Runs 24/7 with 0 token fees"，并写 "Have powerful AI, keep your privacy"
 - **AI 能力**：
-  - AI 功能：自带 TiinyOS，提供模型商店和 agent 商店，可一键下载运行模型和 agent（如 Hermes、OpenClaw、n8n、Open WebUI、KiloCode）；支持本地对话、可选联网搜索、多 agent 协作完成任务、连接日常工具（原生 MCP）、每晚总结对话形成记忆，以及设备上的私人知识库 Tiiny Vault；可从 Hugging Face 导入模型，产品介绍页写 "Drop-in replacement for OpenAI, Anthropic, and Ollama APIs."（[产品介绍页](https://www.tiiny.ai/pages/tiiny-pocket) · [商品页](https://www.tiiny.ai/products/tiiny-pocket)，查证 2026-10-11）
-  - 端侧推理：本地，模型在 Tiiny Pocket 设备上运行。产品介绍页写 "Everything runs on-device and under your control."，并写 "100% on-device processing."；联网搜索为可选，商品页写 "Connect to the web for up-to-date information, and fact-check result, with all processing on your own device."。模型：官方称可运行 "up to 120B-parameter models"，推理框架为自家开源的 PowerInfer；商品页模型商店列出 gpt-oss-120b、gpt-oss-20b、Qwen3-8B、Qwen3-30B-A3B-Instruct-2507、GLM-4.7-Flash、Qwen3.6-35B-A3B、gemma-4-26B-A4B-it、Qwen3-ASR-1.7B、Qwen3-TTS-12Hz-1.7B-Base 等。芯片：SoC 为 "CPU (arm v9.2) + NPU"，30 INT8 TOPS，另配 dNPU，160 INT8 TOPS，SoC 与 dNPU 厂商型号未公开。内存：80GB LPDDR5X @6400MT/s（SoC 上 32GB、dNPU 上 48GB）；存储 1TB PCIe 4.0 SSD（[产品介绍页](https://www.tiiny.ai/pages/tiiny-pocket) · [商品页](https://www.tiiny.ai/products/tiiny-pocket)，查证 2026-10-11）
+  - AI 功能：自带 TiinyOS，提供模型商店和 agent 商店，可下载运行模型和 agent（如 Hermes、OpenClaw、n8n、Open WebUI、KiloCode）；支持本地对话、可选联网搜索（介绍页写 "Optionally connect to the web for real-time information retrieval and dynamic fact-checking."）、按目标协调多个 agent 执行任务、连接日常工具（原生 MCP）、每晚总结对话形成记忆（"Every night, Tiiny summarizes your conversations, building a memory that grows with you."），以及设备上的私人知识库 Tiiny Vault；可从 Hugging Face 导入模型，产品介绍页写 "Drop-in replacement for OpenAI, Anthropic, and Ollama APIs."（[产品介绍页](https://www.tiiny.ai/pages/tiiny-pocket)，查证 2026-10-18）
+  - 端侧推理：本地，模型在 Tiiny Pocket 设备上运行。产品介绍页写 "Everything runs on-device and under your control."，并写 "100% on-device processing."；联网搜索为可选。模型：官方称 "Tiiny Pocket supports officially adapted models up to the 120B class."，推理框架为自家开源的 PowerInfer；介绍页写模型商店 "currently offers over 50 officially adapted open-source models—including Qwen3.8-27B, Qwen3.6-35B-A3B, GPT-OSS-120B, and Gemma"。芯片：SoC 为 "CPU (arm v9.2) + NPU"，30 INT8 TOPS，另配 dNPU，160 INT8 TOPS，SoC 与 dNPU 厂商型号未公开。内存：80GB LPDDR5X @6400MT/s（SoC 上 32GB、dNPU 上 48GB）；存储 1TB PCIe 4.0 SSD（[产品介绍页](https://www.tiiny.ai/pages/tiiny-pocket)，查证 2026-10-18）
 - **大模型方案**：本地运行开源模型，用户在模型商店自选或从 Hugging Face 导入，官网未写默认模型（非千问默认绑定）
-- **公开数据**：商品页写 "Kickstarter $3.07M Pledged · 2k+ Backers"，并写 "Guinness World Record Holder"。公司页写其为 "The smallest mini PC certified by Guinness World Records"，称 "this 100B LLM local computing powerhouse is a record-breaking achievement by Tiiny Pocket."；未见公开销量
-- **关键差异化**：① 口袋尺寸、80GB 内存，官方称可本地运行最高 120B 参数模型；② 30W TDP，官方称能效 "Up to 3× greater energy efficiency"；③ 数据全部留在设备上，产品介绍页写 "AES-256 full-disk encryption."（厂商称）
-- **商业模式**：硬件一次性销售；商品页写 "Run AI agents without monthly fees."
+- **公开数据**：公司页写 Kickstarter 众筹金额 3,069,202 美元（页面 aria-label 原文 "Kickstarter campaign pledged 3,069,202 US dollars"），支持人数待核实；公司页写其为 "The smallest mini PC certified by Guinness World Records"，称 "this 100B LLM local computing powerhouse is a record-breaking achievement by Tiiny Pocket."；未见公开销量
+- **关键差异化**：① 口袋尺寸、80GB 内存，官方称支持最高 120B 级模型；② 30W TDP，官方称能效最高 3 倍，介绍页写 "Let every single watt deliver 3x tokens per second."；③ 数据全部留在设备上，产品介绍页写 "AES-256 full-disk encryption."（厂商称）
+- **商业模式**：硬件一次性销售；订阅或月费说法待核实
 
-> 来源：[Tiiny Pocket 产品介绍页](https://www.tiiny.ai/pages/tiiny-pocket) · [Tiiny Pocket 商品页](https://www.tiiny.ai/products/tiiny-pocket) · [Tiiny 公司页](https://www.tiiny.ai/pages/about-us)（均查证 2026-10-11）
+> 来源：[Tiiny Pocket 产品介绍页](https://www.tiiny.ai/pages/tiiny-pocket) · [Tiiny 官网](https://tiiny.ai/) · [Tiiny 公司页](https://www.tiiny.ai/pages/about-us)（均查证 2026-10-18）
 
 ### Olares One（Olares）
 

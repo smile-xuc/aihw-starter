@@ -78,7 +78,7 @@
 
 ### 案例：Tapo D260（Tapo / TP-Link）— 端侧检测与可选 AI 订阅
 
-- **公开信息源**：[商品页](https://www.tapo.com/us/product/smart-doorbell/tapo-d260/) · [美国官方商店](https://us.store.tapo.com/products/tapo-d260) · [Tapo Care](https://www.tp-link.com/us/tapocare/) · [Tapo Care FAQ](https://www.tapo.com/us/faq/101/)（查证 2026-09-30）
+- **公开信息源**：[商品页](https://www.tapo.com/us/product/tapo-d260-smart-doorbell/) · [美国官方商店](https://us.store.tapo.com/products/tapo-d260) · [Tapo Care](https://www.tp-link.com/us/tapocare/) · [Tapo Care FAQ](https://www.tapo.com/us/faq/101/)（查证 2026-09-30）
 - **形态**：4K 可视门铃，180° 从头到脚视角，电池或有线。商品页写雷达移动侦测、microSD 最大 512 GB
 - **技术路线**：商品页写端侧识别与人脸档案存在设备上；智能摘要、AI Chat 在 Cloud Advanced AI 订阅档。FAQ 写 Aireal 相关套餐仍按地区和账号逐步推出。基座模型未公开
 - **亮点**：人、动物、车辆、包裹检测写在商品页，标注不另收费
