@@ -196,6 +196,27 @@
 
 ---
 
+### Halo（Brilliant Labs）
+
+- **上市状态**：官方商店可下单（查证 2026-10-16）；商店页写 "Halo will begin shipping soon"，具体发货日期待核实
+- **官网/渠道**：<https://brilliant.xyz/products/halo> 官方商店产品页；<https://docs.brilliant.xyz/halo/halo/> 官方开发文档
+- **形态**：开源 AI 眼镜；重量略超 40 g，彩色显示，双麦克风，双骨传导扬声器；显示光学可调 +2 至 -6 屈光度（官方商店）
+- **定价**：
+  - 首发价：待核实（查证 2026-10-16）
+  - 现价：$399.00 USD（官网售价）· [官方商店](https://brilliant.xyz/products/halo) · 查证 2026-10-16
+  - MSRP：待核实（查证 2026-10-16）
+- **目标市场**：普通用户与开发者；官方商店写 "Open source AI glasses for the curious, creative, and forward thinking."
+- **AI 能力**：
+  - AI 功能：Halo 可以就用户看到和听到的内容做 AI 对话，帮助记忆，也能做多语言翻译；官方商店写 "Halo is useful for anyone to use for memory enhancement and AI dialogue about what you see and hear, including translation across a wide range of languages."；商店页称随附的 Noa 是 "your private conversational AI agent with long-term memory of your life."。实现方式：眼镜端硬件做 AI 推理，官方商店写 "low-power optical sensor for AI inference"，并写有 "a low-power AI processor"；眼镜通过蓝牙与手机上兼容 Halo 的 App（文档举例 Brilliant Noa）配对使用（官方开发文档）。对话所用大模型及运行位置未公开（[官方商店](https://brilliant.xyz/products/halo) · [官方开发文档](https://docs.brilliant.xyz/halo/halo/)，查证 2026-10-16）
+- **大模型方案**：未公开（非千问默认绑定）
+- **公开数据**：未见公开销量
+- **关键差异化**：① 软硬件开源，官方商店写 "Halo is totally open source, design files and code are on Github."；② 提供 Brilliant SDK 和 Flutter SDK，供开发者自建应用；③ 官方商店写 Noa 等功能 "included free out of the box with daily usage caps"
+- **商业模式**：硬件销售；内置功能免费但有每日用量上限，超出部分是否收费未公开
+
+> 来源：[Brilliant Labs Halo 官方商店](https://brilliant.xyz/products/halo) · [Halo 官方开发文档](https://docs.brilliant.xyz/halo/halo/)（均查证 2026-10-16）
+
+---
+
 ## 待补充清单
 
 ### 海外标杆
