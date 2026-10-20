@@ -207,6 +207,27 @@
 
 ---
 
+### Mymanu Orb（Mymanu）
+
+- **上市状态**：在售（官方商店，查证 2026-10-15）
+- **官网/渠道**：<https://mymanu.com/products/mymanu-orb> 官方商店产品页
+- **形态**：开放式翻译耳机 + 充电盒；单耳 6.8 g，5.7 mm 动圈；耳机连充电盒最长 35 小时；包装内含 USB-C AI 翻译适配器（官方商店）
+- **定价**：
+  - 首发价：待核实（查证 2026-10-15）
+  - 现价：$179.99 USD（官网售价）· [官方商店](https://mymanu.com/products/mymanu-orb) · 查证 2026-10-15
+  - MSRP：待核实（查证 2026-10-15）
+- **目标市场**：跑步、骑行等运动用户，以及旅行者和商务人士；官方商店写 "Runners who want music without losing awareness"
+- **AI 能力**：
+  - AI 功能：通话实时翻译、面对面翻译、会议转写（语音转文字并生成文字记录）、音视频翻译并生成字幕，以及把周围的外语对话译后通过耳机播放；官方商店写 "Translate 40+ languages in real time without missing a beat of the world around you."。实现方式：AI 自然语言处理（官方称）；云端用于语言更新，翻译是否在云端运行未公开。2025-01 官方新闻稿称 "Orb leverages sophisticated AI-driven natural language processing to deliver contextually accurate translations."，又称 "With cloud integration, the earbuds receive real-time linguistic updates"；同一新闻稿把离线翻译列为计划中的更新。官方商店写 "Ai Translation requires iPhone 15 or later models; iPads equipped with a Type-C port"。翻译所用模型未公开（[官方商店](https://mymanu.com/products/mymanu-orb) · [官方新闻稿（2025-01-08）](https://mymanu.com/blogs/newsroom/mymanu-introduces-orb-worlds-first-open-ear-live-call-translation-earbuds-at-ces2025)，查证 2026-10-15）
+- **大模型方案**：未公开（非千问默认绑定）
+- **公开数据**：未见公开销量
+- **关键差异化**：① 开放式设计，翻译时仍能听到周围环境；② 一副耳机兼顾运动听歌、通话和翻译；③ 附带 USB-C AI 翻译适配器（厂商称）
+- **商业模式**：硬件销售；翻译功能是否收费未公开
+
+> 来源：[Mymanu Orb 官方商店](https://mymanu.com/products/mymanu-orb) · [Mymanu 官方新闻稿（2025-01-08）](https://mymanu.com/blogs/newsroom/mymanu-introduces-orb-worlds-first-open-ear-live-call-translation-earbuds-at-ces2025)（均查证 2026-10-15）
+
+---
+
 ## 待补充清单
 
 ### 品牌 TWS + 系统翻译
