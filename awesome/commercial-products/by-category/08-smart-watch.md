@@ -237,6 +237,27 @@
 
 ---
 
+### Ultrahuman Ring PRO（Ultrahuman）
+
+- **上市状态**：在售（官方商店，查证 2026-10-14）
+- **官网/渠道**：<https://www.ultrahuman.com/us/ring-pro/> 产品页；<https://www.ultrahuman.com/us/ring-pro/buy/> 官方购买页
+- **形态**：钛合金智能指环 + PRO 充电盒；重 3.3–4.8 g，厚 2.65 mm，100 m 防水；温度、PPG、6 轴 IMU 传感器；指环续航最长 15 天，配合充电盒最长 45 天；指环存储最多 250 天数据；BLE 5.3（官方购买页）
+- **定价**：
+  - 首发价：待核实（查证 2026-10-14）
+  - 现价：$479.00 USD（官网售价）· [官方购买页](https://www.ultrahuman.com/us/ring-pro/buy/) · 查证 2026-10-14
+  - MSRP：待核实（查证 2026-10-14）
+- **目标市场**：关注睡眠、恢复和长期健康的用户
+- **AI 能力**：
+  - AI 功能：通过 Ultrahuman 平台上的 AI 助手 Jade，用对话方式解读指环数据和其他 Ultrahuman 设备的指标，回答身体状态变化的原因和建议，官方购买页写 "Ask Jade what's happening, why it matters, and what to do next."；指环内置机器学习处理器，规格表写 "Dual-core with on-chip machine learning"。实现方式：Jade 的运行位置和所用模型未公开（[官方购买页](https://www.ultrahuman.com/us/ring-pro/buy/)，查证 2026-10-14）
+- **大模型方案**：未公开（非千问默认绑定）
+- **公开数据**：未见公开销量
+- **关键差异化**：① 购买后看数据不收订阅费，官方购买页写 "there are no recurring subscription fees for accessing your data"；② 充电盒可存一年数据并延长续航；③ ProRelease 设计，手指肿胀时指环可被剪开（厂商称）
+- **商业模式**：硬件一次性销售
+
+> 来源：[Ultrahuman Ring PRO 产品页](https://www.ultrahuman.com/us/ring-pro/) · [Ultrahuman Ring PRO 官方购买页](https://www.ultrahuman.com/us/ring-pro/buy/)（均查证 2026-10-14）
+
+---
+
 ## 待补充清单
 
 - [x] Amazfit Balance 2（Zepp Flow / Zepp Coach）
