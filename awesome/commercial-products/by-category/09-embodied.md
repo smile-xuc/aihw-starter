@@ -13,7 +13,7 @@
 - **形态**：消费/科研向四足机器人；多档 Air / Pro / X（及 EDU/行业配置）
 - **定价**：
   - 首发价：$1,600 USD 起（Go2 Air，不含税运）· 全球 · [Unitree 新闻稿（PR Newswire，2023-07-18）](https://www.prnewswire.com/news-releases/introducing-unitree-go2---quadruped-robot-of-embodied-ai-301879381.html) · 查证 2026-10-02
-  - 现价：官网写 from $1,600 USD。商店：Air $1,600 USD（不带遥控）/ $1,850 USD（带遥控）；Pro $2,800 USD / $3,050 USD；X $4,500 USD（带遥控）· [Go2 商店](https://shop.unitree.com/products/unitree-go2) · 查证 2026-09-30。未含税运
+  - 现价：Air $1,600.00 USD（不带遥控）/ $1,850.00 USD（带遥控）；Pro $2,800.00 USD / $3,050.00 USD；X $4,500.00 USD（带遥控）（官网售价，未含税运）· [Go2 商店](https://shop.unitree.com/products/unitree-go2) · 查证 2026-10-15
   - MSRP：待核实
 - **目标市场**：教育科研、演示、轻巡检验证、极客消费
 - **AI 能力**：
