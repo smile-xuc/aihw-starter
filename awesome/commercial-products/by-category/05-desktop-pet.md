@@ -13,8 +13,8 @@
 - **形态**：充电头/底座机器人，复用手机屏幕与算力作表情与视觉
 - **定价**：
   - 首发价：众筹早鸟 $119 USD
-  - 现价：LOOI Solo $239 USD；LOOI Twins $468 USD · [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-09-30。国内价与日本 Makuake 价待核实
-  - MSRP：LOOI Solo $259.00 USD（官方常规价）；LOOI Twins $518.00 USD（官方常规价）· [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-10-06
+  - 现价：LOOI Solo $239 USD；LOOI Twins $468 USD · [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-09-30。LOOI Mix Duo（黑白各一台）$468.00 USD · [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-10-13。国内价与日本 Makuake 价待核实
+  - MSRP：LOOI Solo $259.00 USD（官方常规价）；LOOI Twins $518.00 USD（官方常规价）· [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-10-06。LOOI Mix Duo $518.00 USD（官方常规价）· [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-10-13
 - **目标市场**：工位 / 桌面潮玩；轻硬件软件定义体验
 - **AI 能力**：App 集成 LLM / GPT 向对话；2026 更新提到 Live Agent 更低延迟多模态表达
 - **大模型方案**：待核实
