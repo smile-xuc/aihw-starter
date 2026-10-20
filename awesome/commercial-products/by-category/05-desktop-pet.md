@@ -79,7 +79,8 @@
   - 现价：$139.99 USD · [官方商店](https://store.energizelab.com/products/eilik) · 查证 2026-09-30
   - MSRP：$149.99 USD（官方常规价）· [官方商店](https://store.energizelab.com/products/eilik) · 查证 2026-10-06
 - **目标市场**：入门桌宠 / 礼品
-- **AI 能力**：偏本地规则与表情互动；无 LLM 亦可成立的品类对照样板
+- **AI 能力**：
+  - AI 功能：本体靠触摸感应做出表情和动作回应，被抚摸、拿起或一起玩时给出不同动画，多台 Eilik 放在一起会互相玩耍；官方商店写 "Touch Eilik and discover playful reactions"。AI 对话需另购配件 AI Station，官方商店写 "Expand your Eilik experience with AI Station for natural AI conversations"。实现方式：未公开；AI Station 的对话模型和运行位置未公开（[官方商店](https://store.energizelab.com/products/eilik)，查证 2026-10-14）
 - **大模型方案**：待核实
 - **公开数据**：待核实
 - **关键差异化**：① 验证「桌宠 ≠ 必须先上大模型」；② 低价触摸反馈；③ 多机互动玩法
