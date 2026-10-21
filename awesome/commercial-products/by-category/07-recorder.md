@@ -225,10 +225,10 @@
 
 ### 海外 / 可穿戴
 
-> 桌面扬声器电话 HiDock H1 Lite、可穿戴 Bee Pioneer 已收入上方卡片，不属于下面的待办。
+> 桌面扬声器电话 HiDock H1 Lite、可穿戴 Bee Frontier（前代 Pioneer 已换代）已收入上方卡片，不属于下面的待办。
 
 - [x] **Limitless Pendant**：历史公开约 $99；Meta 收购后官网称停止向新客户销售——可作隐私与停售案例，已收入上方卡片。补卡片时请附 [limitless.ai](https://www.limitless.ai/) 说明
-- [x] ~~**Bee**~~：Pioneer 已收入上方卡片（官网 $49.99）
+- [x] ~~**Bee**~~：Bee Frontier 已收入上方卡片（官网 $74.99，查证 2026-10-21）；前代 Pioneer 已换代
 - [ ] 其它可穿戴笔记设备：须附官网定价
 
 ### 软件参考（非硬件，但对标订阅）
