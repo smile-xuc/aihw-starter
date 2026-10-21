@@ -14,3 +14,7 @@
 
 # Gartner 新闻稿：curl 与 lychee UA 均 403，浏览器可打开。
 ^https://www\.gartner\.com/en/newsroom/press-releases/2026-02-26-gartner-says-surging-memory-costs-will-reduce-global-pc-and-smartphone-shipments-in-2026$
+
+# 用户批准（2026-10-21，经 Bruce 转达）：以下两个域名整体排除，CI 长期红，属上方「不排除整个域名」规则的明确例外。
+^https?://([a-z0-9-]+\.)*qbitai\.com/
+^https?://post\.smzdm\.com/
