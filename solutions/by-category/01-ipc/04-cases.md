@@ -243,7 +243,7 @@
 - **形态**：家用安防中枢。新闻稿写最多接入 8 台 Reolink 摄像机，外接存储最大 16 TB
 - **技术路线**：新闻稿称 ReoNeura 为 "on-device AI engine"，检测与分析不依赖云订阅。Local AI Video Search 用自然语言描述在本地检索录像。Custom AI Detection 需固件更新，新闻稿写最早 2026-12。新闻稿写可接入 Alexa、Google Home、Home Assistant、Homey、IFTTT
 - **亮点**：本地自然语言检索录像，新闻稿写不需要云订阅
-- **公开数据**：新闻稿写 fall 上市，价格 $199.99 USD。T3 写数周内到货，价格 £149.99 GBP（文中另写 around $200，为媒体换算）。标价 $199.99（官网）· [产品页](https://reolink.com/product/home-hub-2/)。上市状态：待核实（官网，查证 2026-10-01）
+- **公开数据**：新闻稿写 fall 上市，首发价 $199.99 USD（[新闻稿](https://reolink.com/blog/reolink-new-release-at-ifa/)）。T3 写数周内到货，价格 £149.99 GBP（文中另写 around $200，为媒体换算）。官网售价 $169.99 USD（1-pack，不含 SD 卡）· [产品页](https://reolink.com/us/product/home-hub-2/)。上市状态：在售（美国官网，查证 2026-10-20）
 - **可借鉴点**：检索放在本地中枢，官方表述是 on-device AI engine；媒体价与新闻稿价同时保留并注明出处
 
 ---
