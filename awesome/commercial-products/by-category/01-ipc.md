@@ -166,7 +166,7 @@
 - [ ] TP-LINK / 小米 / 360 / 乐橙 国内 SKU 卡片
 - [x] Wyze Duo Cam Doorbell / Cam Unlimited Pro
 - [x] Arlo Secure
-- [ ] Lorex 偏专业家用（Reolink Home Hub 2 案例见 [04-cases](../../../solutions/by-category/01-ipc/04-cases.md)；官方写 fall 上市；标价 $199.99（官网，[产品页](https://reolink.com/product/home-hub-2/)）；上市状态：待核实（官网，查证 2026-10-01）；未单列商业卡）
+- [ ] Lorex 偏专业家用（Reolink Home Hub 2 案例见 [04-cases](../../../solutions/by-category/01-ipc/04-cases.md)；首发价 $199.99（[新闻稿](https://reolink.com/blog/reolink-new-release-at-ifa/)）；官网售价 $169.99（1-pack，不含 SD 卡，[产品页](https://reolink.com/us/product/home-hub-2/)）；上市状态：在售（美国官网，查证 2026-10-20）；未单列商业卡）
 
 ## 贡献指引
 
