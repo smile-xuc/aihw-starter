@@ -234,6 +234,27 @@
 
 ---
 
+### ElliQ（Intuition Robotics）
+
+- **上市状态**：在售（美国官网，会员制租赁，查证 2026-10-21）；官网 FAQ 写 "Today, ElliQ is available in English within the United States"
+- **官网/渠道**：<https://elliq.com/> 官网；<https://elliq.com/products/elliq> 官方商店会员页；<https://elliq.com/pages/faqs> 官方 FAQ
+- **形态**：面向老年人的桌面陪伴机器人；可动头部带 8 英寸触摸屏与摄像头，4 麦克风阵列，2×5W 扬声器，触感底座；需电源与 Wi-Fi（官网 How it works 技术参数）
+- **定价**：
+  - 首发价：待核实（查证 2026-10-21）
+  - 现价：设备不单卖，按会员租赁。月付 $59.00 USD / 月；年付 $588.00 USD / 12 个月（折合 $49 / 月）；24 个月 $936.00 USD（折合 $39 / 月）；另收一次性租赁启动费 $249.00 USD（官网售价）· [官方商店](https://elliq.com/products/elliq) · 查证 2026-10-21
+  - MSRP：待核实（查证 2026-10-21）
+- **目标市场**：美国居家养老的老年人及其家属、照护者；官网标题 "Companion Robot for Seniors, Older Adults & Aging Loved Ones"
+- **AI 能力**：
+  - AI 功能：ElliQ 会主动问候、建议活动，与用户多轮对话并记住偏好；提供提醒、健康与身心状态询问、游戏、音乐和视频通话；用户报告身体不适时，可按用户设置通知主要联系人。官方 FAQ 写 "Proactive support: ElliQ can check in and suggest activities when you are available, instead of waiting for a command."。实现方式：功能依赖联网，FAQ 写 "ElliQ uses a WiFi internet connection to power her features"；设备用麦克风听唤醒词 "ElliQ"，摄像头用于感知用户是否在附近，只在视频通话等功能中完全启用；家属通过 ElliQ Connect App 接收更新。所用大模型及推理位置未公开（[官方 FAQ](https://elliq.com/pages/faqs) · [How it works](https://elliq.com/pages/how-it-works)，查证 2026-10-21）
+- **大模型方案**：未公开（非千问默认绑定）
+- **公开数据**：未见官方公开销量
+- **关键差异化**：① 主动发起互动，而不是只等待指令；② 设备按会员租赁，会员费含设备、安装支持、软件更新与保修；③ 同时服务老人和家属，家属端有 App
+- **商业模式**：会员订阅（含设备租赁）+ 一次性租赁启动费；年付与 24 个月方案含 30 天无风险试用，月付不含
+
+> 来源：[ElliQ 官网](https://elliq.com/) · [官方商店会员页](https://elliq.com/products/elliq) · [官方 FAQ](https://elliq.com/pages/faqs) · [How it works](https://elliq.com/pages/how-it-works)（均查证 2026-10-21）
+
+---
+
 ## 待补充清单
 
 - [ ] **阳仔 AI 陪伴机**（方直科技）
