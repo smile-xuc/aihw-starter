@@ -134,11 +134,38 @@
 
 ---
 
+### Arlo Secure（Arlo）
+
+- **上市状态**：在售（美国官网订阅，查证 2026-10-19）
+- **官网/渠道**：<https://us.arlo.com/pages/arlo-secure>
+- **形态**：摄像头与门铃的云订阅服务，套餐分单摄与不限摄像头。页面写 60 天云端录像（"60-Day Video History stored on the Arlo Secure Cloud."）
+- **定价**：
+  - 首发价：待核实
+  - 现价：
+    - Smart Aware 单摄 $9.99 USD/月或 $95.88 USD/年（官网售价）· 查证 2026-10-19
+    - Smart Aware 不限摄像头 $19.99 USD/月或 $215.88 USD/年（官网售价）· 查证 2026-10-19
+    - Smart Secure 不限摄像头 $29.99 USD/月或 $299.98 USD/年（官网售价）· 查证 2026-10-19
+    - Ultra Secure 不限摄像头 $49.99 USD/月或 $479.88 USD/年（官网售价）· 查证 2026-10-19
+  - MSRP：待核实
+- **目标市场**：家用安防订阅；套餐表另列 Emergency Response、24/7 Professional Monitoring 等应急服务，各档包含范围以官网为准
+- **AI 能力**：
+  - AI 功能：Arlo Summary 生成近 24 小时重点事件摘要（"AI-generated view of what matters most"）；Event Captions 用文字描述画面（"AI-powered, concise, and accurate descriptions"）；Video Search 可按关键词、描述或时间段检索录像（"searching with keywords, descriptions, or specific time ranges"）；人、车、动物、包裹和火情检测，以及 Person Recognition、Vehicle Recognition。Custom Detection（Beta）、Fire Detection（Beta）、Advanced Audio Detection（Beta，犬吠、尖叫、玻璃破碎、枪声）。页面原文："Event Captions is unavailable on Arlo devices in certain regions and on certain plans."；"Person recognition is unavailable on Arlo devices in certain regions."；音频检测仅支持部分设备
+  - 实现方式：实现方式未公开（[Arlo Secure](https://us.arlo.com/pages/arlo-secure)，查证 2026-10-19）
+- **大模型方案**：官网未公开具体基座模型（非千问默认绑定）
+- **公开数据**：未见公开订阅用户数
+- **关键差异化**：① 四档订阅，从单摄到不限摄像头并含应急服务选项；② 摘要、事件描述和关键词检索都放在订阅内；③ 火情与音频检测（Beta）
+- **商业模式**：硬件销售 + Arlo Secure 订阅
+- **另见**：[公开案例](../../../solutions/by-category/01-ipc/04-cases.md)
+
+> 来源：[Arlo Secure](https://us.arlo.com/pages/arlo-secure)（查证 2026-10-19）
+
+---
+
 ## 待补充清单
 
 - [ ] TP-LINK / 小米 / 360 / 乐橙 国内 SKU 卡片
 - [x] Wyze Duo Cam Doorbell / Cam Unlimited Pro
-- [ ] Arlo Secure
+- [x] Arlo Secure
 - [ ] Lorex 偏专业家用（Reolink Home Hub 2 案例见 [04-cases](../../../solutions/by-category/01-ipc/04-cases.md)；官方写 fall 上市；标价 $199.99（官网，[产品页](https://reolink.com/product/home-hub-2/)）；上市状态：待核实（官网，查证 2026-10-01）；未单列商业卡）
 
 ## 贡献指引
