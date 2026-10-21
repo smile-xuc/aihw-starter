@@ -33,7 +33,7 @@
 - **定价**：
   - 首发价：待核实
   - 现价：乐乐 $99 USD（含 1 个月试用）· [乐乐产品页](https://folotoy.com/zh/products/teddy/)；Fofo $129 USD（含 1 个月试用）· [Fofo 产品页](https://folotoy.com/zh/products/fofo/) · 查证 2026-09-30
-  - MSRP：乐乐 $99.00 USD（官方常规价）· [FoloToy 官方商店](https://store.folotoy.com/products/folotoy-ai-teddy) · 查证 2026-10-03；Fofo 待核实
+  - MSRP：乐乐、Fofo 均待核实（查证 2026-10-16）
   - 订阅：$4.9 USD/月（乐乐、Fofo 产品页均写之后每月 $4.9）· 查证 2026-09-30
 - **目标市场**：儿童陪伴与海外 Mandarin/English 家庭场景
 - **AI 能力**：
