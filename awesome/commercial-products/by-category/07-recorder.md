@@ -200,6 +200,27 @@
 
 > 来源：[soundcore Work 官方商店](https://us.soundcore.com/products/d3200-soundcore-work-ai-voice-recorder) · [soundcore Work 产品页](https://www.soundcore.com/products/d3200-soundcore-work-ai-voice-recorder)（查证 2026-10-13）
 
+### Fieldy 3（Fieldy）
+
+- **上市状态**：在售（官网，查证 2026-10-20）。FAQ 写 "Where do you ship? Everywhere. US orders arrive in 3 to 5 days. International in 10 to 15."
+- **官网/渠道**：<https://www.fieldy.ai/>；FAQ <https://www.fieldy.ai/faq>；会员 <https://www.fieldy.ai/memberships>
+- **形态**：可穿戴 AI 记录设备，可挂在颈部或戴在手腕上，官网写 "Wear it around your neck or on your wrist. One device, two ways to wear it."；带同步、工作和充电状态指示灯，防溅水，USB-C 充电。FAQ 写 "Fieldy 3 lasts up to 7 days on a single charge with typical use."；不连 App 时可独立工作约 3 天，之后需连 App 同步。支持 iPhone、Android、Mac、Windows
+- **定价**：
+  - 首发价：待核实
+  - 现价：待核实（官网硬件价为动态渲染，未取到可引用原文，查证 2026-10-20）
+  - MSRP：待核实
+  - 订阅：免费档每月 150 分钟转写；Unlimited 官网售价 $15.99 USD/月（年付）或 $19.99 USD/月（月付），FAQ 原文 "$15.99 a month billed yearly, or $19.99 billed monthly" · [Fieldy FAQ](https://www.fieldy.ai/faq) · 查证 2026-10-20。FAQ 另写在 iOS / Android App 内购买可能更贵
+- **目标市场**：个人与职场对话记录；FAQ 列出 founders、parents、doctors、students、journalists、creatives。FAQ 写 20 台以上可签 BAA
+- **AI 能力**：
+  - AI 功能：实时转写对话，生成摘要，自动提取待办和提醒，并可检索历史对话、用 AI Chat 提问（官网写 Fieldy 通过转写、摘要，把对话变成待办和提醒）。官网写支持 100 多种语言
+  - 实现方式：云端处理（官方称）。设备经蓝牙连接手机，FAQ 写 "your phone needs internet access for the AI processing"，并写 "Your data is processed in SOC 2 certified data centers in the US."；音频转写后删除，FAQ 原文 "Recordings are transcribed and then deleted. Audio is kept only briefly for processing, and only the text is stored."（[Fieldy FAQ](https://www.fieldy.ai/faq)，查证 2026-10-20）
+- **大模型方案**：官网未公开具体基座模型（非千问默认绑定）
+- **公开数据**：未见公开销量
+- **关键差异化**：① 手腕或挂坠两种佩戴方式；② 免费档每月 150 分钟，FAQ 写只按检测到人声的时长计；③ 音频转写后删除，只存文本
+- **商业模式**：硬件销售 + 可选 Unlimited 会员
+
+> 来源：[Fieldy 官网](https://www.fieldy.ai/) · [Fieldy FAQ](https://www.fieldy.ai/faq) · [Fieldy Memberships](https://www.fieldy.ai/memberships)（均查证 2026-10-20）
+
 ## 待补充清单
 
 ### 海外 / 可穿戴
