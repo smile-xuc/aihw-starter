@@ -115,7 +115,7 @@
 
 ### 案例：广州九安 Juan（Juancloud）
 
-- **公开信息源**：[Juancloud 官网](https://trade.juancloud.com/) · [招股书申报稿](https://qxb-pdf-osscache.qixin.com/AnBaseinfo/a71b6a0e24aea6b03f44223d8a3b4dc2.pdf) · [证券时报 IPO 报道](https://www.stcn.com/article/detail/3559005.html)
+- **公开信息源**：[九安官网（中文）](https://www.juancloud.com/cn/) · [招股书申报稿](https://qxb-pdf-osscache.qixin.com/AnBaseinfo/a71b6a0e24aea6b03f44223d8a3b4dc2.pdf) · [证券时报 IPO 报道](https://www.stcn.com/article/detail/3559005.html)
 - **亮点**：待核实
 
 - **规模**：1999 年成立，600+ 员工规模；**2025 深交所创业板 IPO 已受理**（招股书披露财务数据保持增长）
