@@ -258,10 +258,35 @@
 
 ---
 
+### Google Fitbit Edge（Google / Fitbit）
+
+- **上市状态**：预售（Google Store 可预购；博客写 2026-10-27 开卖，查证 2026-10-22）
+- **官网/渠道**：<https://store.google.com/us/product/google_fitbit_edge?hl=en-US>；博客 <https://blog.google/products-and-platforms/devices/fitbit/google-fitbit-edge/>；订阅 <https://store.google.com/us/product/google_health_premium?hl=en-US>
+- **形态**：超薄腕带健身追踪器；Hybrid OLED 屏，机身约 11.5 mm；内置高精度 GPS 与高度计；光学心率、皮肤温度、ECG（部分地区）；续航公开宣称最长约 7 天；5 ATM / IP68（官方博客）
+- **定价**：
+  - 首发价：$179.99 USD（博客写 retails for $179.99；Stephen Curry Special Edition $219.99）· [官方博客（2026-10-12）](https://blog.google/products-and-platforms/devices/fitbit/google-fitbit-edge/) · 查证 2026-10-22
+  - 现价：From $179.99 USD（Google Store 预购价）· [Google Store](https://store.google.com/us/product/google_fitbit_edge?hl=en-US) · 查证 2026-10-22
+  - MSRP：待核实（查证 2026-10-22）
+  - 订阅：Google Health Premium From $9.99 USD/月（购机含 3 个月 Premium；试用后自动续订 $9.99/mo，可随时取消）· [Google Store 产品页](https://store.google.com/us/product/google_fitbit_edge?hl=en-US) · [Google Health Premium](https://store.google.com/us/product/google_health_premium?hl=en-US) · 查证 2026-10-22
+- **目标市场**：介于 Pixel Watch 旗舰表与 Fitbit Air 无屏手环之间的日常健身用户；需 Android 11+ 或 iOS 16.4+ 手机与 Google 账号
+- **AI 能力**：
+  - AI 功能：Google Health Coach 按个人状态给出主动、可调整的健康与健身指导；商店页写 personalized coaching built with Gemini，含在 Google Health Premium 会员内；Health Guardian 可在后台跟踪血压趋势、胰岛素抵抗趋势与高低心率提醒，Premium 下 Coach 可解读趋势并调整计划；可自动识别并归类最多约 100 种锻炼。实现方式：腕上传感器数据 + Google Health App；Coach / Gemini 功能需 Google Health Premium、Google Health App 与联网；官方脚注写 Gemini features work independently of Gemini apps，未写具体 Gemini 型号（[Google Store](https://store.google.com/us/product/google_fitbit_edge?hl=en-US) · [官方博客（2026-10-12）](https://blog.google/products-and-platforms/devices/fitbit/google-fitbit-edge/)，查证 2026-10-22）
+- **大模型方案**：Gemini（非千问默认绑定）；官方未写具体型号
+- **公开数据**：未见公开销量；博客写 2026-10-12 起可预购，10-27 开卖
+- **关键差异化**：① 把 Google Health Coach / Gemini 教练下放到超薄追踪器档，对照 Pixel Watch 5；② 购机送 3 个月 Health Premium，之后 $9.99/月；③ 首款可维修健身追踪器叙事（模块化、可换电池）
+- **商业模式**：硬件销售 + 可选 Google Health Premium 订阅
+- **另见**：[公开案例](../../../solutions/by-category/08-smart-watch/04-cases.md)
+
+> 来源：[官方博客（2026-10-12）](https://blog.google/products-and-platforms/devices/fitbit/google-fitbit-edge/) · [Google Store · Fitbit Edge](https://store.google.com/us/product/google_fitbit_edge?hl=en-US) · [Google Health Premium](https://store.google.com/us/product/google_health_premium?hl=en-US)（均查证 2026-10-22）
+
+---
+
+
 ## 待补充清单
 
 - [x] Amazfit Balance 2（Zepp Flow / Zepp Coach）
 - [x] TicNote Watch（腕上 AI 录音和纪要）
+- [x] Google Fitbit Edge（Google Health Coach / Gemini）
 - [ ] Garmin 公开 AI 解读 SKU
 - [ ] 医疗级注册手表公开案例
 
