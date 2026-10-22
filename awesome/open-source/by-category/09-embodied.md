@@ -74,6 +74,17 @@
 - **关键特性**：开源硬件；控制栈；可扩展
 - **HTML 品类**：机器人
 
+### Unitree Qmini（宇树）
+
+- **仓库**：<https://github.com/unitreerobotics/Qmini>
+- **Star**：以 HTML 大盘为准
+- **License**：CC-BY-NC-SA-4.0
+- **框架**：3D 打印结构 + 11 × Unitree 8010 电机；默认主控 Raspberry Pi 4B
+- **状态**：维护中
+- **简介**：全开源、可 3D 打印的低成本双足机器人，面向科研与教学。变体线索：阿加犀 APLUX（成都阿加犀智能科技）× 宇树 高通版（犀牛派 A1 Mini 主控），**待核实**；整机价**待核实**。犀牛派 A1 板参考 ¥2599 仅为板卡价、非整机价（[iceasy 商品页](https://www.iceasy.com/product/2043949883879550978)，查证 2026-10-22）。
+- **关键特性**：Isaac Gym 强化学习训练双足步态，导出 ONNX，在边缘端用 ONNX Runtime 实时推理运控（[GitHub](https://github.com/unitreerobotics/Qmini)、[RoboTamer](https://vsislab.github.io/RoboTamer/)，查证 2026-10-22）
+- **HTML 品类**：机器人
+
 ### Dummy-Robot（另见）
 
 - **仓库**：<https://github.com/peng-zhihui/Dummy-Robot>
