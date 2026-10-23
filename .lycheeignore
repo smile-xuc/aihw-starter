@@ -25,3 +25,6 @@
 
 # 用户批准（2026-10-23，经 Bruce 转达）：living.ai 域名整体排除，CI 对 UA 固定 403，属「不排除整个域名」规则的明确例外。
 ^https?://([a-z0-9-]+\.)*living\.ai/
+
+# 用户批准（2026-10-23，经 Bruce 转达）：corporate.jp.sharp 域名整体排除，日检 Actions 回 500，属「不排除整个域名」规则的明确例外。
+^https?://([a-z0-9-]+\.)*corporate\.jp\.sharp/
