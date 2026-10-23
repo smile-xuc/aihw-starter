@@ -33,7 +33,7 @@
 - **形态**：桌面双足情感宠物；表情屏 + 滑板充电等配件
 - **定价**：
   - 首发价：待核实
-  - 现价：标准套装 $279 USD · [产品页](https://living.ai/product/emo/)；EMO White $289 USD · [EMO White](https://living.ai/product/emo-white/)；Go Home $369 USD · [Go Home](https://living.ai/product/emo-go-home/)。Go Home White 价格待核实。查证 2026-09-30
+  - 现价：标准套装 $279 USD · [产品页](https://living.ai/product/emo/)；EMO White $289 USD · [EMO White](https://living.ai/product/emo-white/)；Go Home $369 USD · [Go Home](https://living.ai/product/emo-go-home/)。查证 2026-09-30。Go Home White $379 USD · [Go Home White](https://living.ai/product/emo-go-home-white/) · 查证 2026-10-23
   - MSRP：待核实
 - **目标市场**：桌面情感陪伴、潮玩收藏
 - **AI 能力**：端侧神经网络表情/行为 + 云端对话（公开评测常提及 GPT 系）；大量动画表情与自主行为
