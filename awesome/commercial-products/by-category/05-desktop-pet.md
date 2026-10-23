@@ -133,6 +133,29 @@
 
 ---
 
+### Doly（Limitbit）
+
+- **上市状态**：在售（官方商店有现价，查证 2026-10-23）
+- **官网/渠道**：<https://doly.ai/> 官网；<https://shop.doly.ai/products/doly> 官方商店
+- **形态**：桌面履带式 AI 陪伴机器人，LCD 表情眼睛，8 MP 摄像头，触摸与运动传感器，可自主回充电座；内置 Raspberry Pi CM4，开源硬件、可 3D 打印配件；尺寸 110 x 114 x 68 mm（官网 / 官方商店）
+- **定价**：
+  - 首发价：待核实（查证 2026-10-23）
+  - 现价：Doly 1 GB RAM $571.00 CAD；2 GB RAM $600.00 CAD；Doly Bundle（含履带包）$594.00 CAD 起；3D Maker Edition $514.00 CAD 起 · [官方商店](https://shop.doly.ai/products/doly) · 查证 2026-10-23
+  - MSRP：Doly 1 GB RAM $642.00 CAD（官方常规价）；2 GB RAM $671.00 CAD（官方常规价）· [官方商店](https://shop.doly.ai/products/doly) · 查证 2026-10-23
+- **目标市场**：桌面陪伴、创客 / 开发者、STEM 教育（官网分 Developer / Companion / Parent 三条路径）
+- **AI 能力**：
+  - AI 功能：说「Hey Doly」唤醒后用语音设定时器、查天气和时间、拍照、控制移动与眼睛 / LED 颜色；摄像头可在用户设置后记住并按名字识别人；触摸和运动传感器触发表情反应；按情绪自主漫游、防跌落，并自动回充电座。实现方式：官方称内置语音识别，核心功能在本地运行，"Core features are designed to run locally"，无需订阅；具体模型未公开（[官网 Companion 页](https://doly.ai/companion/)，查证 2026-10-23）
+  - 提供 Blockly、Python、C++ 编程与 SDK，CAD 设计文件开源（[官网](https://doly.ai/) · [GitHub](https://github.com/robotdoly/DOLY-DIY)）
+- **大模型方案**：官网未公开具体模型；官方称核心功能本地运行（非千问默认绑定）
+- **公开数据**：未见官方公开销量
+- **关键差异化**：① 本地运行、无订阅，隐私作为卖点；② Raspberry Pi 开放平台 + 3D 打印配件，可二次开发；③ 自主漫游 + 自动回充，桌面「常驻」而非放架
+- **商业模式**：硬件销售；官方商店另售履带包、舵机、串口模块等配件
+- **另见**：官方商店支持语言目前仅 English（[官方商店](https://shop.doly.ai/products/doly)）
+
+> 来源：[Doly 官网](https://doly.ai/) · [Companion 页](https://doly.ai/companion/) · [官方商店 · Doly](https://shop.doly.ai/products/doly) · [GitHub · DOLY-DIY](https://github.com/robotdoly/DOLY-DIY)（均查证 2026-10-23）
+
+---
+
 ## 待补充清单
 
 - [ ] 国内工位桌宠 / 潮玩品牌公开 SKU
