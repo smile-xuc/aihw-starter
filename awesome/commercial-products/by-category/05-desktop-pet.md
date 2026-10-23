@@ -140,8 +140,8 @@
 - **形态**：桌面履带式 AI 陪伴机器人，LCD 表情眼睛，8 MP 摄像头，触摸与运动传感器，可自主回充电座；内置 Raspberry Pi CM4，开源硬件、可 3D 打印配件；尺寸 110 x 114 x 68 mm（官网 / 官方商店）
 - **定价**：
   - 首发价：待核实（查证 2026-10-23）
-  - 现价：Doly 1 GB RAM $570.00 USD；2 GB RAM $599.00 USD；Doly Bundle（含履带包）$593.00 USD 起；3D Maker Edition $513.00 USD 起 · [官方商店](https://shop.doly.ai/products/doly) · 查证 2026-10-23
-  - MSRP：Doly 1 GB RAM $642.00 USD（官方常规价）；2 GB RAM $670.00 USD（官方常规价）· [官方商店](https://shop.doly.ai/products/doly) · 查证 2026-10-23
+  - 现价：Doly 1 GB RAM $571.00 CAD；2 GB RAM $600.00 CAD；Doly Bundle（含履带包）$594.00 CAD 起；3D Maker Edition $514.00 CAD 起 · [官方商店](https://shop.doly.ai/products/doly) · 查证 2026-10-23
+  - MSRP：Doly 1 GB RAM $642.00 CAD（官方常规价）；2 GB RAM $671.00 CAD（官方常规价）· [官方商店](https://shop.doly.ai/products/doly) · 查证 2026-10-23
 - **目标市场**：桌面陪伴、创客 / 开发者、STEM 教育（官网分 Developer / Companion / Parent 三条路径）
 - **AI 能力**：
   - AI 功能：说「Hey Doly」唤醒后用语音设定时器、查天气和时间、拍照、控制移动与眼睛 / LED 颜色；摄像头可在用户设置后记住并按名字识别人；触摸和运动传感器触发表情反应；按情绪自主漫游、防跌落，并自动回充电座。实现方式：官方称内置语音识别，核心功能在本地运行，"Core features are designed to run locally"，无需订阅；具体模型未公开（[官网 Companion 页](https://doly.ai/companion/)，查证 2026-10-23）
