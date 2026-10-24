@@ -36,7 +36,7 @@
 | **AUBO-i5 级** | 遨博 | 协作臂 | 方案商集成 | 性价比协作抓取 | 臂展 886.5 mm；价格为估算约 $6k–$10k |
 | **Qwen-Robot Suite** | 阿里通义 | 模型套件 | RobotNav / Manip / World | 语言优先工具接口 | 以官方发布为准 |
 | **Walker S2** | 优必选（UBTECH） | 工业人形 | 厂商称 BrainNet 2.0 + Co-Agents；基座模型未公开 | 3 分钟内自主换电；负载 15 kg | 单价待核实（[产品页](https://www.ubtrobot.com/en/humanoid/products/walker-s2)，查证 2026-09-30） |
-| **绝影 X30** | 云深处（DEEP Robotics） | 工业四足 | 未公开 | IP67；-20℃至 55℃；续航 2.5–4 h | 单价待核实（[产品页](https://www.deeprobotics.cn/en/index/product3.html)，查证 2026-09-30） |
+| **绝影 X30** | 云深处（DEEP Robotics） | 工业四足 | 未公开 | IP67；-20℃至 55℃；续航 2.5–4 h | 单价待核实（[产品页](https://www.deeprobotics.cn/products/detail/6.html)，查证 2026-10-25） |
 | **远征 A2** | 智元（AgiBot） | 交互服务人形 | 英文页写 large language models + RAG | 全双工对话、企业知识库 | A2 青春版开售价 ¥168,000 CNY（2025-08-18）· [界面新闻](https://m.jiemian.com/article/13195641.html)。旗舰版待核实。现价待核实 |
 
 ### 形态路线图
@@ -96,7 +96,7 @@
 
 ### 案例：绝影 X30（云深处 / DEEP Robotics）— 工业四足
 
-- **公开信息源**：[产品页](https://www.deeprobotics.cn/en/index/product3.html) · [中新网上海（2023-10-11）](https://www.sh.chinanews.com.cn/kjjy/2023-10-11/116934.shtml)（查证 2026-09-30）
+- **公开信息源**：[产品页](https://www.deeprobotics.cn/products/detail/6.html) · [中新网上海（2023-10-11）](https://www.sh.chinanews.com.cn/kjjy/2023-10-11/116934.shtml)（查证 2026-10-25）
 - **形态**：行业级四足。规格表写 IP67、-20℃至 55℃、续航 2.5–4 h、里程 ≥10 km、重量 59 kg。产品页写可上下 45° 楼梯，电池可快换
 - **技术路线**：产品页写融合感知和自主巡检。大模型方案未公开
 - **亮点**：中新网上海 2023-10-11 报道发布，场景包括电站、工厂、管廊巡检
