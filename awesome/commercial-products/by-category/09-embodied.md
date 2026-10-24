@@ -119,8 +119,8 @@
 
 ### 绝影 X30（云深处 / DEEP Robotics）
 
-- **上市状态**：在售（官方产品页，查证 2026-09-30）
-- **官网/渠道**：<https://www.deeprobotics.cn/en/index/product3.html>
+- **上市状态**：在售（官方产品页，查证 2026-10-25）
+- **官网/渠道**：<https://www.deeprobotics.cn/products/detail/6.html>
 - **形态**：行业级四足，产品页写有 X30 系列。规格表：防护 IP67，工作温度 -20℃至 55℃，续航 2.5–4 h，里程 ≥10 km，站立尺寸 1,000×715×470 mm，重量 59 kg。产品页写可上下 45° 楼梯，电池可快换
 - **定价**：
   - 首发价：待核实
@@ -134,7 +134,7 @@
 - **商业模式**：行业硬件；公开页没有标价
 - **另见**：[公开案例](../../../solutions/by-category/09-embodied/04-cases.md)
 
-> 来源：[绝影 X30 产品页](https://www.deeprobotics.cn/en/index/product3.html) · [中新网上海（2023-10-11）](https://www.sh.chinanews.com.cn/kjjy/2023-10-11/116934.shtml)（均查证 2026-09-30）
+> 来源：[绝影 X30 产品页](https://www.deeprobotics.cn/products/detail/6.html) · [中新网上海（2023-10-11）](https://www.sh.chinanews.com.cn/kjjy/2023-10-11/116934.shtml)（均查证 2026-10-25）
 
 ---
 
