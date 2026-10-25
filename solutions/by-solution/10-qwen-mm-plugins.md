@@ -66,10 +66,11 @@ bash install.sh verify --plugin core                                  # 检查�
 - **`core` 本身免费**：原生模式下工具返回图片和文字，由 Harness 主模型自己看，不额外调云端；设 `QWEN_MM_NATIVE_MODE=0` 时改为调 VL 接口生成文字描述，需要 Key 并计费。
 - **主模型要能看图**：纯文本主模型拿到的只有 `visualize` 抽出的文字层（PDF 有文字层时），看不到图片内容。
 - **系统依赖**：Office 渲染需要 LibreOffice，视频需要 ffmpeg，HTML 截图需要 Playwright 浏览器；PDF、SVG 用内置的 pypdfium2、resvg。
-- **交互式安装难进 CI**：本仓 Demo B 用非交互参数安装，并把可在 CI 跑的部分限定为 `visualize` 自检；Harness 回答这一步需要人工或 Harness 自己的凭证。
+- **交互式安装难进 CI**：本仓 Demo B 用非交互参数安装，可自动化的部分限定为 `visualize` 自检脚本（不经 Harness、不需要 Key）；Harness 回答这一步需要人工或 Harness 自己的凭证。
 
 ## 6. 能力边界与待核实
 
+- **已实测（2026-10-25，Linux）**：`install.sh install --plugin core --harness <name> --dry-run` 不进交互菜单，直接打印该 Harness 的安装命令；`verify --plugin core` 通过，未配 Key 时提示 `DASHSCOPE_API_KEY not set`，对 `core` 可忽略；剔除全部 `DASHSCOPE_*` 环境变量后 `visualize` 仍读出 fixture PDF 的标题、表格与分页。
 - `mhs` 真机环、Blender / FreeCAD 联动本仓未跑，后续迭代再评估。
 - Harness 主模型看图的效果、图片 Token 用量随 Harness 和模型不同，本仓没有横向实测。
 - Windows 原生不支持，只能 WSL2；仓库须克隆在 WSL 用户目录下，不要放在 `/mnt/c`。
