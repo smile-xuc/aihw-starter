@@ -157,7 +157,7 @@ qwen-audio-agent 用的仍是千问 Realtime 模型，补的是模型与设备�
 ## 7. 能力边界与待核实
 
 - `qwen-audio-3.1-realtime-plus`（2026-09-20 上架）尚未进入 npm 2.0.1 的模型目录；main `d2a8dc4`（2026-10-22）已改为默认前台，待发版（查证 2026-10-25）。
-- 本仓 Demo C / D 尚无真 Key 运行记录：2026-10-25 只在无 Key 条件下验证了安装、`doctor --json` 与 Gateway 启动，语音回合和后台改文件待实测。
+- 本仓 Demo C / D 尚无真 Key 运行记录：2026-10-25 只验证了安装、`doctor --json`、Gateway 启动和 WebUI 连接，以及占位 Key 下 WebUI 与 `doctor` 报出的 401 失败态；语音回合和后台改文件待实测。
 - 首包音频时延：项目未公布，本仓 benchmark 待补 Qwen-Audio-Realtime 实测。
 - 声音复刻音色、说话人增强：模型支持，项目是否可配待核实。
 - 硬件示例只有 AI Passport 一款，半双工；全双工设备端（回声消除、语音打断）需自行实现。
