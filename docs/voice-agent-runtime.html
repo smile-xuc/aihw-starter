@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><meta name="theme-color" content="#fafaf8">
+<meta name="description" content="从巡检草稿任务看懂语音 Agent 的三层架构：持续对话、任务状态与权限、后台执行，以及视觉上下文和结果交付。">
+<title>从语音聊天到语音 Agent：真正缺的是哪一层？ · AIHW Starter</title>
+<link rel="icon" href="app/icons/icon-192.png">
+<style>
+:root{--paper:#fafaf8;--ink:#202322;--muted:#626b61;--blue:#345be8;--line:#e5e7e1;--soft:#eef2ff}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.9 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}a{color:var(--blue);text-underline-offset:4px}button{font:inherit;cursor:pointer}a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--blue);outline-offset:4px}h1,h2,h3{line-height:1.4;letter-spacing:-.025em}h1{font-size:clamp(32px,4.5vw,56px);font-weight:650;max-width:950px;margin:20px 0}h2{font-size:29px;margin:0 0 22px}h3{font-size:21px;margin:28px 0 12px}p{margin:0 0 20px}.wrap{max-width:1160px;margin:auto;padding:0 32px}.top{border-bottom:1px solid var(--line)}.top .wrap{display:flex;justify-content:space-between;align-items:center;min-height:76px;gap:18px;flex-wrap:wrap;padding-block:14px}.brand{font-size:21px;font-weight:750;color:var(--ink);text-decoration:none}.top nav{display:flex;gap:24px;font-size:14px}.hero{padding:64px 0 42px;border-bottom:1px solid var(--line)}.eyebrow{font-size:12px;letter-spacing:.12em;color:var(--blue)}.lead{max-width:750px;font-size:20px;color:var(--muted)}.meta{font-size:13px;color:var(--muted)}.layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:58px;padding-block:42px 80px}.toc{position:sticky;top:24px;height:fit-content;font-size:13px}.toc a{display:block;padding:7px 0;color:var(--muted);text-decoration:none}.toc summary{font-weight:650;margin-bottom:12px;cursor:pointer}.article{min-width:0}.article section{margin-bottom:52px;padding-bottom:42px;border-bottom:1px solid var(--line);scroll-margin-top:24px}.article p,.article li{color:#48524c}.article strong{color:var(--ink)}.callout{background:var(--soft);border-left:3px solid var(--blue);padding:20px 24px;margin:24px 0}.callout p:last-child{margin:0}.layers{display:grid;gap:12px;margin:24px 0}.layer{padding:20px 24px;border:1px solid var(--line);border-radius:12px;background:white}.layer:nth-child(2){border-color:#a4b5f5;background:var(--soft)}.layer small{color:var(--blue)}.layer h3{margin:4px 0 8px}.layer p{margin:0}.arrow{text-align:center;color:var(--blue);font-size:13px}.table-wrap{overflow-x:auto;margin:22px 0}table{width:100%;border-collapse:collapse;font-size:14px;text-align:left}th,td{border-bottom:1px solid var(--line);padding:12px;vertical-align:top}th{color:var(--ink);background:#f0f1ed}code{font:13px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}pre{background:#f0f1ed;padding:20px;border-radius:10px;white-space:pre-wrap;overflow-wrap:anywhere}.actions{display:flex;gap:10px;flex-wrap:wrap}.button{display:inline-block;border:1px solid var(--line);background:white;color:var(--ink);padding:10px 16px;border-radius:8px;text-decoration:none;font-size:14px;min-height:44px}.button.primary{background:var(--blue);color:white;border-color:var(--blue)}.explorer{border:1px solid var(--line);border-radius:12px;padding:24px;background:white}.explorer button[aria-pressed=true]{background:var(--blue);color:white}.explorer output{display:block;padding-top:20px}.explorer output p{margin:10px 0}.source-list{font-size:13px;overflow-wrap:anywhere}.skip{position:absolute;top:-80px;left:20px;background:white;padding:10px}.skip:focus{top:10px}footer{border-top:1px solid var(--line);padding:28px 0;font-size:13px}.checklist li{margin-block:10px}@media(max-width:850px){.layout{grid-template-columns:1fr;gap:30px}.toc{position:static;padding:20px;border:1px solid var(--line);border-radius:10px}.toc nav{columns:2}}@media(max-width:480px){.wrap{padding-inline:20px}.hero{padding-top:40px}.top nav{gap:14px;font-size:12px}.toc nav{columns:1}h2{font-size:25px}.lead{font-size:17px}.explorer{padding:16px}.actions .button{flex:1 1 125px;text-align:center}.callout{padding:16px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<a class="skip" href="#article">跳到正文</a>
+<header class="top"><div class="wrap"><a class="brand" href="index.html">AIHW Starter</a><nav aria-label="主导航"><a href="index.html#deep-title">原理阅读</a><a href="app/#/lab">能力实验室</a><a href="https://github.com/smile-xuc/aihw-starter">GitHub</a></nav></div></header>
+<div class="hero"><div class="wrap"><p class="eyebrow">EXPLAINED / VOICE AGENT RUNTIME</p><h1>从语音聊天到语音 Agent：<br>真正缺的是哪一层？</h1><p class="lead">能听懂、能回答、能调用工具，还不等于能把一件事办完。真正困难的是：用户继续说话时，谁记得任务做到了哪里，谁有权让它继续，谁负责把结果及时送回来？</p><p class="meta">原创原理文章 · 2026-10-25 · 以 qwen-audio-agent 与 Qwen-Live-Harness 的固定源码为例 · 无付费实测</p><div class="actions"><a class="button primary" href="#task">从一个巡检任务开始</a><a class="button" href="app/#/lab/voice">打开纯语音演练</a><a class="button" href="app/#/lab/visual">打开视觉演练</a></div></div></div>
+<div class="wrap layout"><aside class="toc"><details open><summary>阅读路线</summary><nav aria-label="文章目录"><a href="#task">01 一件事，两个时钟</a><a href="#layers">02 缺的是运行时契约</a><a href="#voice">03 纯语音：对话不停，任务不停</a><a href="#state">04 打断、更新、授权与取消</a><a href="#delivery">05 做完以后，还要送达</a><a href="#visual">06 视觉：给“这里”加上版本</a><a href="#tools">07 工具接进哪一层</a><a href="#acceptance">08 怎样验收一个 Agent</a><a href="#sources">固定来源与运行路径</a></nav></details></aside>
+<main class="article" id="article">
+<section id="task"><p class="eyebrow">01 / TWO CLOCKS</p><h2>先让它完成一份巡检草稿</h2>
+<p>设想一位工程师站在设备旁，对耳机说：“把刚才的巡检录音整理成清单，分清已经看到的异常和还要核对的地方，保存成草稿。”这不是开放式闲聊。完成标准至少包括一份文件、可回溯的观察，以及没有被擅自发送出去的边界。</p>
+<p>十秒后，工程师补充：“先别念了，只保留需要复查的项目。”再过一会儿：“保存前让我确认。”后台可能已经在转写、检索或写文件。此时把最新一句话当成新的聊天轮次，只能得到一句听起来正确的答复；它并不能解释旧任务是否继续、哪一版清单会生效。</p>
+<p>这里同时运行着两个时钟。<strong>对话时钟</strong>要求迅速回应、允许插话；<strong>工作时钟</strong>受到工具、网络、文件与审批限制，往往更慢。把两者塞进一个阻塞流程，用户会等得焦躁；让它们完全独立，系统又可能一边说“改好了”，一边交付旧文件。</p>
+<div class="callout"><p><strong>语音 Agent 的核心进步，是让这两个时钟保持联系。</strong>不是每次都要上复杂后台：回答一句事实、调节本机音量可以很短；跨文件整理、检索与写入需要一个寿命超过单轮对话的任务。</p></div>
+</section>
+<section id="layers"><p class="eyebrow">02 / THE MISSING CONTRACT</p><h2>中间这一层，负责让承诺和事实对得上</h2>
+<div class="layers" aria-label="三层架构"><div class="layer"><small>01 · CONVERSATION</small><h3>对话前台</h3><p>收音、判停、理解、回应、播放；把“我要改要求”表达成结构化请求。目标是保持交流连续。</p></div><div class="arrow" aria-hidden="true">任务意图 ↓ &nbsp; ↑ 状态与结果</div><div class="layer"><small>02 · ORCHESTRATION</small><h3>编排运行时</h3><p>任务身份、要求版本、状态转换、授权范围、取消确认、结果归属与交付时机。目标是保持事实一致。</p></div><div class="arrow" aria-hidden="true">执行请求 ↓ &nbsp; ↑ 进度、产物、回执</div><div class="layer"><small>03 · EXECUTION</small><h3>后台执行</h3><p>读文件、调用 CLI / MCP、检索、生成草稿；返回真实产物和失败信息。目标是完成有边界的工作。</p></div></div>
+<p>这是职责划分，不要求每层都是一个进程，也不要求每层都再放一个大模型。一个 Gateway 可以承载前台接入和编排，后台则由另一个已配置的 Agent 执行。简单场景甚至可用明确的状态机完成大部分协调。</p>
+<p>模型可以判断意图，<strong>不能仅凭模型说了“完成”就把状态写成完成</strong>。任务创建要有运行时记录，写文件要有工具结果，取消要有后台确认，播报要有客户端回执。若让这些事实都藏在聊天文本里，重试、断线和多任务并发时就没有可靠依据。</p>
+<p>工程上可以把执行请求想成一个信封：<code>task_id、revision、attempt、scope、context_ref</code>。后台结果带着同一组关联信息返回。下文演练中的版本号是本仓的教学设计，并非声称两个上游都使用同名字段；它表达的是一个普遍约束：<strong>结果必须证明自己属于当前仍有效的工作。</strong></p>
+</section>
+<section id="voice"><p class="eyebrow">03 / VOICE ONLY</p><h2>qwen-audio-agent：让纯语音交互有工作记忆</h2>
+<p>在这个例子里，前台只接收语音，不需要视觉。qwen-audio-agent 通过可替换的实时语音 Provider 保持交流；需要持续处理的巡检任务由前台工具交给编排运行时，再通过后台适配器连接 ACP、A2A 等执行路径。语音前台与后台模型、工具、认证可以分别配置。</p>
+<p>上游的任务机制把受理、执行、委派与完成分开。受理确认来自已经创建的 Task；后台可能进一步委派工作，但“委派成功”仍不是“任务完成”。适配器保留任务与后台会话的关联，最终结果再回到运行时。无关的会话更新不能把当前任务推进到成功。这正是“我听到了”和“我真的做好了”之间的区别。<a href="#source-audio">[1]</a></p>
+<h3>一个具体的接入方案</h3>
+<p>原型可以由电脑运行 Gateway，WebUI 或 TUI 提供麦克风与播放，语音前台使用可用的 Qwen Audio Realtime 服务，后台选择已安装并登录的 Qwen Code。测试目录只放非敏感巡检文本，任务范围限定为生成 <code>inspection.md</code>，不发送、不控制设备。先让前台聊天通，再接后台和权限提示，最后验收实际文件。</p>
+<p><code>AGENT_PROTOCOL=none</code> 可以用于前台连通性检查，但它不启动后台 Agent。若在这个模式下听到流畅回答，不能据此认定草稿已生成。没有执行能力时，正确体验是明确说明缺少后台，而不是用一段貌似完成的回答填上空白。<a href="#source-quickstart">[2]</a></p>
+<div class="actions"><a class="button primary" href="app/#/lab/voice">演练：纯语音任务状态</a><a class="button" href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-solution/09-agent-capabilities.md#voice">真实本地搭建步骤</a></div>
+<p class="meta">网页用按钮代替说话，结果是人工样本；没有实际收音或后台连接。搭建步骤包含固定源码、Node 版本、健康接口和服务依赖，真实模型调用可能计费。</p>
+</section>
+<section id="state"><p class="eyebrow">04 / CONTROL IS NOT CONVERSATION</p><h2>四句话，需要四种不同的处理</h2>
+<div class="table-wrap"><table><caption>同一巡检任务中的控制语义</caption><thead><tr><th>用户表达</th><th>运行时应处理的事实</th><th>错误的简化</th></tr></thead><tbody><tr><td>“先别念了”</td><td>停播当前声音，保留后台任务</td><td>直接杀掉任务，丢失工作</td></tr><tr><td>“只保留复查项”</td><td>更新任务要求，旧结果不得覆盖新版</td><td>只改聊天上下文，后台继续按旧要求做</td></tr><tr><td>“保存前问我”</td><td>等待批准，绑定具体操作、对象与当前版本</td><td>将模糊的“嗯”当成永久授权</td></tr><tr><td>“这件事不做了”</td><td>发出取消请求，等执行侧确认</td><td>前台答应后就显示已取消</td></tr></tbody></table></div>
+<h3>停播只改变前台，取消改变后台</h3>
+<p>插话可能只是纠正一个名词，也可能是想让系统安静。把每次打断都映射成任务取消，会让长任务永远做不完；把所有打断都仅当作停播，又会忽略用户真正的终止意图。产品需要可区分的交互，也需要不同的控制通道。按钮、语音意图和状态提示应保持同一含义。</p>
+<p>取消还存在“请求已发出”到“后台已确认”的间隙。qwen-audio-agent 的架构明确使用确认式取消，在此期间保持 <code>cancelling</code>；不能以模型的口头回应作为终态依据。即便取消成功，也只能阻止未发生的工作，不能自动撤销已经写出的文件或发出的消息。重试前应检查副作用、使用幂等标识或询问是否继续。<a href="#source-audio">[1]</a></p>
+<h3>修改要求，要处理正在路上的旧结果</h3>
+<p>假设 v1 包含全部观察，v2 只保留复查项。旧工具请求可能无法取消，也可能已经快完成。一个稳妥的做法是保留旧结果作为历史，但阻止它进入当前交付队列；必要时提取可复用的中间证据，再按 v2 重新整理。这样比“一律杀掉重来”省资源，但需要显式的版本关联与审计记录。</p>
+<p>本仓演练用 <code>revision + attempt</code> 演示这个约束。修改要求增加 revision，失败重试增加 attempt；两者都能使旧结果失效。真实集成应使用上游提供的任务关联、适配器能力与更新接口，不要靠匹配一段结果文字来猜它是否过期。</p>
+<h3>批准是一个待解决的状态</h3>
+<p>授权提示应说明“写入哪个文件、做什么变化、属于哪个任务”，而不是只问“允许吗”。要求或目标变化后，旧批准不能偷偷延续。拒绝应返回一个可理解的结果，或者让用户缩小任务；不能把等待批准画成一直转圈的执行中。</p>
+<div class="explorer" data-explorer><h3>同一事件，在三层里发生了什么？</h3><p>切换事件查看机制。这是解释性示例，不会执行任务。</p><div class="actions" role="group" aria-label="选择任务事件"><button class="button" data-step="0" aria-pressed="true">停播</button><button class="button" data-step="1" aria-pressed="false">改要求</button><button class="button" data-step="2" aria-pressed="false">待批准</button><button class="button" data-step="3" aria-pressed="false">取消</button><button class="button" data-step="4" aria-pressed="false">结果到达</button></div><output aria-live="polite" data-explanation><strong>停播：后台仍在运行</strong><p>前台停止当前音频；编排保留任务；后台继续处理。静音不是取消。</p></output></div>
+<noscript><p>事件交互需要 JavaScript；上表和各段正文已完整解释所有事件。</p></noscript>
+</section>
+<section id="delivery"><p class="eyebrow">05 / DONE ≠ DELIVERED</p><h2>工具做完了，用户为什么还觉得没做完？</h2>
+<p>后台生成文件只是第一道门。结果还要回到正确的会话，在合适的时候被呈现，并且避免重复播报。工程师可能正在与同事说话、设备可能断线，或者新手机刚接管旧会话。这些都是交付问题，不是再调一次大模型就能解决的问题。</p>
+<p>qwen-audio-agent 将结果的上下文注入与播放确认分开：用户说话或已有响应时等待安全窗口，客户端的 <code>playback.started</code> 回执确认播放开始。已经开始播放的结果不因中途打断就反复重播；相关状态可持久化，重试有边界。播放开始仍不等于用户听完，更不等于用户同意草稿内容。<a href="#source-audio">[1]</a></p>
+<p>因此，一份任务记录至少要区分“后台完成”“等待交付”“开始呈现”。需要用户确认的流程还应增加“已确认”。静音用户可以先看到任务卡，忙碌用户可以稍后听简短通知，详细产物留在可打开的位置。若只追求语音首包快，任务完成后却几分钟没有通知，体验仍然失败。</p>
+<div class="callout"><p><strong>交付策略是一项取舍。</strong>尽早播报减少等待，却可能打断重要对话；等安静再说更自然，却需要可见队列与超时提示。紧急告警应有专门设计和验证，不应把普通 Agent 的通知队列当作安全系统。</p></div>
+<p>测量时也应分开：从用户说完到任务受理、到真实产物生成、到播放开始、到人工确认。把这四个时刻压成一个“延迟”数字，会掩盖最影响用户的等待阶段。</p>
+</section>
+<section id="visual"><p class="eyebrow">06 / CONTEXT HAS A LIFETIME</p><h2>Qwen-Live-Harness：让“这里”指向可核对的画面</h2>
+<p>同一巡检任务加上视觉后，用户可以说：“把这里看起来不对的地方放进清单。”现在系统还必须知道“这里”指哪一帧、来自哪个显示器或相机、是在用户说话前还是说话后采集。画面可能已经切换，模型看到的却仍是旧截图。</p>
+<p>Qwen-Live-Harness 将 Electron Host 和 Node daemon 分开：Host 处理界面、系统权限、音视频采集与播放；daemon 连接 Omni Realtime、调度工具、后台 Harness、主动观察和记忆。两者通过本机 WebSocket 协作，使用配套版本。完整桌面体验当前要求 macOS 12+，源码开发要求 Node.js ≥22.13 和 Xcode 命令行工具。Linux 上通过纯脚本测试不能证明桌面链路可用。<a href="#source-live">[3]</a></p>
+<div class="table-wrap"><table><caption>视觉的三种路径解决不同的问题</caption><thead><tr><th>路径</th><th>数据流与用途</th><th>代价 / 盲区</th></tr></thead><tbody><tr><td>On Demand</td><td>所选来源截图 → 独立视觉子智能体 → 主对话；适合“看看这张图”</td><td>上下文是一个快照，随后就可能过期</td></tr><tr><td>Live Feed</td><td>持续图像 → 主模型；默认 1 FPS、720p</td><td>增加传输与推理负担，抽样仍会漏掉短事件</td></tr><tr><td>Proactive Monitor</td><td>独立观察条件，按 1 FPS、每轮 2 秒；通知排队返回</td><td>有采样、推理和播报延迟，可能误判，不是安全报警系统</td></tr></tbody></table></div>
+<h3>具体方案：先观察，再形成草稿</h3>
+<p>在 Mac 上打开两张非敏感巡检照片，显式选择显示器与 On Demand。先问铭牌能确认什么，再切到接口近景，要求“只依据新图，列待核对项”。若要生成文件，另接已配置的后台 Harness，并批准测试目录的写入。看图、写文件、发送文件是三个能力边界；视觉授权不会自然扩张成写入或发送权限。</p>
+<p>本仓的视觉演练用预制情境 A / B 表达截图变化：切换后增加要求版本、撤销旧批准，并拒收旧结果。真实工程可以把画面哈希、来源、采集时间与任务关联，遇到敏感操作前再采一次并重新确认。这些是本文提出的集成设计，不应读成上游已经保证了任意屏幕操作的原子性。</p>
+<p>持续视觉有助于省略反复描述，但也扩大了误采集与信息暴露的范围。按需模式更容易解释“这一刻看到了什么”，连续模式更适合动态语境；两者都需要清楚的采集指示、停止入口和上下文过期策略。记忆保存在本地也不代表记忆整理、向量化等推理不走云端。<a href="#source-live">[3]</a></p>
+<div class="actions"><a class="button primary" href="app/#/lab/visual">演练：切换画面与旧结果</a><a class="button" href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-solution/09-agent-capabilities.md#visual">macOS 本地运行路径</a></div>
+</section>
+<section id="tools"><p class="eyebrow">07 / TOOLS NEED A HOST</p><h2>CLI 与多模态插件，是可执行工作的材料</h2>
+<p>Bailian CLI 可以把录音转成文本、合成一段播报、生成插图，或发出文字请求。Qwen-MM-Plugins 可以检查视频元数据、抽帧和裁图，也有调用专门模型服务的能力。这些工具让后台工作变得可执行，但它们不会自动替产品管理“用户刚刚改口”“现在还没批准”或“结果应送给谁”。</p>
+<p>巡检任务里可以先用 CLI 转写录音，用 MM core 定位证据帧，再由后台形成草稿。core 原生工具把图像返回宿主，不另发模型请求；宿主推理仍可能收费并发送图像。CLI 接受本地媒体路径时可能上传临时服务存储。把工具运行在本机，不等于数据与模型都在本机。<a href="#source-cli">[4]</a> <a href="#source-mm">[5]</a></p>
+<p>工具选择也有实际取舍：一次直接调用短小、容易验收；让后台 Agent 自主规划适合多步任务，却引入更多失败点和权限需求。能用明确参数和验证器解决的步骤，未必值得再加入一个协调模型。反过来，把跨文件任务硬塞进单次调用，也会丢掉中间证据和恢复能力。</p>
+<p>关于这四组能力的内容、架构、运行步骤和多个 Demo，已独立收录到能力实验室。这篇文章解释为什么要这样组合；实验室负责让开发者逐条尝试和验证。</p>
+<div class="actions"><a class="button" href="app/#/lab/cli">CLI 命令模板</a><a class="button" href="app/#/lab/media">媒体证据与图片检查</a><a class="button" href="app/#/lab">全部能力与边界</a></div>
+</section>
+<section id="acceptance"><p class="eyebrow">08 / TEST THE PROMISE</p><h2>验收的对象，应当是一次完整承诺</h2>
+<p>对硬件团队来说，最先值得做的原型不是漂亮的唤醒动画，而是一件有输入、有产物、有失败路径的工作。先在电脑完成巡检草稿，再考虑把麦克风和播放迁到耳机、眼镜或桌宠。迁移时仍需处理回声消除、网络断开、设备身份与真实动作回执。</p>
+<ol class="checklist"><li><strong>受理有凭据。</strong>记录任务 ID 与当前要求；没有后台时明确拒绝办事。</li><li><strong>交互不中断工作。</strong>插话与停播不误取消；修改要求后人工检查最终文件确实对应新版。</li><li><strong>权限有对象。</strong>待批准时不继续敏感动作，拒绝能结束或缩小任务；旧批准不能用于新目标。</li><li><strong>取消有确认。</strong>先显示请求中，再依据执行侧回执更新；模拟迟到结果，确认不会复活已取消任务。</li><li><strong>失败可恢复。</strong>工具超时、空结果、后台退出都不冒充成功；重试前核对已有副作用。</li><li><strong>完成后能找到结果。</strong>用户讲话时排队，恢复后交付一次；断线重连不会发给错误会话，播放开始与用户确认分别记录。</li><li><strong>视觉有时效。</strong>切换来源、撤销采集权限后不会继续宣称看见当前画面；关键操作前重新取证。</li></ol>
+<p>如果这一组测试过不了，再流畅的语音也只是更自然的界面。过了之后，产品才有能力作出一个可信的承诺：任务正在做，变化已经记住，结果会在合适的时候回来。</p>
+</section>
+<section id="sources"><p class="eyebrow">SOURCES / REPRODUCE</p><h2>固定来源与复现边界</h2>
+<p>以下源码于 2026-10-25 重新读取。本文机制推导、巡检情境和教学状态模型为独立创作；上游行为按对应引用说明，不将设计建议冒充产品保证。</p>
+<ol class="source-list"><li id="source-audio"><a href="https://github.com/QwenAudio/qwen-audio-agent/blob/d2a8dc45b9b49d560c876eb7ed449eb9b90df1b9/docs/architecture/deep-dive.zh.md">qwen-audio-agent 架构：任务关联、确认式取消、结果交付与播放回执</a>（d2a8dc4）。</li><li id="source-quickstart"><a href="https://github.com/QwenAudio/qwen-audio-agent/blob/d2a8dc45b9b49d560c876eb7ed449eb9b90df1b9/docs/getting-started/quickstart.zh.md">前台与后台配置</a>；<a href="https://github.com/QwenAudio/qwen-audio-agent/blob/d2a8dc45b9b49d560c876eb7ed449eb9b90df1b9/docs/contract.md">Gateway contract</a>。GET /api/health 的 capability 检查不能替代真实任务验收；产品版本与 wire 版本分开协商。</li><li id="source-live"><a href="https://github.com/QwenLM/Qwen-Live-Harness/blob/b2d17b8706b226ff7792683ecd8f050f18f9752e/README_ZH.md">Qwen-Live-Harness：Host / daemon、视觉路径、平台要求与边界</a>（b2d17b8）。</li><li id="source-cli"><a href="https://github.com/modelstudioai/cli/blob/3c8031f4d994c30820eb4d145d9404ba4a0acd39/skills/bailian-gen/SKILL.md">Bailian CLI 媒体命令与临时上传</a>（3c8031f）。</li><li id="source-mm"><a href="https://github.com/QwenLM/Qwen-MM-Plugins/blob/d7ca19a9c8b60f02a86350706ff5e19095c33850/src/capabilities/core/skill/SKILL.md">MM core：原生媒体返回、fallback 与元数据优先</a>（d7ca19a）。</li></ol>
+<p>浏览器和 Node 演练均无 Key、无网络模型调用。真实上游步骤及依赖在<a href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-solution/09-agent-capabilities.md">四组能力开发指南</a>；本轮没有付费模型、实际语音或 macOS Host 实测，不提供公共网关。<a href="https://github.com/smile-xuc/aihw-starter/blob/master/docs/AGENT_ITERATION_VALIDATION.md">A / B 独立验收记录</a>区分本地通过与未运行项。</p>
+<div class="actions"><a class="button" href="omni-runtime-host.html">继续阅读：多模态 Runtime Host</a><a class="button" href="index.html#deep-title">返回原理阅读</a></div>
+</section>
+</main></div>
+<footer><div class="wrap">AIHW Starter · 原理、实践与可核对的证据 · <a href="app/#/lab">进入能力实验室</a></div></footer>
+<script>
+const explanations=[['停播：后台仍在运行','前台停止当前音频；编排保留任务；后台继续处理。静音不是取消。'],['改要求：旧结果失去交付资格','前台确认新要求；编排增加版本并使旧批准失效；后台更新或重新执行。旧版本的产物可以留档，但不能覆盖当前结果。'],['待批准：工作暂停在权限边界','前台说明具体文件和操作；编排记录等待批准；后台不越过该操作。拒绝是有效决定，不能伪装成连接失败。'],['取消：请求与终态分开','前台确认已收到取消意图；编排发出取消并等待；后台确认终止后才进入已取消。已经发生的副作用需单独处理。'],['结果到达：完成与交付分开','后台报告真实产物；编排核对任务、版本和会话，把结果入队；前台等用户说完，再以播放回执确认交付开始。']];
+const explorer=document.querySelector('[data-explorer]');
+explorer.addEventListener('click',event=>{const button=event.target.closest('[data-step]');if(!button)return;const i=Number(button.dataset.step);for(const b of explorer.querySelectorAll('[data-step]'))b.setAttribute('aria-pressed',String(b===button));const output=explorer.querySelector('output');const title=document.createElement('strong'),p=document.createElement('p');title.textContent=explanations[i][0];p.textContent=explanations[i][1];output.replaceChildren(title,p);});
+</script>
+</body></html>

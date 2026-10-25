@@ -196,3 +196,7 @@ python3 -m http.server 8000 --bind 127.0.0.1 -d docs
 | [qwen-audio-agent](https://github.com/QwenAudio/qwen-audio-agent/tree/d2a8dc45b9b49d560c876eb7ed449eb9b90df1b9) | `d2a8dc45b9b49d560c876eb7ed449eb9b90df1b9` | package 2.0.1；health 5.10.0；wire 7.0.0；none 边界 |
 
 源码快照可复查，npm 包与该 commit 不保证逐字相同。依赖安装或模型可用性变化时先核对版本，再记录实际失败，不用切换到不明网关绕过问题。工作流审计与独立验收见[能力更新审计](../../docs/app/CAPABILITY_AUDIT.md)。
+
+## 原理阅读
+
+[从语音聊天到语音 Agent：真正缺的是哪一层？](../../docs/voice-agent-runtime.html)：独立文章，用同一巡检任务解释编排机制与工程取舍。

@@ -1,10 +1,11 @@
-# Agent 能力更新：本地验收
+# Agent 能力更新与独立文章：本地验收
 
 验收日期：2026-10-25。基线 `551cb3df56e450ad8c2c715313dd62571d2d60dc`，分支 `feat/agent-capability-lab`。此记录描述本地实现与验证，不代表发布、真实 Key 验证或硬件交付。原始日志、截图与媒体产物位于本次执行环境 `/tmp/aihw-validation/`。
 
 ## 范围与证据等级
 
 - **A：体验中心与项目能力更新**：[审计](app/CAPABILITY_AUDIT.md)、[开发指南](../solutions/by-solution/09-agent-capabilities.md)、四组实验室页面、本地 runner、实际 MM core 客户端。
+- **B：独立原理文章**：[从语音聊天到语音 Agent：真正缺的是哪一层？](voice-agent-runtime.html)，包含三层职责、具体任务、机制取舍、两种方案与 Demo 入口。
 - 九个既有 Bailian 注册场景仍为 `pending-live`，`live_records=0`；没有通过新实验室的测试改变它们的验证状态。本文中的“通过”只适用于明确列出的检查。
 - 网页实验室与 Node 状态 runner 是 `mock`；`inspect_media.py` 是 `local-tools`，实际调用 Qwen-MM-Plugins core MCP，但没有宿主模型或云端模型理解。CLI 帮助验证也不代表执行了模型命令。
 
@@ -19,6 +20,15 @@
 - [x] 路由退出后重新进入从初始状态开始；未引入定时器、采集流、后台连接或跨页任务。首页、返回、未知能力 404、注册表加载失败下的实验室仍可使用。
 - [x] 320 / 390 / 768 / 1024 / 1440px 无横向溢出；新安装 SW 后离线打开实验室，视觉样本可用。
 
+## B 独立验收
+
+- [x] 完整原创文章，围绕同一巡检任务解释对话前台、编排状态 / 权限与后台执行，不以仓库名单代替机制。
+- [x] qwen-audio-agent 纯语音实例与 Qwen-Live-Harness 视觉实例，各有具体方案、Demo 和开发路径。
+- [x] 区分停止播报 / 取消任务、更新要求 / 旧结果、等待批准、任务完成 / 及时交付。
+- [x] 来源固定到 2026-10-25 实际读取的提交；本仓设计建议与上游保证明确分开；保留旧 Runtime Host 文章的参考骨架限制。
+- [x] 官网原理区、Primer、根 README、Docs、实验室、开发指南互链。
+- [x] 五种宽度、全部页内锚点、事件切换 / 键盘、四个 Demo 往返、无 JavaScript 完整正文；无外部网络请求。
+
 ## 仓库检查
 
 | 检查 | 结果与范围 |
@@ -29,7 +39,7 @@
 | 录音卡 Python 回归 | 17 / 17 通过 |
 | ASR 网关 Python 回归 | 11 / 11 通过；初次缺 aiohttp，按仓内 requirements 补齐虚拟环境后重跑通过 |
 | 官网 / 旧文章 / 产品流程 / 交互 / APP / 实时 / workspace 浏览器脚本 | 全部通过；真实本地 HTTP / WS 与 fake provider，不请求模型服务 |
-| 新增实验室浏览器脚本 | 最终通过；已加入 pages.yml 的显式步骤，不依赖单元测试通配符 |
+| 两个新增独立浏览器脚本 | 最终通过；已加入 pages.yml 的显式步骤，不依赖单元测试通配符 |
 | 成本 runner `--mock` | 通过；演练用量不计为真实费用 |
 | 全仓离线链接 | 最终通过：3,130 条、979 unique、零错误；按仓库规则排除外部 URL |
 | 变更文件外链 | 最终 371 / 371 通过、234 unique、零错误；沿用 CI 的 200/204/206/429 接受规则。首轮两条缺失的本验收文件链接已修复 |
@@ -53,7 +63,7 @@ MM 测试使用仓内餐盘照片和由该照片生成的 3 秒静态测试视�
 
 本地成果可审阅；尚未推送、创建 PR、合并或部署。没有公开网关，没有付费请求或使用真实模型凭据，没有修改持久安全 / 环境配置。PR #121 与 X30 文件未触碰。旧任务由父线程管理，本轮不操作它；旧工作区未推送内容仍无法据此确认。
 
-后续若获得仓库发布授权，可基于本分支创建 **draft PR**，仍不自动合并或部署。真实服务验收需要另行提供匹配地域的凭据和费用授权；macOS 桌面 / 手机 / 硬件验收需要对应设备。实验室链接目前指向预期发布位置，不能据此声称线上已存在。
+后续若获得仓库发布授权，可基于本分支创建 **draft PR**，仍不自动合并或部署。真实服务验收需要另行提供匹配地域的凭据和费用授权；macOS 桌面 / 手机 / 硬件验收需要对应设备。新文章与实验室链接目前指向预期发布位置，不能据此声称线上已存在。
 
 ## 可复查的本地构建方法
 
@@ -73,7 +83,7 @@ github: false
 ## 日志索引
 
 - `node-unit.log`、`app-build.log`、`secrets.log`、`manifests.log`、`registry.log`、`demo-smoke.log`、`recorder.log`、`asr-gateway.log`、`cost-run.log`。
-- `docs-tools-*.log` 与 `docs-app-tools-*.log`：实验室与既有浏览器脚本。新增图片失败测试初次未真正重载已打开的同一路由，改为实际 reload 触发失败请求后通过；未删除失败断言。
+- `docs-tools-*.log` 与 `docs-app-tools-*.log`：九个浏览器脚本。新增图片失败测试初次未真正重载已打开的同一路由，改为实际 reload 触发失败请求后通过；未删除失败断言。
 - `links-offline.log`、`links-changed.log`；`mm-local.log`、`media-local/inspection-report.json`、`media-local/inspection-crop.png`。
 - `audio-install.log`、`audio-build.log`、`audio-gateway.log`（setup gate 缺 Key，预期停止）；四份 `cli-*-help.log`。
 - `screenshots-final/`：官网、旧页、实验室及独立文章的移动 / 桌面截图。已有文章与样本的检查范围保持不变。
