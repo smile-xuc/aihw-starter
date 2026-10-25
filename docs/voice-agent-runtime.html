@@ -33,8 +33,9 @@
 <p>上游的任务机制把受理、执行、委派与完成分开。受理确认来自已经创建的 Task；后台可能进一步委派工作，但“委派成功”仍不是“任务完成”。适配器保留任务与后台会话的关联，最终结果再回到运行时。无关的会话更新不能把当前任务推进到成功。这正是“我听到了”和“我真的做好了”之间的区别。<a href="#source-audio">[1]</a></p>
 <h3>一个具体的接入方案</h3>
 <p>原型可以由电脑运行 Gateway，WebUI 或 TUI 提供麦克风与播放，语音前台使用可用的 Qwen Audio Realtime 服务，后台选择已安装并登录的 Qwen Code。测试目录只放非敏感巡检文本，任务范围限定为生成 <code>inspection.md</code>，不发送、不控制设备。先让前台聊天通，再接后台和权限提示，最后验收实际文件。</p>
+<p>本文按固定 main 提交 <code>d2a8dc4</code> 解读；仓内 Demo C / D 则使用已发布 npm 2.0.1。两者虽然 package 版本字段相同，默认模型、前台 Key 变量及协议演进仍有差异，应沿各自的运行说明配置。</p>
 <p><code>AGENT_PROTOCOL=none</code> 可以用于前台连通性检查，但它不启动后台 Agent。若在这个模式下听到流畅回答，不能据此认定草稿已生成。没有执行能力时，正确体验是明确说明缺少后台，而不是用一段貌似完成的回答填上空白。<a href="#source-quickstart">[2]</a></p>
-<div class="actions"><a class="button primary" href="app/#/lab/voice">演练：纯语音任务状态</a><a class="button" href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-solution/09-agent-capabilities.md#voice">真实本地搭建步骤</a></div>
+<div class="actions"><a class="button primary" href="app/#/lab/voice">演练：纯语音任务状态</a><a class="button" href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-solution/12-agent-capabilities.md#voice">真实本地搭建步骤</a></div>
 <p class="meta">网页用按钮代替说话，结果是人工样本；没有实际收音或后台连接。搭建步骤包含固定源码、Node 版本、健康接口和服务依赖，真实模型调用可能计费。</p>
 </section>
 <section id="state"><p class="eyebrow">04 / CONTROL IS NOT CONVERSATION</p><h2>四句话，需要四种不同的处理</h2>
@@ -65,7 +66,7 @@
 <p>在 Mac 上打开两张非敏感巡检照片，显式选择显示器与 On Demand。先问铭牌能确认什么，再切到接口近景，要求“只依据新图，列待核对项”。若要生成文件，另接已配置的后台 Harness，并批准测试目录的写入。看图、写文件、发送文件是三个能力边界；视觉授权不会自然扩张成写入或发送权限。</p>
 <p>本仓的视觉演练用预制情境 A / B 表达截图变化：切换后增加要求版本、撤销旧批准，并拒收旧结果。真实工程可以把画面哈希、来源、采集时间与任务关联，遇到敏感操作前再采一次并重新确认。这些是本文提出的集成设计，不应读成上游已经保证了任意屏幕操作的原子性。</p>
 <p>持续视觉有助于省略反复描述，但也扩大了误采集与信息暴露的范围。按需模式更容易解释“这一刻看到了什么”，连续模式更适合动态语境；两者都需要清楚的采集指示、停止入口和上下文过期策略。记忆保存在本地也不代表记忆整理、向量化等推理不走云端。<a href="#source-live">[3]</a></p>
-<div class="actions"><a class="button primary" href="app/#/lab/visual">演练：切换画面与旧结果</a><a class="button" href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-solution/09-agent-capabilities.md#visual">macOS 本地运行路径</a></div>
+<div class="actions"><a class="button primary" href="app/#/lab/visual">演练：切换画面与旧结果</a><a class="button" href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-solution/12-agent-capabilities.md#visual">macOS 本地运行路径</a></div>
 </section>
 <section id="tools"><p class="eyebrow">07 / TOOLS NEED A HOST</p><h2>CLI 与多模态插件，是可执行工作的材料</h2>
 <p>Bailian CLI 可以把录音转成文本、合成一段播报、生成插图，或发出文字请求。Qwen-MM-Plugins 可以检查视频元数据、抽帧和裁图，也有调用专门模型服务的能力。这些工具让后台工作变得可执行，但它们不会自动替产品管理“用户刚刚改口”“现在还没批准”或“结果应送给谁”。</p>
@@ -82,7 +83,7 @@
 <section id="sources"><p class="eyebrow">SOURCES / REPRODUCE</p><h2>固定来源与复现边界</h2>
 <p>以下源码于 2026-10-25 重新读取。本文机制推导、巡检情境和教学状态模型为独立创作；上游行为按对应引用说明，不将设计建议冒充产品保证。</p>
 <ol class="source-list"><li id="source-audio"><a href="https://github.com/QwenAudio/qwen-audio-agent/blob/d2a8dc45b9b49d560c876eb7ed449eb9b90df1b9/docs/architecture/deep-dive.zh.md">qwen-audio-agent 架构：任务关联、确认式取消、结果交付与播放回执</a>（d2a8dc4）。</li><li id="source-quickstart"><a href="https://github.com/QwenAudio/qwen-audio-agent/blob/d2a8dc45b9b49d560c876eb7ed449eb9b90df1b9/docs/getting-started/quickstart.zh.md">前台与后台配置</a>；<a href="https://github.com/QwenAudio/qwen-audio-agent/blob/d2a8dc45b9b49d560c876eb7ed449eb9b90df1b9/docs/contract.md">Gateway contract</a>。GET /api/health 的 capability 检查不能替代真实任务验收；产品版本与 wire 版本分开协商。</li><li id="source-live"><a href="https://github.com/QwenLM/Qwen-Live-Harness/blob/b2d17b8706b226ff7792683ecd8f050f18f9752e/README_ZH.md">Qwen-Live-Harness：Host / daemon、视觉路径、平台要求与边界</a>（b2d17b8）。</li><li id="source-cli"><a href="https://github.com/modelstudioai/cli/blob/3c8031f4d994c30820eb4d145d9404ba4a0acd39/skills/bailian-gen/SKILL.md">Bailian CLI 媒体命令与临时上传</a>（3c8031f）。</li><li id="source-mm"><a href="https://github.com/QwenLM/Qwen-MM-Plugins/blob/d7ca19a9c8b60f02a86350706ff5e19095c33850/src/capabilities/core/skill/SKILL.md">MM core：原生媒体返回、fallback 与元数据优先</a>（d7ca19a）。</li></ol>
-<p>浏览器和 Node 演练均无 Key、无网络模型调用。真实上游步骤及依赖在<a href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-solution/09-agent-capabilities.md">四组能力开发指南</a>；本轮没有付费模型、实际语音或 macOS Host 实测，不提供公共网关。<a href="https://github.com/smile-xuc/aihw-starter/blob/master/docs/AGENT_ITERATION_VALIDATION.md">A / B 独立验收记录</a>区分本地通过与未运行项。</p>
+<p>浏览器和 Node 演练均无 Key、无网络模型调用。真实上游步骤及依赖在<a href="https://github.com/smile-xuc/aihw-starter/blob/master/solutions/by-solution/12-agent-capabilities.md">四组能力开发指南</a>；本轮没有付费模型、实际语音或 macOS Host 实测，不提供公共网关。<a href="https://github.com/smile-xuc/aihw-starter/blob/master/docs/AGENT_ITERATION_VALIDATION.md">A / B 独立验收记录</a>区分本地通过与未运行项。</p>
 <div class="actions"><a class="button" href="omni-runtime-host.html">继续阅读：多模态 Runtime Host</a><a class="button" href="index.html#deep-title">返回原理阅读</a></div>
 </section>
 </main></div>

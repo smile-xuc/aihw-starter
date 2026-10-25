@@ -639,6 +639,8 @@ response = client.chat.completions.create(
 
 具体单价见 [OSS 计费页面](https://www.aliyun.com/price/product#/oss/detail) 与千问大模型计费页面。
 
+**相关开源**：开发期让编程 Agent 读监控截图、抽帧和事件卡样张，见 [Qwen-MM-Plugins 导读](../../by-solution/10-qwen-mm-plugins.md)（`core` 本地读图与视频帧、`video-memory` 长视频问答）。它是开发工具，不替代 OSS AI 内容感知或设备侧链路；本仓示例见 [AI 眼镜 `demo/mm-plugins-core/`](../02-ai-glasses/demo/mm-plugins-core/)。
+
 ## 五、官方文档与 SDK 链接
 
 - [OSS AI 内容感知](https://help.aliyun.com/zh/oss/user-guide/ai-content-awareness)（查证 2026-09-30）

@@ -433,6 +433,8 @@ response = client.chat.completions.create(
 - **不能做（当前）**：实时多人对话路由、原生唱歌（TTS 不带音乐）、超过 30 秒的长样本声音克隆精度提升边际递减、真 always-on 云端理解（成本/功耗不成立）
 - **建议自建的部分**：长记忆策略、跟读评测、点读业务、学情数据库、订阅鉴权——这些走客户自己的 Agent
 
+**相关方案**：人格文件、长期记忆、提醒加实时语音前台的开源宿主，见 [Qwen Audio Agent 导读](../../by-solution/08-qwen-audio-agent.md)。参考设备 AI Passport 为半双工，量产多设备需自建多租户；本仓示例在 [Agent 硬件品类](../04-agent-hardware/demo/qwen-audio-agent/)，待真 Key 验证。
+
 ## 九、官方文档与 SDK 链接
 
 - 自定义对话角色：https://help.aliyun.com/zh/model-studio/custom-role

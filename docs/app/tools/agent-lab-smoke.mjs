@@ -21,6 +21,11 @@ try {
    await go(route);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${route} at ${width}`);
   }
  }
+ for(const [id,reading] of Object.entries({cli:'09-bailian-cli.md',media:'10-qwen-mm-plugins.md',voice:'08-qwen-audio-agent.md',visual:'11-qwen-live-harness.md'})){
+  await go('lab/'+id);
+  assert.equal(await page.locator(`a[href$="12-agent-capabilities.md#${id}"]`).count(),1);
+  assert.equal(await page.locator(`a[href$="${reading}"]`).count(),1);
+ }
  await go('lab/cli');await page.fill('[name=input]','');await page.click('[data-command-form] button');assert.match(await page.locator('[data-command-output]').innerText(),/不能为空/);
  await page.fill('[name=input]',"it's $(echo not-run) <script>");await page.click('[data-command-form] button');assert.match(await page.locator('[data-command-output]').innerText(),/尚未执行/);assert.equal(await page.locator('[data-command-output] script').count(),0);
  await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>{window.copied=text;}}}));await page.click('[data-copy-command]');assert.match(await page.locator('[data-copy-status]').innerText(),/已复制/);assert.match(await page.evaluate(()=>window.copied),/bl text chat/);

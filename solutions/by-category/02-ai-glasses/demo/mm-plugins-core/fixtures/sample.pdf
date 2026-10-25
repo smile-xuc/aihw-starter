@@ -1,0 +1,76 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 7 0 R >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 8 0 R >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+7 0 obj
+<< /Length 982 >>
+stream
+BT /F2 24 Tf 72 760 Td <414948572046697874757265205368656574203031> Tj ET
+BT /F1 12 Tf 72 730 Td <616968772D73746172746572202F20303220414920676C6173736573202F206D6D2D706C7567696E732D636F72652066697874757265> Tj ET
+BT /F1 12 Tf 72 706 Td <436865636B20636F64653A204D4D502D375134> Tj ET
+0.6 w
+72 680 m 500 680 l S
+72 656 m 500 656 l S
+72 632 m 500 632 l S
+72 608 m 500 608 l S
+72 584 m 500 584 l S
+72 680 m 72 584 l S
+300 680 m 300 584 l S
+400 680 m 400 584 l S
+500 680 m 500 584 l S
+BT /F2 12 Tf 80 664 Td <4974656D> Tj ET
+BT /F2 12 Tf 308 664 Td <517479> Tj ET
+BT /F2 12 Tf 408 664 Td <556E6974> Tj ET
+BT /F1 12 Tf 80 640 Td <43616D657261206D6F64756C65> Tj ET
+BT /F1 12 Tf 308 640 Td <31> Tj ET
+BT /F1 12 Tf 408 640 Td <706373> Tj ET
+BT /F1 12 Tf 80 616 Td <4D6963726F70686F6E65> Tj ET
+BT /F1 12 Tf 308 616 Td <32> Tj ET
+BT /F1 12 Tf 408 616 Td <706373> Tj ET
+BT /F1 12 Tf 80 592 Td <42617474657279> Tj ET
+BT /F1 12 Tf 308 592 Td <343130> Tj ET
+BT /F1 12 Tf 408 592 Td <6D4168> Tj ET
+endstream
+endobj
+8 0 obj
+<< /Length 143 >>
+stream
+BT /F2 18 Tf 72 760 Td <417070656E646978> Tj ET
+BT /F1 12 Tf 72 730 Td <436865636B20636F6465206F6E207468697320706167653A204D4D502D324238> Tj ET
+endstream
+endobj
+9 0 obj
+<< /Producer (aihw-starter make_fixture.py) >>
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000257 00000 n 
+0000000393 00000 n 
+0000000490 00000 n 
+0000000592 00000 n 
+0000001625 00000 n 
+0000001819 00000 n 
+trailer
+<< /Size 10 /Root 1 0 R /Info 9 0 R >>
+startxref
+1881
+%%EOF

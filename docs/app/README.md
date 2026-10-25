@@ -11,7 +11,7 @@ GitHub Pages 上的静态网页，可以「添加到主屏幕」当 APP 用（PW
 | 页面 | 地址 | 内容 |
 |---|---|---|
 | 首页 | `#/` | 两个精选体验、最近体验、9 个商业化品类的场景与项目入口 |
-| 品类页 | `#/c/<品类>` | 31 个代表项目及交付依据、商业／开发者用途筛选、行业速览、本仓参考实现与品类文档 |
+| 品类页 | `#/c/<品类>` | 35 个代表项目及交付依据（含 02 / 04 的 4 张开发者工具与开源运行时卡）、商业／开发者用途筛选、行业速览、本仓参考实现（未接入的栈收在「规划中」折叠）、专题 demo 与品类文档 |
 | 方案页 | `#/s/<方案 id>[/<玩法 id>]`，也可以 `?s=<方案 id>` | ① 效果（回放 / 真跑，多个玩法可切换）② 一次多少钱 ③ 要什么硬件、三步跑通 ④ 合规义务；深入链接 |
 | 能力实验室 | `#/lab[/cli\|media\|voice\|visual]` | 四组能力、命令生成、媒体证据与任务状态演练；无 Key，本地开发路径单列 |
 | 我的 | `#/me` | 凭证配置与返回原体验、本机体验历史、打开/导出运行记录、离线缓存 |
@@ -173,4 +173,4 @@ docs/app/
 
 ## 四组能力更新（2026-10-25）
 
-[完整开发指南](../../solutions/by-solution/09-agent-capabilities.md)与[体验审计](CAPABILITY_AUDIT.md)。浏览器实验室使用独立的静态数据与本地状态机，不伪造注册表的 live runner。`node solutions/by-solution/agent-capability-lab/run.mjs voice` 从仓库根运行同一状态模型。
+[完整开发指南](../../solutions/by-solution/12-agent-capabilities.md)与[体验审计](CAPABILITY_AUDIT.md)。浏览器实验室使用独立的静态数据与本地状态机，不伪造注册表的 live runner。`node solutions/by-solution/agent-capability-lab/run.mjs voice` 从仓库根运行同一状态模型。

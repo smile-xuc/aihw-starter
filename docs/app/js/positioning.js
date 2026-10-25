@@ -140,6 +140,23 @@ export const PROJECT_CASES = [
     ]
   },
   {
+    "id": "qwen-mm-plugins",
+    "category": "02-ai-glasses",
+    "title": "Qwen-MM-Plugins",
+    "audiences": [
+      "developer"
+    ],
+    "form": "编程 Agent 多模态插件",
+    "status": "开发者工具",
+    "reason": "Qwen 团队以 Apache-2.0 开源的 Skill＋MCP 插件集，给 Claude Code、Codex、Qwen Code 等编程 Agent 加读图、看视频、看文档能力；core 在本机渲染文件，默认不需云端 Key（core v1.3.0，查证 2026-10-25）。",
+    "boundary": "需本机已装编程 Agent 与 uv，Windows 仅 WSL2；Agent 主模型要能看图，云端插件另需 DashScope Key。这是开发期工具，不进眼镜设备链路；本仓示例的 Agent 回答一步尚未实测。",
+    "evidence": [
+      "solutions/by-solution/10-qwen-mm-plugins.md",
+      "solutions/by-category/02-ai-glasses/demo/mm-plugins-core/README.md",
+      "https://github.com/QwenLM/Qwen-MM-Plugins/tree/qwen-mm-plugins-core-v1.3.0"
+    ]
+  },
+  {
     "id": "curio-grem-gabbo",
     "category": "03-toys-companion",
     "title": "Curio Grem / Gabbo",
@@ -266,6 +283,56 @@ export const PROJECT_CASES = [
     "boundary": "源码许可不授予平台 Token 权利；商业设备接入须另获许可，不能因 SDK 开源而标成可直接商业化。",
     "evidence": [
       "solutions/by-category/04-agent-hardware/04-cases.md"
+    ]
+  },
+  {
+    "id": "bailian-cli",
+    "category": "04-agent-hardware",
+    "title": "百炼 CLI（Model Studio CLI）",
+    "audiences": [
+      "developer"
+    ],
+    "form": "开源命令行工具＋云端 API",
+    "status": "开发者工具",
+    "reason": "阿里云百炼以 Apache-2.0 开源的 bl 命令，在终端调用文本、Omni、图像、视觉理解、应用与记忆接口；--dry-run 无 Key 也能检查请求体（bailian-cli 2.5.1，查证 2026-10-25）。",
+    "boundary": "需 Node.js 18.17+ 或官方二进制；真实调用需百炼 API Key 并按模型计费，推理全部在云端。本仓示例无 Key 时停在鉴权，真实调用待真 Key 验证。",
+    "evidence": [
+      "solutions/by-solution/09-bailian-cli.md",
+      "solutions/by-category/04-agent-hardware/demo/bailian-cli/README.md",
+      "https://github.com/modelstudioai/cli/tree/v2.5.1"
+    ]
+  },
+  {
+    "id": "qwen-audio-agent",
+    "category": "04-agent-hardware",
+    "title": "Qwen Audio Agent",
+    "audiences": [
+      "developer"
+    ],
+    "form": "开源实时语音 Gateway",
+    "status": "开发者框架",
+    "reason": "QwenAudio 以 Apache-2.0 开源的实时语音 harness：Realtime 前台全双工对话，耗时任务经 ACP 异步交给后台 Agent，Gateway 自托管（npm 2.0.1，查证 2026-10-25）。",
+    "boundary": "需 Node.js 22.22.2+ 或 24.15.0+，默认前台需百炼 Realtime Key；参考设备 AI Passport 为半双工，多设备量产需自建多租户。本仓示例待真 Key 验证。",
+    "evidence": [
+      "solutions/by-solution/08-qwen-audio-agent.md",
+      "solutions/by-category/04-agent-hardware/demo/qwen-audio-agent/README.md",
+      "https://github.com/QwenAudio/qwen-audio-agent/tree/v2.0.1"
+    ]
+  },
+  {
+    "id": "qwen-live-harness",
+    "category": "04-agent-hardware",
+    "title": "Qwen-Live-Harness（仅 macOS）",
+    "audiences": [
+      "developer"
+    ],
+    "form": "开源桌面实时音视频 harness",
+    "status": "开发者参考 · 仅 macOS",
+    "reason": "Qwen 团队以 Apache-2.0 开源的 Mac 桌面 harness：用 Omni Realtime 边看屏幕或摄像头边语音对话，复杂任务委托 Qwen Code、Codex 等后台 Harness（npm 1.0.0，查证 2026-10-25）。",
+    "boundary": "仅 macOS 12+，需 Node.js 22.13+ 与百炼 Realtime Key；不接外部设备，不是硬件方案。本仓只有 macOS 附录案例，Linux CI 不验收。",
+    "evidence": [
+      "solutions/by-solution/11-qwen-live-harness.md",
+      "https://github.com/QwenLM/Qwen-Live-Harness/tree/qwen-live-harness-host-v1.0.0"
     ]
   },
   {

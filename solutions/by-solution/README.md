@@ -15,7 +15,12 @@
 | 05 | [🦾 千问具身智能方案（Qwen-Robot Suite）](./05-qwen-robot.md) | 📖 架构参考 | RobotManip / RobotNav / RobotWorld 三模型矩阵 | 具身智能（机械臂 / 四足 / 人形） |
 | 06 | [📶 端侧 / 混合方案（端云协同）](./06-edge-hybrid.md) | 📖 架构导读 | 离线唤醒 + 本地命令 + 云增强 / NAS 私有化；C 档可加[端侧统一推理调度（Lemonade）](./06-edge-hybrid.md#21-端侧统一推理调度层)；**切分原则见 [primer/06](../../primer/06-edge-cloud.md)** | 全品类（按薄终端→厚边缘分档） |
 | 07 | [🎬 AI 视频翻译配音](./07-video-dubbing/README.md) | 🧪 可跑（待真 Key 验证） | 多说话人转写 → omni 校正 → 音节预算翻译 → 声音复刻配音 → 零重叠混音 → 质检门禁；交付配音成片 + 字幕 JSON | 带屏 AI 硬件、硬件配套 APP（01 一键成片 / 02 第一视角视频 / 04 带屏盒子 / 07 会议录像） |
-| 08 | [🗣️ Qwen Audio Agent（开源实时语音 harness）](./08-qwen-audio-agent.md) | 🧩 开源 harness | Realtime 前台对话（默认 Qwen-Audio-3.0-Realtime，可换 Omni / 第三方 / 本地）+ 后台 Agent 异步委派；Gateway 自托管 | 本仓品类暂无 demo；上游示例为桌面办公、智能座舱、ESP32-C3 语音卡片（半双工）；最适合 Agent 硬件 |
+| 08 | [🗣️ Qwen Audio Agent（开源实时语音 harness）](./08-qwen-audio-agent.md) | 🧩 开源 harness | Realtime 前台对话（默认 Qwen-Audio-3.0-Realtime，可换 Omni / 第三方 / 本地）+ 后台 Agent 异步委派；Gateway 自托管 | Agent 硬件：[Demo C 前台语音回合 / Demo D 语音委派改文件](../by-category/04-agent-hardware/demo/qwen-audio-agent/)（钉 npm 2.0.1，待真 Key 验证）；上游示例为桌面办公、智能座舱、ESP32-C3 语音卡片（半双工） |
+| 09 | [⌨️ 百炼 CLI（Model Studio CLI）](./09-bailian-cli.md) | 🛠️ 开发者工具 | 终端调用百炼文本 / Omni / 图像 / 视频 / 视觉理解 / 应用 / 记忆接口；`--dry-run` 只打印请求体；给编程 Agent 写百炼配置 | Agent 硬件：[Demo A CLI 冒烟](../by-category/04-agent-hardware/demo/bailian-cli/)（无 Key 停在鉴权，待真 Key 验证） |
+| 10 | [🖼️ Qwen-MM-Plugins（开源多模态插件）](./10-qwen-mm-plugins.md) | 🧩 开源插件 | 给 Claude Code / Codex / Qwen Code 等编程 Agent 加读图、看视频、看文档能力；`core` 本地渲染、默认不需云端 Key；`mhs` 硬件接入标准（本仓未验证） | AI 眼镜：[Demo B 本地读 fixture PDF](../by-category/02-ai-glasses/demo/mm-plugins-core/)；IPC 看图可参考 |
+| 11 | [🖥️ Qwen-Live-Harness（Mac 实时音视频 harness）](./11-qwen-live-harness.md) | 🧩 开源 harness · 仅 macOS | Omni Realtime 看屏 / 看摄像头语音对话 + 后台 Harness 委托 + 主动提醒 + 长期记忆 | 仅 macOS 附录案例（Demo E 看屏解说），不进默认试用入口 |
+
+| 12 | [🧪 跨能力实验室与开发路线](./12-agent-capabilities.md) | 🛠️ 交互样本 / 本地工具 | CLI 校验、媒体证据、纯语音任务控制与视觉上下文；各能力另附固定源码路径 | 浏览器无 Key 状态演练；MM core 实际媒体处理无模型调用，与 08–11 的专题 Demo 互补 |
 
 > 千问方案的子形态：[Omni 实时端到端 · Runtime Host 中间层](./01-qwen/omni-realtime/) — Qwen-Omni-Realtime 端到端实时语音 + 自建宿主，适合桌面 / 伴随机器人等对首字延迟和拟人度要求高的高价值单品。可视化架构页：<https://smile-xuc.github.io/aihw-starter/omni-runtime-host.html>
 
@@ -50,7 +55,7 @@
 
 ## 新增能力开发路线
 
-[CLI、媒体工具、纯语音 Agent 与视觉 Harness](./09-agent-capabilities.md)：四组能力地图、固定源码、最小本地运行步骤、独立浏览器演练与限制（2026-10-25）。
+[CLI、媒体工具、纯语音 Agent 与视觉 Harness](./12-agent-capabilities.md)：四组能力地图、固定源码、最小本地运行步骤、独立浏览器演练与限制（2026-10-25）。
 
 ## 怎么读
 
@@ -93,7 +98,7 @@
 3. 在对应品类现有 `02-solution.md` 的『其他模型方案』小节补充（可选）
 4. 提 PR
 
-**开源 harness / Agent 框架**：能被 AI 硬件直接拿来用的开源运行框架（例：[08 Qwen Audio Agent](./08-qwen-audio-agent.md)），总览表「状态」列标 `🧩 开源 harness`，方案页开头先写清五项：
+**开源 harness / Agent 框架**：能被 AI 硬件直接拿来用的开源运行框架（例：[08 Qwen Audio Agent](./08-qwen-audio-agent.md)、[11 Qwen-Live-Harness](./11-qwen-live-harness.md)），总览表「状态」列标 `🧩 开源 harness`；Agent 插件（例：[10 Qwen-MM-Plugins](./10-qwen-mm-plugins.md)）标 `🧩 开源插件`，命令行等开发期工具（例：[09 百炼 CLI](./09-bailian-cli.md)）标 `🛠️ 开发者工具`。方案页开头先写清五项：
 
 - **许可**：License 与商用限制
 - **维护活跃度**：最近提交、最近发版日期，注明查证日期

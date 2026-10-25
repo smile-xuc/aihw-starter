@@ -2,6 +2,17 @@
 
 查证：2026-10-25。本文对应独立的[体验中心能力实验室](https://smile-xuc.github.io/aihw-starter/app/#/lab)，不是某篇文章的附属示例。所有浏览器演练无 Key、无模型调用；下面另给真实上游的开发入口。上游源码已核对，付费接口、声学效果、桌面 Host 和硬件尚未实测。
 
+## 与单项目导读和专题 Demo 的关系
+
+本页聚焦跨能力任务与交互机制；08–11 导读保留各项目的发布版本和专题示例。可以按下表选择路径，不能用浏览器样本通过替代真实服务验收。
+
+| 能力 | 单项目导读 / 已有本地示例 | 本页补充 |
+|---|---|---|
+| CLI | [09 导读](./09-bailian-cli.md)、[Demo A](../by-category/04-agent-hardware/demo/bailian-cli/)：固定 npm 的鉴权 / dry-run 冒烟 | 四类命令生成、输入校验和媒体上传边界 |
+| MM | [10 导读](./10-qwen-mm-plugins.md)、[Demo B](../by-category/02-ai-glasses/demo/mm-plugins-core/)：core 读 PDF | 视频证据与图片交互；真实 MCP 读图、裁图、抽帧客户端 |
+| 语音 | [08 导读](./08-qwen-audio-agent.md)、[Demo C / D](../by-category/04-agent-hardware/demo/qwen-audio-agent/)：npm 2.0.1 的前台 / ACP 后台示例 | 固定 main 提交的开发路径；无 Key 演练任务版本、批准、取消、交付 |
+| 视觉 | [11 导读与 Demo E](./11-qwen-live-harness.md)：macOS 实际看屏步骤 | 画面来源 / 新鲜度教学演练，不采集屏幕，不替代 macOS 验收 |
+
 ## 能力地图
 
 | 能力 | 解决什么问题 | 不承担什么职责 | 适合的硬件方向 |
@@ -108,6 +119,8 @@ printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | .ve
 
 ### 最小本地路径
 
+本节固定到 main 提交 `d2a8dc4`，与 Demo C / D 使用的已发布 npm 2.0.1（tag `a73bcbc`）不同；即使源码 package.json 仍写 2.0.1，也不能将它当成相同构建。前者默认 3.1 模型与新前台 Key 变量，后者默认 3.0，按各自文档配置。
+
 源码支持 Node.js ^22.22.2、^24.15.0 或 ≥26，npm ≥10。先检出同一批 Gateway 与客户端：
 
 ```bash
@@ -127,7 +140,7 @@ npm run gateway
 npm run cli -- webui
 ```
 
-保持默认回环监听。用启动日志报告的本机端口访问 `GET /api/health`，检查 `protocolVersion`、`capabilities`、`voiceConfigured`、`backend`；健康成功不等于语音服务或后台任务成功。固定源码的产品包版本是 **2.0.1**，health contract 是 **5.10.0**，WebSocket GCP wire 是 **7.0.0**；客户端按 capability 和 `session.hello` 协商，不能按包版本猜字段。
+保持默认回环监听。用启动日志报告的本机端口访问 `GET /api/health`，检查 `protocolVersion`、`capabilities`、`voiceConfigured`、`backend`；健康成功不等于语音服务或后台任务成功。固定源码 package.json 的版本字段仍是 **2.0.1**（不是 npm 发布包的协议证明），health contract 是 **5.10.0**，WebSocket GCP wire 是 **7.0.0**；客户端按 capability 和 `session.hello` 协商，不能按包版本猜字段。
 
 要实际生成草稿，先安装、登录并确认一个支持的后台（如 Qwen Code），再改 `AGENT_PROTOCOL=qwen`，后台模型留空可沿用其配置，重启 Gateway。测试目录放入一份非敏感 `inspection.txt`，打开麦克风后说“把 inspection.txt 中的观察整理成 inspection.md，只在当前目录写草稿，不发送”。观察任务卡、后台权限请求、实际文件和语音回执。停止播报后检查任务仍运行；取消要等确认，不能凭前台一句“好的”认定终止。
 

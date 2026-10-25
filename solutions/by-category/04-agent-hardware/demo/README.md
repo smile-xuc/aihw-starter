@@ -24,6 +24,34 @@
 
 ## 专题 demo
 
+### [`bailian-cli/`](./bailian-cli/) — 百炼 CLI 安装、鉴权与一次调用冒烟
+
+用官方 `bl` 跑通「`--version` → `auth status` → 一次文本调用（可选一张图）」，产物写到 `out/`。导读见 [09 百炼 CLI](../../../by-solution/09-bailian-cli.md)。
+
+```bash
+cd bailian-cli
+npm i -g bailian-cli@2.5.1
+bash run.sh            # 没有 Key 时停在鉴权，不发请求
+bash run.sh --mock     # 只看 --dry-run 请求体（CI 跑这一档）
+```
+
+需要 Node.js 18.17+；真跑需要 `DASHSCOPE_API_KEY` 或 `bl auth login`。待真 Key 验证。
+
+### [`qwen-audio-agent/`](./qwen-audio-agent/) — 开源语音 Gateway：仅前台语音回合 + 语音委派后台改文件
+
+钉 `qwen-audio-agent@2.0.1`。Demo C 只开 Realtime 前台（`AGENT_PROTOCOL=none`），说「你好」验证全双工回合；[Demo D `acp-edit/`](./qwen-audio-agent/acp-edit/) 接 Qwen Code 后台，用语音让它改 fixture 文件。导读见 [08 Qwen Audio Agent](../../../by-solution/08-qwen-audio-agent.md)。
+
+```bash
+cd qwen-audio-agent
+npm i -g qwen-audio-agent@2.0.1
+export DASHSCOPE_API_KEY=sk-xxxx
+bash run.sh            # 预检 + 独立配置；没有 Key 时停在凭证
+bash run.sh gateway    # 终端 1
+bash run.sh webui      # 终端 2，允许麦克风后说「你好」
+```
+
+需要 Node.js ^22.22.2 / ^24.15.0 / >=26、麦克风和扬声器；本仓 CI 不跑。待真 Key 验证。
+
 ### [`intent-router/`](./intent-router/) — 端侧意图分发（离线可跑）
 
 把用户话术分成 `local` / `cloud` / `hybrid`，并演示断网降级话术。

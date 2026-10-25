@@ -488,6 +488,10 @@
      "title": "🧪 kit-chat — 「一看即懂」最小闭环（性价比路线）"
     },
     {
+     "path": "solutions/by-category/02-ai-glasses/demo/mm-plugins-core",
+     "title": "mm-plugins-core — 编程 Agent 用 Qwen-MM-Plugins core 插件读本地 PDF"
+    },
+    {
      "path": "solutions/by-category/02-ai-glasses/demo/omni-realtime",
      "title": "🧪 omni-realtime — 「给 AI 打电话」实时链路（高性能路线）"
     }
@@ -566,8 +570,16 @@
    ],
    "topic_demos": [
     {
+     "path": "solutions/by-category/04-agent-hardware/demo/bailian-cli",
+     "title": "bailian-cli — 百炼 CLI 安装、鉴权与一次调用冒烟"
+    },
+    {
      "path": "solutions/by-category/04-agent-hardware/demo/intent-router",
      "title": "intent-router — Agent 硬件端侧意图分发"
+    },
+    {
+     "path": "solutions/by-category/04-agent-hardware/demo/qwen-audio-agent",
+     "title": "qwen-audio-agent — 仅前台的全双工语音回合（钉 npm 2.0.1）"
     }
    ]
   },

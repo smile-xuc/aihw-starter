@@ -28,8 +28,9 @@
 |---|---|---|
 | ✅ [**`kit-chat/`**](./kit-chat/) | 性价比路线，成熟可用 | 「一看即懂」最小闭环：照片 + 问题 → Qwen-VL → CosyVoice 播报，对应套件链路（拍照单帧 + 按次调用） |
 | ✅ [**`omni-realtime/`**](./omni-realtime/) | 高性能路线，成本较高 | 「给 AI 打电话」：音频流 + 视频帧 → qwen3.5-omni-flash-realtime 全双工实时对话（按时长计费） |
+| [**`mm-plugins-core/`**](./mm-plugins-core/) | 开发期工具，不进设备链路 | 编程 Agent 装 Qwen-MM-Plugins `core`，在本机读本仓 fixture PDF 的标题与表格，无需 DashScope Key；`verify_core.py` 不经 Agent 自检，待 Harness 实测 |
 
-两条路线按产品档位选用：全档位日常问答走 kit-chat 链路；旗舰档主打交互走 omni-realtime。
+两条路线按产品档位选用：全档位日常问答走 kit-chat 链路；旗舰档主打交互走 omni-realtime。`mm-plugins-core/` 给写固件、写 App 的编程 Agent 用，导读见 [10 Qwen-MM-Plugins](../../../by-solution/10-qwen-mm-plugins.md)。
 
 ## 量产 SDK
 
