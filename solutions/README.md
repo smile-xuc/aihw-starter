@@ -36,7 +36,10 @@ solutions/
 │   ├── 05-qwen-robot.md   ← 千问具身智能方案（架构参考）
 │   ├── 06-edge-hybrid.md  ← 端侧 / 混合（端云协同；含 Lemonade 调度层）
 │   ├── 07-video-dubbing/  ← AI 视频翻译配音
-│   └── 08-qwen-audio-agent.md ← Qwen Audio Agent（开源 harness）
+│   ├── 08-qwen-audio-agent.md ← Qwen Audio Agent（开源 harness）
+│   ├── 09-bailian-cli.md  ← 百炼 CLI（开发者工具）
+│   ├── 10-qwen-mm-plugins.md ← Qwen-MM-Plugins（开源多模态插件）
+│   └── 11-qwen-live-harness.md ← Qwen-Live-Harness（开源 harness，仅 macOS）
 ├── demo-standard/         ← 参考 demo 统一标准（品类 × 栈）、模板、CI 自检
 └── benchmark/             ← 方案延迟横评实测
 ```
