@@ -114,7 +114,10 @@ else:
 ## 八、与相邻方案的关系
 
 - Omni Realtime 全双工：见 [`../../by-solution/01-qwen/omni-realtime/`](../../by-solution/01-qwen/omni-realtime/)
-- 开源实时语音 harness（Realtime 前台对话 + 后台 Agent 异步办事，Gateway 自托管）：见 [`../../by-solution/08-qwen-audio-agent.md`](../../by-solution/08-qwen-audio-agent.md)
+- 开源实时语音 harness（Realtime 前台对话 + 后台 Agent 异步办事，Gateway 自托管）：见 [`../../by-solution/08-qwen-audio-agent.md`](../../by-solution/08-qwen-audio-agent.md)；本仓示例 [`demo/qwen-audio-agent/`](./demo/qwen-audio-agent/)（钉 npm 2.0.1，待真 Key 验证）
+- 百炼 CLI（`bl`，开发机 / 宿主脚本里直接调百炼，`--dry-run` 只看请求体）：见 [`../../by-solution/09-bailian-cli.md`](../../by-solution/09-bailian-cli.md)；本仓示例 [`demo/bailian-cli/`](./demo/bailian-cli/)
+- 编程 Agent 的多模态插件（读规格书、截图、样机视频）：见 [`../../by-solution/10-qwen-mm-plugins.md`](../../by-solution/10-qwen-mm-plugins.md)
+- Mac 桌面看屏语音 harness（仅 macOS，交互参考，不是硬件方案）：见 [`../../by-solution/11-qwen-live-harness.md`](../../by-solution/11-qwen-live-harness.md)
 - 延迟横评：见 [`../../benchmark/`](../../benchmark/)
 - 具身 / 机器人调度：见 [`../../by-solution/05-qwen-robot.md`](../../by-solution/05-qwen-robot.md)（勿与本品类混为一谈）
 - 随身设备把本品类当执行端：眼镜、耳机、录音卡、口袋设备只负责开口，复杂任务交给云端或家里电脑上的 Agent（如装了 OpenClaw 的家用盒子）。和根 README 里「一句话办完多步任务」不同，那边是盒子自己先在端侧办。见 [亮点功能速览](../../../README.md)
@@ -131,6 +134,7 @@ else:
 3. 第六节建议云端对话用 `qwen-plus`，控成本用 `qwen-flash`，工具走 Function Calling。本 demo 没有真实请求代码，调用参数待核实。
 4. 门锁、支付类二次确认：demo README 写明未实现。
 5. 真实请求体见百炼参考 demo [`demo/bailian/`](./demo/bailian/)：端侧规则 + `qwen3.8-flash` Function Calling 多轮编排 + 断网降级，无 Key 时自动 mock。
+6. 开发者工具示例：[`demo/bailian-cli/`](./demo/bailian-cli/) 用百炼 CLI 验证 Key、地域与一条调用；[`demo/qwen-audio-agent/`](./demo/qwen-audio-agent/) 跑开源语音 Gateway 的前台回合与后台委派。两者均待真 Key 验证。
 
 ## 十、能力边界
 

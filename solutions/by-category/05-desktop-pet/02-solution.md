@@ -493,6 +493,8 @@ audio = synthesizer.call("今天天气真好呀～")
 - **不能做（当前）**：复杂多自由度机械臂连续轨迹（建议走 JSON 格式 + 客户自建运动规划层）
 - **建议自建的部分**：动作连贯性平滑（IK 解算、舵机加速度限制）、长期人格一致性（走 Agent 后台的长记忆 + RAG 注入）、APP 端日记展示（日历/时间线视图）
 
+**相关方案**：实时语音前台 + 人格与长期记忆 + 后台 Agent 委派的开源宿主，动作可做成客户端工具，见 [Qwen Audio Agent 导读](../../by-solution/08-qwen-audio-agent.md)。全双工需设备侧回声消除；本仓示例在 [Agent 硬件品类](../04-agent-hardware/demo/qwen-audio-agent/)，待真 Key 验证。
+
 ---
 
 ## 十二、官方文档与 SDK 链接

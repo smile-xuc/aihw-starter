@@ -234,6 +234,8 @@ make && ./demo
 - **不能做（当前）**：端到端延迟的量化 SLA 承诺（需在客户硬件实测）、特定芯片白名单（建议售前联调）
 - **建议自建的部分**：端侧拍照压缩与蓝牙传输策略、录音提示与隐私同意流程、功能包付费开关与设备配额管理
 
+**相关开源**：开发期让编程 Agent 读样张、规格书 PDF 和样机视频，见 [Qwen-MM-Plugins 导读](../../by-solution/10-qwen-mm-plugins.md)；本仓示例 [`demo/mm-plugins-core/`](./demo/mm-plugins-core/) 用 `core` 在本地读固定 PDF，不需要云端 Key。它是开发工具，不进设备链路。
+
 ## 九、官方文档与 SDK 链接
 
 - [百炼硬件 Agent 开发平台总览](https://help.aliyun.com/zh/model-studio/multimodal-products-overview)（查证 2026-09-30）
