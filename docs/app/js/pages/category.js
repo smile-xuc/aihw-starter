@@ -82,12 +82,13 @@ export function renderCategory(view, reg, id) {
       <div class="section-title"><h2>本仓参考实现 <small>按栈体验</small></h2></div>
       <p class="small">以下入口用于理解和验证技术链路；其回放、费用与验证状态只描述本仓代码。</p>
       ${cat.solutions.map((s) => solutionRow(reg, s))}
-      ${planned.length ? html`<div class="row-card muted"><span class="grow"><strong>${planned.join(' · ')}</strong><small>其他栈按路线第 2 步接入，接入后在这里并列显示，可以对比同一品类在不同栈上的效果与成本。</small></span></div>` : ''}
+      ${planned.length ? html`<details class="fold" data-planned-stacks><summary>规划中（${planned.length}）</summary>
+        <div class="fold-body"><p class="small">${planned.join(' · ')}：尚未接入本仓，这里没有它们的回放、费用或验证记录。接入后与上方的栈并列，可以对比同一品类在不同栈上的效果与成本。</p></div></details>` : ''}
     </section>
 
     ${cat.topic_demos?.length ? html`<section class="section">
       <details class="fold"><summary>专题 demo（${cat.topic_demos.length}）</summary>
-        <div class="fold-body"><p class="small">参考 demo 之前的专题示例，保留原路径。</p>
+        <div class="fold-body"><p class="small">单项链路实验或开发者工具的试用说明。入口链到仓库目录，在本机或开发机上运行，不在体验中心里运行；运行方式与验证状态以各目录 README 为准。</p>
           <div class="link-list">${cat.topic_demos.map((d) => html`<a href="${repoLink(reg, d.path, true)}" rel="noopener"><span>${d.title}<small> · 本仓开发者示例</small></span><span>GitHub ${icon('link')}</span></a>`)}</div>
         </div></details>
     </section>` : ''}

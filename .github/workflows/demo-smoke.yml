@@ -48,3 +48,11 @@ jobs:
         run: |
           pip install -r services/asr-gateway/requirements.txt
           python -m unittest discover -s services/asr-gateway -p 'test_*.py'
+
+      # 专题 demo 04 bailian-cli：装固定版本 bl（跳过 postinstall 下载），只跑不读 Key、不发请求的 --mock
+      - name: Bailian CLI smoke (04 bailian-cli --mock, no key)
+        env:
+          DASHSCOPE_API_KEY: ""
+        run: |
+          npm install --prefix "$RUNNER_TEMP/bl" --ignore-scripts --no-audit --no-fund bailian-cli@2.5.1
+          BL="$RUNNER_TEMP/bl/node_modules/.bin/bl" bash solutions/by-category/04-agent-hardware/demo/bailian-cli/run.sh --mock

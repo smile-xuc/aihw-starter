@@ -7,6 +7,7 @@
 
 ### 新增
 
+- 体验中心开发者工具与开源运行时：`solutions/by-solution/` 新增 09 百炼 CLI、10 Qwen-MM-Plugins、11 Qwen-Live-Harness（仅 macOS）导读，08 补 npm 2.0.1 版本针脚与本仓示例，品类方案页互链。专题 demo：`04-agent-hardware/demo/bailian-cli/`（A，无 Key 停在鉴权，`demo-smoke` 只跑 `--mock`）、`02-ai-glasses/demo/mm-plugins-core/`（B，fixture PDF + MCP 直连自检，`core` 无需 DashScope Key）、`04-agent-hardware/demo/qwen-audio-agent/`（C 前台语音回合；D `acp-edit/` 语音委派后台改文件）；Demo E 看屏解说为 11 页 macOS 附录。A / C / D 待真 Key 验证，B 待 Harness 实测。体验中心 02 / 04 增加 4 张开发者工具卡，品类页把未接入的栈收进「规划中」折叠，专题 demo 说明改为本机运行、以目录 README 为准
 - 体验广场对齐官网视觉系统：统一暖白／深灰／亮蓝色值、字体栈、按钮悬停与选中状态；照片和录音卡使用同一品牌色，绿色保留给语义状态。同步浏览器与 PWA 底色、中性边线和阴影，修复成本页多行状态提示覆盖按钮，SW 升级 v10
 - 体验广场统一清爽浅色：纸白／冰蓝背景、湖蓝主操作、薄荷辅助色，照片说明栏、Toast 与弹层同步减轻。系统深色和旧外观偏好不再触发黑色页面；仅迁移外观键，保留凭证与历史，兼容旧缓存模块并升级 SW v9
 - 体验广场现代应用界面迭代：中性色与细边线工作区、蓝色状态强调、图像／录音体验预览、统一线性图标；手机单列、平板紧凑导航、桌面完整侧栏与明暗主题。增加短入场／悬停／按压反馈、延迟加载提示、减少动效与跳到内容入口；照片／录音支持本机拖放、核验状态及提问字数提示。交互回归接入 Pages CI，SW 升级 v8；设计依据见 `docs/app/UI_DESIGN.md`

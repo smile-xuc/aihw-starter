@@ -3,6 +3,8 @@
 > [qwen-audio-agent](https://github.com/QwenAudio/qwen-audio-agent) 是 QwenAudio 组织以 Apache-2.0 开源的实时语音 Agent 运行框架。[技术报告](https://arxiv.org/abs/2609.25195)（署名 Alibaba Token Foundry, Alibaba Group）称其为 "a harness that combines full-duplex voice interaction with asynchronous task execution"：Realtime 模型在前台持续对话，需要工具、文件或长时间处理的任务异步交给后台 Agent，结果再回到当前对话。默认前台模型是百炼 `qwen-audio-3.0-realtime-plus`。
 >
 > 本页是**可用导读**（跨品类横切），不是官方商业方案，客观中立，不做项目背书。项目信息以 main 分支 `f6dd0e3`（2026-09-28）和 v2.0.1（2026-09-26）为准，价格为北京地域目录价，均查证 2026-10-02。
+>
+> **版本针脚（2026-10-25 复核）**：npm 最新版仍是 `qwen-audio-agent@2.0.1`（2026-09-26 发布，tag [`v2.0.1`](https://github.com/QwenAudio/qwen-audio-agent/releases/tag/v2.0.1) = `a73bcbc`），本仓示例钉在这一版：[Demo C 前台语音回合](../by-category/04-agent-hardware/demo/qwen-audio-agent/)、[Demo D 语音委派后台改文件](../by-category/04-agent-hardware/demo/qwen-audio-agent/acp-edit/)。main 已到 `d2a8dc4`（2026-10-22），[未发版改动](https://github.com/QwenAudio/qwen-audio-agent/blob/main/CHANGELOG.md)包括默认前台改为 `qwen-audio-3.1-realtime-plus`、前台 Key 变量改为 `QWEN_AUDIO_REALTIME_API_KEY`（兼容读取旧变量）；按 main 文档操作时变量名与默认模型会与本页和 2.0.1 不同。
 
 ## 1. 项目速览
 
@@ -12,7 +14,7 @@
 | **安装** | `npm install -g qwen-audio-agent`，命令为 `qwenaudio`；需要 Node.js 22.22.2+ 或 24.15.0+ |
 | **三层分工** | 前台 Agent：Realtime 模型 + 提示词 + 工具，负责对话和即时操作；编排运行时：任务状态、授权确认、结果投递时机；后台 Agent：经 ACP、A2A 或自定义 Adapter 接入的执行环境，也可以不接（仅前台模式） |
 | **许可** | Apache-2.0 |
-| **维护** | 2026-07-28 开源（v0.9.0）；2026-09-23 发布 v2.0.0，重构编排运行时、统一客户端协议；2026-09-26 发布 v2.0.1。main 约 810 次提交，GitHub Star 约 2,800 |
+| **维护** | 2026-07-28 开源（v0.9.0）；2026-09-23 发布 v2.0.0，重构编排运行时、统一客户端协议；2026-09-26 发布 v2.0.1。main 约 810 次提交，GitHub Star 约 2,800；2026-10-25 复核：npm 最新仍为 2.0.1，main 最近提交 `d2a8dc4`（2026-10-22），Star 约 3,000 |
 
 「云端 / 本地都能跑」的准确含义：
 
@@ -24,7 +26,7 @@
 
 | 能力 | 项目里的实现 | 要点 / 边界 |
 |---|---|---|
-| **实时对话前台** | 可替换的 Realtime Provider。百炼可选 `qwen-audio-3.0-realtime-plus`（默认）/ `-flash`、`qwen3.5-omni-plus-realtime` / `qwen3.5-omni-flash-realtime`、`qwen3.8-omni-flash-realtime`（需业务空间专属地址）；另有 GPT-Live、Gemini Live、豆包 Seeduplex 3.0、StepAudio 3 和两种本地前台 | 一个 Gateway 同时只用一个前台模型。`qwen-audio-3.1-realtime-plus` 不在 `f6dd0e3` 的模型目录里，填入会被拒绝。看图要选 Omni、Gemini Live 或 MiniCPM-o 前台 |
+| **实时对话前台** | 可替换的 Realtime Provider。百炼可选 `qwen-audio-3.0-realtime-plus`（默认）/ `-flash`、`qwen3.5-omni-plus-realtime` / `qwen3.5-omni-flash-realtime`、`qwen3.8-omni-flash-realtime`（需业务空间专属地址）；另有 GPT-Live、Gemini Live、豆包 Seeduplex 3.0、StepAudio 3 和两种本地前台 | 一个 Gateway 同时只用一个前台模型。`qwen-audio-3.1-realtime-plus` 不在 `f6dd0e3` 与 npm 2.0.1 的模型目录里，填入会被拒绝（main `d2a8dc4` 已改为默认，未发版）。看图要选 Omni、Gemini Live 或 MiniCPM-o 前台 |
 | **后台任务委派** | 前台用 `spawn_thinking` 工具把任务交给后台 Agent；任务与对话轮次解耦，可并行多个任务，可追问进度、取消 | 后台经 ACP 接 Qwen Code、OpenCode、OpenClaw、Qoder、Kimi Code、Codex、Claude Code 等（README 按集成验证程度打星），也可走 A2A 或自定义 Adapter |
 | **判停与打断** | 全双工打断；Qwen Audio 前台固定用 `smart_turn` 语义轮次，Omni 前台用 `semantic_vad` | [百炼文档](https://help.aliyun.com/zh/model-studio/qwen-audio-realtime-user-guides)称 `smart_turn` 下「嗯」「啊」这类附和声不会打断对话；项目不暴露 `server_vad` 手动调参 |
 | **打断不丢任务** | [架构文档](https://qwenaudio.github.io/qwen-audio-agent/zh/architecture/deep-dive)称静音、语音打断、休眠和前台断连都不取消已受理的后台工作；结果在用户说话时等待安全窗口再播报，已开始播放的结果不因打断而反复重播 | 「打断说话」和「取消任务」是两个动作，设备按键语义要分开设计 |
@@ -62,7 +64,7 @@ Gateway（自托管：本机 / 家用电脑 / NAS / 自有服务器，Node.js 22
 
 ## 4. 品类适配
 
-上游已提供的示例：桌面办公、智能座舱、X-Omni 视觉对话、AI Passport、零售与航空客服；具身智能、直播助手为「规划中」（见[项目 README](https://github.com/QwenAudio/qwen-audio-agent) 与[示例索引](https://qwenaudio.github.io/qwen-audio-agent/zh/scenarios/)）。其中独立硬件终端只有 AI Passport（ESP32-C3，半双工）。本仓各品类目前没有基于本项目的 demo，下表是适配判断，不是已落地案例。
+上游已提供的示例：桌面办公、智能座舱、X-Omni 视觉对话、AI Passport、零售与航空客服；具身智能、直播助手为「规划中」（见[项目 README](https://github.com/QwenAudio/qwen-audio-agent) 与[示例索引](https://qwenaudio.github.io/qwen-audio-agent/zh/scenarios/)）。其中独立硬件终端只有 AI Passport（ESP32-C3，半双工）。本仓在 Agent 硬件品类有两个钉 npm 2.0.1 的开发者示例：[Demo C](../by-category/04-agent-hardware/demo/qwen-audio-agent/)（仅前台，说「你好」验证全双工语音回合）和 [Demo D](../by-category/04-agent-hardware/demo/qwen-audio-agent/acp-edit/)（语音委派 ACP 后台改 fixture 文件），均待真 Key 验证；AI Passport 只链上游[示例目录](https://github.com/QwenAudio/qwen-audio-agent/tree/v2.0.1/examples/ai-passport)，本仓不烧录固件。下表是适配判断，不是已落地案例。
 
 | 品类 | 适配度 | 说明 |
 |---|:-:|---|
@@ -99,7 +101,7 @@ Gateway（自托管：本机 / 家用电脑 / NAS / 自有服务器，Node.js 22
 
 ¹ Fun-ASR（3 倍计次）+ 意图识别 + qwen3-tts / qwen-audio-3.0-tts（3 倍）+ qwen3.7-plus 对话（2 倍）：2.25 + 0.8 + 5.1 + 4.4。
 
-单价（元/百万 Token，北京）：`qwen-audio-3.0-realtime-plus` 文本输入 5、音频输入 40、音频输出 150（输出文本不计费）；`qwen-audio-3.0-realtime-flash` 为 1.5 / 6 / 12；`qwen3.8-omni-flash-realtime` 为 1.5 / 6 / 12，另计输出文本 4.5；`qwen3.5-omni-flash-realtime` 为 3.3 / 27 / 107；`qwen3.5-omni-plus-realtime` 为 10 / 80 / 300。`qwen-audio-3.1-realtime-plus` 与 3.0 Plus 同价，但项目暂不支持。Qwen-Audio Realtime 与 `qwen3.8-omni-flash-realtime` 的新加坡地域单价约为北京的 1.1–1.2 倍。
+单价（元/百万 Token，北京）：`qwen-audio-3.0-realtime-plus` 文本输入 5、音频输入 40、音频输出 150（输出文本不计费）；`qwen-audio-3.0-realtime-flash` 为 1.5 / 6 / 12；`qwen3.8-omni-flash-realtime` 为 1.5 / 6 / 12，另计输出文本 4.5；`qwen3.5-omni-flash-realtime` 为 3.3 / 27 / 107；`qwen3.5-omni-plus-realtime` 为 10 / 80 / 300。`qwen-audio-3.1-realtime-plus` 与 3.0 Plus 同价，但 npm 2.0.1 暂不支持（main 已支持，未发版）。Qwen-Audio Realtime 与 `qwen3.8-omni-flash-realtime` 的新加坡地域单价约为北京的 1.1–1.2 倍。
 
 **价格定位**：
 
@@ -154,7 +156,8 @@ qwen-audio-agent 用的仍是千问 Realtime 模型，补的是模型与设备�
 
 ## 7. 能力边界与待核实
 
-- `qwen-audio-3.1-realtime-plus`（2026-09-20 上架）尚未进入项目模型目录。
+- `qwen-audio-3.1-realtime-plus`（2026-09-20 上架）尚未进入 npm 2.0.1 的模型目录；main `d2a8dc4`（2026-10-22）已改为默认前台，待发版（查证 2026-10-25）。
+- 本仓 Demo C / D 尚无真 Key 运行记录：2026-10-25 只验证了安装、`doctor --json`、Gateway 启动和 WebUI 连接，以及占位 Key 下 WebUI 与 `doctor` 报出的 401 失败态；语音回合和后台改文件待实测。
 - 首包音频时延：项目未公布，本仓 benchmark 待补 Qwen-Audio-Realtime 实测。
 - 声音复刻音色、说话人增强：模型支持，项目是否可配待核实。
 - 硬件示例只有 AI Passport 一款，半双工；全双工设备端（回声消除、语音打断）需自行实现。
@@ -173,7 +176,8 @@ qwen-audio-agent 用的仍是千问 Realtime 模型，补的是模型与设备�
 
 ## 9. 开放资源
 
-- [GitHub 仓库](https://github.com/QwenAudio/qwen-audio-agent) · [Releases](https://github.com/QwenAudio/qwen-audio-agent/releases) · [用户手册](https://qwenaudio.github.io/qwen-audio-agent/zh/)
+- [GitHub 仓库](https://github.com/QwenAudio/qwen-audio-agent) · [Releases](https://github.com/QwenAudio/qwen-audio-agent/releases) · [用户手册](https://qwenaudio.github.io/qwen-audio-agent/zh/) · [快速开始](https://qwenaudio.github.io/qwen-audio-agent/zh/getting-started/quickstart) · [后台总览](https://qwenaudio.github.io/qwen-audio-agent/zh/backends/overview)（查证 2026-10-25）
+- 本仓示例（钉 npm 2.0.1）：[Demo C 前台语音回合](../by-category/04-agent-hardware/demo/qwen-audio-agent/) · [Demo D 语音委派后台改文件](../by-category/04-agent-hardware/demo/qwen-audio-agent/acp-edit/)
 - [技术报告 arXiv 2609.25195](https://arxiv.org/abs/2609.25195)
 - [架构深入](https://qwenaudio.github.io/qwen-audio-agent/zh/architecture/deep-dive) · [Gateway 客户端协议](https://qwenaudio.github.io/qwen-audio-agent/zh/gateway-protocol) · [远程连接与配对](https://qwenaudio.github.io/qwen-audio-agent/zh/operations/remote-access)
 - AI Passport：[接入文档](https://qwenaudio.github.io/qwen-audio-agent/zh/scenarios/ai-passport)（含 FoloToy 社区固件分发入口） · [千问语音豆固件源码](https://github.com/liutaocode/esp32demo)（`examples/qwen-voice-bean` 目录）
