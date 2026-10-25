@@ -1,6 +1,8 @@
 import { DataMissing, registry } from './data.js';
 import { renderCategory } from './pages/category.js';
 import { renderHome } from './pages/home.js';
+import { renderLab } from './pages/lab.js';
+import { CAPABILITIES } from './agent-lab.js';
 import { renderMe } from './pages/me.js';
 import { renderSolution } from './pages/solution.js';
 import { renderHardware } from './pages/hardware.js';
@@ -92,9 +94,13 @@ async function route() {
     try {
       const validShape = !parts.length || (['me', 'cost-lab'].includes(page) && parts.length === 1)
         || (page === 'c' && parts.length === 2) || (page === 's' && [2, 3].includes(parts.length))
-        || (page === 'hardware' && parts.length <= 2);
+        || (page === 'hardware' && parts.length <= 2)
+        || (page === 'lab' && parts.length <= 2);
       if (!validShape) {
         setNav('');renderNotFound();
+      } else if (page === 'lab') {
+        if (parts[1] && !CAPABILITIES.some(c => c.id === parts[1])) {setNav('');renderNotFound();}
+        else renderLab(view, parts[1] || '');
       } else if (page === 'me') {
         const reg = await registry().catch(() => null);
         if (!isCurrent()) return;

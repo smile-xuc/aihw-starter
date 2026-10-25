@@ -20,6 +20,8 @@
 | 10 | [🖼️ Qwen-MM-Plugins（开源多模态插件）](./10-qwen-mm-plugins.md) | 🧩 开源插件 | 给 Claude Code / Codex / Qwen Code 等编程 Agent 加读图、看视频、看文档能力；`core` 本地渲染、默认不需云端 Key；`mhs` 硬件接入标准（本仓未验证） | AI 眼镜：[Demo B 本地读 fixture PDF](../by-category/02-ai-glasses/demo/mm-plugins-core/)；IPC 看图可参考 |
 | 11 | [🖥️ Qwen-Live-Harness（Mac 实时音视频 harness）](./11-qwen-live-harness.md) | 🧩 开源 harness · 仅 macOS | Omni Realtime 看屏 / 看摄像头语音对话 + 后台 Harness 委托 + 主动提醒 + 长期记忆 | 仅 macOS 附录案例（Demo E 看屏解说），不进默认试用入口 |
 
+| 12 | [🧪 跨能力实验室与开发路线](./12-agent-capabilities.md) | 🛠️ 交互样本 / 本地工具 | CLI 校验、媒体证据、纯语音任务控制与视觉上下文；各能力另附固定源码路径 | 浏览器无 Key 状态演练；MM core 实际媒体处理无模型调用，与 08–11 的专题 Demo 互补 |
+
 > 千问方案的子形态：[Omni 实时端到端 · Runtime Host 中间层](./01-qwen/omni-realtime/) — Qwen-Omni-Realtime 端到端实时语音 + 自建宿主，适合桌面 / 伴随机器人等对首字延迟和拟人度要求高的高价值单品。可视化架构页：<https://smile-xuc.github.io/aihw-starter/omni-runtime-host.html>
 
 > **与品类维度对齐**：`solutions/by-category/` 下 01–09 现均为完整版（README + 商业 + 方案 + 算账 + 案例 + FAQ + 可跑 demo）。本目录是横切视图，不重复维护品类正文。
@@ -50,6 +52,10 @@
 > 🧪 **Demo 位置**：可运行 benchmark 脚本位于 [`benchmark/`](../benchmark/)，含 3 段测试音频 + SDK/CLI 两套脚本，可完整复现表格中数字。测试机、网络环境、时间点等前置条件写在 [benchmark/README.md](../benchmark/README.md)。
 
 ---
+
+## 新增能力开发路线
+
+[CLI、媒体工具、纯语音 Agent 与视觉 Harness](./12-agent-capabilities.md)：四组能力地图、固定源码、最小本地运行步骤、独立浏览器演练与限制（2026-10-25）。
 
 ## 怎么读
 

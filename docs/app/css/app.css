@@ -710,3 +710,18 @@ a.featured-card:active,a.cat-card:active { transform:scale(.992); }
   .page,.outcome { transform:none;opacity:1; }
   .featured-card:hover .image-preview img { transform:none; }
 }
+
+/* Capability lab shares the app shell; no credentials or provider traffic. */
+.lab-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-block:24px}
+.lab-card{display:flex;flex-direction:column;gap:12px;color:inherit;text-decoration:none}
+.lab-card h2{font-size:22px;line-height:1.4}.lab-card:hover{border-color:var(--accent,#345be8)}
+.lab-flow{padding:16px;border-left:3px solid #345be8;background:#eef2ff;overflow-wrap:anywhere}
+.lab-code{white-space:pre-wrap;overflow-wrap:anywhere;background:#f0f1ed;padding:16px;border-radius:8px}
+.lab-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.lab-actions button{font-size:13px}
+.lab-image{max-width:640px;aspect-ratio:4/3;overflow:hidden;border-radius:12px;margin:16px 0}
+.lab-image img{width:100%;height:100%;object-fit:cover}.lab-image img.zoomed{transform:scale(2)}
+[data-lab-demo] select,[data-lab-demo] textarea{width:100%;min-width:0;font:inherit;padding:12px;border:1px solid #cdd2d4;border-radius:8px;background:white}
+[data-task-log]{padding-left:24px}[data-task-log] li{margin-block:8px}
+@media(max-width:600px){.lab-grid{grid-template-columns:1fr}.lab-actions button{flex:1 1 130px}}
+
+.lab-frame{margin:20px 0}.lab-frame img{display:block;width:100%;height:auto;border-radius:12px}.lab-frame figcaption{font-size:12px;color:#626b61;padding:12px 0;overflow-wrap:anywhere}

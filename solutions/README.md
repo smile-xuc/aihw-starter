@@ -39,7 +39,8 @@ solutions/
 │   ├── 08-qwen-audio-agent.md ← Qwen Audio Agent（开源 harness）
 │   ├── 09-bailian-cli.md  ← 百炼 CLI（开发者工具）
 │   ├── 10-qwen-mm-plugins.md ← Qwen-MM-Plugins（开源多模态插件）
-│   └── 11-qwen-live-harness.md ← Qwen-Live-Harness（开源 harness，仅 macOS）
+│   ├── 11-qwen-live-harness.md ← Qwen-Live-Harness（开源 harness，仅 macOS）
+│   └── 12-agent-capabilities.md ← 跨能力实验室与固定源码开发路径
 ├── demo-standard/         ← 参考 demo 统一标准（品类 × 栈）、模板、CI 自检
 └── benchmark/             ← 方案延迟横评实测
 ```
@@ -56,3 +57,7 @@ solutions/
 - **品牌商 / 方案商**：进入 [`by-category/`](./by-category/) 浏览全品类总览，再选感兴趣的赛道。
 - **开发者 / 架构师**：进入 [`by-solution/`](./by-solution/) 选定模型 / 框架方案，再看跨品类的接入差异。
 - **不确定从哪开始**：直接看根 [`README.md`](../README.md) 的「热门品类」表格速览。
+
+## 能力实验室
+
+[四组 Agent 能力开发路线](./by-solution/12-agent-capabilities.md)：Bailian CLI、Qwen-MM-Plugins、qwen-audio-agent、Qwen-Live-Harness；浏览器样本与真实本地开发路径分别说明。

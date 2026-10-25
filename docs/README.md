@@ -29,6 +29,9 @@ HTML 文件各自内嵌图像、样式和脚本，可以直接离线打开。运
 
 ## 深度阅读
 
+- [`voice-agent-runtime.html`](./voice-agent-runtime.html)：《从语音聊天到语音 Agent：真正缺的是哪一层？》。独立原创长文，以巡检草稿串起三层职责、打断 / 取消、版本 / 授权、异步交付和视觉上下文；含事件交互解释与两条 Demo 路径。
+- [能力实验室](./app/#/lab)：独立的四组能力更新，开发说明见[能力指南](../solutions/by-solution/12-agent-capabilities.md)。
+
 - [`omni-runtime-host.html`](./omni-runtime-host.html)：Qwen-Omni-Realtime + harness 的 AI 硬件多模态实时交互方案。沿用官网样式，提供八章侧边目录、手机折叠目录、章节搜索及交互链路示意；协议说明按官方来源核对，参考骨架的集成范围单独标注。
 - [`kv-cache-quantization.html`](./kv-cache-quantization.html)：TurboQuant 交互式学习页，保留原有内容与交互，通过顶部入口返回首页。
 

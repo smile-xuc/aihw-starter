@@ -79,4 +79,6 @@ bl text chat --model qwen3.7-flash --message "用一句话介绍 AI 硬件" --ou
 
 ---
 
+> 另见[跨能力实验室与固定源码开发路径](./12-agent-capabilities.md#cli)：浏览器演练为无模型交互样本，不替代本文的真实服务 / 平台验收。
+
 > 回到 [方案总览](./README.md) · 切到 [按品类](../by-category/) 视角

@@ -1,5 +1,7 @@
 # Qwen Audio Agent 开源方案（实时语音 harness）
 
+> **阅读范围（2026-10-25）**：下方保留 2026-10-02 的选型与价格快照，并补充 npm 2.0.1 的版本针脚与本仓 Demo。另有[固定源码开发路径与纯语音状态演练](./12-agent-capabilities.md#voice)，针对未发版的 `d2a8dc4`；不要混用两条路径的默认模型、环境变量或协议版本。旧价格与 benchmark 保留原查证日期，未在本轮重新计费实测。
+
 > [qwen-audio-agent](https://github.com/QwenAudio/qwen-audio-agent) 是 QwenAudio 组织以 Apache-2.0 开源的实时语音 Agent 运行框架。[技术报告](https://arxiv.org/abs/2609.25195)（署名 Alibaba Token Foundry, Alibaba Group）称其为 "a harness that combines full-duplex voice interaction with asynchronous task execution"：Realtime 模型在前台持续对话，需要工具、文件或长时间处理的任务异步交给后台 Agent，结果再回到当前对话。默认前台模型是百炼 `qwen-audio-3.0-realtime-plus`。
 >
 > 本页是**可用导读**（跨品类横切），不是官方商业方案，客观中立，不做项目背书。项目信息以 main 分支 `f6dd0e3`（2026-09-28）和 v2.0.1（2026-09-26）为准，价格为北京地域目录价，均查证 2026-10-02。
@@ -65,6 +67,8 @@ Gateway（自托管：本机 / 家用电脑 / NAS / 自有服务器，Node.js 22
 ## 4. 品类适配
 
 上游已提供的示例：桌面办公、智能座舱、X-Omni 视觉对话、AI Passport、零售与航空客服；具身智能、直播助手为「规划中」（见[项目 README](https://github.com/QwenAudio/qwen-audio-agent) 与[示例索引](https://qwenaudio.github.io/qwen-audio-agent/zh/scenarios/)）。其中独立硬件终端只有 AI Passport（ESP32-C3，半双工）。本仓在 Agent 硬件品类有两个钉 npm 2.0.1 的开发者示例：[Demo C](../by-category/04-agent-hardware/demo/qwen-audio-agent/)（仅前台，说「你好」验证全双工语音回合）和 [Demo D](../by-category/04-agent-hardware/demo/qwen-audio-agent/acp-edit/)（语音委派 ACP 后台改 fixture 文件），均待真 Key 验证；AI Passport 只链上游[示例目录](https://github.com/QwenAudio/qwen-audio-agent/tree/v2.0.1/examples/ai-passport)，本仓不烧录固件。下表是适配判断，不是已落地案例。
+
+另有[纯语音状态演练](https://smile-xuc.github.io/aihw-starter/app/#/lab/voice)，可无 Key 检查停播、更新、批准、取消和交付；它不连接真实 Gateway，不替代 Demo C / D 的服务验收。
 
 | 品类 | 适配度 | 说明 |
 |---|:-:|---|
