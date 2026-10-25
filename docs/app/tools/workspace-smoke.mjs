@@ -10,6 +10,8 @@ import {PROJECTS,hardwareTrace} from '../js/projects.js';
 import {CATEGORY_BUSINESS} from '../js/positioning.js';
 
 const here=path.dirname(fileURLToPath(import.meta.url)),docs=path.resolve(here,'../..');
+const cacheName=/const CACHE = '([^']+)'/.exec(await readFile(path.join(docs,'app/sw.js'),'utf8'))?.[1];
+assert.ok(cacheName?.startsWith('aihw-app-'),'Service Worker declares an app cache');
 const temp=await mkdtemp(path.join(os.tmpdir(),'aihw-workspace-'));
 const {chromium}=await import(pathToFileURL(process.env.PLAYWRIGHT_CORE||'playwright-core').href);
 const child=spawn(process.env.PYTHON||'python3',['-u','-m','http.server','0','--bind','127.0.0.1','--directory',docs],{stdio:['ignore','pipe','ignore']});
@@ -132,16 +134,22 @@ try {
   await op.evaluate(async()=>{await (await caches.open('aihw-app-v13')).put('old',new Response('old'));await (await caches.open('other-app-sentinel')).put('sentinel',new Response('keep'));});
   await op.goto(base);await op.waitForSelector('.featured-card');
   await op.evaluate(async()=>{await navigator.serviceWorker.ready;if(!navigator.serviceWorker.controller)await new Promise(resolve=>navigator.serviceWorker.addEventListener('controllerchange',resolve,{once:true}));});
-  const cache=await op.evaluate(async()=>({names:await caches.keys(),urls:(await (await caches.open('aihw-app-v15')).keys()).map(r=>r.url)}));
+  const cache=await op.evaluate(async name=>{
+    const names=await caches.keys();
+    // Do not create an empty cache while trying to inspect a missing one.
+    const urls=names.includes(name)?(await (await caches.open(name)).keys()).map(r=>r.url):[];
+    return {names,urls};
+  },cacheName);
+  assert.deepEqual(cache.names.filter(name=>name.startsWith('aihw-app-')),[cacheName],'activation replaces stale app caches with the declared cache');
   assert.ok(cache.names.includes('other-app-sentinel'));assert.ok(!cache.names.includes('aihw-app-v13'));
-  for(const asset of ['js/realtime-meeting.js','js/live/realtime-asr.js','js/live/microphone.js','js/live/pcm.js','js/live/pcm-worklet.js','js/meeting-evidence.js','js/photo-questions.js','js/photo-results.js','js/meeting-results.js','js/live/audio-channels.js','js/live/file-transcription.js','js/projects.js','js/positioning.js','js/cost.js','js/pages/hardware.js','js/pages/cost-lab.js','data/registry.json'])assert.ok(cache.urls.includes(base+asset),asset+' not precached');
+  for(const asset of ['js/agent-lab.js','js/pages/lab.js','js/realtime-meeting.js','js/live/realtime-asr.js','js/live/microphone.js','js/live/pcm.js','js/live/pcm-worklet.js','js/meeting-evidence.js','js/photo-questions.js','js/photo-results.js','js/meeting-results.js','js/live/audio-channels.js','js/live/file-transcription.js','js/projects.js','js/positioning.js','js/cost.js','js/pages/hardware.js','js/pages/cost-lab.js','data/registry.json'])assert.ok(cache.urls.includes(base+asset),asset+' not precached');
   await offline.setOffline(true);
   for(const [route,selector] of [['c/05-desktop-pet','[data-case="stackchan"]'],['hardware','[data-project-card]'],...PROJECTS.map(p=>['hardware/'+p.id,'[data-budget-form]']),['cost-lab','[data-price-editor]']]){
     await op.goto(base+'#/'+route);await op.reload();await op.waitForSelector(selector);
     assert.doesNotMatch(await op.locator('body').innerText(),/数据暂时不可用/);
   }
   await offline.close();
-  console.log('Workspace smoke OK: '+routes.length*6+' viewport/routes, project classification and filters, budgets, mock exports, accounting, plan, keyboard, dark OS with light palette and actual SW v15 offline.');
+  console.log('Workspace smoke OK: '+routes.length*6+' viewport/routes, project classification and filters, budgets, mock exports, accounting, plan, keyboard, dark OS with light palette and actual declared SW cache offline.');
 } finally {
   await browser?.close();child.kill();
 }

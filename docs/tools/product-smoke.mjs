@@ -7,6 +7,8 @@ import path from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 
 const docs=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const cacheName=/const CACHE = '([^']+)'/.exec(await readFile(path.join(docs,'app/sw.js'),'utf8'))?.[1];
+assert.ok(cacheName?.startsWith('aihw-app-'),'Service Worker declares an app cache');
 const registry=JSON.parse(await readFile(path.join(docs,'app/data/registry.json'),'utf8'));
 const {chromium}=await import(process.env.PLAYWRIGHT_CORE?pathToFileURL(process.env.PLAYWRIGHT_CORE).href:'playwright-core');
 // A server-side failure also reaches Service Worker requests, which Playwright routes cannot intercept.
@@ -199,7 +201,7 @@ try{
     const missing=[];for(const asset of assets)if(!await caches.match(new URL(asset,root).href))missing.push(asset);return missing;
   },{root:app+'data/',assets:[...requiredAssets]});
   assert.deepEqual(absent,[],'Successful cache-all must persist every published trace/input/output asset');
-  assert.ok((await op.evaluate(()=>caches.keys())).includes('aihw-app-v15'));
+  assert.deepEqual((await op.evaluate(()=>caches.keys())).filter(name=>name.startsWith('aihw-app-')),[cacheName],'all replay resources use the active app cache');
   await offline.setOffline(true);
   const featured=['02-ai-glasses.bailian','07-recorder.bailian'];
   const ordered=[...variants.filter(([id,variant])=>featured.includes(id)&&variant==='default'),...variants.filter(([id,variant])=>!featured.includes(id)||variant!=='default')];
@@ -235,5 +237,5 @@ try{
   assert.equal(await cacheAll(pp),'complete','A later retry can finish caching after the network recovers');
   await partial.close();
   assert.deepEqual(errors,[],'Product JavaScript errors');assert.deepEqual(external,[],'No external API calls');
-  console.log('Product smoke OK: '+routes.length*5+' route/viewport return journeys, sticky header, articles, missing/data/no-JS recovery, two preserved setup drafts, first-settings real SW v15 caching of '+requiredAssets.size+' published resources and '+variants.length+' offline replays, offline return/reconnect, failed-cache reporting and retry. No external requests.');
+  console.log('Product smoke OK: '+routes.length*5+' route/viewport return journeys, sticky header, articles, missing/data/no-JS recovery, two preserved setup drafts, first-settings real declared SW cache with '+requiredAssets.size+' published resources and '+variants.length+' offline replays, offline return/reconnect, failed-cache reporting and retry. No external requests.');
 }finally{await browser?.close();child.kill();}

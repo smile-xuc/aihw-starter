@@ -1,5 +1,7 @@
 # Qwen Audio Agent 开源方案（实时语音 harness）
 
+> **版本提示（2026-10-25）**：下方为 2026-10-02 的历史选型与价格快照，不代表当前支持矩阵。当前固定源码已支持 `qwen-audio-3.1-realtime-plus`；产品 2.0.1、health contract 5.10.0 与 GCP wire 7.0.0 分开识别。新的安装步骤、纯语音任务演练和验收见[能力开发指南](./09-agent-capabilities.md#voice)。旧价格与 benchmark 保留原查证日期，未在本轮重新计费实测。
+
 > [qwen-audio-agent](https://github.com/QwenAudio/qwen-audio-agent) 是 QwenAudio 组织以 Apache-2.0 开源的实时语音 Agent 运行框架。[技术报告](https://arxiv.org/abs/2609.25195)（署名 Alibaba Token Foundry, Alibaba Group）称其为 "a harness that combines full-duplex voice interaction with asynchronous task execution"：Realtime 模型在前台持续对话，需要工具、文件或长时间处理的任务异步交给后台 Agent，结果再回到当前对话。默认前台模型是百炼 `qwen-audio-3.0-realtime-plus`。
 >
 > 本页是**可用导读**（跨品类横切），不是官方商业方案，客观中立，不做项目背书。项目信息以 main 分支 `f6dd0e3`（2026-09-28）和 v2.0.1（2026-09-26）为准，价格为北京地域目录价，均查证 2026-10-02。
@@ -62,7 +64,7 @@ Gateway（自托管：本机 / 家用电脑 / NAS / 自有服务器，Node.js 22
 
 ## 4. 品类适配
 
-上游已提供的示例：桌面办公、智能座舱、X-Omni 视觉对话、AI Passport、零售与航空客服；具身智能、直播助手为「规划中」（见[项目 README](https://github.com/QwenAudio/qwen-audio-agent) 与[示例索引](https://qwenaudio.github.io/qwen-audio-agent/zh/scenarios/)）。其中独立硬件终端只有 AI Passport（ESP32-C3，半双工）。本仓各品类目前没有基于本项目的 demo，下表是适配判断，不是已落地案例。
+上游已提供的示例：桌面办公、智能座舱、X-Omni 视觉对话、AI Passport、零售与航空客服；具身智能、直播助手为「规划中」（见[项目 README](https://github.com/QwenAudio/qwen-audio-agent) 与[示例索引](https://qwenaudio.github.io/qwen-audio-agent/zh/scenarios/)）。其中独立硬件终端只有 AI Passport（ESP32-C3，半双工）。本仓新增[纯语音状态演练](https://smile-xuc.github.io/aihw-starter/app/#/lab/voice)，未连接真实 Gateway；下表仍是历史适配判断，不是已落地案例。
 
 | 品类 | 适配度 | 说明 |
 |---|:-:|---|

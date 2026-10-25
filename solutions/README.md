@@ -53,3 +53,7 @@ solutions/
 - **品牌商 / 方案商**：进入 [`by-category/`](./by-category/) 浏览全品类总览，再选感兴趣的赛道。
 - **开发者 / 架构师**：进入 [`by-solution/`](./by-solution/) 选定模型 / 框架方案，再看跨品类的接入差异。
 - **不确定从哪开始**：直接看根 [`README.md`](../README.md) 的「热门品类」表格速览。
+
+## 能力实验室
+
+[四组 Agent 能力开发路线](./by-solution/09-agent-capabilities.md)：Bailian CLI、Qwen-MM-Plugins、qwen-audio-agent、Qwen-Live-Harness；浏览器样本与真实本地开发路径分别说明。
