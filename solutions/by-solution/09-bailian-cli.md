@@ -65,7 +65,8 @@ bl text chat --model qwen3.7-flash --message "用一句话介绍 AI 硬件" --ou
 ## 6. 能力边界与待核实
 
 - **接入地址环境变量**：[安装文档](https://docs.bailian.console.aliyun.com/zh/model-studio/cli/installation)写「接入地址可通过 `BAILIAN_BASE_URL` 覆盖」，但 2.5.1 源码只读取 `DASHSCOPE_BASE_URL`（优先级：`--base-url` > `DASHSCOPE_BASE_URL` > 配置文件 > 默认北京）。本仓 demo 显式传 `--base-url`，两种写法哪个是最终口径待上游确认。
-- **鉴权校验**：`bl auth login --api-key` 会先校验再保存；`DASHSCOPE_API_KEY` 环境变量不校验，`auth status` 显示已鉴权不代表 Key 可用，真跑一次才算数。
+- **鉴权校验**：`bl auth login --api-key` 会先校验再保存；`DASHSCOPE_API_KEY` 环境变量不校验，`auth status` 显示已鉴权不代表 Key 可用，真跑一次才算数（2026-10-25 用无效占位 Key 实测：`auth status` 显示已鉴权，调用返回 HTTP 401）。
+- **思考模式**：`bl text chat` 只有 `--enable-thinking` 开关，不会发送 `enable_thinking=false`；`qwen3.7-flash` 这类混合思考模型按模型默认值决定是否思考，成本以返回的 `usage` 为准。
 - **真 Key 结果**：本仓尚无真实调用记录，首字延迟、单次成本待实测（见 Demo A 的 VERIFY）。
 
 ## 7. 开放资源

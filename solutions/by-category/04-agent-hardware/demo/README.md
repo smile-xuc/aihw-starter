@@ -24,6 +24,19 @@
 
 ## 专题 demo
 
+### [`bailian-cli/`](./bailian-cli/) — 百炼 CLI 安装、鉴权与一次调用冒烟
+
+用官方 `bl` 跑通「`--version` → `auth status` → 一次文本调用（可选一张图）」，产物写到 `out/`。导读见 [09 百炼 CLI](../../../by-solution/09-bailian-cli.md)。
+
+```bash
+cd bailian-cli
+npm i -g bailian-cli@2.5.1
+bash run.sh            # 没有 Key 时停在鉴权，不发请求
+bash run.sh --mock     # 只看 --dry-run 请求体（CI 跑这一档）
+```
+
+需要 Node.js 18.17+；真跑需要 `DASHSCOPE_API_KEY` 或 `bl auth login`。待真 Key 验证。
+
 ### [`intent-router/`](./intent-router/) — 端侧意图分发（离线可跑）
 
 把用户话术分成 `local` / `cloud` / `hybrid`，并演示断网降级话术。
