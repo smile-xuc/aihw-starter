@@ -14,7 +14,7 @@ export function renderLab(view, id='') {
     ${capability?html`<div class="panel"><h2>${capability.name}</h2><p class="lab-flow">${capability.flow}</p><p>${capability.needs}</p><div class="btn-row"><a href="${guide(id)}">本地开发步骤与验收</a><a href="${repoUrl('solutions/by-solution/'+readings[id])}">单项目导读与专题 Demo</a><a href="${capability.source}">固定提交源码</a></div></div><section class="section" data-lab-demo></section>`:html`
     <div class="lab-grid">${CAPABILITIES.map(c=>html`<a class="panel lab-card" href="#/lab/${c.id}"><span class="chip accent">${c.name}</span><h2>${c.title}</h2><p>${c.summary}</p><span>打开演练 →</span></a>`)}</div>
     <section class="panel section"><h2>现有体验，能做到哪一步？</h2><ul><li>图片问答与文件会议纪要：已有浏览器实现；需要自备 Key，云端 CORS 与真实账单尚未验证。</li><li>九品类样本：固定回放；实时语音与部分合成玩法需要本地运行或网关。</li><li>会议实时字幕：已有可选 ASR 网关路径，网关、麦克风和模型权限缺一不可。</li><li>硬件页：参考设计、预算与状态演练；没有整机验收证据。</li></ul><div class="btn-row"><a href="#/s/07-recorder.bailian/default">会议纪要 / 实时字幕</a><a href="#/hardware">硬件参考设计</a><a href="${repoUrl('docs/app/CAPABILITY_AUDIT.md')}">完整审计与本轮修复</a></div></section>`}
-    <section class="panel section"><h2>把原理，也弄明白</h2><a href="../voice-agent-runtime.html">从语音聊天到语音 Agent：真正缺的是哪一层？</a><p>独立长文：为什么停播不是取消，完成之后仍要安排交付。</p></section>
+    <section class="panel section"><h2>把原理，也弄明白</h2><a href="../voice-agent-runtime.html">同一句话，三种厚度：语音硬件后面到底差在哪</a><p>同一句人话走到 L1、L2、L3。改口、旧画面和晚到的播报，写在文末附录。</p></section>
     <p class="footnote">资料复核：2026-10-25 · <a href="${guide('sources')}">版本与来源清单</a></p>`);
   const slot=page.querySelector('[data-lab-demo]');
   if(id==='cli') renderCLI(slot);
