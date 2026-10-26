@@ -228,16 +228,16 @@
 - **形态**：超轻可穿戴 AI 记录模块（Gem），官网写 0.4 oz、最长约 20 小时连续录音、双降噪麦拾音约 16.4 ft（5 m）；四种佩戴：腕带、Apple Watch 共戴表带、挂坠、夹扣；盒内含 Gem + 腕带或 Apple Watch 表带 + 充电座（[产品页](https://memoket.ai/products/memoket-gem)）
 - **定价**：
   - 首发价：待核实
-  - 现价：$169.00 USD · [产品页](https://memoket.ai/products/memoket-gem) · 查证 2026-10-26。官网写 "Limited-Time Offer · 15% OFF"；硬件为一次性购买，附带 Free Starter Plan
-  - MSRP：$199.00 USD（官方常规价 / compare_at）· [产品页](https://memoket.ai/products/memoket-gem) · 查证 2026-10-26
-  - 订阅：Free Starter Plan 每月 300 转写分钟，官网写 "requires no subscription"；Pro $8.33 USD/月（$99.96 USD / 12 个月，不自动续订），每月 1,500 转写分钟；Unlimited $19.99 USD/月（$239.88 USD / 12 个月，不自动续订），Unlimited 转写至每天 24 小时 · [会员页](https://memoket.ai/pages/membership) · 查证 2026-10-26。配件另售：挂坠 / 夹扣 $19.90 USD，Smartwatch Co-wear Band $29.90 USD · [产品页](https://memoket.ai/products/memoket-gem) · 查证 2026-10-26
+  - 现价：$199.00 USD · [产品页](https://memoket.ai/products/memoket-gem) · 查证 2026-10-26。Shopify 产品 JSON 四变体均为 price=19900（$199.00 USD）、compare_at_price=null；页面无 "Limited-Time Offer"；硬件为一次性购买，附带 Free Starter Plan
+  - MSRP：待核实（产品 JSON 无 compare_at；此前促销期曾标 compare_at $199，现价已与之同，不可再作折扣对照）· 查证 2026-10-26
+  - 订阅：Free Starter Plan 每月 300 转写分钟，官网写 "requires no subscription"。年付 SKU（会员页主推折月）：Pro **$99.96 USD / 12 个月**（页写约 $8.33/月，不自动续订），每月 1,500 转写分钟；Unlimited **$239.88 USD / 12 个月**（页写约 $19.99/月，不自动续订），转写至每天 24 小时。月付 SKU（Shopify 产品 JSON，查证 2026-10-26）：Pro Monthly **$17.99 USD/月**（[memoket-app-pro](https://memoket.ai/products/memoket-app-pro)）；Unlimited Monthly **$29.99 USD/月**（[memoket-app-unlimited](https://memoket.ai/products/memoket-app-unlimited)）；年付变体同为 $99.96 / $239.88，均无 compare_at · [会员页](https://memoket.ai/pages/membership) · 查证 2026-10-26。配件另售：挂坠 / 夹扣 $19.90 USD，Smartwatch Co-wear Band $29.90 USD · [产品页](https://memoket.ai/products/memoket-gem) · 查证 2026-10-26
 - **目标市场**：个人与职场对话记录；产品页对照「可与 Apple Watch 共戴」的笔记场景
 - **AI 能力**：
   - AI 功能：把录下的对话做成摘要、行动项与跨对话上下文；可跨多天、多工作流的录音提问（产品页写 Cross-Conversation Memory，例："What did we decide with that client last week?"）；每次录音后给出 Brief / Summary / One Pager；可把行动项同步到 Google Calendar；可对接 ChatGPT、Claude、Notion、Slack 等。实现方式：设备端双麦录音，转写与摘要在云端完成——会员页写 "Encrypted Cloud Processing"，首页写录音与摘要存于 AWS；ASR 为 Memoket 自研（会员页 "Powered by Memoket’s proprietary ASR technology"）；会员页写可按套餐使用 GPT、Claude、Gemini 系列模型，具体型号未公开（[产品页](https://memoket.ai/products/memoket-gem) · [会员页](https://memoket.ai/pages/membership) · [官网首页](https://memoket.ai/)，查证 2026-10-26）
 - **大模型方案**：会员页写可访问 GPT、Claude、Gemini 系列，按套餐提供；未写具体型号（非千问默认绑定）
 - **公开数据**：未见公开销量；首页写 App Store 评分 4.9/5（标注 US store ratings · Oct 12, 2026）
 - **关键差异化**：① 跨对话记忆（不只单次摘要）；② 硬件一次性购买 + 免费 Starter 300 分钟/月；③ 四种佩戴含 Apple Watch 共戴
-- **商业模式**：硬件销售（$169）+ 可选 Pro / Unlimited 会员
+- **商业模式**：硬件销售（$199）+ 可选 Pro / Unlimited 会员
 
 > 来源：[Memoket 官网](https://memoket.ai/) · [Memoket Gem 产品页](https://memoket.ai/products/memoket-gem) · [Membership](https://memoket.ai/pages/membership) · [Product Description](https://memoket.ai/pages/product-description)（均查证 2026-10-26）
 
@@ -250,7 +250,7 @@
 
 - [x] **Limitless Pendant**：历史公开约 $99；Meta 收购后官网称停止向新客户销售——可作隐私与停售案例，已收入上方卡片。补卡片时请附 [limitless.ai](https://www.limitless.ai/) 说明
 - [x] ~~**Bee**~~：Bee Frontier 已收入上方卡片（官网 $74.99，查证 2026-10-21）；前代 Pioneer 已换代
-- [x] ~~**Memoket Gem**~~：已收入上方卡片（官网 $169.00 USD，查证 2026-10-26）；其它可穿戴笔记设备仍须附官网定价
+- [x] ~~**Memoket Gem**~~：已收入上方卡片（官网 $199.00 USD，查证 2026-10-26）；其它可穿戴笔记设备仍须附官网定价
 
 ### 软件参考（非硬件，但对标订阅）
 
