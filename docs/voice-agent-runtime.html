@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
+<script>document.documentElement.classList.add("js")</script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light"><meta name="theme-color" content="#fafaf8">
 <meta name="description" content="周五晚上同一句话：调灯、看牙还缺啥、打一张奖状。听 L1、L2、L3 分别怎么接，以及机器背后实际跑了什么。">
@@ -25,12 +26,46 @@ th{font-weight:650;color:var(--ink)}
 .layers-link{font-size:15px}
 .appendix-note{font-size:15px;color:var(--muted)}
 @media(max-width:480px){.article h3{font-size:17px}table{font-size:14px;min-width:32em}th,td{padding-right:10px}}
+html{scroll-behavior:smooth}
+#progress{position:fixed;top:0;left:0;height:4px;width:0%;z-index:99;pointer-events:none;background:linear-gradient(90deg,var(--blue),#7d97f2)}
+.toc a{padding:6px 8px;margin:0 -8px;border-radius:8px;transition:color .18s,background .18s}
+.toc a:hover{color:var(--ink);background:#eef1ea}
+.toc a.on{color:var(--blue);font-weight:700;background:#e8edfc}
+.roadmap{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 0;max-width:760px}
+.roadmap a{font-size:13px;line-height:1.4;text-decoration:none;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 12px;transition:transform .18s,border-color .18s,color .18s}
+.roadmap a:hover{transform:translateY(-2px);color:var(--blue);border-color:#b7c4f6}
+.roadmap a b{color:var(--blue);font-weight:750;margin-right:4px}
+.stepper{position:sticky;top:4px;z-index:4;background:var(--paper);padding:8px 0 10px;margin:0 0 8px}
+.step-pills{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+.step-pill{font:inherit;font-size:13px;font-weight:650;line-height:1.4;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;transition:transform .18s,border-color .18s,background .18s,color .18s}
+.step-pill:hover{transform:translateY(-1px);border-color:#b7c4f6;color:var(--ink)}
+.step-pill.done{color:var(--blue);border-color:#c5d0f8;background:#f4f6fd}
+.step-pill.cur{border-color:transparent;color:#fff;background:var(--blue)}
+.step-nav{display:flex;flex-wrap:wrap;gap:8px}
+button.btn{font:inherit;font-size:14px;font-weight:650;line-height:1.4;padding:8px 16px;border-radius:10px;border:none;background:var(--blue);color:#fff;cursor:pointer;transition:transform .18s,background .18s,opacity .18s}
+button.btn:hover{transform:translateY(-1px)}
+button.btn.ghost{background:#fff;color:var(--blue);border:1px solid #c5d0f8}
+button.btn.ghost:hover{background:#f4f6fd}
+button.btn:disabled{opacity:.4;cursor:default;transform:none}
+button.btn:focus-visible,.step-pill:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
+.say{display:flex;gap:12px;align-items:flex-start;background:#eef2ff;border:1px solid #d5def8;border-radius:12px;padding:12px 16px;margin:0 0 22px;font-size:15px;line-height:1.75}
+.say .stag{flex:0 0 auto;font-size:12px;font-weight:750;color:#fff;background:var(--blue);border-radius:999px;padding:2px 10px;margin-top:3px;letter-spacing:.06em;white-space:nowrap}
+.say b{color:var(--blue)}
+.layer-panel{min-width:0;max-width:100%}
+html.js .layer-panel:not(.is-on){height:0;overflow:hidden;margin:0;max-width:100%;min-width:0;contain:inline-size}
+#l1,#l2,#l3{scroll-margin-top:112px}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .roadmap a,.toc a,.step-pill,button.btn{transition:none}
+  .roadmap a:hover,.step-pill:hover,button.btn:hover{transform:none}
+}
 </style>
 </head>
 <body>
 <a class="skip" href="#article">跳到正文</a>
+<div id="progress" aria-hidden="true"></div>
 <header class="top"><div class="wrap"><a class="brand" href="index.html">AIHW Starter</a><nav aria-label="主导航"><a href="index.html#deep-title">原理阅读</a><a href="app/#/lab">能力实验室</a><a href="https://github.com/smile-xuc/aihw-starter">GitHub</a></nav></div></header>
-<div class="hero"><div class="wrap"><p class="eyebrow">原理阅读 · 2026-10-26</p><h1>同一句话，三种厚度：<br>语音硬件后面到底差在哪</h1><p class="lead">同一句人话，三种方案。你听到的后半段不一样，机器背后跑的也不一样。</p></div></div>
+<div class="hero"><div class="wrap"><p class="eyebrow">原理阅读 · 2026-10-26</p><h1>同一句话，三种厚度：<br>语音硬件后面到底差在哪</h1><p class="lead">同一句人话，三种方案。你听到的后半段不一样，机器背后跑的也不一样。</p><nav class="roadmap" aria-label="读法地图"><a href="#scene"><b>场景</b>周五晚上</a><a href="#l1"><b>L1</b>听见并分发</a><a href="#l2"><b>L2</b>把事办完</a><a href="#l3"><b>L3</b>生成再落地</a><a href="#compare"><b>表</b>对照</a><a href="#read"><b>问</b>读案例</a><a href="#l2-deep"><b>附录</b>L2 深挖</a></nav></div></div>
 <div class="wrap layout">
 <aside class="toc"><details open><summary>本文内容</summary><nav aria-label="文章目录"><a href="#scene">周五晚上那句话</a><a href="#l1">L1 · 听见并分发</a><a href="#l2">L2 · 把事办完</a><a href="#l3">L3 · 生成再落地</a><a href="#compare">对照一张表</a><a href="#read">读案例三问</a><a href="#l2-deep">L2 深挖附录</a><a href="#state">改口</a><a href="#visual">旧画面</a><a href="#delivery">晚一点播报</a><a href="#sources">开发者说明与来源</a></nav></details></aside>
 <main class="article" id="article">
@@ -42,8 +77,15 @@ th{font-weight:650;color:var(--ink)}
 <blockquote>客厅灯调暗一点。明天带她去看牙，帮我看看还缺啥；再给她打一张小奖状，说她今天很勇敢。</blockquote>
 <p>下面不是产品说明书，是三种常见方案<strong>同一句人话</strong>时，你会听到什么、机器背后实际跑了什么。</p>
 </section>
+<div class="layers">
+<div class="stepper" id="layerStepper">
+<div class="step-pills" role="tablist" aria-label="在 L1、L2、L3 之间切换"><button type="button" class="step-pill cur" id="pill-l1" role="tab" aria-selected="true" aria-controls="panel-l1" data-layer="l1">L1 · 听见并分发</button><button type="button" class="step-pill" id="pill-l2" role="tab" aria-selected="false" aria-controls="panel-l2" data-layer="l2">L2 · 把事办完</button><button type="button" class="step-pill" id="pill-l3" role="tab" aria-selected="false" aria-controls="panel-l3" data-layer="l3">L3 · 生成再落地</button></div>
+<div class="step-nav"><button type="button" class="btn ghost" id="prevLayer" disabled>上一层</button><button type="button" class="btn" id="nextLayer">下一层</button></div>
+</div>
 <section id="l1">
 <h2>L1 · 只有「听见 + 分发」，没有复杂 harness</h2>
+<div class="say"><span class="stag">讲人话</span><span>只有「听见 + 分发」，没有复杂 harness。没有多步规划；贵的是<b>听得懂、控得住</b>。智能音箱 / 简单物联多半停在这一层。</span></div>
+<div class="layer-panel is-on" id="panel-l1" role="tabpanel" aria-labelledby="pill-l1">
 <h3>你听到的对话</h3>
 <ul class="dialogue">
 <li><strong>你</strong>：客厅灯调暗一点。明天带她去看牙，帮我看看还缺啥；再给她打一张小奖状，说她今天很勇敢。</li>
@@ -59,11 +101,14 @@ th{font-weight:650;color:var(--ink)}
       ├─ qa.calendar("明天看牙")                         ✅ 读日程，口头答一句
       ├─ intent: 生成奖状 + 打印                         ❌ 无工具 / 无 harness
       └─ 可选：push「去 App 完成」                        （把事甩回给你）</code></pre>
+</div>
 <p>没有多步规划，没有「先查缺什么再生成再送打」。贵的是<strong>听得懂、控得住</strong>；常见授权大约 <strong>1～10 元/台/年</strong>，市场上也有 <strong>&lt;5 元/设备终身</strong>。智能音箱、简单物联、基础语音遥控，多半停在这一层。</p>
 </section>
 <section id="l2">
 <h2>L2 · 语音当界面，后面有 harness 把事办完</h2>
+<div class="say"><span class="stag">讲人话</span><span>同一句。灯还是要调，但「看牙还缺啥」不再只是问答——语音当界面，后面有 harness 把事办完。相对 L1，贵在<b>能办事</b>，不在<b>能听见</b>。</span></div>
 <p>同一句。灯还是要调，但「看牙还缺啥」不再只是问答。</p>
+<div class="layer-panel" id="panel-l2" role="tabpanel" aria-labelledby="pill-l2">
 <h3>你听到的对话</h3>
 <ul class="dialogue">
 <li><strong>你</strong>：客厅灯调暗一点。明天带她去看牙，帮我看看还缺啥；再给她打一张小奖状，说她今天很勇敢。</li>
@@ -84,12 +129,15 @@ th{font-weight:650;color:var(--ink)}
             → 等你口头确认
             → notes.save(清单)                     ✅ 真正落盘
             → 奖状：无 image.gen / 无 printer      → 诚实降级</code></pre>
+</div>
 <p>前台可以说「我先列清单」；<strong>后台</strong>才是 Qwen Live Harness、DeepSeek Harness、千问办公、WorkBuddy 这类在跑。相对 L1，贵在<strong>能办事</strong>，不在<strong>能听见</strong>。</p>
 <p>插一句现有科普里强调过的坑：你如果中途改口「别写入了」，L2 必须能<strong>取消或改版本</strong>那次 <code>notes.save</code>，不能只把耳机里的话换掉——那是编排层的事，不是又回一句「好的」就够。改口怎么收、画面会不会过期、结果要不要马上念，放在文末 <a href="#state">改口</a>、<a href="#visual">旧画面</a>和<a href="#delivery">晚一点播报</a>。</p>
 </section>
 <section id="l3">
 <h2>L3 · 还是语音入口，再叠生成，接到外设</h2>
+<div class="say"><span class="stag">讲人话</span><span>还是语音入口，再叠生成，接到外设——<b>奖状不再被挡在门外</b>。儿童打印机「一句话生图并打印」是典型 L3；可叠薄中控，也可与 L2 harness 同在。</span></div>
 <p>奖状不再被挡在门外。</p>
+<div class="layer-panel" id="panel-l3" role="tabpanel" aria-labelledby="pill-l3">
 <h3>你听到的对话</h3>
 <ul class="dialogue">
 <li><strong>你</strong>：客厅灯调暗一点。明天带她去看牙，帮我看看还缺啥；再给她打一张小奖状，说她今天很勇敢。</li>
@@ -110,8 +158,10 @@ th{font-weight:650;color:var(--ink)}
             → 等你接受（「打印吧」= 批准）
             → printer.job(儿童打印机)            ✅ 物理闭环
             → notes.save                         ⏸ 你说了先别写</code></pre>
+</div>
 <p>儿童打印机「一句话生图并打印」，就是典型 L3。它可以叠在很薄的中控上（几乎只做生成+外设），也可以和 L2 的 harness <strong>同在</strong>：先办事，再生成，再落地。</p>
 </section>
+</div>
 <section id="compare">
 <h2>对照一张表</h2>
 <div class="table-wrap">
@@ -201,4 +251,74 @@ th{font-weight:650;color:var(--ink)}
 <p class="meta"><a href="https://github.com/smile-xuc/aihw-starter/blob/master/README.md#ai-硬件方案分层">返回 AI 硬件方案分层</a> · <a href="omni-runtime-host.html">继续阅读：多模态 Runtime Host</a> · <a href="index.html#deep-title">返回原理阅读</a></p>
 </main></div>
 <footer><div class="wrap">AIHW Starter · <a href="app/#/lab">能力实验室</a></div></footer>
+<script>
+(function(){
+  "use strict";
+  var prog=document.getElementById("progress");
+  var tocLinks=document.querySelectorAll(".toc nav a");
+  var secs=[];
+  tocLinks.forEach(function(a){
+    var el=document.querySelector(a.getAttribute("href"));
+    if(el) secs.push({el:el,a:a});
+  });
+  function spy(){
+    var y=window.scrollY+140, cur=null, i;
+    for(i=0;i<secs.length;i++){ if(secs[i].el.offsetTop<=y) cur=secs[i]; }
+    tocLinks.forEach(function(a){ a.classList.remove("on"); });
+    if(cur) cur.a.classList.add("on");
+  }
+  function onScroll(){
+    var h=document.documentElement;
+    var max=h.scrollHeight-h.clientHeight;
+    prog.style.width=(max>0?h.scrollTop/max*100:0)+"%";
+    spy();
+  }
+  window.addEventListener("scroll",onScroll,{passive:true});
+  spy();
+
+  var order=["l1","l2","l3"];
+  var panels={}, pills={};
+  order.forEach(function(id){
+    panels[id]=document.getElementById("panel-"+id);
+    pills[id]=document.getElementById("pill-"+id);
+  });
+  var prevBtn=document.getElementById("prevLayer");
+  var nextBtn=document.getElementById("nextLayer");
+  var current="l1";
+  function reduced(){ return window.matchMedia("(prefers-reduced-motion: reduce)").matches; }
+  function showLayer(id,scroll){
+    var idx=order.indexOf(id);
+    if(idx<0) return;
+    current=id;
+    order.forEach(function(key,i){
+      var on=key===id;
+      panels[key].classList.toggle("is-on",on);
+      if(on) panels[key].removeAttribute("inert");
+      else panels[key].setAttribute("inert","");
+      pills[key].classList.toggle("cur",on);
+      pills[key].classList.toggle("done",i<idx);
+      pills[key].setAttribute("aria-selected",on?"true":"false");
+    });
+    prevBtn.disabled=idx===0;
+    nextBtn.disabled=idx===order.length-1;
+    if(scroll){
+      var dest=document.getElementById(id);
+      if(dest&&dest.scrollIntoView) dest.scrollIntoView({behavior:reduced()?"auto":"smooth",block:"start"});
+    }
+  }
+  order.forEach(function(id){
+    pills[id].addEventListener("click",function(){ showLayer(id,true); });
+  });
+  prevBtn.addEventListener("click",function(){ var i=order.indexOf(current); if(i>0) showLayer(order[i-1],true); });
+  nextBtn.addEventListener("click",function(){ var i=order.indexOf(current); if(i<order.length-1) showLayer(order[i+1],true); });
+  function fromHash(){
+    var id=(location.hash||"").replace("#","");
+    if(order.indexOf(id)>=0) showLayer(id,false);
+  }
+  window.addEventListener("hashchange",fromHash);
+  fromHash();
+  if(order.indexOf((location.hash||"").replace("#",""))<0) showLayer("l1",false);
+  onScroll();
+})();
+</script>
 </body></html>
