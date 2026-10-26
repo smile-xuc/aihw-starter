@@ -8,21 +8,23 @@
 
 ### LOOI Robot（TangibleFuture）
 
-- **上市状态**：在售（官网有现价，查证 2026-09-30）
-- **官网/渠道**：<https://www.kickstarter.com/projects/tangiblefuture/looi-robot-turn-your-smartphone-into-a-desktop-robot>；<https://looirobot.com/products/looi-robot>
+- **上市状态**：在售（官网有现价，查证 2026-10-26）
+- **官网/渠道**：<https://looirobot.com/products/looi-robot>；Kickstarter 众筹页 <https://www.kickstarter.com/projects/tangiblefuture/looi-robot-turn-your-smartphone-into-a-desktop-robot>
 - **形态**：充电头/底座机器人，复用手机屏幕与算力作表情与视觉
 - **定价**：
-  - 首发价：众筹早鸟 $119 USD
-  - 现价：LOOI Solo $239 USD；LOOI Twins $468 USD · [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-09-30。LOOI Mix Duo（黑白各一台）$468.00 USD · [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-10-13。国内价与日本 Makuake 价待核实
-  - MSRP：LOOI Solo $259.00 USD（官方常规价）；LOOI Twins $518.00 USD（官方常规价）· [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-10-06。LOOI Mix Duo $518.00 USD（官方常规价）· [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-10-13
+  - 首发价：众筹早鸟 $119 USD · [Hackster 报道](https://www.hackster.io/news/tangiblefuture-s-looi-turns-smartphones-into-ambulatory-companion-robots-with-chatgpt-support-fddc772c62b2)（原文 "physical rewards staring at $119 for early bird backers"）· 查证 2026-10-26。Kickstarter 页本机 curl 为 403，早鸟价以 Hackster 可引用原文为准
+  - 现价：LOOI Solo $220.00 USD；LOOI Twins $430.00 USD；LOOI Mix Duo（黑白各一台）$430.00 USD · [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-10-26。国内价与日本 Makuake 价待核实
+  - MSRP：LOOI Solo $259.00 USD（官方常规价）；LOOI Twins $518.00 USD（官方常规价）；LOOI Mix Duo $518.00 USD（官方常规价）· [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-10-26
 - **目标市场**：工位 / 桌面潮玩；轻硬件软件定义体验
-- **AI 能力**：App 集成 LLM / GPT 向对话；2026 更新提到 Live Agent 更低延迟多模态表达
-- **大模型方案**：待核实
+- **AI 能力**：
+  - AI 功能：用手机屏做表情与视觉，语音与 ChatGPT / Gemini 对话，并带仿生行为与个性互动；官方商店描述原文 "ChatGPT and Gemini Integrated | Biomimetic Behavior System | AI with Personality"。实现方式：手机提供屏、摄像头与算力，底座负责移动与传感；对话模型运行位置与具体型号未公开（[LOOI 商店](https://looirobot.com/products/looi-robot)，查证 2026-10-26）
+  - 旧卡所写「Live Agent 更低延迟多模态表达」：当前商店页未检出 "Live Agent" 字样 → 待核实
+- **大模型方案**：官方商店描述写 ChatGPT 与 Gemini；未写具体型号（非千问默认绑定）
 - **公开数据**：待核实
 - **关键差异化**：① 极致降 BOM（手机当脸）；② 动作+表情+语音一体；③ 海外先发、中文能力后补
 - **商业模式**：硬件销售；基础对话公开口径多为买断可用（会员政策下单前再确认）
 
-> 来源：[LOOI 官网商店](https://looirobot.com/products/looi-robot) · [服务条款](https://looirobot.com/policies/terms-of-service) · [Kickstarter](https://www.kickstarter.com/projects/tangiblefuture/looi-robot-turn-your-smartphone-into-a-desktop-robot) · [Hackster · 早鸟 US$119](https://www.hackster.io/news/tangiblefuture-s-looi-turns-smartphones-into-ambulatory-companion-robots-with-chatgpt-support-fddc772c62b2) · [什么值得买评述](https://post.smzdm.com/p/agg4rpx3/) · [Google Play · LOOI](https://play.google.com/store/apps/details?id=com.TangibleFuture.looiRobot)（查证 2026-09-30）
+> 来源：[LOOI 官网商店](https://looirobot.com/products/looi-robot) · [服务条款](https://looirobot.com/policies/terms-of-service) · [Kickstarter](https://www.kickstarter.com/projects/tangiblefuture/looi-robot-turn-your-smartphone-into-a-desktop-robot) · [Hackster · 早鸟 US$119](https://www.hackster.io/news/tangiblefuture-s-looi-turns-smartphones-into-ambulatory-companion-robots-with-chatgpt-support-fddc772c62b2) · [什么值得买评述](https://post.smzdm.com/p/agg4rpx3/) · [Google Play · LOOI](https://play.google.com/store/apps/details?id=com.TangibleFuture.looiRobot)（查证 2026-10-26）
 
 ---
 
