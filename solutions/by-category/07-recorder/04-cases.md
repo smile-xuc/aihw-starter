@@ -32,6 +32,7 @@
 |---|---|---|---|---|---|
 | **Plaud Note** | Plaud | 超薄卡片录音 | 多模型摘要（官网列 GPT / Gemini / Claude 等） | 双模式录音 + 转写 + 模板摘要 | [$159](https://www.plaud.ai/products/plaud-note-ai-voice-recorder)（含 300 min/mo） |
 | **Plaud Note Pro** | Plaud | 卡片旗舰 | 同上 + 更强硬件规格（以官网为准） | 同生态，更高硬件档 | 首发价 US$179（2025-08）→ 现价 [US$189](https://www.plaud.ai/products/plaud-note-pro)（查证 2026-09-30） |
+| **Plaud NotePin** | Plaud | 别针可穿戴（盒内磁吸别针 + 夹子；变体 S 另含项链与腕带） | Plaud Intelligence；套餐 FAQ 列 GPT-5、Gemini 3 Pro、Claude Sonnet 等 | 现场录音 + 112 语转写 + 模板摘要 + Ask Plaud；不支持通话录音 | [$159](https://www.plaud.ai/products/plaud-notepin)（含 300 min/mo；查证 2026-10-28）。变体 NotePin S [$179](https://www.plaud.ai/products/plaud-notepin-s) |
 | **Notta Memo** | Notta | 口袋卡片 + 磁吸 | Notta App AI 转写 / 摘要 / 翻译 | 4 MEMS + 骨传导，58 语种 | 套装 [$152.39](https://shop.notta.ai/en-us/products/notta-memo)（查证 2026-09-30） |
 | **讯飞 SR502 星火版** | 科大讯飞 | 带屏录音笔 | 讯飞星火 / 听见转写 | 离线转写、OCR、会议向 | [¥2499 官网标价](https://www.iflytekrecord.com/Goods_parms/1/511.html) |
 | **HiDock H1 Lite** | HiDock | USB-C 桌面扬声器电话 | HiNotes；产品页列 GPT-5.4 / Claude 4.6 / Gemini 3.1 Pro | BlueCatch 双端录音，无会议 bot；Call / Room | [官网 $189](https://www.hidock.com/products/hidock-h1-lite)；[Amazon $189.99](https://www.amazon.com/HiDock-Conference-Speakerphone-Noise-Canceling-Transcription/dp/B0GZ3GZ3DT) |
@@ -49,15 +50,15 @@
            │                                  │
    ┌───────┼───────┐                  ┌───────┼───────┐
    │       │       │                  │       │       │
- Plaud  Notta   Limitless*         讯飞笔  会议盒子  听悟/钉钉
- Note   Memo    Pendant / Bee / HiDock  │       │       │
+ Plaud  Notta   NotePin*           讯飞笔  会议盒子  听悟/钉钉
+ Note   Memo    Limitless* / Bee / HiDock │       │       │
    │       │       │                  └───┬───┘       │
    └───┬───┘       │                      ▼           ▼
        ▼           ▼                 专业采集      软件吃硬件
   硬件+订阅    可穿戴探索*
 ```
 
-\*Limitless Pendant：公开信息称 2025-12 起不再向新用户销售，作历史对标。Bee Frontier（前代 Pioneer 已换代）为仍在官网在售的可穿戴对照（$74.99，Bee Pro $11.99/月或 $99.99/年），见 [商业产品卡][rec]。
+\*NotePin：Plaud 别针可穿戴，官网在售 $159.00（盒内磁吸别针与夹子；变体 NotePin S $179.00，查证 2026-10-28），软件仍走 Plaud Intelligence 会员，见 [商业产品卡][rec]。Limitless Pendant：公开信息称 2025-12 起不再向新用户销售，作历史对标。Bee Frontier（前代 Pioneer 已换代）为仍在官网在售的可穿戴对照（$74.99，Bee Pro $11.99/月或 $99.99/年），见 [商业产品卡][rec]。
 
 ---
 
@@ -65,8 +66,8 @@
 
 ### 案例：Plaud Note / Note Pro（Plaud）— 卡片机 + 订阅标杆
 
-- **公开信息源**：[Note](https://www.plaud.ai/products/plaud-note-ai-voice-recorder) · [Note Pro](https://www.plaud.ai/products/plaud-note-pro) · [套餐定价](https://www.plaud.ai/pages/plaud-ai-plan-pricing)
-- **亮点**：硬件 Note US$159 / Note Pro 首发价 US$179（2025-08）→ 现价 US$189（查证 2026-09-30）；设备含 Starter 300 min/mo；Pro ~$8.33/mo 年付（1200 min）、Unlimited ~$19.99/mo 年付
+- **公开信息源**：[Note](https://www.plaud.ai/products/plaud-note-ai-voice-recorder) · [Note Pro](https://www.plaud.ai/products/plaud-note-pro) · [NotePin](https://www.plaud.ai/products/plaud-notepin) · [NotePin S](https://www.plaud.ai/products/plaud-notepin-s) · [套餐定价](https://www.plaud.ai/pages/plaud-ai-plan-pricing)
+- **亮点**：硬件 Note US$159 / Note Pro 首发价 US$179（2025-08）→ 现价 US$189（查证 2026-09-30）；可穿戴别针 NotePin 现价 $159.00，变体 NotePin S $179.00（查证 2026-10-28）；设备含 Starter 300 min/mo；Pro 年付折月 $8.33（$99.99/年，1,200 min）、Unlimited 年付折月 $20.00（$239.99/年）（套餐页查证 2026-10-28）
 - **可借鉴点**：「先送时长养习惯 → 再升级套餐」；摘要模板与 Ask / 工作流是续费锚点，而不只是转写
 - **另见**：[Plaud 商业产品卡][rec]
 
@@ -143,7 +144,7 @@
 [rec]: ../../../awesome/commercial-products/by-category/07-recorder.md
 
 **版本**：千问大模型方案
-**更新日期**：2026-09
+**更新日期**：2026-10
 
 <!-- FOOTER:START -->
 
