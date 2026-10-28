@@ -241,16 +241,38 @@
 
 > 来源：[Memoket 官网](https://memoket.ai/) · [Memoket Gem 产品页](https://memoket.ai/products/memoket-gem) · [Membership](https://memoket.ai/pages/membership) · [Product Description](https://memoket.ai/pages/product-description)（均查证 2026-10-26）
 
+### Omi（Based Hardware Inc.）
+
+- **上市状态**：在售（商店产品 JSON 的 Silver 变体 available 为 true；产品介绍页写 "Ships in 1 to 4 business days"，查证 2026-10-28）
+- **官网/渠道**：<https://www.omi.me/pages/product>；商店 <https://www.omi.me/products/omi>；定价 <https://www.omi.me/pages/pricing>
+- **形态**：项链挂坠式记忆可穿戴，双麦克风。产品介绍页写戴在附赠链上或放在桌面，与 App 配对后采集对话；规格为麦克风 2 颗、蓝牙 + Wi-Fi、尺寸 "2.5 cm x 1.5 cm"、续航 "10-14 hours"，系统为 iOS 15+、Android 7+、Mac 与网页。商店描述盒内含设备、充电器、硅胶套和金属链（定价页包装清单写 silicone case、neck lanyard、USB-C magnetic charging cable 与 quick start guide）。页面不一致：入门文档把续航写成 "24 hours to a few days, depending on device"；卡片取在售产品介绍页的 10–14 小时（[产品介绍页](https://www.omi.me/pages/product) · [商店页](https://www.omi.me/products/omi) · [入门文档](https://docs.omi.me/doc/get_started/introduction)，查证 2026-10-28）
+- **定价**：
+  - 首发价：待核实
+  - 现价：$169 USD · [产品介绍页](https://www.omi.me/pages/product) · [定价页](https://www.omi.me/pages/pricing) · 查证 2026-10-28。介绍页写限时价 $169、划线 $229、"You save $60"；FAQ 原文 "Omi is $169 right now (normally $229)"。定价页原文 "A $60 discount is applied automatically at checkout, so you pay $169."。页面不一致：商店 [产品 JSON](https://www.omi.me/products/omi.json) 的 Silver 变体 price 与 compare_at_price 均为 $229.00 USD（available 为 true），$60 折扣不在变体标价内；卡片现价取介绍页与定价页写出的结账价
+  - MSRP：$229 USD · [商店页](https://www.omi.me/products/omi) · [定价页](https://www.omi.me/pages/pricing) · 查证 2026-10-28。商店页 "Regular price $229.00 USD"；定价页设备表标价 $229
+  - 订阅：免费档随设备。定价页写 "Unlimited on-phone transcription plus 300 cloud minutes every month. No subscription needed to get started."。Pro：页面不一致，定价页写 "$269 per year"，介绍页 FAQ 写 "$29.99 a month or $269.91 a year" · [定价页](https://www.omi.me/pages/pricing) · [产品介绍页](https://www.omi.me/pages/product) · 查证 2026-10-28
+- **目标市场**：个人与职场中的当面交谈、会议和课堂。定价页写订单全球发货，运费在结账时计算；产品介绍页写 1 至 4 个工作日发出
+- **AI 能力**：
+  - AI 功能：把对话和会议做成可检索转写、摘要、行动项和记忆，并可搜索、提问、分享或导出（商店页 "searchable transcripts, summaries, action items, and memories"）。产品介绍页写 25+ 语言，Speech Profiles 区分说话人。实现方式：双麦采集后转写，再由云端写出标题、摘要、行动项、记忆和对话。可在线转写，也可离线录下后再同步（介绍页 FAQ 原文 "Omi can record offline and sync later"）；离线录音上传后由 Omi 转写。开发文档写托管实时转写的正常服务默认顺序为 `modulate-velma-2,soniox,parakeet`。文档写 Mac 的 Bring Your Own Keys 与手机端自定义转写都不会让托管 Omi 变成全本地：摘要、标题、记忆和对话仍由 Omi 服务器生成；转写、摘要和存储都放到自有基础设施上时，需自托管后端。开源仓库 `backend/utils/llm/model_constants.py` 将 `LUNA_MODEL` 定为 `gpt-6-luna`。商店描述写 "Run locally (go cloud-free if you prefer)"，与上述文档范围不一致：BYOK 或自定义转写不等于全本地（[转录文档](https://docs.omi.me/doc/developer/backend/transcription) · [BYOK 与自定义转写](https://docs.omi.me/doc/get_started/byok_and_custom_transcription) · [model_constants.py](https://github.com/BasedHardware/omi/blob/main/backend/utils/llm/model_constants.py) · [产品介绍页](https://www.omi.me/pages/product) · [商店页](https://www.omi.me/products/omi)，查证 2026-10-28）
+- **大模型方案**：开源常量仅核实 `LUNA_MODEL` 为 `gpt-6-luna`（[model_constants.py](https://github.com/BasedHardware/omi/blob/main/backend/utils/llm/model_constants.py)，查证 2026-10-28）。产品页未公开托管环境实际调用的基座模型名。文档写标题、摘要、行动项、记忆与对话默认由 Omi 服务器生成（非千问默认绑定）
+- **公开数据**：未见独立销量。产品介绍页厂商称 "300,000+ professionals use Omi"、"500+ verified reviews"，未区分 App 与硬件。商店产品 JSON：Silver 变体重量 57 g（2.0 oz），available 为 true（查证 2026-10-28）
+- **关键差异化**：① 项链双麦挂坠，与 Bee Frontier（腕带 / 夹扣）、Limitless Pendant（已停售挂件）、Fieldy 3、Memoket Gem 同属可穿戴记录；② 硬件、固件、App 与后端开源，仓库 LICENSE 为 MIT（版权 Based Hardware Contributors，2024），文档写可自托管；托管默认路径仍把摘要、记忆和对话放在 Omi 云端；③ 产品介绍页与商店描述写 SOC 2 + HIPAA，传输 TLS、静态 AES-256（厂商称）
+- **商业模式**：硬件销售（目录价 $229 USD，结账价 $169 USD，查证 2026-10-28）+ 免费档（手机端转写不限量，每月 300 云端分钟）+ 可选 Pro
+- **另见**：开源仓库条目见 [录音/纪要开源分册](../../open-source/by-category/07-recorder.md)；横评一行见 [公开案例](../../../solutions/by-category/07-recorder/04-cases.md)
+
+> 来源：[产品介绍页](https://www.omi.me/pages/product) · [商店页](https://www.omi.me/products/omi) · [定价页](https://www.omi.me/pages/pricing) · [入门文档](https://docs.omi.me/doc/get_started/introduction) · [BYOK 与自定义转写](https://docs.omi.me/doc/get_started/byok_and_custom_transcription) · [转录文档](https://docs.omi.me/doc/developer/backend/transcription) · [model_constants.py](https://github.com/BasedHardware/omi/blob/main/backend/utils/llm/model_constants.py) · [LICENSE](https://github.com/BasedHardware/omi/blob/main/LICENSE)（均查证 2026-10-28）
+
 
 ## 待补充清单
 
 ### 海外 / 可穿戴
 
-> 桌面扬声器电话 HiDock H1 Lite、可穿戴 Bee Frontier（前代 Pioneer 已换代）已收入上方卡片，不属于下面的待办。
+> 桌面扬声器电话 HiDock H1 Lite、可穿戴 Bee Frontier（前代 Pioneer 已换代）、Omi 已收入上方卡片，不属于下面的待办。
 
 - [x] **Limitless Pendant**：历史公开约 $99；Meta 收购后官网称停止向新客户销售——可作隐私与停售案例，已收入上方卡片。补卡片时请附 [limitless.ai](https://www.limitless.ai/) 说明
 - [x] ~~**Bee**~~：Bee Frontier 已收入上方卡片（官网 $74.99，查证 2026-10-21）；前代 Pioneer 已换代
 - [x] ~~**Memoket Gem**~~：已收入上方卡片（官网 $199.00 USD，查证 2026-10-26）；其它可穿戴笔记设备仍须附官网定价
+- [x] ~~**Omi**~~：已收入上方卡片（目录价 $229 USD，结账价 $169 USD，查证 2026-10-28）
 
 ### 软件参考（非硬件，但对标订阅）
 

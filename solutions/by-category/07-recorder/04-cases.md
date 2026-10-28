@@ -37,6 +37,7 @@
 | **HiDock H1 Lite** | HiDock | USB-C 桌面扬声器电话 | HiNotes；产品页列 GPT-5.4 / Claude 4.6 / Gemini 3.1 Pro | BlueCatch 双端录音，无会议 bot；Call / Room | [官网 $189](https://www.hidock.com/products/hidock-h1-lite)；[Amazon $189.99](https://www.amazon.com/HiDock-Conference-Speakerphone-Noise-Canceling-Transcription/dp/B0GZ3GZ3DT) |
 | **Limitless Pendant** | Limitless（Meta 收购后公开停售） | 挂件可穿戴 | 云端转写 + 日记式检索 | 持续录音、隐私声明 | 历史公开约 $99；[官网说明停售](https://www.limitless.ai/) |
 | **Bee Frontier**（前代 Pioneer 已换代） | Bee（已加入 Amazon） | 腕带 / 夹扣可穿戴 | 未公开具体基座模型；音频处理后即删 | 摘要、要点、建议待办、对话搜索、语音笔记；Bee Pro 集成邮件 / 日历 | [官网 $74.99](https://bee.computer/products/frontier)；[Bee Pro](https://bee.computer/bee-pro) $11.99/月 |
+| **Omi** | Based Hardware Inc. | 项链挂坠（双麦） | 开源常量 `gpt-6-luna`；托管默认 STT 为 modulate-velma-2 / soniox / parakeet | 转写、摘要、行动项、记忆与提问 | [结账 $169](https://www.omi.me/pages/pricing)（目录价 [$229](https://www.omi.me/products/omi)，查证 2026-10-28） |
 | **通义听悟** | 阿里云 | 纯 SaaS | Paraformer + 纪要 Agent | 开箱转写 / 纪要 | 按听悟套餐（非硬件） |
 | **钉钉 AI 听记** | 钉钉 | 会议软件内嵌 | 钉钉 / 通义能力（公开表述） | 会中字幕与纪要 | 随钉钉商业化 |
 
