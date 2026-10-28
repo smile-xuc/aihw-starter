@@ -286,6 +286,25 @@
 
 > 来源：[产品介绍页](https://www.omi.me/pages/product) · [商店页](https://www.omi.me/products/omi) · [定价页](https://www.omi.me/pages/pricing) · [入门文档](https://docs.omi.me/doc/get_started/introduction) · [BYOK 与自定义转写](https://docs.omi.me/doc/get_started/byok_and_custom_transcription) · [转录文档](https://docs.omi.me/doc/developer/backend/transcription) · [model_constants.py](https://github.com/BasedHardware/omi/blob/main/backend/utils/llm/model_constants.py) · [LICENSE](https://github.com/BasedHardware/omi/blob/main/LICENSE)（均查证 2026-10-28）
 
+### ANYPIN Note Pod P1（ANYPIN / SYNLAN TECHNOLOGY PTE. LTD）
+
+- **上市状态**：在售（产品页 JSON-LD 中 Meteorite Grey、Cosmic Blue 的 Offer 均为 InStock；同页产品数据两变体 available 为 true，查证 2026-10-28）
+- **官网/渠道**：<https://anypin.ai/products/anypin-note-pod-p1>；Q&A <https://anypin.ai/pages/q-a>；App Store <https://apps.apple.com/us/app/anypin/id6757214249>（开发者 SYNLAN TECHNOLOGY PTE. LTD；产品页页脚为同一公司名）
+- **形态**：项链 / 夹子 / 别针可穿戴录音。产品描述原文 "Use as a necklace, clip, or pin"。规格：4 麦（规格表原文 "4mic"）、64 GB、连续录音 20 小时、待机 140 小时、充电 1.5 小时、电池 380 mAh、重量 0.77 oz、尺寸 2.56" × 1.10" × 0.37"、有效拾音 16.4 ft。规格表一行标题为 "USB Port"，值为 "BLE 5.4/Wi-Fi"（页面原文）。盒内：Main Machine、Back Plate、Back Clip、Charging Station、Data Cable、User Manual；页面未写盒内含项链。可离线开机录音。Q&A 写 App 可从 App Store 或 Google Play 下载；App Store 写需 iOS 15.6 或更高。产品页另写上下文录音，接入 Apple Focus、系统地图与跨平台日历，用来对齐录音起止（页面未写模型名）
+- **定价**：
+  - 首发价：待核实
+  - 现价：$129.99 USD · 美国 · [产品页](https://anypin.ai/products/anypin-note-pod-p1) · 查证 2026-10-28。页写 Sale price $129.99、Regular price $152.99、Save 15%。JSON-LD 两色 Offer 均为 129.99 USD、InStock。同页产品数据两变体 price 为 12999、compare_at_price 为 15299、available 为 true
+  - MSRP：$152.99 USD · 美国 · [产品页](https://anypin.ai/products/anypin-note-pod-p1) · 查证 2026-10-28。页写 Regular price $152.99（划线价）
+  - 订阅：免费档每月 380 分钟转写。产品页 FAQ 原文 "free to use for up to 380 minutes of transcription every month, unlimited AI usage & audio storage"，并写另有 membership plans，未标会员价。Q&A 写配对后自动开通 Free plan，每月 380 分钟转写和 basic templates，可升级 Pro/Ultimate 或购买转写包，未标价。页面不一致：产品页另有标题 "Enjoy a free unlimited plan"，FAQ 与 Q&A 写免费转写额度为每月 380 分钟；卡片免费转写额度取 380 分钟/月，FAQ 所称 unlimited 指 AI usage 与 audio storage。App Store 内购未写计费周期：ANYPIN Pro Plan $15.99 USD、ANYPIN Unlimited Plan $26.99 USD、600 minutes for transcription $19.99 USD、120 minutes for transcription $3.99 USD。页面不一致：Q&A 写 Pro/Ultimate，App Store 写 Pro Plan / Unlimited Plan（[产品页](https://anypin.ai/products/anypin-note-pod-p1) · [Q&A](https://anypin.ai/pages/q-a) · [App Store](https://apps.apple.com/us/app/anypin/id6757214249)，查证 2026-10-28）
+- **目标市场**：当面会议、访谈、讲座与个人笔记。产品页 FAQ 写从美国发货，送达通常约 5 天；保修一年，非人为或自然原因损坏可在 180 天内免费更换
+- **AI 能力**：
+  - AI 功能：120+ 语言转写，带降噪和说话人标签（产品描述 "AI transcription in 120+ languages with noise reduction and speaker labels"）。模板化摘要，并按话题切分音频（"smart summaries and topic-based audio segmentation"；内置访谈、讲座、创作等模板；Q&A 写也可自建 summary template）。多模态检索聊天只写产品页原文 "GPT-5-powered chat search"（audio / notes / images）。实现方式：录音存在设备本地（64 GB）；在 App 中配好 Wi-Fi 后，设备连上 Wi-Fi 即自动上传云端；也可在 App 打开 Fast Upload，手机连接设备热点上传。云端传输和存储走 "encrypted channels"，产品页 FAQ 写遵守 GDPR 与 CCPA。Q&A 写录音在设备上以加密格式保存，不能从设备存储直接导出，须先上传云端再从 App 取出音频。离线可以录音；生成文字稿或在 App 中回放需要联网。免费档每月 380 分钟转写。App Store 描述写 "AWS-backed data protection"（厂商称）（[产品页](https://anypin.ai/products/anypin-note-pod-p1) · [Q&A](https://anypin.ai/pages/q-a) · [App Store](https://apps.apple.com/us/app/anypin/id6757214249)，查证 2026-10-28）
+- **大模型方案**：产品页仅写 "GPT-5-powered chat search"（多模态 audio / notes / images）；具体 snapshot 未公开。Q&A 无模型名（非千问默认绑定）
+- **公开数据**：未见公开销量。产品页写 4.6（93 reviews）。App Store 写评价数量不足以显示总览（查证 2026-10-28）
+- **关键差异化**：① 项链、夹子、别针三种佩戴，对照同文件 Plaud NotePin、Memoket Gem、Omi；② 4 麦、64 GB 本地录音，离线可录，再经 Wi-Fi 上传云端；③ 免费档每月 380 转写分钟，检索聊天按产品页 "GPT-5-powered chat search" 表述
+- **商业模式**：硬件销售（现价 $129.99 USD，Regular price $152.99 USD）+ 免费档每月 380 转写分钟 + 可选会员与转写时长包（标价见 App Store 内购，页面未写计费周期）
+
+> 来源：[ANYPIN Note Pod P1 产品页](https://anypin.ai/products/anypin-note-pod-p1) · [ANYPIN Q&A](https://anypin.ai/pages/q-a) · [App Store：ANYPIN（id6757214249）](https://apps.apple.com/us/app/anypin/id6757214249)（均查证 2026-10-28）
 
 ## 待补充清单
 
