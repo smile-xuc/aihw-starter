@@ -50,6 +50,30 @@
 
 > 来源：[Plaud Note Pro](https://www.plaud.ai/products/plaud-note-pro) · [TechCrunch 2025-08-27](https://techcrunch.com/2025/08/27/plaud-launches-a-new-ai-hardware-notetaker-the-179-note-pro/) · [套餐定价](https://www.plaud.ai/pages/plaud-ai-plan-pricing)
 
+---
+
+### Plaud NotePin（Plaud）
+
+- **上市状态**：在售（产品页有标价，查证 2026-10-28）
+
+- **官网/渠道**：<https://www.plaud.ai/products/plaud-notepin>；变体 NotePin S <https://www.plaud.ai/products/plaud-notepin-s>
+- **形态**：可穿戴别针，面向现场对话。产品 FAQ 写不支持通话录音（没有 V.C.S）。美国产品页规格：0.59 oz、2.01″ × 0.83″ × 0.43″、压力感应按键、2 颗 MEMS、有效拾音 9.84 ft（商品描述写 9.8 ft）、连续录音最长 20 小时、待机最长 40 天、电池 270 mAh、充电约 2 小时、本地存储 64 GB。页面不一致：美国产品页重量写 0.59 oz，日本官网新闻稿写 16.6 g，两处原文并列，卡片不自行换算。佩戴：产品页写可用作 magnetic pin、clip、wristband 或 necklace；商品描述写盒内含 magnetic pin 与 clip，不含 lanyard 与 wristband（原文 "pin and clip included, lanyard and wristband not"）。支持加入 iPhone Find My。变体 NotePin S：产品页写 0.61 oz（17.4 g）、实体按键与 Press to Highlight，盒内含 magnetic pin、clip、lanyard、wristband；连续录音最长 20 小时、待机 40 天、64 GB、2 MEMS、拾音约 9.8 ft；同样不支持通话录音。日本官网新闻稿亦写 NotePin S 为 17.4 g、20 小时连续录音、64 GB、四种配件、每月 300 分钟转写
+- **定价**：
+  - 首发价：待核实
+  - 现价：$159.00 USD · [产品页](https://www.plaud.ai/products/plaud-notepin) · 查证 2026-10-28（页写 Regular price $159.00 USD；含 magnetic pin、clip，以及每月 300 分钟转写）
+  - MSRP：待核实
+  - 变体 NotePin S 现价：$179.00 USD · [产品页](https://www.plaud.ai/products/plaud-notepin-s) · 查证 2026-10-28（页写 Regular price $179.00 USD；Black / Silver / Purple 均在售）
+  - 订阅：设备含 Starter **300 min/mo**。与 Note / Note Pro 同一套 Plaud AI Membership。套餐页（查证 2026-10-28）：Pro 年付折月 **$8.33**（年付 SKU $99.99/年，1,200 min/月；月付 $17.99）；Unlimited 年付折月 **$20.00**（年付 SKU $239.99/年，至 24 小时/天；月付 $29.99）· [产品页](https://www.plaud.ai/products/plaud-notepin) · [套餐页](https://www.plaud.ai/pages/plaud-ai-plan-pricing)
+- **目标市场**：外出时的现场对话（商品描述举例咨询、拜访、访谈）。产品 FAQ 另列临床、销售、教育、高管、律师、内容创作者。不覆盖手机通话录音
+- **AI 能力**：
+  - AI 功能：一按开始现场录音，可在 Plaud App 打字、加图片、标记重点；Plaud Intelligence 把录音转写为 112 种语言并标注说话人（套餐页写 112+），用 10,000+ 专业模板生成结构化摘要，可用 Ask Plaud 以自然语言检索、提问录音，并可用 AutoFlow 做跟进、行动项与导出。实现方式：设备本地录音（64 GB），在配对手机联网后，由 Plaud Intelligence 云端转写和摘要（商品描述原文 "transcription needs a paired phone and internet"）；套餐页 FAQ 写 Latest AI models — including GPT-5, Gemini 3 Pro, Claude Sonnet, and others, updated as new models are released（[产品页](https://www.plaud.ai/products/plaud-notepin) · [套餐页](https://www.plaud.ai/pages/plaud-ai-plan-pricing)，查证 2026-10-28）
+  - 112 种语言转写、说话人标注、多维摘要与大量专业模板、Ask Plaud、Plaud Desktop（官网表述）
+- **大模型方案**：套餐页 FAQ 列出 GPT-5、Gemini 3 Pro、Claude Sonnet 等，并写随新模型发布更新；**国内大模型方案未作为默认公开绑定**
+- **公开数据**：日本官网新闻稿写截至 2025-05-15 全球累计销售超过 15 万台，并写获《家电批评》最佳购买奖与红点设计奖。未见此后的独立销量
+- **关键差异化**：① 别针 / 夹扣可穿戴，对照同厂 Note / Note Pro 卡片机；② 盒内只有别针和夹子，项链与腕带另购，变体 NotePin S 才附四种佩戴件；③ 软件不另起闭环，仍是 Plaud Intelligence 会员（Starter 300 min/mo）
+- **商业模式**：硬件销售（NotePin $159.00；NotePin S $179.00）+ Starter 附赠时长；升级 Pro / Unlimited / Team，套餐与 Note / Note Pro 相同。**Plaud 订阅公开价（年付折月，官网，查证 2026-10-28）**：Pro **$8.33/mo**（$99.99/yr，1,200 min/mo）；Unlimited **$20.00/mo**（$239.99/yr，至 24h/天）；Team 另有席位价。详见 [plaud-ai-plan-pricing](https://www.plaud.ai/pages/plaud-ai-plan-pricing)。
+
+> 来源：[Plaud NotePin 产品页](https://www.plaud.ai/products/plaud-notepin) · [Plaud NotePin S 产品页](https://www.plaud.ai/products/plaud-notepin-s) · [Plaud AI Plan Pricing](https://www.plaud.ai/pages/plaud-ai-plan-pricing) · [日本官网：NotePin 通常版发售（2025-05-24）](https://jp.plaud.ai/blogs/news/plaud-notepin-available-for-purchase)（均查证 2026-10-28）
 
 ---
 
@@ -267,12 +291,13 @@
 
 ### 海外 / 可穿戴
 
-> 桌面扬声器电话 HiDock H1 Lite、可穿戴 Bee Frontier（前代 Pioneer 已换代）、Omi 已收入上方卡片，不属于下面的待办。
+> 桌面扬声器电话 HiDock H1 Lite、可穿戴 Bee Frontier（前代 Pioneer 已换代）、Omi、Plaud NotePin 已收入上方卡片，不属于下面的待办。
 
 - [x] **Limitless Pendant**：历史公开约 $99；Meta 收购后官网称停止向新客户销售——可作隐私与停售案例，已收入上方卡片。补卡片时请附 [limitless.ai](https://www.limitless.ai/) 说明
 - [x] ~~**Bee**~~：Bee Frontier 已收入上方卡片（官网 $74.99，查证 2026-10-21）；前代 Pioneer 已换代
 - [x] ~~**Memoket Gem**~~：已收入上方卡片（官网 $199.00 USD，查证 2026-10-26）；其它可穿戴笔记设备仍须附官网定价
 - [x] ~~**Omi**~~：已收入上方卡片（目录价 $229 USD，结账价 $169 USD，查证 2026-10-28）
+- [x] ~~**Plaud NotePin**~~：已收入上方卡片（官网 $159.00 USD，查证 2026-10-28）；变体 NotePin S 官网 $179.00 USD
 
 ### 软件参考（非硬件，但对标订阅）
 
