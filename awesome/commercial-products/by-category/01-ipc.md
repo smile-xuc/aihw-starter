@@ -161,12 +161,37 @@
 
 ---
 
+### Reolink Home Hub 2（Reolink）
+
+- **上市状态**：在售（美国产品页 JSON-LD Offer 为 InStock，查证 2026-10-28）
+- **官网/渠道**：<https://reolink.com/us/product/home-hub-2/>
+- **形态**：家用安防中枢。产品页写最多接入 8 台 Reolink 摄像机；本地 microSD 最大 1TB（规格表写 Up to 1TB ×1），另有 2.5 英寸 SATA，最大 16TB（仅 2.5 英寸 HDD/SSD）；无月费。产品页写本机建立 LAN，摄像机可不依赖互联网工作；网络中断时录像留在本地（原文 "Offline Recording"）
+- **定价**：
+  - 首发价：$199.99 USD · 美国 · [IFA 博客（2026-09-04）](https://reolink.com/blog/reolink-new-release-at-ifa/) · [PR Newswire（2026-10-15）](https://www.prnewswire.com/news-releases/reolink-launches-home-hub-2-now-available-for-purchase-with-local-ai-video-search-and-subscription-free-local-storage-302909666.html) · 查证 2026-10-28。新闻稿上市价，不是现价
+  - 现价：$229.99 USD · 美国 · [美国产品页](https://reolink.com/us/product/home-hub-2/) · 查证 2026-10-28。JSON-LD Offer，1-pack、不含 SD 卡，availability 为 InStock。页面不一致：IFA 博客与 PR Newswire 仍写 $199.99；本仓库此前记官网售价 $169.99（查证 2026-10-20），该数字已过时。卡片现价取产品页 JSON-LD
+  - MSRP：待核实
+  - 订阅：产品页写 No Monthly Fees（同页另写 Privacy Protection & No Monthly Fees）。本地录像不按月费计
+- **目标市场**：美国在售的家用 Reolink 摄像机用户，把多机录像放在本地中枢
+- **AI 能力**：
+  - AI 功能：当前能力是 Local AI Video Search。产品页写用简单关键词检索本地录像（原文 "Search through locally stored recordings with simple keywords"）。IFA 博客另写可用自然语言描述检索，且不需要云订阅（原文 "natural-language descriptions — no cloud subscription required"）。Custom AI Detection 待固件，不是当前能力：产品页正文未写该功能；IFA 脚注写需固件更新、最早 2026-12（原文 "Requires firmware update, which is expected to be released in Dec. 2026 at the earliest"）；PR Newswire 写 upcoming firmware
+  - 实现方式：检索对象是本地录像。页面未写 ReoNeura（产品页正文未出现该品牌名）。IFA 博客与 PR Newswire 称 ReoNeura™ 为 on-device AI engine；PR 写 Local AI Video Search 由该引擎驱动，搜索在本地运行，不需要云订阅（[产品页](https://reolink.com/us/product/home-hub-2/) · [IFA 博客（2026-09-04）](https://reolink.com/blog/reolink-new-release-at-ifa/) · [PR Newswire（2026-10-15）](https://www.prnewswire.com/news-releases/reolink-launches-home-hub-2-now-available-for-purchase-with-local-ai-video-search-and-subscription-free-local-storage-302909666.html)，查证 2026-10-28）
+- **大模型方案**：ReoNeura on-device（厂商品牌引擎；名称出自 IFA 博客与 PR Newswire，产品页未写）。官网未公开具体基座模型（非千问默认绑定）
+- **公开数据**：未见公开销量
+- **关键差异化**：① 用简单关键词检索本地录像，产品页同时写无月费；② microSD（最大 1TB）与 2.5 英寸 SATA（最大 16TB）并存；③ 本机 LAN 上本地录像，网络中断时录像仍留在本地
+- **商业模式**：硬件销售。产品页写无月费。Custom AI Detection 待固件，不计入当前交付
+- **另见**：[公开案例](../../../solutions/by-category/01-ipc/04-cases.md)
+
+> 来源：[Home Hub 2 美国产品页](https://reolink.com/us/product/home-hub-2/) · [IFA 博客（2026-09-04）](https://reolink.com/blog/reolink-new-release-at-ifa/) · [PR Newswire（2026-10-15）](https://www.prnewswire.com/news-releases/reolink-launches-home-hub-2-now-available-for-purchase-with-local-ai-video-search-and-subscription-free-local-storage-302909666.html)（均查证 2026-10-28）
+
+---
+
 ## 待补充清单
 
 - [ ] TP-LINK / 小米 / 360 / 乐橙 国内 SKU 卡片
 - [x] Wyze Duo Cam Doorbell / Cam Unlimited Pro
 - [x] Arlo Secure
-- [ ] Lorex 偏专业家用（Reolink Home Hub 2 案例见 [04-cases](../../../solutions/by-category/01-ipc/04-cases.md)；首发价 $199.99（[新闻稿](https://reolink.com/blog/reolink-new-release-at-ifa/)）；官网售价 $169.99（1-pack，不含 SD 卡，[产品页](https://reolink.com/us/product/home-hub-2/)）；上市状态：在售（美国官网，查证 2026-10-20）；未单列商业卡）
+- [x] Reolink Home Hub 2
+- [ ] Lorex 偏专业家用
 
 ## 贡献指引
 
