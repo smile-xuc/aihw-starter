@@ -338,6 +338,29 @@
 
 > 来源：[Jetson Orin Nano Super Developer Kit 产品页](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/) · [Jetson FAQ](https://developer.nvidia.com/embedded/faq) · [NVIDIA 官方博客（2024-12-17）](https://blogs.nvidia.com/blog/jetson-generative-ai-supercomputer/) · [NVIDIA 技术博客（2024-12-17）](https://developer.nvidia.com/blog/nvidia-jetson-orin-nano-developer-kit-gets-a-super-boost/)（均查证 2026-10-12）
 
+---
+
+### MaixStation（Sipeed）〔预订·未发货〕
+
+- **上市状态**：未开售（查证 2026-10-29）。FAQ 写 "Kickstarter, end of 2026."；当前为意向金预约，页面写 "Reservation fee opens soon."；意向金条款 2.1 写 "It is not an order or a purchase contract."（[意向金条款 Version 2026-10-15b](https://sipeed.com/maixstation/terms.html)）
+- **官网/渠道**：产品页 <https://sipeed.com/maixstation/>；意向金条款 <https://sipeed.com/maixstation/terms.html>；芯片 [爱芯元智 AX8860P 产品页](https://www.axera-tech.com/zh-hans/product/3295.html)
+- **形态**：口袋尺寸本地大模型主机，110 × 110 × 30 mm（363 cm³）；典型负载 40 W，USB-C PD 供电，页面写 "Any 65W bank."；接口含供电 USB-C、USB 3.0、10G SFP+、模式拨杆和屏幕，USB-C 从机模式插笔记本免驱（"Device mode. No drivers."），10G 模式作局域网模型服务器；两台可经 "MCIO 8i · PCIe 5.0 ×8" 直连级联，另有 MaixStation Pro（512GB）与四芯 PCIe 算力卡 MaixBlade（[产品页](https://sipeed.com/maixstation/)）
+- **定价**：
+  - 首发价：待核实（Kickstarter 未上线；页面 32GB 写 "$1,xxx"、128GB 写 "from $3,xxx"，未给具体数）· 查证 2026-10-29
+  - 现价：—（未开售）
+  - MSRP：待核实 · 查证 2026-10-29
+  - 意向金：$30 USD（微信/支付宝 ¥200 CNY），众筹上线 48 小时内用同邮箱下单、收货后可返 $100 / 台；上线前可申请退款 · [意向金条款](https://sipeed.com/maixstation/terms.html) · 查证 2026-10-29
+- **目标市场**：想在本地跑大模型和 coding / 办公 agent、不想按 token 付费的个人开发者和小团队；页面场景列出 vibe coding、本地视频生成、机器人 VLA、办公 agent、全公司共用模型
+- **AI 能力**：
+  - AI 功能：出厂预装模型和 Web UI，页面写 "Qwen3.8‑Flash‑Next and a web UI, out of the box."；设备上提供 OpenAI / Anthropic 兼容 API，页面写 "OpenAI and Anthropic compatible. Any agent, any phone browser."，可把 Claude Code、Codex、OpenClaw 指向设备 API；页面列出 n8n、MCP、Hermes Agent 等 agent 生态（[产品页](https://sipeed.com/maixstation/)，查证 2026-10-29）
+  - 端侧推理：本地，模型在 MaixStation 上运行。框架：页面写 "vLLM, SGLang, PyTorch, llama.cpp and Ollama, NPU‑accelerated."，FAQ 写 vLLM / SGLang 经 AXDSL 编写算子的定制加速后端运行，可直接跑 Hugging Face 模型。系统：FAQ 写 "Debian 13 with Linux 6.18."。模型：128GB 档跑 Qwen3.8-Flash-Next 125B，32GB 档跑 Qwen3.8-27B，两台 256GB 跑 DeepSeek V4-Flash 284B，Pro 512GB 跑 DeepSeek V4.1-Flash 552B（页面写法）。芯片：爱芯元智 AX8860P，"256 TOPS FP4, 256‑bit LPDDR5X‑8533, 273 GB/s"，位于 78 × 78 mm Maix-V 核心板；爱芯官方写 16 核 Cortex-A55 1.65GHz、6 nm 工艺。内存：32GB / 128GB（Pro 512GB），无 64GB 档（[产品页](https://sipeed.com/maixstation/) · [爱芯 AX8860P 产品页](https://www.axera-tech.com/zh-hans/product/3295.html) · [爱芯 AX8860 发布新闻](https://axera-tech.com/zh-hans/news/3291.html)，查证 2026-10-29）
+- **大模型方案**：出厂预装 Qwen3.8-Flash-Next，也可自行部署 Hugging Face 等开源模型（千问为出厂预装模型，非独占绑定）
+- **公开数据**：未开售，未见销量或预约人数。性能为厂商自报：页面对比 DGX Spark（FP4、两边关闭 MTP），Qwen3.8-27B prefill 1300 vs 1400–1600 tok/s、decode 13 vs 15–17 tok/s；Qwen3.6-35B-A3B prefill 5600 vs 6300–7700、decode 80 vs 80–88；页面写 "Solid bars are today's conservative measurements. AX8860P is still being tuned"（厂商自报，仍在调优）
+- **关键差异化**：① 363 cm³ 口袋机身、40 W、可充电宝供电（厂商称）；② 出厂预装千问模型 + Web UI + OpenAI/Anthropic 兼容 API，开箱即用；③ 多机经 MCIO / PCIe 5.0 直连级联，无需交换机（厂商称）
+- **商业模式**：硬件一次性销售，计划经 Kickstarter 众筹首发；订阅说法未见
+
+> 来源：[MaixStation 产品页](https://sipeed.com/maixstation/) · [MaixStation 意向金条款](https://sipeed.com/maixstation/terms.html) · [爱芯元智 AX8860P 产品页](https://www.axera-tech.com/zh-hans/product/3295.html) · [爱芯元智 AX8860 发布新闻](https://axera-tech.com/zh-hans/news/3291.html)（均查证 2026-10-29）
+
 ## 待补充清单
 
 - [ ] DFRobot AI 智能体盒子正式定价后补卡
