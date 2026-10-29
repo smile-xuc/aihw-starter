@@ -158,6 +158,30 @@
 
 ---
 
+### AIBI Pocket（Living.AI / EMOPET）
+
+- **上市状态**：在售（官网产品页 JSON-LD Offer 的 availability 为 InStock，标价 $249.00 USD；短描述写下单后约 2 周发货，并附赠配件。Amazon ASIN B0F1TH7D65 页面 In Stock，Sold by Living AI，查证 2026-10-29）
+- **官网/渠道**：<https://living.ai/aibi/> 产品介绍；<https://living.ai/product/aibi-pocket/> 官方商店；Amazon <https://www.amazon.com/EMOPET-Aibi-Pocket-Pet-Magnetically/dp/B0F1TH7D65>（ASIN B0F1TH7D65，Sold by Living AI）
+- **形态**：口袋尺寸、可磁吸的便携宠物，可放入口袋，或吸附在电脑、桌面等表面。与同厂桌面双足 EMO 分卡
+- **定价**：
+  - 首发价：待核实（查证 2026-10-29）
+  - 现价：$249.00 USD · 官网商店（标价 USD；配送国家页面未单列）· [AIBI Pocket 官方商店](https://living.ai/product/aibi-pocket/) · 查证 2026-10-29。短描述写下单后约 2 周发货，并附赠配件
+  - 现价（渠道）：$299.00 USD · 美国 · [Amazon（ASIN B0F1TH7D65，Sold by Living AI）](https://www.amazon.com/EMOPET-Aibi-Pocket-Pet-Magnetically/dp/B0F1TH7D65) · 查证 2026-10-29
+  - MSRP：待核实（查证 2026-10-29）
+  - 订阅：待核实（查证 2026-10-29；官网介绍页、官方商店与上述 Amazon 主 listing 未见强制订阅价）
+- **目标市场**：便携陪伴；可放入口袋、放在桌面，或磁吸在电脑等表面
+- **AI 能力**：
+  - AI 功能：无网络时仍可理解基础语音指令；复杂问题联网后连接 ChatGPT 作答；可识别人脸，并用语音触发拍照。天气动画、闹钟与用药提醒见介绍页，页面未把它们写成大模型能力。实现方式：官网写基础指令可离线完成，复杂问答连接 ChatGPT；未写自建模型名，也未写具体型号。原文 "Even without the internet, AIBI can still understand your commands. For complex questions, AIBI will connect to ChatGPT for answers." 人脸与拍照原文 "AIBI can recognize your face and know who you are Just tell AIBI to take a photo anytime and anywhere."（[AIBI 介绍页](https://living.ai/aibi/)，查证 2026-10-29）。Amazon 标题写 "ChatGPT Powered"，能力口径以官网介绍页为准
+- **大模型方案**：ChatGPT（官网；具体型号未公开）（非千问默认绑定）
+- **公开数据**：未见官方公开累计销量
+- **关键差异化**：① 与同厂 EMO 分形态：口袋 / 磁吸便携，不是桌面双足；② 离线基础语音指令，复杂问题才连接 ChatGPT（官网只写 ChatGPT，未写具体型号）；③ 官网商店现价 $249.00 USD 与 Amazon 现价 $299.00 USD 并列
+- **商业模式**：硬件销售。官网与上述 Amazon 主 listing 未见强制订阅（订阅价待核实）
+- **另见**：同厂桌面双足见本页「EMO（Living.AI）」
+
+> 来源：[AIBI 介绍页](https://living.ai/aibi/) · [AIBI Pocket 官方商店](https://living.ai/product/aibi-pocket/) · [Amazon · EMOPET Aibi Pocket（ASIN B0F1TH7D65）](https://www.amazon.com/EMOPET-Aibi-Pocket-Pet-Magnetically/dp/B0F1TH7D65)（均查证 2026-10-29）
+
+---
+
 ## 待补充清单
 
 - [ ] 国内工位桌宠 / 潮玩品牌公开 SKU
