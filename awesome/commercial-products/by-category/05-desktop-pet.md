@@ -13,12 +13,12 @@
 - **形态**：充电头/底座机器人，复用手机屏幕与算力作表情与视觉
 - **定价**：
   - 首发价：众筹早鸟 $119 USD · [Hackster 报道](https://www.hackster.io/news/tangiblefuture-s-looi-turns-smartphones-into-ambulatory-companion-robots-with-chatgpt-support-fddc772c62b2)（原文 "physical rewards staring at $119 for early bird backers"）· 查证 2026-10-26。Kickstarter 页本机 curl 为 403，早鸟价以 Hackster 可引用原文为准
-  - 现价：LOOI Solo $220.00 USD；LOOI Twins $430.00 USD；LOOI Mix Duo（黑白各一台）$430.00 USD · [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-10-26。国内价与日本 Makuake 价待核实
-  - MSRP：LOOI Solo $259.00 USD（官方常规价）；LOOI Twins $518.00 USD（官方常规价）；LOOI Mix Duo $518.00 USD（官方常规价）· [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-10-26
+  - 现价：LOOI Solo $220.00 USD；LOOI Twins $430.00 USD；LOOI Mix Duo（黑白各一台）$430.00 USD · [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-10-30。国内价与日本 Makuake 价待核实
+  - MSRP：LOOI Solo $259.00 USD（官方常规价）；LOOI Twins $518.00 USD（官方常规价）；LOOI Mix Duo $518.00 USD（官方常规价）· [LOOI 商店](https://looirobot.com/products/looi-robot) · 查证 2026-10-30
 - **目标市场**：工位 / 桌面潮玩；轻硬件软件定义体验
 - **AI 能力**：
   - AI 功能：用手机屏做表情与视觉，语音与 ChatGPT / Gemini 对话，并带仿生行为与个性互动；官方商店描述原文 "ChatGPT and Gemini Integrated | Biomimetic Behavior System | AI with Personality"。实现方式：手机提供屏、摄像头与算力，底座负责移动与传感；对话模型运行位置与具体型号未公开（[LOOI 商店](https://looirobot.com/products/looi-robot)，查证 2026-10-26）
-  - 旧卡所写「Live Agent 更低延迟多模态表达」：当前商店页未检出 "Live Agent" 字样 → 待核实
+  - 旧卡所写「Live Agent 更低延迟多模态表达」：当前商店页未见 Live Agent 字样（查证 2026-10-30）
 - **大模型方案**：官方商店描述写 ChatGPT 与 Gemini；未写具体型号（非千问默认绑定）
 - **公开数据**：待核实
 - **关键差异化**：① 极致降 BOM（手机当脸）；② 动作+表情+语音一体；③ 海外先发、中文能力后补
