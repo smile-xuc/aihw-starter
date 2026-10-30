@@ -189,6 +189,28 @@
 
 ---
 
+### SwitchBot KATA Friends（SwitchBot）〔Noa / Niko〕
+
+- **上市状态**：在售（官方商店 JSON-LD 为 InStock，可下单，查证 2026-10-30）
+- **官网/渠道**：<https://us.switch-bot.com/products/katafriends> US 官方商店；<https://www.switch-bot.com/products/katafriends> 国际站官方商店；<https://us.switch-bot.com/pages/katafriends-pricing> Companion Care 定价页
+- **形态**：家用可移动毛绒 AI 宠物（变体 Noa / Niko）；自主移动、避障、回充；触控 + 相机 + 端侧 LLM
+- **定价**：
+  - 首发价：待核实（查证 2026-10-30）
+  - 现价：$699.00 USD · US / International · 官方商店 JSON-LD（Noa / Niko 同价）· [US 产品页](https://us.switch-bot.com/products/katafriends) · [国际站产品页](https://www.switch-bot.com/products/katafriends) · 查证 2026-10-30
+  - MSRP：$699.99 USD · [PR Newswire 新闻稿（2026-05-12）](https://www.prnewswire.com/news-releases/switchbot-officially-launches-kata-friends-ai-pets-that-truly-grow-with-you-302768006.html)；页面不一致：官方商店 JSON-LD 现价 $699.00 USD，新闻稿 MSRP $699.99 USD，并列注明 · 查证 2026-10-30
+  - 订阅：Companion Care 提供 15 天免费试用 AI & software；试用结束后无订阅进入 sleep mode，须订阅才能继续活跃；Essential 为仅 AI & software；月/年订阅标价待核实（[定价页](https://us.switch-bot.com/pages/katafriends-pricing)正文无数字，查证 2026-10-30）
+- **目标市场**：家用陪伴。商品页为可移动毛绒 AI 宠物（变体 Noa / Niko）
+- **AI 能力**：
+  - AI 功能：语音理解、手势理解、人脸识别，以及 Chat Mode 对话。实现方式：端侧 on-device LLM（商品页写 "Equipped with an on-device LLM"，可不依赖常联网 / Even offline）；手势理解与人脸识别为本地视觉（新闻稿写 "local visual data processing"）；Chat Mode 对话（新闻稿；是否上云待核实）。模型名未公开（[US 产品页](https://us.switch-bot.com/products/katafriends) · [国际站产品页](https://www.switch-bot.com/products/katafriends) · [PR Newswire 新闻稿（2026-05-12）](https://www.prnewswire.com/news-releases/switchbot-officially-launches-kata-friends-ai-pets-that-truly-grow-with-you-302768006.html)，查证 2026-10-30）
+- **大模型方案**：官网未公开具体基座模型（非千问默认绑定）（查证 2026-10-30）
+- **公开数据**：未见公开销量
+- **关键差异化**：① 端侧 on-device LLM，可不依赖常联网（商品页写 Even offline）；② 手势理解与人脸识别走本地视觉（新闻稿写 "local visual data processing"）；③ Companion Care 15 天试用结束后，无订阅进入 sleep mode；月/年标价待核实
+- **商业模式**：硬件销售 + Companion Care 订阅（试用结束后须订阅才能继续活跃；月/年价待核实）
+
+> 来源：[KATA Friends 产品页（US）](https://us.switch-bot.com/products/katafriends) · [KATA Friends 产品页（Global）](https://www.switch-bot.com/products/katafriends) · [Companion Care 定价页](https://us.switch-bot.com/pages/katafriends-pricing) · [PR Newswire 新闻稿（2026-05-12）](https://www.prnewswire.com/news-releases/switchbot-officially-launches-kata-friends-ai-pets-that-truly-grow-with-you-302768006.html)（均查证 2026-10-30）
+
+---
+
 ### 智能憨憨（华为 / WIKO）〔已停售〕
 
 - **上市状态**：停售（华为商城已下架，查证 2026-10-02）；下架日期待核实；页面不一致：WIKO 产品页仍列有京东店铺入口（华为商城原商品页（已下架） · [WIKO 憨憨产品页](https://www.wiko.com/ai_toys/hanhan)）
