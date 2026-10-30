@@ -30,7 +30,7 @@
 
 | 产品 | 厂商 | 形态 | 大模型（公开） | 核心交互 | 参考价（公开） |
 |---|---|---|---|---|---|
-| **Looi** | TangibleFuture | 充电头机器人，手机作屏 | App 集成 LLM / GPT 向对话（公开表述） | 语音 + 肢体 + 手机屏表情 | 众筹早鸟首发价 US$119；现价 LOOI Solo US$239（划线价 US$259）、LOOI Twins US$468（划线价 US$518，查证 2026-09-30） |
+| **Looi** | TangibleFuture | 充电头机器人，手机作屏 | App 集成 LLM / GPT 向对话（公开表述） | 语音 + 肢体 + 手机屏表情 | 众筹早鸟首发价 US$119；现价 LOOI Solo US$220（划线价 US$259）、LOOI Twins / Mix Duo US$430（划线价 US$518，查证 2026-10-30） |
 | **EMO** | Living.AI | 桌面双足 | 自研情感引擎 + GPT 对话（公开表述） | 表情屏 + 语音 + 自主巡游 + 面部识别 | 现价标准套装 [US$279](https://living.ai/product/emo/)、EMO White [US$289](https://living.ai/product/emo-white/)（查证 2026-09-30）；首发价待核实 |
 | **Vector 2.0** | Digital Dream Labs | 履带桌面机器人 | 云端 NLP（自研栈为主） | 语音指令 + 触摸 + 悬崖检测 + 自主探索 | 现价 [US$249.99](https://anki.bot/products/vector-robot) 起（官方店，查证 2026-09-30）；订阅价待核实；首发价待核实 |
 | **Eilik** | Energize Lab | 桌面情感机器人 | 本地规则为主（无 LLM 亦可成立） | 触摸 + 表情 + 多机互动 | 现价 [US$139.99](https://store.energizelab.com/products/eilik)（划线价 US$149.99，查证 2026-09-30） |
