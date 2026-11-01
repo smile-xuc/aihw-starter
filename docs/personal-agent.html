@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#fafaf8">
+<meta name="description" content="个人助手从能聊天到能办事：对照七家公开材料里的任务闭环、审批门与凭证是否进入模型上下文。">
+<title>Personal Agent 设备，会是什么样？ · AIHW Starter</title>
+<link rel="icon" href="app/icons/icon-192.png">
+<style>
+:root{--paper:#fafaf8;--ink:#202322;--muted:#626b61;--blue:#345be8;--line:#e5e7e1}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.95 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+a{color:var(--blue);text-underline-offset:4px}
+a:focus-visible,button:focus-visible,summary:focus-visible,.table-scroll:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+h1,h2,h3{line-height:1.45;letter-spacing:-.025em}
+h1{font-size:clamp(32px,4.5vw,52px);font-weight:650;max-width:16em;margin:18px 0}
+h2{font-size:27px;margin:0 0 18px}
+h3{font-size:18px;margin:22px 0 12px;letter-spacing:-.02em}
+p{margin:0 0 23px}
+.wrap{max-width:1120px;margin:auto;padding:0 32px}
+.top{border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;justify-content:space-between;align-items:center;min-height:76px;gap:18px;flex-wrap:wrap;padding-block:14px}
+.brand{font-size:21px;font-weight:750;color:var(--ink);text-decoration:none}
+.top nav{display:flex;gap:24px;font-size:14px}
+.hero{padding:58px 0 34px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:12px;letter-spacing:.1em;color:var(--blue);margin:0}
+.lead{max-width:760px;font-size:20px;color:var(--muted);margin:0}
+.roadmap{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 0;max-width:760px}
+.roadmap a{font-size:13px;line-height:1.4;text-decoration:none;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 12px;transition:transform .18s,border-color .18s,color .18s}
+.roadmap a:hover{transform:translateY(-2px);color:var(--blue);border-color:#b7c4f6}
+.roadmap a b{color:var(--blue);font-weight:750;margin-right:4px}
+.layout{display:grid;grid-template-columns:188px minmax(0,1fr);gap:40px;padding-block:40px 70px}
+.toc{position:sticky;top:24px;height:fit-content;max-height:calc(100vh - 40px);overflow:auto;font-size:13px}
+.toc a{display:block;padding:6px 8px;margin:0 -8px;border-radius:8px;color:var(--muted);text-decoration:none;transition:color .18s,background .18s}
+.toc a:hover{color:var(--ink);background:#eef1ea}
+.toc a.on{color:var(--blue);font-weight:700;background:#e8edfc}
+.toc summary{font-weight:650;margin-bottom:12px;cursor:pointer}
+.article{min-width:0}
+.article section{scroll-margin-top:168px}
+.article > section{margin-bottom:42px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.article section section{margin:0 0 8px;padding:0;border:0}
+.article p,.article li{color:#3e4942}
+.article strong{color:var(--ink);font-weight:650}
+.article ul,.article ol{margin:0 0 23px;padding-left:1.25em}
+.article li{margin:0 0 8px}
+.article a{overflow-wrap:anywhere}
+code{font:0.86em/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;background:#f3f4f0;border-radius:4px;padding:0 4px;overflow-wrap:anywhere}
+#progress{position:fixed;top:0;left:0;height:4px;width:0%;z-index:99;pointer-events:none;border-radius:0 99px 99px 0;background:linear-gradient(90deg,var(--blue),#7d97f2)}
+.skip{position:absolute;top:-80px;left:20px;background:#fff;padding:10px}
+.skip:focus{top:10px}
+.filters-bar{position:sticky;top:0;z-index:5;background:var(--paper);padding:10px 0 8px;margin:0 0 18px;box-shadow:0 8px 8px -8px rgba(32,35,34,.18)}
+.filters-label{margin:0 0 8px;font-size:12px;letter-spacing:.08em;color:var(--muted)}
+.filters{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.filter-chip{flex:0 0 auto;font:inherit;font-size:13px;font-weight:650;line-height:1.4;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;transition:transform .18s,border-color .18s,background .18s,color .18s}
+.filter-chip:hover{transform:translateY(-1px);border-color:#b7c4f6;color:var(--ink)}
+.filter-chip.on{background:var(--blue);border-color:transparent;color:#fff}
+.filter-status{margin:8px 0 0;font-size:13px;color:var(--muted)}
+.spectrum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:0 0 18px;background:#fff}
+.spectrum a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-align:center;text-decoration:none;color:var(--ink);padding:10px 8px;font-size:14px;font-weight:650;line-height:1.35;border-right:1px solid var(--line);min-height:64px}
+.spectrum a:last-child{border-right:0}
+.spectrum a:hover{background:#eef1ea;color:var(--blue)}
+.seg-no{font-size:11px;letter-spacing:.08em;color:var(--blue)}
+#loop-local,#loop-cloud,#loop-memory{scroll-margin-top:168px;border-radius:8px}
+.flash{background:#e8edfc;box-shadow:inset 3px 0 0 var(--blue);transition:background .6s ease}
+.table-scroll{max-width:100%;overflow-x:auto;margin:0 0 23px;-webkit-overflow-scrolling:touch}
+.table-scroll:focus-visible{border-radius:10px}
+.scroll-hint{font-size:13px;color:var(--muted);margin:0 0 8px}
+table{border-collapse:collapse;width:100%;font-size:15px;line-height:1.65}
+caption{text-align:left;color:var(--muted);font-size:13px;padding:0 0 8px}
+th,td{text-align:left;vertical-align:top;padding:10px 14px 10px 0;border-bottom:1px solid var(--line)}
+th{font-weight:650;color:var(--ink)}
+.mem{min-width:520px}
+.matrix{table-layout:fixed;width:1268px;min-width:1268px;font-size:14px;line-height:1.6}
+.matrix th,.matrix td{padding:10px 12px;background:#fff}
+.matrix thead th{background:#f3f4f0}
+.matrix th:first-child,.matrix td:first-child{position:sticky;left:0;z-index:1;width:92px;min-width:92px;background:#f6f5f1;box-shadow:8px 0 8px -8px rgba(32,35,34,.28)}
+.matrix thead th:first-child{z-index:2;background:#eceee8}
+.matrix thead th:not(:first-child),.matrix td{width:168px}
+.matrix tbody tr:hover td{background:#f4f6fd}
+.matrix tbody tr:hover th:first-child{background:#e7ebe4}
+.matrix td.hit,.matrix th.hit{background:#fff4c2}
+.matrix thead th.hit{box-shadow:inset 0 3px 0 var(--blue);background:#ffe7a3}
+.matrix tbody tr:hover td.hit{background:#ffe7a3}
+.pname.hit{background:#ffe7a3;border-radius:3px;box-shadow:0 0 0 2px #ffe7a3}
+.meta{font-size:13px;color:var(--muted)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px}
+@media(max-width:850px){
+  .layout{grid-template-columns:1fr;gap:24px;padding-top:24px}
+  .toc{position:static;max-height:none;overflow:visible;border-bottom:1px solid var(--line);padding-bottom:18px}
+  .toc nav{columns:2}
+  .toc a{break-inside:avoid}
+}
+@media(max-width:480px){
+  .wrap{padding-inline:20px}
+  .hero{padding-top:32px}
+  .top nav{gap:14px;font-size:12px}
+  h2{font-size:24px}
+  .lead{font-size:18px}
+  body{font-size:16px}
+  .spectrum a{font-size:13px;padding:8px 4px;min-height:72px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .roadmap a,.toc a,.filter-chip,.flash{transition:none}
+  .roadmap a:hover,.filter-chip:hover{transform:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#article">跳到正文</a>
+<div id="progress" aria-hidden="true"></div>
+<header class="top"><div class="wrap"><a class="brand" href="index.html">AIHW Starter</a><nav aria-label="主导航"><a href="index.html#deep-title">原理阅读</a><a href="app/#/lab">能力实验室</a><a href="https://github.com/smile-xuc/aihw-starter" target="_blank" rel="noopener noreferrer">GitHub</a></nav></div></header>
+<div class="hero"><div class="wrap">
+<p class="eyebrow">原理阅读 · 2026-11-01</p>
+<h1>Personal Agent 设备，会是什么样？</h1>
+<p class="lead">个人助手正在从「能聊天」过渡到「能办事」：读邮件、改日程、整理纪要、在浏览器里跑腿、在支付环节下单。公开产品在这一阶段给出的差异，主要不在对话文案，而在三处工程选择——<strong>任务闭环跑在谁的机器上、外向动作由谁批准、真实凭证是否进入模型上下文</strong>。</p>
+<nav class="roadmap" aria-label="章节跳转"><a href="#scene"><b>场景</b></a><a href="#blocks"><b>五块积木</b></a><a href="#compare"><b>七列对照</b></a><a href="#story"><b>串景</b></a><a href="#criteria"><b>三条标准</b></a></nav>
+</div></div>
+<div class="wrap layout">
+<aside class="toc"><details open><summary>本文内容</summary><nav aria-label="文章目录"><a href="#scene">场景：四类事</a><a href="#mail">邮件与日程</a><a href="#minutes">会议纪要</a><a href="#browser">浏览器跑腿</a><a href="#pay">支付与下单</a><a href="#blocks">五块积木</a><a href="#entry">入口与调度</a><a href="#memory">记忆</a><a href="#spectrum">任务闭环光谱</a><a href="#approval">审批门</a><a href="#credentials">凭证与外联</a><a href="#compare">七列对照</a><a href="#story">串景</a><a href="#criteria">三条标准</a></nav></details></aside>
+<main class="article" id="article">
+<p>下面按场景与技术架构，对照七份公开材料里已经写进文档与仓库说明的机制。七份材料分别是：<a href="https://github.com/QwenLM/Qwen-Live-Harness" target="_blank" rel="noopener noreferrer">Qwen-Live-Harness</a>（采集面与调度面拆分、Realtime 主会话加本机后台委托）、<a href="https://github.com/2049lab/personos" target="_blank" rel="noopener noreferrer">PersonOS</a>（证据层长期记忆框架，不做任务闭环）、<a href="https://underdog.ai/" target="_blank" rel="noopener noreferrer">Underdog</a>（Conway Research；本机推理与本机记忆，支付前需人批）、<a href="https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/" target="_blank" rel="noopener noreferrer">Meta Muse</a>（每人一台 Muse Secure VM，Sentinel 管外联；消费端界面与主动环见 <a href="https://youtu.be/1ruyEeWvEbY" target="_blank" rel="noopener noreferrer">Lightning Demo 走查</a>）、<a href="https://openai.com/index/introducing-dots/" target="_blank" rel="noopener noreferrer">OpenAI dots</a>（产品名 dots，单实例称 dot；默认在云电脑上执行）、<a href="https://cursor.com/docs/grok-bot" target="_blank" rel="noopener noreferrer">Cursor Grok Bot</a>（Cursor 托管的常驻 Bot；主工作面在账户级云电脑，可再挂注册本机，并不是「推理权重全在用户电脑」）、<a href="https://github.com/milind-soni/OpenMausBot" target="_blank" rel="noopener noreferrer">OpenMausBot</a>（亦称 MausBot；本机 harness 上跑 BYO 的 <code>claude</code>/<code>codex</code>/<code>grok</code> CLI，可选 Boat 云桌面、Local VM 或显式 opt-in 的本机控制，权限经 permission broker 出审批卡）。</p>
+<div class="filters-bar">
+<p class="filters-label" id="filters-label">按产品高亮</p>
+<div class="filters" role="group" aria-labelledby="filters-label">
+<button type="button" class="filter-chip on" data-filter="all" aria-pressed="true">全部</button>
+<button type="button" class="filter-chip" data-filter="qwen" aria-pressed="false">Qwen-Live-Harness</button>
+<button type="button" class="filter-chip" data-filter="personos" aria-pressed="false">PersonOS</button>
+<button type="button" class="filter-chip" data-filter="underdog" aria-pressed="false">Underdog</button>
+<button type="button" class="filter-chip" data-filter="muse" aria-pressed="false">Muse</button>
+<button type="button" class="filter-chip" data-filter="dots" aria-pressed="false">dots</button>
+<button type="button" class="filter-chip" data-filter="grok" aria-pressed="false">Grok Bot</button>
+<button type="button" class="filter-chip" data-filter="openmaus" aria-pressed="false">OpenMausBot</button>
+</div>
+<p class="filter-status" id="filter-status" role="status" aria-live="polite">点选产品名，高亮七列表中的对应列，并标出正文里的专名。</p>
+</div>
+<section id="scene">
+<h2>1. 场景：个人 Agent 常办的四类事</h2>
+<p>下面四类场景在输入、中间状态、外向动作上结构相近；差别主要在闭环落在本机还是「一人一电脑」的云执行面，以及哪一步必须过审批。</p>
+<section id="mail">
+<h3>1.1 邮件与日程</h3>
+<p><strong>输入</strong>通常是邮箱与日历同步流，加上用户口头或文字意图（摘要、起草、改期、找空档）。<strong>中间状态</strong>包括线程上下文、联系人偏好、已有会议冲突、草稿版本。<strong>外向动作</strong>是发送邮件、创建或修改日历事件，有时还包括退订或批量归档。</p>
+<p>同步本身几乎总会连到邮件服务商：Underdog 写明邮件在用户电脑与邮箱提供商之间直连，摘要与起草在本机模型完成；Muse、dots、Grok Bot 则通过连接器或插件访问邮箱，读与写往往分开授权；OpenMausBot 的公开说明把 Gmail 等接入写成经 Composio 的 OAuth 会话，连接后多个 Bot 可共用同一连接器面。Lightning Demo 里 Muse 连接 Gmail / Calendar 时，界面表述偏「邮件可读、日历事件可删」，与「读宽写窄」一致；发送侧对照也很整齐——Muse 把发信列为需确认的敏感动作；dots 用 auto-review 与 Custom Rules 决定免问、先问或交给用户；Grok Bot 对「用户未在当轮明确要求发出」的邮件、例程触发的外发，常先落成 draft，等人点 Send；Underdog 在本机侧对敏感下一步要求批准后再发出；OpenMausBot 文档把外发类敏感步放进 permission broker 的 Allow / Deny 卡（具体覆盖面随引擎与工具而变，仓库说明写明并非每一步都保证暂停）。读收件箱可以较宽，写出发信则普遍更窄：这是几类产品里重复出现的权限切分。</p>
+</section>
+<section id="minutes">
+<h3>1.2 会议纪要</h3>
+<p><strong>输入</strong>是录音、导入音视频或会后文本。<strong>中间状态</strong>是转写、摘要、决议与待办条目，以及这些条目与联系人、项目的关联。<strong>外向动作</strong>可能是把待办写进日程、把纪要发到邮件或协作工具。</p>
+<p>原文与派生摘要「住在哪」直接绑定产品信任边界：Underdog 将录音、笔记、转写放在本机；Muse 把工作区与记忆放在用户自己的 Secure VM 内，并支持对已学内容说 forget；dots 使用 ChatGPT memory 与 dot 自建 notes；Grok Bot 按 Bot 保留偏好与工作摘要，同账户多个 Bot 共享一台云电脑上的文件与浏览器会话；OpenMausBot 把 transcripts、keys、events 默认落在本机 <code>~/.openmausbot</code>，按 Bot / channel 分线程，工作文件夹可按任务另挂。纪要是否离机、是否进入训练轨迹，取决于各产品默认策略与用户开关（例如 Muse 的训练 opt-out、dots 个人计划上的训练控件；OpenMausBot 文档写明提示词会发往所选模型提供商，本地存储不等于模型请求不出本机），而不是「有没有纪要功能」本身。</p>
+</section>
+<section id="browser">
+<h3>1.3 浏览器跑腿</h3>
+<p><strong>输入</strong>是比价、填表、订位、查政策、整理资料一类目标。<strong>中间状态</strong>是浏览会话、页面结构摘要、多步骤任务进度、失败重试记录。<strong>外向动作</strong>是提交表单、创建预订草稿、下载文件或进入结账页。</p>
+<p>执行面分叉很清楚：Muse、dots、Grok Bot 默认在云端浏览器里操作，用户可随时接管。Lightning Demo 里订票时，聊天内嵌的是 Muse 自有虚拟机上的 persistent 浏览器视图，并提供「Take control of the browser」把验证码、密码或纠错交回人再交还 Agent；Underdog 使用本机浏览器与本机模型；Qwen-Live-Harness 的前台 Realtime 会话可以继续聊天，同时把改文件、跑命令一类工作委托给本机 ACP / CLI 后台 harness；OpenMausBot 则把每个 Bot 的「电脑」写成可选面——Boat 云 Linux 桌面、隔离 Local VM，或在平台安全边界已认证处显式 opt-in 后的本机控制（文档写明 macOS / Ubuntu Xorg 可开，Wayland 主机控制仍关闭），云桌面侧提供预览与「Open desktop」接管。渠道能对话不等于已授权浏览器或本机：dots 文档写明，消息渠道、插件、本机连接是三套独立授权——在 Slack 里能提到 dot，并不自动打开 Gmail 或用户笔记本；OpenMausBot 同样把聊天、连接器与电脑访问拆开启用。站点若拦截自动化、会话过期或需要人机验证，公开产品普遍选择把步骤交回用户，而不是绕过登录墙。</p>
+</section>
+<section id="pay">
+<h3>1.4 支付与下单</h3>
+<p><strong>输入</strong>是购物或订票意图与约束（预算、商家、时间、退改规则）。<strong>中间状态</strong>是比选结果、商户页上下文、待确认金额。<strong>外向动作</strong>是生成支付凭据并完成扣款，或把购物车留给用户。</p>
+<p>Muse 与 Stripe Link 对接，结账使用一次性卡，并在支付前要求人确认；Demo 里绑钱包走显式「Link by Stripe」按钮与条款确认，支付门故意留摩擦，与日历类低风险连接形成对照；Underdog 同样走一次性卡路径，公开商业表述与交易抽成相关，购物研究可在本机完成，扣款仍需批准。dots 与 Grok Bot 将改密、对外共享、影响账户的动作放进自动评审或审批卡；OpenMausBot 公开材料把 shell、文件改动与高风险步统一收成聊天内 Allow / Deny 卡，未单独宣称一次性支付卡路径——「搜得到」与「付得出」仍应按审批对象是否绑定金额与商户来核对。对分析而言，支付场景的价值不在「会不会买」，而在是否把金额、商户、凭证作用域绑在一次明确批准上。</p>
+<p>四类场景共用同一组底座：入口与意图、记忆、执行面（任务闭环）、审批与凭证。下一节按五块对照七家材料。</p>
+</section>
+</section>
+<section id="blocks">
+<h2>2. 技术架构：五块可对照积木</h2>
+<section id="entry">
+<h3>2.1 入口与调度</h3>
+<p><a href="https://github.com/QwenLM/Qwen-Live-Harness" target="_blank" rel="noopener noreferrer">Qwen-Live-Harness</a> 把系统拆成 Host 与 daemon：Host（Electron）负责麦、屏、呈现与系统权限；daemon 负责对话、工具、后台 harness、Proactive 与 Memory；二者经本机 WebSocket 通信。理解侧默认走云端 Qwen Omni Realtime；复杂执行可委托本机 ACP 后端（Qwen Code、Codex、Claude Code、Gemini CLI 等）。不装后台 harness 时，仍可做音视频交互、搜索、主动提醒与记忆——采集面不必塞满执行器。</p>
+<p>云产品侧则常见 thin client：Muse 客户端经安全通道连到用户 VM；dots 在 ChatGPT、Slack、Teams 收发意图，工作在云电脑上继续；Grok Bot 在桌面与移动端收消息，主执行面在 Cursor 云电脑。OpenMausBot 的公开架构更接近「本机 thin UI + 本机 harness」：React 应用经 HTTP 发命令、经 SSE 收事件；<code>127.0.0.1</code> 上的 harness 持有全部 agent 进程，并把各提供商原生协议归一成一条事件流；Electron 桌面壳内嵌该 harness。共同点是：<strong>采集与呈现可以很薄，协调与执行可以侧置</strong>；差别在侧置目标是本机 daemon/ACP/harness，还是一人一电脑的云 VM（OpenMausBot 还可把执行面再挂到 Boat 云桌面或 Local VM）。选型时若先定「入口形态」而不定执行面，后面的审批与凭证设计会对不齐。</p>
+<p>消费端界面把「主动」写成可操作原语，而不只写在发布文案里。Lightning Demo 中 Muse 客户端可见：Soul（系统指令）与 Memory（长期事实）可检视与改写；Goals 按 Health、Relationships、Finance 等分类提供上下文；Ideas 根据近期对话生成提案，确认后可设为日/周/月 recurring（任务日志里可见添加 cron）；Artifacts 收生成物；通知用于异步 ping。这些控件对应同一执行面——用户的 Secure VM——把「持续跑着的个人 Agent」落成可核对的产品表面。</p>
+</section>
+<section id="memory">
+<h3>2.2 记忆：证据层与归属</h3>
+<p><a href="https://github.com/2049lab/personos" target="_blank" rel="noopener noreferrer">PersonOS</a> 把记忆写成可检视的链：原始陈述保留为 <strong>evidence</strong>；情景（episode / cell）保留上下文；<strong>atoms</strong> 承载可检索事实；<strong>chains</strong> 连接前后陈述并保留历史；<strong>profile</strong> 再做画像汇总。框架只向宿主 Agent 提供 materials，生成权留在宿主；无个人内容的片段可以只留证据、不产事实。默认存储可落本地 SQLite，提取与向量则依赖配置的远端模型——「记忆库在本地」与「抽取模型在本地」需要分开写。</p>
+<p>各产品记忆归属不同，但都可对照「能否打开材料」这一观察点：</p>
+<div class="table-scroll" role="region" aria-label="记忆归属表，可横向滚动" tabindex="0">
+<table class="mem">
+<caption>各产品记忆放在哪、用户能否打开</caption>
+<thead><tr>
+<th scope="col">产品</th>
+<th scope="col">记忆大致放哪</th>
+<th scope="col">用户侧可见性（公开表述）</th>
+</tr></thead><tbody>
+<tr>
+<th scope="row">PersonOS</th>
+<td>库可本地；推理常 BYO 远端</td>
+<td>可列出记忆、链与出处</td>
+</tr>
+<tr>
+<th scope="row">Qwen-Live-Harness</th>
+<td>本地 memory libraries；整理/嵌入可上云</td>
+<td>可管理多个本地库</td>
+</tr>
+<tr>
+<th scope="row">Underdog</th>
+<td>本机</td>
+<td>Settings 中查看、编辑、删除</td>
+</tr>
+<tr>
+<th scope="row">Muse</th>
+<td>用户 Secure VM</td>
+<td>可检视/下载 VM 内文件与记忆；可 forget</td>
+</tr>
+<tr>
+<th scope="row">dots</th>
+<td>ChatGPT memory + dot notes</td>
+<td>跨渠道沿用；笔记随工作更新</td>
+</tr>
+<tr>
+<th scope="row">Grok Bot</th>
+<td>按 Bot 的偏好与摘要；文件在共享云电脑</td>
+<td>对话上下文按 Bot 分离；文件对同账户 Bot 共享</td>
+</tr>
+<tr>
+<th scope="row">OpenMausBot</th>
+<td>默认 <code>~/.openmausbot</code>；按 Bot/channel 分线程</td>
+<td>本地可检视 transcripts；密钥 UI 只见「已配置」标志</td>
+</tr>
+</tbody></table></div>
+<p>没有证据或材料层时，「记得你」难以审计；有材料层也不等于记忆正确，仍依赖提取模型与宿主如何使用检索结果。PersonOS 刻意不做任务闭环，也提醒一句：记忆子系统不能代替发信、订位、支付的执行与审批设计。</p>
+</section>
+<section id="spectrum">
+<h3>2.3 任务闭环光谱</h3>
+<p>把七家放在一条光谱上，比「本地好 / 云端好」更贴近公开设计：</p>
+<nav class="spectrum" aria-label="任务闭环光谱"><a href="#loop-local"><span class="seg-no">1</span>本机闭环</a><a href="#loop-cloud"><span class="seg-no">2</span>云端一人一电脑</a><a href="#loop-memory"><span class="seg-no">3</span>只记忆</a></nav>
+<ol>
+<li id="loop-local" tabindex="-1"><strong>本机闭环</strong>：Underdog 在用户电脑上跑推理、浏览器与多数办事逻辑；邮件同步仍连提供商。Qwen-Live-Harness 的文件与命令执行落在本机 ACP/CLI；理解多在云 Omni。OpenMausBot 默认也把 agent 进程钉在本机 harness：Bot 跑在已登录的 <code>claude</code> / <code>codex</code> / <code>grok</code> CLI 上，无中间代理；本机路径的上限同样是设备算力、电池与是否开机。</li>
+<li id="loop-cloud" tabindex="-1"><strong>云端「一人一电脑」</strong>：Muse Secure VM、dots 的 cloud computer、Grok Bot 的 Firecracker microVM（用户之间隔离；同一 Cursor 用户下多个 Bot 共享一台电脑）。合盖后任务可继续；浏览器、文件系统、终端是一等公民。Muse 的 Demo 进一步把 persistent 浏览器与 recurring/cron 提案绑在这台 VM 上：主动环不是单次 tool call，而是可挂起的定时任务。dots 还可再挂一台本机作为第二执行面；Grok Bot 可再委派 Cloud Agent 或对注册电脑跑命令——第二面存在时，权限与会话通常仍按「主电脑 / 本机」分别计数。OpenMausBot 落在光谱中间偏本机一侧：默认本机 harness，但可为每个 Bot 挂 Boat 云 Linux 桌面或隔离 Local VM；产品文档另写可选的 always-on Cloud / 自托管服务，用于合盖后继续跑——与「纯本机默认」要分开核对。</li>
+<li id="loop-memory" tabindex="-1"><strong>只提供记忆、不提供办事闭环</strong>：PersonOS。宿主仍需自建 harness 与审批。</li>
+</ol>
+<p>取舍可以直接写成工程参数：本机侧换数据驻留位置与算力上限；云 VM 侧换 always-on 与重活能力，并引入运营方对 VM / 轨迹的访问策略。Muse 另规划用户持有密钥的 Confidential VM；dots 与 Grok Bot 用计划类型与设置项表述训练与数据用途。光谱中间没有「纯本地又永远 online 且无限算力」的点；产品文案若同时承诺三者，需要回到具体外联白名单与模型位置核对。</p>
+</section>
+<section id="approval">
+<h3>2.4 审批门</h3>
+<p>外向动作的门，各家命名不同，结构接近：<strong>策略层先判，必要时弹到人；内置安全不被用户规则关掉</strong>。</p>
+<ul>
+<li><strong>Underdog</strong>：敏感下一步与支付前要求批准；本机 vault 按账户存密钥。</li>
+<li><strong>Muse</strong>：<a href="https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse" target="_blank" rel="noopener noreferrer">Sentinel</a> 是连接器动作与网络出口的唯一授权方；Muse 只能提出，Sentinel 批准、拒绝或问人。问人时走客户端系统对话框，不走与 Muse 的聊天线程，降低「对话里伪造同意」的面。发信与购物默认要人确认；批准可按一次、会话、任务、时限或长期授权绑定到具体目的。Lightning Demo 里取消订阅前，Agent 先用编号访谈确认参数（是否必须先问、哪些服务跳过），并在 Tasks 中提供可展开的后端步骤日志（含 API、生图、adding cron 等），把「门开了」与「事办到哪一步」拆开呈现。</li>
+<li><strong>dots</strong>：auto-review 对照说明、Custom Rules 与安全要求，决定放行、先问或交给用户；改密等步骤保留给人。Custom Rules 不能压过内置安全。主动研究（proactive research）使用已连接应用的只读工具集，写操作仍回权限路径。</li>
+<li><strong>Grok Bot</strong>：<a href="https://cursor.com/help/grok-bot/approvals" target="_blank" rel="noopener noreferrer">Auto-review</a> 覆盖 shell、连接器、电脑操作、自动化写入与委派；需要时出审批卡（Allow once / Always allow / Deny）。Ask first 规则优先于放行规则。邮件在例程或非当轮明确请求等触发下可先 draft。</li>
+<li><strong>Qwen-Live-Harness</strong>：后台 harness 的工具权限由后端自身的 ask / allow-all 等策略决定；Host UI 可处理权限请求与任务进度。</li>
+<li><strong>OpenMausBot</strong>：permission broker 把 shell、文件编辑与提问收成聊天内 Allow / Deny（或作答）卡；仓库说明写明对云桌面与本机电脑同样生效，同时注明覆盖面依赖引擎与工具，<strong>不保证</strong>每一个动作都会暂停。触发器（日程、webhook、连接器 app event）由 Bot 用工具创建/暂停/编辑，人侧可在 Triggers 页检视；导入的 team 包默认连接关闭、例程暂停。</li>
+</ul>
+<p>共性还有一条操作语义：<strong>批准不等于已经执行成功</strong>。预订页失败、支付被拒、连接器超时，都需要产品把「门开了」和「事办成了」分开呈现；Muse、dots、Grok Bot 与 OpenMausBot 的公开说明都强调回顾已完成动作与后果，而不是只展示一次同意。对集成方而言，审批卡的对象应是可识别的目标与效果，而不是模糊的「继续」。</p>
+</section>
+<section id="credentials">
+<h3>2.5 凭证与外联边界</h3>
+<p>跨产品重复出现的硬约定是：<strong>模型上下文尽量不持有真实密钥</strong>。</p>
+<p>Muse 用 <code>hatch-authd</code> 发 surrogate，Sentinel 在出口处替换为真凭证；运行时 cell 内的代码与主 Agent 看不到 OAuth 真 token。浏览器登录经客户端进安全存储；浏览器子代理读 accessibility tree，而不是可执行页面脚本随意刮密。dots 用私密登录表单，凭证进云浏览器会话而非对话文本。Grok Bot 用 Vault、Secure Form 或连接器后端 token，填充时模型看不到密码或卡号；连接器 token 留在 Cursor 后端，不落在云电脑磁盘上当明文给模型读。Underdog 强调每账户 vault、密钥留在本机。OpenMausBot 把提供商密钥与集成密钥写在本机配置里，UI 侧只暴露「已配置」类 write-only 标志；应用连接走 Composio OAuth；本机控制需显式 opt-in，且受平台安全门限制。仓库另注明 CLI/<code>openmausbot</code> 路径下 API 密钥以明文保存在私有 <code>config.json</code>（Unix 上 <code>0600</code>）——「密钥不进模型上下文」与「磁盘上如何存放」仍是两句不同的话。</p>
+<p>「本地」也不等于零外联。Underdog 的邮件同步、已批准外发与预订仍会出网；Naval mode 是显式断外联开关，而不是默认态。OpenMausBot 本机 harness 默认不出项目方代理，但模型请求仍发往用户所选提供商，Composio / Boat 等可选集成各自出网。云 VM 产品则把外联写成策略对象：Muse 的 runtime cell 与 cell 外的 Sentinel、authd、safety 分类器分域；未读用户数据的干净进程与已 tainted 进程，自动放行范围不同。dots 把渠道、插件、本机连接拆开授权。写产品说明时，把「推理在哪算」和「哪些 socket 被允许」分成两句，可以减少「100% local」类表述与真实流量日志对不上的情况。</p>
+</section>
+</section>
+<section id="compare">
+<h2>3. 七列对照</h2>
+<p class="scroll-hint">七列较宽，可在表内横向滚动。点上方产品名可只高亮一列。</p>
+<div class="table-scroll" role="region" aria-label="七列对照表，可横向滚动" tabindex="0">
+<table class="matrix" id="matrix">
+<caption>七家公开材料对照</caption>
+<thead><tr>
+<th scope="col">维度</th>
+<th scope="col" data-product="qwen">Qwen-Live-Harness</th>
+<th scope="col" data-product="personos">PersonOS</th>
+<th scope="col" data-product="underdog">Underdog</th>
+<th scope="col" data-product="muse">Muse</th>
+<th scope="col" data-product="dots">dots</th>
+<th scope="col" data-product="grok">Grok Bot</th>
+<th scope="col" data-product="openmaus">OpenMausBot</th>
+</tr></thead><tbody>
+<tr>
+<th scope="row">信任边界</th>
+<td data-product="qwen">Host/daemon 本机；理解多在云 Omni</td>
+<td data-product="personos">库可本地；提取/向量常靠配置远端</td>
+<td data-product="underdog">推理与记忆默认本机；邮件直连提供商</td>
+<td data-product="muse">每人一台 Secure VM；cell 内外分域</td>
+<td data-product="dots">云电脑默认执行面；本机为可选第二面</td>
+<td data-product="grok">账户级 Firecracker；同用户 Bot 共享电脑</td>
+<td data-product="openmaus">本机 harness（<code>127.0.0.1</code>）+ <code>~/.openmausbot</code>；可选 Boat/Local VM/本机控制</td>
+</tr>
+<tr>
+<th scope="row">任务闭环</th>
+<td data-product="qwen">本机 ACP/CLI 后台 harness</td>
+<td data-product="personos">无（只记忆）</td>
+<td data-product="underdog">本机 Agent + 本机浏览器</td>
+<td data-product="muse">Secure VM + persistent 云浏览器；Ideas/Goals/recurring</td>
+<td data-product="dots">云电脑 + 插件；可挂本机</td>
+<td data-product="grok">云电脑为主；可委派 Cloud Agent / 注册本机</td>
+<td data-product="openmaus">本机 CLI agents + 可选云桌面/Local VM；日程/webhook/app event 触发</td>
+</tr>
+<tr>
+<th scope="row">模型位置</th>
+<td data-product="qwen">云端 Omni Realtime</td>
+<td data-product="personos">BYO LLM + embedding</td>
+<td data-product="underdog">本机小模型（公开为 Qwen3.8 系约 4B/27B + Husky）</td>
+<td data-product="muse">云端 Muse Spark</td>
+<td data-product="dots">云端 GPT‑6 Astra</td>
+<td data-product="grok">Cursor/Grok 侧云端推理（非权重全在本机）</td>
+<td data-product="openmaus">BYO：本机 <code>claude</code>/<code>codex</code>/<code>grok</code> CLI（及可配自定义引擎）；请求仍走所选提供商</td>
+</tr>
+<tr>
+<th scope="row">审批门</th>
+<td data-product="qwen">后端 ask / allow-all；UI 处理请求</td>
+<td data-product="personos">框架无动作审批</td>
+<td data-product="underdog">敏感步与支付前人批</td>
+<td data-product="muse">Sentinel；敏感动作客户端确认；高后果前访谈；任务日志可审</td>
+<td data-product="dots">auto-review + Custom Rules</td>
+<td data-product="grok">Auto-review + 审批卡；邮件可 draft</td>
+<td data-product="openmaus">permission broker 审批卡；覆盖面依赖引擎/工具</td>
+</tr>
+<tr>
+<th scope="row">记忆归属</th>
+<td data-product="qwen">本地库；整理可上传片段</td>
+<td data-product="personos">本地 SQLite 等；材料/链可检</td>
+<td data-product="underdog">本机可编辑删除</td>
+<td data-product="muse">VM 内可检视/forget</td>
+<td data-product="dots">ChatGPT memory + notes</td>
+<td data-product="grok">按 Bot；文件在共享云电脑</td>
+<td data-product="openmaus">本机 transcripts/events；按 Bot/channel；密钥 write-only 标志</td>
+</tr>
+</tbody></table></div>
+<p>Muse 列同时对照两层公开材料：架构与 Sentinel 机制见 Meta 发布与研究报告；Soul / Memory / Goals / Ideas / Take control / Stripe Link 等消费端原语见 Lightning Demo 走查，二者描述的是同一「一人一 Secure VM」产品，只是观察切面不同。</p>
+<p>OpenMausBot 列依据仓库 README 与产品站公开说明：Apache 2.0 开源，自称独立项目（亦称 MausBot，曾用名 OpenGrokBot），明确声明与 xAI / Meta / OpenAI 等无关；对照点落在本机 harness、BYO CLI、permission broker 与可选电脑面，而不是对其相对闭源产品的营销口号做裁定。</p>
+<p>Conway Research 的 Underdog 在公开报道中被写成 Muse 等个人 Agent 的本机向对照；首轮融资由 a16z 领投，投资方含 Khosla、Hummingbird、SV Angel 与 <strong>Anthology Fund（Menlo Ventures 与 Anthropic 的合作基金）</strong> 等（见 <a href="https://techcrunch.com/2026/10/06/silicon-valleys-ai-wunderkind-launches-underdog-the-most-private-instinct-muse-competitor-yet/" target="_blank" rel="noopener noreferrer">TechCrunch 2026-10-06</a> 与 <a href="https://a16z.com/announcement/investing-in-conway-the-creator-of-underdog/" target="_blank" rel="noopener noreferrer">a16z 公告</a>）。表中机制对照不依赖融资叙事；若文中提及投资，Anthropic 应对齐 Anthology，而不是写成对 Conway 的直投。</p>
+</section>
+<section id="story">
+<h2>4. 一条串景：会后到支付</h2>
+<p>以「开完会 → 纪要进记忆 → 改日程 → 浏览器订会议室并支付」为例，只标机制落点。</p>
+<ol>
+<li><strong>采集</strong>：录音或导入到达入口。Qwen 路径上，Host 采音视频，daemon 协调；云产品路径上，客户端把材料送进 VM 或云电脑工作区；OpenMausBot 路径上，材料进本机 harness 工作区（或 Bot 所选电脑面）。入口此时只解决「材料进得去」，不决定事后能不能静默发信。</li>
+<li><strong>纪要与记忆</strong>：转写与决议写入执行面所在存储。若接 PersonOS 一类证据层，原始语句进 evidence，决议进 atoms/chains，供后续检索；Underdog 写本机记忆项；Muse、dots、Grok Bot 写 VM 或 Bot 侧笔记与文件；OpenMausBot 写本机 transcripts / 工作文件夹。此步的外联主要是转写/抽取所用的模型 API（若未本机化），以及是否把轨迹送去训练。</li>
+<li><strong>改日程</strong>：读日历冲突、写出新事件。读权限可较宽；写权限在 Muse 连接器策略、dots 插件权限、Grok 连接器与 Auto-review、Underdog 本机批准、OpenMausBot 的 Composio 连接加 permission broker 卡中分别受约束。写入成功与否应回读日历源，而不是以模型口头确认为准。</li>
+<li><strong>订会议室</strong>：浏览器跑腿落在默认执行面——云浏览器、本机浏览器，或 OpenMausBot 所选的 Boat 云桌面 / Local VM /（opt-in）本机。页面内容对模型可见，但登录密码按各产品设计走 surrogate、私密表单、vault 或 OAuth 会话。若站点要求验证码或风控，流程在人接管处停下。</li>
+<li><strong>支付</strong>：结账页触发支付门。Muse 与 Underdog 的公开路径使用一次性卡并要人确认；其他产品至少把影响资金或账户的步骤送进评审或审批卡（OpenMausBot 公开路径强调高风险动作出 Allow / Deny，未单独描述一次性卡）。批准后仍可能因商户或网络失败而未完成，状态以支付与订单回执为准。</li>
+</ol>
+<p>这条链路里，记忆、闭环、审批、凭证是四道不同的闸。同一句用户指令可能穿过多层，但产品若把四道闸收成一个「全自动」开关，出问题后难以定位是记错、跑错机器、门没开，还是凭证作用域过宽。</p>
+</section>
+<section id="criteria">
+<h2>5. 可观察的对照标准</h2>
+<p>综合公开机制，评估一款个人 Agent 时，有三条不必依赖口号、可以直接核对的标准：</p>
+<ol>
+<li><strong>记忆是否可检视</strong>：用户能否打开材料、出处或记忆项并编辑删除；仅有「更懂你」的描述、无法核对证据时，正确性与隐私声明都缺少审计面。</li>
+<li><strong>外向动作是否有门</strong>：发信、日历写权限、下单与支付是否默认经过策略层或人批；批准与执行成功是否分开呈现；用户规则能否压过内置安全（公开设计里通常不能）。若产品提供 Ideas / recurring / cron 一类主动环，还应能核对提案如何变成定时任务、以及任务日志是否可审。</li>
+<li><strong>外联与训练/运营边界是否写清</strong>：本机产品的同步与已批外发白名单；云 VM 产品的 egress 策略、运营方访问范围、训练 opt-out 或计划级默认值。本地推理不等于零 socket；一人一电脑也不自动等于「服务商不可读」。</li>
+</ol>
+<p>按上述标准回看七家材料：差异已经落在闭环位置、审批门与凭证是否进入模型，而不是落在是否宣称「个人」或是否先做出某一外壳。形态可以后定；这三处机制则已经有足够公开文本可供对照。</p>
+</section>
+<p class="meta"><a href="index.html#deep-title">返回原理阅读</a> · <a href="voice-agent-runtime.html">继续阅读：语音 Agent</a></p>
+</main>
+</div>
+<footer><div class="wrap">AIHW Starter · <a href="app/#/lab">能力实验室</a></div></footer>
+<script>
+(function(){
+  "use strict";
+  var re=/(?<![A-Za-z0-9])(?:OpenMausBot|Qwen-Live-Harness|Qwen(?= 路径)|PersonOS|Underdog|MausBot|Grok Bot|Grok(?= 连接器)|dots|dot|Muse)(?![A-Za-z0-9])/g;
+  function productId(name){
+    if(name==="OpenMausBot"||name==="MausBot") return "openmaus";
+    if(name==="Qwen-Live-Harness"||name==="Qwen") return "qwen";
+    if(name==="PersonOS") return "personos";
+    if(name==="Underdog") return "underdog";
+    if(name==="Grok Bot"||name==="Grok") return "grok";
+    if(name==="dots"||name==="dot") return "dots";
+    if(name==="Muse") return "muse";
+    return "";
+  }
+  function wrap(root){
+    var walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(node){
+      if(!node.nodeValue||!/[A-Za-z]/.test(node.nodeValue)) return NodeFilter.FILTER_REJECT;
+      var p=node.parentElement;
+      if(!p||p.closest("[data-product], .filters, .toc, .spectrum, .roadmap, .pname, script, style")) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }});
+    var nodes=[];
+    while(walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(function(node){
+      var text=node.nodeValue;
+      re.lastIndex=0;
+      if(!re.test(text)) return;
+      re.lastIndex=0;
+      var frag=document.createDocumentFragment();
+      var last=0,m;
+      while((m=re.exec(text))){
+        if(m.index>last) frag.appendChild(document.createTextNode(text.slice(last,m.index)));
+        var span=document.createElement("span");
+        span.className="pname";
+        span.setAttribute("data-product",productId(m[0]));
+        span.textContent=m[0];
+        frag.appendChild(span);
+        last=m.index+m[0].length;
+      }
+      if(last<text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+      node.parentNode.replaceChild(frag,node);
+    });
+  }
+  wrap(document.getElementById("article"));
+
+  var chips=document.querySelectorAll(".filter-chip");
+  var status=document.getElementById("filter-status");
+  function applyFilter(id){
+    document.querySelectorAll("[data-product]").forEach(function(el){
+      el.classList.toggle("hit",id!=="all"&&el.getAttribute("data-product")===id);
+    });
+    chips.forEach(function(btn){
+      var on=btn.getAttribute("data-filter")===id;
+      btn.classList.toggle("on",on);
+      btn.setAttribute("aria-pressed",on?"true":"false");
+    });
+    if(id==="all") status.textContent="当前显示全部，未单独高亮某一家。";
+    else status.textContent="当前高亮："+document.querySelector('.filter-chip[data-filter="'+id+'"]').textContent+"。对照表对应列与正文专名已标出。";
+    if(id!=="all"){
+      var head=document.querySelector('#matrix thead th[data-product="'+id+'"]');
+      var scroller=head&&head.closest(".table-scroll");
+      if(head&&scroller){
+        var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var sticky=scroller.querySelector("th:first-child");
+        var stickyW=sticky?sticky.getBoundingClientRect().width:0;
+        var delta=head.getBoundingClientRect().left-(scroller.getBoundingClientRect().left+stickyW+8);
+        if(Math.abs(delta)>4) scroller.scrollBy({left:delta,behavior:reduce?"auto":"smooth"});
+      }
+    }
+  }
+  chips.forEach(function(btn){
+    btn.addEventListener("click",function(){applyFilter(btn.getAttribute("data-filter"));});
+  });
+
+  var flashTimer=0;
+  document.querySelectorAll(".spectrum a").forEach(function(a){
+    a.addEventListener("click",function(){
+      var el=document.getElementById(a.getAttribute("href").slice(1));
+      if(!el) return;
+      document.querySelectorAll(".flash").forEach(function(n){n.classList.remove("flash");});
+      el.classList.add("flash");
+      window.clearTimeout(flashTimer);
+      flashTimer=window.setTimeout(function(){el.classList.remove("flash");},1700);
+    });
+  });
+
+  document.querySelectorAll(".table-scroll").forEach(function(scroller){
+    scroller.addEventListener("keydown",function(e){
+      if(e.target!==scroller) return;
+      if(e.key!=="ArrowRight"&&e.key!=="ArrowLeft") return;
+      var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      scroller.scrollBy({left:e.key==="ArrowRight"?120:-120,behavior:reduce?"auto":"smooth"});
+      e.preventDefault();
+    });
+  });
+
+  document.querySelectorAll('a[href^="http"]').forEach(function(a){
+    a.target="_blank";
+    a.rel="noopener noreferrer";
+    if(!a.querySelector(".sr-only")){
+      var s=document.createElement("span");
+      s.className="sr-only";
+      s.textContent="（新标签打开）";
+      a.appendChild(s);
+    }
+  });
+
+  var prog=document.getElementById("progress");
+  var tocLinks=document.querySelectorAll(".toc nav a");
+  var secs=[];
+  tocLinks.forEach(function(a){
+    var el=document.querySelector(a.getAttribute("href"));
+    if(el) secs.push({el:el,a:a});
+  });
+  function spy(){
+    var bar=document.querySelector(".filters-bar");
+    var line=Math.max(bar?bar.getBoundingClientRect().bottom+48:120,260);
+    var cur=null,i;
+    for(i=0;i<secs.length;i++){
+      if(secs[i].el.getBoundingClientRect().top<=line) cur=secs[i];
+    }
+    var doc=document.documentElement;
+    if(secs.length&&doc.scrollTop+doc.clientHeight>=doc.scrollHeight-4) cur=secs[secs.length-1];
+    tocLinks.forEach(function(a){
+      var on=cur&&a===cur.a;
+      a.classList.toggle("on",!!on);
+      if(on) a.setAttribute("aria-current","location");
+      else a.removeAttribute("aria-current");
+    });
+  }
+  function onScroll(){
+    var h=document.documentElement;
+    var max=h.scrollHeight-h.clientHeight;
+    prog.style.width=(max>0?h.scrollTop/max*100:0)+"%";
+    spy();
+  }
+  window.addEventListener("scroll",onScroll,{passive:true});
+  onScroll();
+})();
+</script>
+</body>
+</html>

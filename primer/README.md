@@ -32,6 +32,8 @@
 
 [从语音聊天到语音 Agent：真正缺的是哪一层？](../docs/voice-agent-runtime.html)（2026-10-25）：用 qwen-audio-agent 的纯语音路径和 Qwen-Live-Harness 的视觉路径，解释对话、编排、后台执行，以及任务完成与结果交付的区别。
 
+[Personal Agent 设备，会是什么样？](../docs/personal-agent.html)（2026-11-01）：按场景与五块积木对照七家公开材料（含 OpenMausBot）的闭环、审批与凭证机制。
+
 ## 写作约定
 
 - **读者假设**：硬件/供应链背景的从业者，不要求 AI 技术基础
