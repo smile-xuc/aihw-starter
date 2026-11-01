@@ -38,6 +38,7 @@ p{margin:0 0 23px}
 .toc a:hover{color:var(--ink);background:#eef1ea}
 .toc a.on{color:var(--blue);font-weight:700;background:#e8edfc}
 .toc summary{font-weight:650;margin-bottom:12px;cursor:pointer}
+.toc-now{display:none}
 .article{min-width:0}
 .article section{scroll-margin-top:168px}
 .article > section{margin-bottom:42px;padding-bottom:28px;border-bottom:1px solid var(--line)}
@@ -89,10 +90,20 @@ th{font-weight:650;color:var(--ink)}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px}
 @media(max-width:850px){
-  .layout{grid-template-columns:1fr;gap:24px;padding-top:24px}
-  .toc{position:static;max-height:none;overflow:visible;border-bottom:1px solid var(--line);padding-bottom:18px}
-  .toc nav{columns:2}
-  .toc a{break-inside:avoid}
+  /* 单列改为块流，吸顶范围才是整篇正文，而不是仅目录那一行。 */
+  .layout{display:block;padding-top:24px}
+  .toc{position:sticky;top:4px;z-index:40;height:auto;max-height:min(70vh,calc(100vh - 12px));overflow:auto;margin:0 0 18px;padding:0 12px;background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 16px -14px rgba(32,35,34,.55)}
+  .toc summary{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:8px;min-height:44px;margin:0;padding:8px 0;background:var(--paper);font-size:14px;line-height:1.35;list-style:none}
+  .toc summary::-webkit-details-marker{display:none}
+  .toc summary::after{content:"";width:7px;height:7px;margin-left:auto;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateY(-2px) rotate(45deg);flex:none}
+  .toc details[open] summary{border-bottom:1px solid var(--line);margin-bottom:4px}
+  .toc details[open] summary::after{transform:translateY(2px) rotate(225deg)}
+  .toc-kicker{display:none}
+  .toc-now{display:block;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);font-weight:650}
+  .toc nav{columns:1;padding:4px 0 8px}
+  .toc a{break-inside:avoid;margin:0;padding:10px 8px}
+  .article section,#loop-local,#loop-cloud,#loop-memory{scroll-margin-top:var(--toc-scroll,80px)}
+  .filters-bar{position:static;top:auto;z-index:auto;box-shadow:none}
 }
 @media(max-width:480px){
   .wrap{padding-inline:20px}
@@ -121,7 +132,7 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px}
 <nav class="roadmap" aria-label="章节跳转"><a href="#scene"><b>场景</b></a><a href="#blocks"><b>五块积木</b></a><a href="#compare"><b>七列对照</b></a><a href="#story"><b>串景</b></a><a href="#criteria"><b>三条标准</b></a></nav>
 </div></div>
 <div class="wrap layout">
-<aside class="toc"><details open><summary>本文内容</summary><nav aria-label="文章目录"><a href="#scene">场景：四类事</a><a href="#mail">邮件与日程</a><a href="#minutes">会议纪要</a><a href="#browser">浏览器跑腿</a><a href="#pay">支付与下单</a><a href="#blocks">五块积木</a><a href="#entry">入口与调度</a><a href="#memory">记忆</a><a href="#spectrum">任务闭环光谱</a><a href="#approval">审批门</a><a href="#credentials">凭证与外联</a><a href="#compare">七列对照</a><a href="#story">串景</a><a href="#criteria">三条标准</a></nav></details></aside>
+<aside class="toc"><details open><summary><span class="toc-kicker">本文内容</span><span class="toc-now">当前：文首</span></summary><nav aria-label="文章目录"><a href="#scene">场景：四类事</a><a href="#mail">邮件与日程</a><a href="#minutes">会议纪要</a><a href="#browser">浏览器跑腿</a><a href="#pay">支付与下单</a><a href="#blocks">五块积木</a><a href="#entry">入口与调度</a><a href="#memory">记忆</a><a href="#spectrum">任务闭环光谱</a><a href="#approval">审批门</a><a href="#credentials">凭证与外联</a><a href="#compare">七列对照</a><a href="#story">串景</a><a href="#criteria">三条标准</a></nav></details></aside>
 <main class="article" id="article">
 <p>下面按场景与技术架构，对照七份公开材料里已经写进文档与仓库说明的机制。七份材料分别是：<a href="https://github.com/QwenLM/Qwen-Live-Harness" target="_blank" rel="noopener noreferrer">Qwen-Live-Harness</a>（采集面与调度面拆分、Realtime 主会话加本机后台委托）、<a href="https://github.com/2049lab/personos" target="_blank" rel="noopener noreferrer">PersonOS</a>（证据层长期记忆框架，不做任务闭环）、<a href="https://underdog.ai/" target="_blank" rel="noopener noreferrer">Underdog</a>（Conway Research；本机推理与本机记忆，支付前需人批）、<a href="https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/" target="_blank" rel="noopener noreferrer">Meta Muse</a>（每人一台 Muse Secure VM，Sentinel 管外联；消费端界面与主动环见 <a href="https://youtu.be/1ruyEeWvEbY" target="_blank" rel="noopener noreferrer">Lightning Demo 走查</a>）、<a href="https://openai.com/index/introducing-dots/" target="_blank" rel="noopener noreferrer">OpenAI dots</a>（产品名 dots，单实例称 dot；默认在云电脑上执行）、<a href="https://cursor.com/docs/grok-bot" target="_blank" rel="noopener noreferrer">Cursor Grok Bot</a>（Cursor 托管的常驻 Bot；主工作面在账户级云电脑，可再挂注册本机，并不是「推理权重全在用户电脑」）、<a href="https://github.com/milind-soni/OpenMausBot" target="_blank" rel="noopener noreferrer">OpenMausBot</a>（亦称 MausBot；本机 harness 上跑 BYO 的 <code>claude</code>/<code>codex</code>/<code>grok</code> CLI，可选 Boat 云桌面、Local VM 或显式 opt-in 的本机控制，权限经 permission broker 出审批卡）。</p>
 <div class="filters-bar">
@@ -457,15 +468,61 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px}
   });
 
   var prog=document.getElementById("progress");
-  var tocLinks=document.querySelectorAll(".toc nav a");
+  var toc=document.querySelector(".toc");
+  var tocDetails=toc.querySelector("details");
+  var tocNow=toc.querySelector(".toc-now");
+  var tocLinks=toc.querySelectorAll("nav a");
+  var narrowQ=window.matchMedia("(max-width:850px)");
   var secs=[];
   tocLinks.forEach(function(a){
     var el=document.querySelector(a.getAttribute("href"));
     if(el) secs.push({el:el,a:a});
+    a.addEventListener("click",function(){
+      if(narrowQ.matches) tocDetails.removeAttribute("open");
+    });
   });
+  function collapsedTocHeight(){
+    var summary=tocDetails.querySelector("summary");
+    if(!tocDetails.open) return toc.getBoundingClientRect().height;
+    var cs=getComputedStyle(toc);
+    return summary.getBoundingClientRect().height+(parseFloat(cs.borderTopWidth)||0)+(parseFloat(cs.borderBottomWidth)||0);
+  }
+  function syncTocOffset(){
+    if(!narrowQ.matches){
+      document.documentElement.style.removeProperty("--toc-scroll");
+      return;
+    }
+    document.documentElement.style.setProperty("--toc-scroll",Math.ceil(collapsedTocHeight()+28)+"px");
+  }
+  function syncTocMode(){
+    if(narrowQ.matches) tocDetails.removeAttribute("open");
+    else tocDetails.setAttribute("open","");
+    syncTocOffset();
+  }
+  syncTocMode();
+  if(narrowQ.addEventListener) narrowQ.addEventListener("change",syncTocMode);
+  else if(narrowQ.addListener) narrowQ.addListener(syncTocMode);
+  function revealCurrent(){
+    if(!narrowQ.matches||!tocDetails.open) return;
+    var on=toc.querySelector("a.on");
+    if(!on) return;
+    var tocRect=toc.getBoundingClientRect();
+    var aRect=on.getBoundingClientRect();
+    var summaryBottom=tocDetails.querySelector("summary").getBoundingClientRect().bottom;
+    if(aRect.bottom>tocRect.bottom-4) toc.scrollTop+=aRect.bottom-tocRect.bottom+8;
+    else if(aRect.top<summaryBottom+4) toc.scrollTop-=summaryBottom+4-aRect.top;
+  }
+  tocDetails.addEventListener("toggle",function(){syncTocOffset();spy();revealCurrent();});
   function spy(){
-    var bar=document.querySelector(".filters-bar");
-    var line=Math.max(bar?bar.getBoundingClientRect().bottom+48:120,260);
+    var line;
+    if(narrowQ.matches){
+      var probe=document.querySelector(".article section");
+      var margin=probe?parseFloat(getComputedStyle(probe).scrollMarginTop):80;
+      line=(margin||80)+8;
+    }else{
+      var bar=document.querySelector(".filters-bar");
+      line=Math.max(bar?bar.getBoundingClientRect().bottom+48:120,260);
+    }
     var cur=null,i;
     for(i=0;i<secs.length;i++){
       if(secs[i].el.getBoundingClientRect().top<=line) cur=secs[i];
@@ -478,6 +535,7 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px}
       if(on) a.setAttribute("aria-current","location");
       else a.removeAttribute("aria-current");
     });
+    if(tocNow) tocNow.textContent=cur?("当前："+cur.a.textContent):"当前：文首";
   }
   function onScroll(){
     var h=document.documentElement;
@@ -486,7 +544,12 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px}
     spy();
   }
   window.addEventListener("scroll",onScroll,{passive:true});
+  window.addEventListener("resize",function(){syncTocOffset();onScroll();});
   onScroll();
+  if(narrowQ.matches&&location.hash){
+    var target=document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if(target) target.scrollIntoView();
+  }
 })();
 </script>
 </body>
