@@ -501,6 +501,47 @@
   .rt-list.hint .rl{cursor:pointer;}
   .rt-list.hint .rl:not(.show) .tx{filter:blur(6px); opacity:.5; user-select:none;}
   @media (max-width:640px){.rl{flex-wrap:wrap;} .rl .kw{flex:0 0 auto;}}
+  /* 手机目录与折行只在窄屏生效；桌面（含 ≥1240 侧栏）不读这些规则。 */
+  .toc-mobile{display:none}
+  @media (max-width:850px){
+    .toc-mobile{
+      display:block; position:sticky; top:4px; z-index:40;
+      margin:18px 0; padding:0 12px; max-width:100%;
+      background:rgba(246,244,239,.96); border:1px solid var(--line); border-radius:16px;
+      box-shadow:var(--shadow-s); max-height:min(70vh,calc(100vh - 12px)); overflow:auto;
+    }
+    .toc-mobile summary{
+      position:sticky; top:0; z-index:1; display:flex; align-items:center; gap:8px;
+      min-height:44px; margin:0; padding:8px 0; list-style:none; cursor:pointer;
+      background:rgba(246,244,239,.98); font-size:14px; line-height:1.35;
+    }
+    .toc-mobile summary::-webkit-details-marker{display:none}
+    .toc-mobile summary::after{
+      content:""; width:7px; height:7px; margin-left:auto; flex:none;
+      border-right:2px solid var(--muted); border-bottom:2px solid var(--muted);
+      transform:translateY(-2px) rotate(45deg);
+    }
+    .toc-mobile details[open] summary{border-bottom:1px solid var(--line); margin-bottom:4px}
+    .toc-mobile details[open] summary::after{transform:translateY(2px) rotate(225deg)}
+    .toc-mobile .toc-now{
+      flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+      color:var(--ink); font-weight:700;
+    }
+    .toc-mobile a{
+      display:block; color:var(--muted); text-decoration:none; padding:10px 8px;
+      border-radius:9px; font-size:15px; line-height:1.45;
+    }
+    .toc-mobile a.on{color:var(--accent); font-weight:700; background:var(--accent-soft)}
+    main section{scroll-margin-top:var(--toc-scroll,76px)}
+    .table-scroll,.trace,.formula,.fx,.sign-rows{max-width:100%}
+  }
+  @media (max-width:640px){
+    .bar-row{grid-template-columns:minmax(0,1fr); gap:6px}
+    .bar-row .name{text-align:left}
+  }
+  @media (max-width:480px){
+    .toc-mobile a{padding:12px 8px; font-size:15px}
+  }
 </style>
 </head>
 <body>
@@ -544,6 +585,24 @@
     <a href="#retell"><b>终</b>复述卡</a>
   </div>
 </header>
+
+<nav class="toc-mobile" id="toc-mobile" aria-label="文章目录">
+  <details>
+    <summary><span class="toc-now">当前：文首</span></summary>
+    <a href="#map">序 量化技术地图</a>
+    <a href="#l0">第0层 预备知识</a>
+    <a href="#l1">第1层 为什么要量化</a>
+    <a href="#l2">第2层 案例：小明的成绩</a>
+    <a href="#l3">第3层 PolarQuant 四步</a>
+    <a href="#l4">第4层 QJL 残差纠错</a>
+    <a href="#l5">第5层 注意力内积修正</a>
+    <a href="#l6">第6层 反量化</a>
+    <a href="#l7">第7层 性能：TTFT 与 TPS</a>
+    <a href="#l8">第8层 总账与全景</a>
+    <a href="#l9">第9层 自测</a>
+    <a href="#retell">终 60秒复述卡</a>
+  </details>
+</nav>
 
 <!-- ================= 序 量化地图 ================= -->
 <section id="map">
@@ -1210,15 +1269,70 @@
     var el = document.querySelector(a.getAttribute("href"));
     if(el) secs.push({el:el, a:a});
   });
+  var tocMobile = document.getElementById("toc-mobile");
+  var tocDetails = tocMobile ? tocMobile.querySelector("details") : null;
+  var tocNow = tocMobile ? tocMobile.querySelector(".toc-now") : null;
+  var mobileLinks = tocMobile ? Array.prototype.slice.call(tocMobile.querySelectorAll("a")) : [];
+  var narrowQ = window.matchMedia("(max-width:850px)");
+  function collapsedTocHeight(){
+    if(!tocMobile || !tocDetails) return 56;
+    var summary = tocDetails.querySelector("summary");
+    if(!tocDetails.open) return tocMobile.getBoundingClientRect().height;
+    var cs = getComputedStyle(tocMobile);
+    return summary.getBoundingClientRect().height + (parseFloat(cs.borderTopWidth)||0) + (parseFloat(cs.borderBottomWidth)||0);
+  }
+  function syncTocOffset(){
+    if(!narrowQ.matches){
+      document.documentElement.style.removeProperty("--toc-scroll");
+      return;
+    }
+    document.documentElement.style.setProperty("--toc-scroll", Math.ceil(collapsedTocHeight()+16)+"px");
+  }
+  function syncTocMode(){
+    if(tocDetails && narrowQ.matches) tocDetails.removeAttribute("open");
+    syncTocOffset();
+  }
+  mobileLinks.forEach(function(a){
+    a.addEventListener("click", function(){
+      if(narrowQ.matches && tocDetails) tocDetails.removeAttribute("open");
+    });
+  });
+  if(tocDetails) tocDetails.addEventListener("toggle", function(){ syncTocOffset(); spy(); });
+  syncTocMode();
+  if(narrowQ.addEventListener) narrowQ.addEventListener("change", syncTocMode);
+  else if(narrowQ.addListener) narrowQ.addListener(syncTocMode);
   function spy(){
-    var y = window.scrollY + 140;
     var cur = null;
-    for(var i=0;i<secs.length;i++){ if(secs[i].el.offsetTop <= y) cur = secs[i]; }
+    var i;
+    if(narrowQ.matches){
+      var probe = document.querySelector("main section");
+      var margin = probe ? parseFloat(getComputedStyle(probe).scrollMarginTop) : 72;
+      var line = (margin || 72) + 8;
+      for(i=0;i<secs.length;i++){
+        if(secs[i].el.getBoundingClientRect().top <= line) cur = secs[i];
+      }
+      var doc = document.documentElement;
+      if(secs.length && doc.scrollTop + doc.clientHeight >= doc.scrollHeight - 4) cur = secs[secs.length-1];
+    }else{
+      var y = window.scrollY + 140;
+      for(i=0;i<secs.length;i++){ if(secs[i].el.offsetTop <= y) cur = secs[i]; }
+    }
     tocLinks.forEach(function(a){ a.classList.remove("on"); });
     if(cur) cur.a.classList.add("on");
+    mobileLinks.forEach(function(a){ a.classList.remove("on"); });
+    if(cur){
+      var href = cur.a.getAttribute("href");
+      mobileLinks.forEach(function(a){ if(a.getAttribute("href")===href) a.classList.add("on"); });
+    }
+    if(tocNow) tocNow.textContent = cur ? ("当前："+cur.a.textContent) : "当前：文首";
   }
   window.addEventListener("scroll", spy, {passive:true});
+  window.addEventListener("resize", function(){ syncTocOffset(); spy(); });
   spy();
+  if(narrowQ.matches && location.hash){
+    var jumped = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if(jumped && jumped.scrollIntoView) jumped.scrollIntoView();
+  }
 
   /* ---------- L1 bit 滑杆 ---------- */
   var slider = document.getElementById("bitSlider");
