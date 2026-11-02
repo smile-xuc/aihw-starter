@@ -216,13 +216,13 @@
   - 订阅：商店页写 "Your device includes 300 free minutes of audio transcription each month."，可选 Pro（$15.99/月或 $99.99/年）或 Unlimited（$239.99/年）· [官方商店](https://us.soundcore.com/products/d3200-soundcore-work-ai-voice-recorder) · 查证 2026-10-13
 - **目标市场**：销售、咨询和商务人士；商店页写 "Built for sales reps, consultants, and business professionals"
 - **AI 能力**：
-  - AI 功能：录下会议和访谈后转写、区分说话人，并生成带要点、决策和待办的结构化纪要；可在 App 或网页端向 AI 助手 Anka 提问，从录音中提取信息。商店页写 "Supports 150+ languages including English, Spanish, French, Chinese, and Japanese."，并称 "Up to 97% accuracy and speaker identification"。实现方式：录音默认加密存在设备上，转写时上传云端处理，商店页写 "For transcription requests, audio is processed temporarily in the cloud and permanently deleted immediately upon delivery*."；产品页写 "Simplify Tasks, Amplify Results with GPT"，未写具体模型版本（[官方商店](https://us.soundcore.com/products/d3200-soundcore-work-ai-voice-recorder) · [产品页](https://www.soundcore.com/products/d3200-soundcore-work-ai-voice-recorder)，查证 2026-10-13）
-- **大模型方案**：云端转写和摘要，官方写 GPT，未写具体版本（非千问默认绑定）
+  - AI 功能：录下会议和访谈后转写、区分说话人，并生成带要点、决策和待办的结构化纪要；可在 App 或网页端向 AI 助手 Anka 提问，从录音中提取信息。商店页写 "Supports 150+ languages including English, Spanish, French, Chinese, and Japanese."，并称 "Up to 97% accuracy and speaker identification"。实现方式：录音默认加密存在设备上，转写时上传云端处理，商店页写 "For transcription requests, audio is processed temporarily in the cloud and permanently deleted immediately upon delivery*."；美国产品页写 "Simplify Tasks, Amplify Results with GPT"，未列版本；日本官网规格表「AIモデル」列 GPT-5.5、GPT-5.4 mini、GPT-5.4、GPT-5.2（順次追加予定），Gemini 3.5 flash（营销句提及）。日站规格表列名；美站未列版本（[官方商店](https://us.soundcore.com/products/d3200-soundcore-work-ai-voice-recorder) · [产品页](https://www.soundcore.com/products/d3200-soundcore-work-ai-voice-recorder) · [Anker Japan 产品页](https://www.ankerjapan.com/pages/soundcore-work)，查证 2026-11-02）
+- **大模型方案**：云端转写和摘要。日本官网规格表「AIモデル」列 GPT-5.5、GPT-5.4 mini、GPT-5.4、GPT-5.2（順次追加予定）；Gemini 3.5 flash（营销句提及）。日站规格表列名；美站未列版本（非千问默认绑定）
 - **公开数据**：未见公开销量
 - **关键差异化**：① 硬币大小、三种佩戴方式；② 设备端 AES-256 加密，商店页写 "Audio files cannot be exported via USB"（厂商称）
 - **商业模式**：硬件销售 + 转写订阅（每月 300 分钟免费，Pro / Unlimited 付费）
 
-> 来源：[soundcore Work 官方商店](https://us.soundcore.com/products/d3200-soundcore-work-ai-voice-recorder) · [soundcore Work 产品页](https://www.soundcore.com/products/d3200-soundcore-work-ai-voice-recorder)（查证 2026-10-13）
+> 来源：[soundcore Work 官方商店](https://us.soundcore.com/products/d3200-soundcore-work-ai-voice-recorder) · [soundcore Work 产品页](https://www.soundcore.com/products/d3200-soundcore-work-ai-voice-recorder) · [Anker Japan soundcore Work 产品页](https://www.ankerjapan.com/pages/soundcore-work)（均查证 2026-11-02）
 
 ### Fieldy 3（Fieldy）
 
