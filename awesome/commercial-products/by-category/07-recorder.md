@@ -306,6 +306,27 @@
 
 > 来源：[ANYPIN Note Pod P1 产品页](https://anypin.ai/products/anypin-note-pod-p1) · [ANYPIN Q&A](https://anypin.ai/pages/q-a) · [App Store：ANYPIN（id6757214249）](https://apps.apple.com/us/app/anypin/id6757214249)（均查证 2026-10-28）
 
+### TicNote（Mobvoi / 出门问问）
+
+- **上市状态**：在售（美国商店有标价，查证 2026-11-02）
+- **官网/渠道**：<https://www.mobvoi.com/us/products/mobvoiticnote>（美国商店）；营销页 <https://www.mobvoi.com/pages/mobvoiticnote>；Shadow <https://www.mobvoi.com/pages/shadow>
+- **形态**：铝壳卡片机 + OLED。规格表写 "3.39*2.17*0.118 inch"、"Aluminum case"、"OLED display"、29 g、3 MEMS microphones、470 mAh、充电 1.5 小时、"25 hours battery life"、"20+ days standby"、64 GB（"434 recording hours"）、"USB-A port"、"BLE/WiFi/Cable"。拨杆上拨为手机通话录音，下拨为环境录音；屏上显示电量、录音状态、蓝牙是否连接、文件是否在同步。发布稿称 credit card–sized、MagSafe-compatible，并写 "up to 25 hours of continuous recording"。页面不一致：营销页 "Buy one" 区写 "4500 mins recording/charge"，同页规格表写 "25 hours battery life"，发布稿写连续录音最长 25 小时；卡片连续录音取规格表与发布稿的 25 小时
+- **定价**：
+  - 首发价：待核实（[PR Newswire（2025-04-15）](https://www.prnewswire.com/news-releases/mobvoi-launches-ticnote-the-worlds-first-agentic-ai-recorder-that-transforms-the-way-you-work-302428268.html) 写当时美国售价 $159.99 USD，未见另列首发价或划线价）
+  - 现价：$159.99 USD · 美国 · [美国商店](https://www.mobvoi.com/us/products/mobvoiticnote) · 查证 2026-11-02（商店商品数据该变体 price 与 compare_price 均为 159.99）
+  - MSRP：待核实
+  - 订阅：购机附赠 Standard（每月 600 转写分钟 + Shadow Agent 30 次/月）。用户指南写 Standard 不单卖，购任意 TicNote 硬件后自动开通。Pro $12.99 USD/月，年付标价 $119 USD/年，设备捆绑年付 $79 USD/年；Business $29.99 USD/月，年付标价 $299 USD/年，设备捆绑年付 $239 USD/年。设备捆绑价在激活硬件后于 App 内显示 · [Subscription Plans](https://userguide.ticnote.com/subscription-plans) · 查证 2026-11-02。页面不一致：营销页会员表列 Free / Plus / Pro / Business，未标美元价，Business 转写格另写 "Unlimited in Mainland China"；用户指南列 Free / Standard / Pro / Business 并给出上列价格，Business 为每月 6,000 分钟再加硬件每月 600 分钟，未写中国大陆不限量。发布稿（2025-04-15）写当时免费档为每月 300 credits，且前三个月购买赠 3 个月 Pro；现行额度以用户指南为准
+- **目标市场**：通话、会议、讲座、语音备忘与内容记录。营销页场景原文包括 "Phone calls (especially iPhone call recording)"、Meetings、Lectures、Voice memos、Content creation，并另列 Legal services 与 Healthcare。发货地区待核实（本次只确认美国商店有标价；发布稿写 2025-04-15 当时亦在 Amazon，以及英国、欧盟、日本有标价）
+- **AI 能力**：
+  - AI 功能：录音后做转写、摘要、思维导图和翻译（营销页写 101 种语言的转写与翻译，并写实时转写、实时翻译、把照片放进文稿、在文稿中打字）。内置 Agent Shadow：Flash chat、Deep Think、Deep Research、Random Thought、Aha Moment；可跨文件提问（Cross-File Tasking）、建 Project Wiki、生成播客。实现方式：设备本地录音并写入 64 GB；转写、摘要与 Agent 在 TicNote 云端运行。营销页写 "TicNote never uses your data* to train AI models"，脚注写数据存放在美国云基础设施；用户指南 FAQ 写 "TicNote data is stored on US cloud infrastructure and is never used for AI model training"。发布稿列举 GPT-4o、GPT-4o-mini、DeepSeek-R1；美国商店页、营销页、Shadow 页与订阅页未列具体模型名（[营销页](https://www.mobvoi.com/pages/mobvoiticnote) · [Shadow](https://www.mobvoi.com/pages/shadow) · [Subscription Plans](https://userguide.ticnote.com/subscription-plans) · [PR Newswire（2025-04-15）](https://www.prnewswire.com/news-releases/mobvoi-launches-ticnote-the-worlds-first-agentic-ai-recorder-that-transforms-the-way-you-work-302428268.html)，查证 2026-11-02）
+- **大模型方案**：云端多模型。发布稿列举 GPT-4o、GPT-4o-mini、DeepSeek-R1（发布稿列举；以当前 App / 套餐页为准）；具体版本待核实。产品页与订阅页未复述模型名。Shadow Agent 额度按套餐计（购机所含 Standard 为 30 次/月）（**非千问默认绑定**）
+- **公开数据**：未见公开销量。发布稿日期为 2025-04-15，署名为 Mobvoi Inc.
+- **关键差异化**：① 铝壳卡片机 + OLED，拨杆区分手机通话录音与环境录音，对照同文件 Plaud / Notta 卡片机、可穿戴别针，以及 HiDock 桌面扬声器电话；② 公开主打 Agentic：Shadow 可做 Deep Research、跨文件提问与 Project Wiki，不只单次摘要（对照 Plaud / Notta / HiDock / soundcore Work 的转写摘要路径）；③ 购机附赠 Standard（每月 600 转写分钟与 Shadow Agent 30 次），转写与 Agent 走 TicNote 云（厂商称美国基础设施、不用于训练）
+- **商业模式**：硬件销售（现价 $159.99 USD）+ 购机附赠 Standard；可升级 Pro 或 Business，价格见上
+- **另见**：腕上录音产品 TicNote Watch 主卡在 [08 智能手表 / 健康可穿戴](./08-smart-watch.md)，与本品卡片机不是同一硬件。用户指南导航另有 TicNote Lite 与 TicNote Pods，本卡不收录这两款
+
+> 来源：[美国商店](https://www.mobvoi.com/us/products/mobvoiticnote) · [TicNote 营销页](https://www.mobvoi.com/pages/mobvoiticnote) · [Shadow](https://www.mobvoi.com/pages/shadow) · [Subscription Plans](https://userguide.ticnote.com/subscription-plans) · [PR Newswire（2025-04-15）](https://www.prnewswire.com/news-releases/mobvoi-launches-ticnote-the-worlds-first-agentic-ai-recorder-that-transforms-the-way-you-work-302428268.html)（均查证 2026-11-02）
+
 ## 待补充清单
 
 ### 海外 / 可穿戴
@@ -328,7 +349,7 @@
 ### 国内与垂直
 
 - [ ] **其它讯飞 SKU / 听见硬件套装**
-- [ ] **出海卡片机新品牌**（须附商店链接与标价）
+- [x] ~~**出海卡片机新品牌**~~：TicNote（Mobvoi / 出门问问）已收入上方卡片（美国商店现价 $159.99 USD，查证 2026-11-02）
 - [ ] **律师 / 医疗垂类录音设备**
 
 ## 卡片格式
