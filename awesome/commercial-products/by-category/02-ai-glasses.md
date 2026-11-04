@@ -148,6 +148,29 @@
 
 ---
 
+### 千问 AI 眼镜 N1 / N1 Pro（阿里巴巴 / 千问）
+
+- **上市状态**：在售（2026-09-22 开订，2026-10-13 起淘宝、天猫、京东、抖音现货，查证 2026-11-03）。开订与开售日期见 [Alibaba Cloud 博客（2026-09-25）](https://www.alibabacloud.com/blog/alibaba-unveils-agentic-computer-ai-wearables-and-more-at-2026-apsara-conference_603599)；现货渠道见 [界面新闻（2026-10-13）](https://m.jiemian.com/article/15184718.html)
+
+- **官网/渠道**：<https://www.alibabacloud.com/blog/alibaba-unveils-agentic-computer-ai-wearables-and-more-at-2026-apsara-conference_603599>（阿里云官方博客）；现货渠道为淘宝、天猫、京东、抖音。同店另有千问 S1 / G1 与夸克眼镜，本卡不收录、不写其规格或价格
+- **形态**：无显示 AI 拍摄眼镜（波士顿方圆框）。5000 万像素（50MP）第一视角传感器、1G5P 镜头，4K 录像、实况照片、多重防抖；三芯：第一代骁龙 AR1（影像 / 复杂计算；高通稿写第三代 Hexagon NPU）+ 恒玄 BES2800（蓝牙 / 音频）+ 奇景 HX6538（低功耗视觉感知）；5 麦阵列 + 骨传导拾音；272 mAh 镜腿电池可拆，可选 700 mAh MiniBag 换电仓；厂商称综合续航 N1 约 9 小时、N1 Pro 约 8 小时。N1 Pro 另加眼动追踪、虹膜核身支付（与蚂蚁 GPASS、高通共研）、PPG 心率 / 血氧 / HRV / 体温监测（高通稿另写压力、用眼健康、久坐与颈椎提醒）（[高通中国（2026-10-13）](https://www.eet-china.com/mp/a530804.html) · [智东西（2026-10-13）](https://www.zhidx.com/p/600405.html)）
+- **定价**：
+  - 首发价：待核实
+  - 现价：京东标价（标准套装）N1 ¥2,899 CNY / N1 Pro ¥3,399 CNY · 中国大陆 · [etnet（2026-10-13）引千问京东自营旗舰店](https://www.etnet.com.hk/www/tc/news/news-article.php?category=%EF%BC%A1%EF%BC%A9&newsid=20261013771&section=special) · [IT之家（2026-10-13）](https://www.ithome.com/1/012/400.htm) · 查证 2026-11-04。未直取商品页（京东商品页价格区需脚本渲染且有风控；天猫未取）。N1 Pro ¥3,399 CNY 另有 [什么值得买（2026-10-13）](https://www.smzdm.com/p/183899703/) 二手佐证（原文「京东现售价3399元」）。高通中国稿写「N1 2999 元起 / N1 Pro 3499 元起」（即 ¥2,999 CNY 起 / ¥3,499 CNY 起）（[高通中国（2026-10-13）](https://www.eet-china.com/mp/a530804.html)），与京东标价不一致，两口径并列。[The Next Web](https://thenextweb.com/news/alibaba-qwen-glasses-n1-price-launch) 转述 Bloomberg「2,999 yuan」，与高通稿 N1 起价一致
+  - MSRP：待核实（上述两套口径都未核实为建议零售价）
+  - 促销价：首销国补到手 N1 ¥2,218 CNY 起 / N1 Pro ¥2,600 CNY 起 · 中国大陆 · [界面新闻（2026-10-13）](https://m.jiemian.com/article/15184718.html) · [智东西（2026-10-13）](https://www.zhidx.com/p/600405.html) · 促销/补贴口径，非标价 · 查证 2026-11-03
+- **目标市场**：中国大陆（淘宝、天猫、京东、抖音现货）
+- **AI 能力**：
+  - AI 功能：实时问答、视觉识物、翻译、会议纪要、AI 备忘录、一句话办事（技能广场语音调用），以及主动感知（按用户预设任务自动判断进入会议场景并开始记录、到站提示车次 / 检票口）；AI 灵感画集（抓拍生活片段生成漫画风图集）；可自定义唤醒词与音色。N1 Pro 用视线锁定所看物体做识物、菜单翻译与比价，健康数据经授权由健康大模型解读。实现方式：端侧奇景 HX6538 跑视觉模型判断场景，命中后分级唤醒骁龙 AR1（第三代 Hexagon NPU）；高通稿写「内置的定制通义千问 AI 大模型」，即定制通义千问（型号未公开）。影像 AI ISP / AIGC 画质优化走云端，依据为智东西现场架构图；通用问答是否走云端无明确来源，待核实（[Alibaba Cloud 博客（2026-09-25）](https://www.alibabacloud.com/blog/alibaba-unveils-agentic-computer-ai-wearables-and-more-at-2026-apsara-conference_603599) · [高通中国（2026-10-13）](https://www.eet-china.com/mp/a530804.html) · [智东西（2026-10-13）](https://www.zhidx.com/p/600405.html) · [IT之家（2026-10-13）](https://www.ithome.com/1/012/400.htm) · [etnet（2026-10-13）](https://www.etnet.com.hk/www/tc/news/news-article.php?category=%EF%BC%A1%EF%BC%A9&newsid=20261013771&section=special) · [界面新闻（2026-10-13）](https://m.jiemian.com/article/15184718.html) · [The Next Web](https://thenextweb.com/news/alibaba-qwen-glasses-n1-price-launch)，查证 2026-11-03）
+- **大模型方案**：定制通义千问（型号未公开）
+- **公开数据**：未见公开销量
+- **关键差异化**：① 自家基座模型与千问 App 生态（淘宝 / 支付宝 / 高德等）装进眼镜，区别于 Rokid / RayNeo 的多模型可选；② 三芯与低功耗视觉芯片按预设任务做主动感知；③ 镜腿电池可拆换电；④ N1 Pro 有虹膜支付、眼动交互与健康监测
+- **商业模式**：硬件销售（所列来源未写订阅）
+
+> 来源：[Alibaba Cloud 博客（2026-09-25）](https://www.alibabacloud.com/blog/alibaba-unveils-agentic-computer-ai-wearables-and-more-at-2026-apsara-conference_603599) · [高通中国（2026-10-13）](https://www.eet-china.com/mp/a530804.html) · [智东西（2026-10-13）](https://www.zhidx.com/p/600405.html) · [IT之家（2026-10-13）](https://www.ithome.com/1/012/400.htm) · [etnet（2026-10-13）](https://www.etnet.com.hk/www/tc/news/news-article.php?category=%EF%BC%A1%EF%BC%A9&newsid=20261013771&section=special) · [界面新闻（2026-10-13）](https://m.jiemian.com/article/15184718.html) · [The Next Web](https://thenextweb.com/news/alibaba-qwen-glasses-n1-price-launch) · [什么值得买（2026-10-13）](https://www.smzdm.com/p/183899703/)（查证 2026-11-03；现价口径查证 2026-11-04）
+
+---
+
 ### Ray-Ban Meta Audio（Meta × EssilorLuxottica）
 
 - **上市状态**：预售（Meta 官网，查证 2026-10-03）；[新闻稿（2026-09-23）](https://about.fb.com/news/2026/09/introducing-ray-ban-meta-audio-glasses-new-styles-plus-muse/) 写 "ship October 13"（年份待核实）
@@ -198,7 +221,7 @@
 
 ### Halo（Brilliant Labs）
 
-- **上市状态**：官方商店可下单（查证 2026-10-16）；商店页写 "Halo will begin shipping soon"，具体发货日期待核实
+- **上市状态**：在售（已发货，查证 2026-11-03）。官方商店写 "Shipping now!"（[商店页](https://brilliant.xyz/products/halo)）；[Business Wire（2026-10-27）](https://www.businesswire.com/news/home/20261027712724/en/Brilliant-Labs-Launches-Halo-Glasses-A-New-Generation-of-Privacy-First-Smartglasses) 正式发布，原文 "Priced at $399 they are available now"
 - **官网/渠道**：<https://brilliant.xyz/products/halo> 官方商店产品页；<https://docs.brilliant.xyz/halo/halo/> 官方开发文档
 - **形态**：开源 AI 眼镜；重量略超 40 g，彩色显示，双麦克风，双骨传导扬声器；显示光学可调 +2 至 -6 屈光度（官方商店）
 - **定价**：
@@ -207,13 +230,13 @@
   - MSRP：待核实（查证 2026-10-16）
 - **目标市场**：普通用户与开发者；官方商店写 "Open source AI glasses for the curious, creative, and forward thinking."
 - **AI 能力**：
-  - AI 功能：Halo 可以就用户看到和听到的内容做 AI 对话，帮助记忆，也能做多语言翻译；官方商店写 "Halo is useful for anyone to use for memory enhancement and AI dialogue about what you see and hear, including translation across a wide range of languages."；商店页称随附的 Noa 是 "your private conversational AI agent with long-term memory of your life."。实现方式：眼镜端硬件做 AI 推理，官方商店写 "low-power optical sensor for AI inference"，并写有 "a low-power AI processor"；眼镜通过蓝牙与手机上兼容 Halo 的 App（文档举例 Brilliant Noa）配对使用（官方开发文档）。对话所用大模型及运行位置未公开（[官方商店](https://brilliant.xyz/products/halo) · [官方开发文档](https://docs.brilliant.xyz/halo/halo/)，查证 2026-10-16）
-- **大模型方案**：未公开（非千问默认绑定）
+  - AI 功能：Halo 可以就用户看到和听到的内容做 AI 对话，帮助记忆，也能做多语言翻译；官方商店写 "Halo is useful for anyone to use for memory enhancement and AI dialogue about what you see and hear, including translation across a wide range of languages."；商店页称随附的 Noa 是 "your private conversational AI agent with long-term memory of your life."。实现方式：眼镜端硬件做 AI 推理，官方商店写 "low-power optical sensor for AI inference"，并写有 "a low-power AI processor"；眼镜通过蓝牙与手机上兼容 Halo 的 App（文档举例 Brilliant Noa）配对使用（官方开发文档）（[官方商店](https://brilliant.xyz/products/halo) · [官方开发文档](https://docs.brilliant.xyz/halo/halo/)，查证 2026-10-16）。大模型为 Google Gemini（隐私政策，版本未公开）；隐私政策写 "Noa uses Google's Gemini services for conversation and image understanding"（[Privacy Policy](https://brilliant.xyz/pages/privacy-policy)，查证 2026-11-03）
+- **大模型方案**：Google Gemini（隐私政策，版本未公开）
 - **公开数据**：未见公开销量
 - **关键差异化**：① 软硬件开源，官方商店写 "Halo is totally open source, design files and code are on Github."；② 提供 Brilliant SDK 和 Flutter SDK，供开发者自建应用；③ 官方商店写 Noa 等功能 "included free out of the box with daily usage caps"
-- **商业模式**：硬件销售；内置功能免费但有每日用量上限，超出部分是否收费未公开
+- **商业模式**：硬件销售；Noa Standard 免费（含记忆，有每日用量上限；商店原文 "cost-optimized and will not feel conversational"）；Noa Plus $9.99 USD/月；Noa Pro $39.99 USD/月（Plus 的 3 倍用量 + 长期记忆）（[官方商店](https://brilliant.xyz/products/halo)，查证 2026-11-03）
 
-> 来源：[Brilliant Labs Halo 官方商店](https://brilliant.xyz/products/halo) · [Halo 官方开发文档](https://docs.brilliant.xyz/halo/halo/)（均查证 2026-10-16）
+> 来源：[Brilliant Labs Halo 官方商店](https://brilliant.xyz/products/halo) · [Business Wire（2026-10-27）](https://www.businesswire.com/news/home/20261027712724/en/Brilliant-Labs-Launches-Halo-Glasses-A-New-Generation-of-Privacy-First-Smartglasses) · [Privacy Policy（2026-10-07）](https://brilliant.xyz/pages/privacy-policy) · [Halo 官方开发文档](https://docs.brilliant.xyz/halo/halo/)（商店页、Business Wire 与隐私政策查证 2026-11-03；开发文档查证 2026-10-16）
 
 ---
 
@@ -226,7 +249,7 @@
 ### 国内品牌
 
 - [ ] **Xreal** 显示向 One / 1S 系列
-- [ ] **小米 / 华为 / 百度** 大厂 AI 眼镜 SKU 动态
+- [ ] **小米 / 华为 / 百度** 大厂 AI 眼镜 SKU 动态（阿里千问 N1 已收）
 
 ### 垂直场景
 
