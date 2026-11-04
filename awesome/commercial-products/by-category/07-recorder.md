@@ -306,6 +306,26 @@
 
 > 来源：[ANYPIN Note Pod P1 产品页](https://anypin.ai/products/anypin-note-pod-p1) · [ANYPIN Q&A](https://anypin.ai/pages/q-a) · [App Store：ANYPIN（id6757214249）](https://apps.apple.com/us/app/anypin/id6757214249)（均查证 2026-10-28）
 
+### SwitchBot AI MindClip（SwitchBot）
+
+- **上市状态**：在售（美站 available，查证 2026-11-04；新闻稿 2026-09-03 起官网可购）
+- **官网/渠道**：<https://us.switch-bot.com/products/switchbot-ai-mindclip>
+- **形态**：16.8 g 夹扣式可穿戴录音 / AI 笔记。尺寸 50 × 29 × 18.5 mm，铝 + ABS。连续录音约 20 小时；本地 64 GB；近场拾音约 3 m；Wi-Fi 2.4GHz + Bluetooth 4.2。新闻稿写支持说话人识别 / 分离 / 声纹。美站有 Gray / White（产品 JSON available 为 true）（[US 产品页](https://us.switch-bot.com/products/switchbot-ai-mindclip) · [PR Newswire（2026-09-03）](https://www.prnewswire.com/news-releases/switchbot-launches-ai-mindclip-a-wearable-ai-assistant-that-captures-ideas-promises-and-to-dos-at-ifa-2026-302864881.html)，查证 2026-11-04）
+- **定价**：
+  - 首发价：待核实（[PR Newswire（2026-09-03）](https://www.prnewswire.com/news-releases/switchbot-launches-ai-mindclip-a-wearable-ai-assistant-that-captures-ideas-promises-and-to-dos-at-ifa-2026-302864881.html) 写 2026-09-03 起官网可购，所列 MSRP 为 USD 119.99，未见另列首发价）· 查证 2026-11-04
+  - 现价：$119.99 USD · 美国 · [US 产品页](https://us.switch-bot.com/products/switchbot-ai-mindclip) · 查证 2026-11-04（美站 available）
+  - MSRP：$119.99 USD · [PR Newswire（2026-09-03）](https://www.prnewswire.com/news-releases/switchbot-launches-ai-mindclip-a-wearable-ai-assistant-that-captures-ideas-promises-and-to-dos-at-ifa-2026-302864881.html) · 查证 2026-11-04。新闻稿 MSRP 同为 USD 119.99；同稿另列 CAD 159.99、GBP 119.99
+  - 订阅：Free 每月 300 转写分钟；新用户 1 个月 Pro 试用（1,200 分钟）；Pro $15.99 USD/月、$69.99 USD/6 个月、$99.99 USD/年 · [US 产品页](https://us.switch-bot.com/products/switchbot-ai-mindclip) · 查证 2026-11-04
+- **目标市场**：随身记下想法、口头承诺与待办（新闻稿定位）。本次只确认美国商店 available、可结账
+- **AI 能力**：
+  - AI 功能：做什么：转写 / 摘要 / 要点 / 待办与提醒；Ask AI 用自然语言检索过往记忆；Timeline / Daily Memory / Weekly Summary；待办可同步 Apple / Google Calendar 与 Reminders，并可经同一日历出现在 SwitchBot E-Ink Home Dashboard；OpenAPI CLI 经用户授权把转写上下文交给外部 agent（产品页列 ChatGPT、Claude Code、OpenClaw、Hermes；新闻稿另写 Codex、OpenClaw、Hermes）。产品页写 30+ 语种。怎么实现，分项：① 转写 = Qwen-Audio-ASR；② Ask AI = 阿里云 RAG + ADBSQL 检索 + Qwen-based 问答模型（版本未公开，不推断具体版本）；③ 摘要 / 整理：新闻稿（PR Newswire 2026-09-03）写可调用 ChatGPT、Gemini 等 LLM，产品页未重复这些模型名。设备本地录音（64 GB），充电或结束后上传云端整理（[US 产品页](https://us.switch-bot.com/products/switchbot-ai-mindclip) · [PR Newswire（2026-09-03）](https://www.prnewswire.com/news-releases/switchbot-launches-ai-mindclip-a-wearable-ai-assistant-that-captures-ideas-promises-and-to-dos-at-ifa-2026-302864881.html)，查证 2026-11-04）
+- **大模型方案**：云端多模型分项披露（非千问独占绑定）。① 转写 = Qwen-Audio-ASR；② Ask AI = 阿里云 RAG + ADBSQL 检索 + Qwen-based 问答模型（版本未公开）；③ 摘要 / 整理可调用 ChatGPT、Gemini 等 LLM（新闻稿 PR Newswire 2026-09-03；产品页未重复模型名）（**非千问默认绑定**）
+- **公开数据**：未见公开销量
+- **关键差异化**：① 16.8 g 夹扣式可穿戴，对照同文件 ANYPIN Note Pod P1、Bee Frontier、Omi、Fieldy 3、Memoket Gem；② 转写公开点名 Qwen-Audio-ASR，Ask AI 公开为阿里云 RAG + ADBSQL + Qwen-based（版本未公开），摘要 / 整理按新闻稿可调用 ChatGPT、Gemini；③ OpenAPI CLI 经用户授权把转写上下文交给外部 agent（产品页列 ChatGPT、Claude Code、OpenClaw、Hermes）
+- **商业模式**：硬件销售（现价 $119.99 USD；新闻稿 MSRP 同为 USD 119.99）+ Free 每月 300 转写分钟 + 可选 Pro（$15.99 USD/月、$69.99 USD/6 个月、$99.99 USD/年；新用户 1 个月 Pro 试用 1,200 分钟）
+
+> 来源：[SwitchBot AI MindClip 美国产品页](https://us.switch-bot.com/products/switchbot-ai-mindclip) · [PR Newswire（2026-09-03）](https://www.prnewswire.com/news-releases/switchbot-launches-ai-mindclip-a-wearable-ai-assistant-that-captures-ideas-promises-and-to-dos-at-ifa-2026-302864881.html)（均查证 2026-11-04）
+
 ### TicNote（Mobvoi / 出门问问）
 
 - **上市状态**：在售（美国商店有标价，查证 2026-11-02）
