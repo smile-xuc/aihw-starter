@@ -173,16 +173,17 @@
 
 ### Ray-Ban Meta Audio（Meta × EssilorLuxottica）
 
-- **上市状态**：预售（Meta 官网，查证 2026-10-03）；[新闻稿（2026-09-23）](https://about.fb.com/news/2026/09/introducing-ray-ban-meta-audio-glasses-new-styles-plus-muse/) 写 "ship October 13"（年份待核实）
+- **上市状态**：在售（查证 2026-11-04）。[Meta 官方博客（2026-10-13）](https://www.meta.com/blog/ray-ban-meta-audio-our-first-audio-glasses-are-here/) 原文 "Today, Ray-Ban Meta Audio … is on sale, starting at $349 USD"
 
 - **官网/渠道**：<https://about.fb.com/news/2026/09/introducing-ray-ban-meta-audio-glasses-new-styles-plus-muse/>（新闻稿）
 - **形态**：Meta 产品线中的音频款，无摄像头、无显示；开放式扬声器 + Meta AI，用于语音助手、翻译、通话、音乐。约 43 g；续航最长 12 小时（厂商称）；充电盒再加 48 小时（厂商称）；Clubmaster 和 Burbank 两款共 23 种框镜组合；支持处方镜片
 - **定价**：
-  - 首发价：（预购起价）$349 USD · [新闻稿（2026-09-23）](https://about.fb.com/news/2026/09/introducing-ray-ban-meta-audio-glasses-new-styles-plus-muse/) · 查证 2026-10-02
-  - 现价：$349 USD 起（官网售价，预售中）· 美国 · [产品页](https://www.meta.com/ai-glasses/ray-ban-meta-audio/) · 查证 2026-10-03
+  - 首发价：$349 USD（开售日博客）· [Meta 官方博客（2026-10-13）](https://www.meta.com/blog/ray-ban-meta-audio-our-first-audio-glasses-are-here/) · 查证 2026-11-04
+  - 现价：$349 USD 起 · [Meta 官方博客（2026-10-13）](https://www.meta.com/blog/ray-ban-meta-audio-our-first-audio-glasses-are-here/) · 查证 2026-11-04
   - MSRP：待核实
+  - 区域价（交叉参考，非官方 MSRP / 区域价）：英区 £319 起 · [Meta 英区页](https://www.meta.com/gb/ai-glasses/ray-ban-meta-audio/) · 查证 2026-11-04
   - 处方和 Transitions 加价：待核实
-- **目标市场**：待核实
+- **目标市场**：各国可售范围待核实
 - **AI 能力**：
   - AI 功能：说「Hey Meta」或按动作键唤醒 Meta AI 语音助手，用语音设提醒、发消息、提问并听取回答，或让它打电话（如 "Hey Meta, call Julia"）、播放音乐；只有在说「Hey Meta」或按动作键时才采集声音。实现方式：机身内置麦克风拾取语音指令，开放式定向扬声器播放回答，交互只靠语音与动作键，无摄像头、无显示；Meta AI 未公开模型名，语音在本地还是云端处理官方未写（[产品页](https://www.meta.com/ai-glasses/ray-ban-meta-audio/) · [新闻稿（2026-09-23）](https://about.fb.com/news/2026/09/introducing-ray-ban-meta-audio-glasses-new-styles-plus-muse/)，查证 2026-10-03）
   - Meta AI，用于语音助手、翻译、通话、音乐
@@ -191,7 +192,7 @@
 - **关键差异化**：① 无摄像头、无显示的音频款；② 开放式扬声器 + Meta AI，用于语音助手、翻译、通话、音乐；③ Clubmaster 和 Burbank 两款共 23 种框镜组合，支持处方镜片
 - **商业模式**：硬件销售
 
-> 来源：[Introducing Ray-Ban Meta Audio（2026-09-23）](https://about.fb.com/news/2026/09/introducing-ray-ban-meta-audio-glasses-new-styles-plus-muse/)（查证 2026-10-02）
+> 来源：[Introducing Ray-Ban Meta Audio（2026-09-23）](https://about.fb.com/news/2026/09/introducing-ray-ban-meta-audio-glasses-new-styles-plus-muse/) · [Ray-Ban Meta Audio, Our First Audio Glasses, Are Here（2026-10-13）](https://www.meta.com/blog/ray-ban-meta-audio-our-first-audio-glasses-are-here/)（查证 2026-11-04）
 
 ---
 
