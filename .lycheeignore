@@ -34,3 +34,7 @@
 
 # OpenAI dots：CI 固定 403，浏览器可打开。
 ^https://openai\.com/index/introducing-dots/$
+
+# 用户批准（2026-11-04，经 Bruce 转达）：AT&T Galaxy Watch9 购买页，CI 对 lychee/curl 403、浏览器可开；精确 URL，不排除整个 att.com 域名。对齐 Android Authority / SenseCAP 假阳性处理。
+^https://www\.att\.com/buy/wearables/samsung-galaxy-watch9-40mm\.html$
+^https://www\.att\.com/buy/wearables/samsung-galaxy-watch9-44mm\.html$
