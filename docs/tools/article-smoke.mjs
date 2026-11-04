@@ -109,7 +109,7 @@ try {
 
   // Filtering includes collapsed code; navigation and section visibility must agree.
   for(const width of [390,1440]){
-    await page.setViewportSize({width,height:1000});await page.goto(article+'#session');await atSection(page,'session');await openToc(page);
+    await page.setViewportSize({width,height:1000});await page.goto(article);await page.goto(article+'#session');await atSection(page,'session');await openToc(page);
     const search=page.locator('#section-search');
     assert.equal(await page.locator('label[for="section-search"]').count(),1);
     assert.equal(await page.locator('#search-status').getAttribute('aria-live'),'polite');
