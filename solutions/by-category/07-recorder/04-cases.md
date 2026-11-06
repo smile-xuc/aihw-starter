@@ -39,6 +39,7 @@
 | **Limitless Pendant** | Limitless（Meta 收购后公开停售） | 挂件可穿戴 | 云端转写 + 日记式检索 | 持续录音、隐私声明 | 历史公开约 $99；[官网说明停售](https://www.limitless.ai/) |
 | **Bee Frontier**（前代 Pioneer 已换代） | Bee（已加入 Amazon） | 腕带 / 夹扣可穿戴 | 未公开具体基座模型；音频处理后即删 | 摘要、要点、建议待办、对话搜索、语音笔记；Bee Pro 集成邮件 / 日历 | [官网 $74.99](https://bee.computer/products/frontier)；[Bee Pro](https://bee.computer/bee-pro) $11.99/月 |
 | **Omi** | Based Hardware Inc. | 项链挂坠（双麦） | 开源常量 `gpt-6-luna`；托管默认 STT 为 modulate-velma-2 / soniox / parakeet | 转写、摘要、行动项、记忆与提问 | [结账 $169](https://www.omi.me/pages/pricing)（目录价 [$229](https://www.omi.me/products/omi)，查证 2026-10-28） |
+| **极米记得 G1+L1** | 极米 | 无摄像头记忆眼镜 + 无屏手环 | 云端转写 + 云端 AI 问答（模型未公开） | 全天候录音 → 转写 / 纪要 / 记忆问答 | G1 ¥1,299 起 / L1 ¥599 起（官方商城现价，查证 2026-11-05；[商业产品卡](../../../awesome/commercial-products/by-category/07-recorder.md#极米记得-ai-记忆眼镜-g1--ai-记忆手环-l1极米-xgimi)） |
 | **通义听悟** | 阿里云 | 纯 SaaS | Paraformer + 纪要 Agent | 开箱转写 / 纪要 | 按听悟套餐（非硬件） |
 | **钉钉 AI 听记** | 钉钉 | 会议软件内嵌 | 钉钉 / 通义能力（公开表述） | 会中字幕与纪要 | 随钉钉商业化 |
 
@@ -58,7 +59,7 @@
   硬件+订阅    可穿戴探索*
 ```
 
-\*NotePin：Plaud 别针可穿戴，官网在售 $159.00（盒内磁吸别针与夹子；变体 NotePin S $179.00，查证 2026-10-28），软件仍走 Plaud Intelligence 会员，见 [商业产品卡][rec]。Limitless Pendant：公开信息称 2025-12 起不再向新用户销售，作历史对标。Bee Frontier（前代 Pioneer 已换代）为仍在官网在售的可穿戴对照（$74.99，Bee Pro $11.99/月或 $99.99/年），见 [商业产品卡][rec]。
+\*NotePin：Plaud 别针可穿戴，官网在售 $159.00（盒内磁吸别针与夹子；变体 NotePin S $179.00，查证 2026-10-28），软件仍走 Plaud Intelligence 会员，见 [商业产品卡][rec]。Limitless Pendant：公开信息称 2025-12 起不再向新用户销售，作历史对标。Bee Frontier（前代 Pioneer 已换代）为仍在官网在售的可穿戴对照（$74.99，Bee Pro $11.99/月或 $99.99/年），见 [商业产品卡][rec]。眼镜/手环记忆（极米 G1/L1）：无摄像头记忆眼镜 + 无屏手环，做全天候录音记忆，见 [商业产品卡](../../../awesome/commercial-products/by-category/07-recorder.md#极米记得-ai-记忆眼镜-g1--ai-记忆手环-l1极米-xgimi)。
 
 ---
 
@@ -105,6 +106,17 @@
 - **亮点**：USB-C 桌面扬声器电话；BlueCatch 戴蓝牙耳机仍录通话双方，不向 Zoom / Teams 加 bot；Call / Room 按是否连接耳机切换（材料称自动）；HiNotes 厂商称 75+ 语种，基础转写 / 摘要随购机；零售约 $189（2026-06-02 首发约 $169）
 - **可借鉴点**：相对 Plaud / Notta「卡片机 + 会员分钟包」，H1 Lite 把采集放在桌面，并把基础转写记进购机价；说话人识别、更多模板与导出走可选 Pro，基础能力不另按分钟购买
 - **另见**：[HiDock 商业产品卡][rec]
+
+### 案例：极米记得 G1/L1 — 眼镜/手环记忆入口
+
+- **公开信息源**：[极米记得商业产品卡](../../../awesome/commercial-products/by-category/07-recorder.md#极米记得-ai-记忆眼镜-g1--ai-记忆手环-l1极米-xgimi)（卡内官方商城与媒体链接，查证 2026-11-05）
+- **亮点**：
+  - 无摄像头。G1 为钛合金眼镜，约 17.9 g（±1 g，不含镜片，媒体实测）；L1 为无屏织物手环，可转吊坠
+  - 现价（官方商城，查证 2026-11-05）：G1 圆框标准版 ¥1,299 起 / L1 标准版 ¥599 起
+  - 厂商称云端专用服务加密转写，转写后原始录音从云端删除；模型未公开
+  - 「记忆通行证」可向兼容 AI Agent 授权只读个人记忆；兼容列表不代表设备内置这些模型
+- **可借鉴点**：眼镜/手环外形做全天候记忆，功能归属录音记忆，而不是显示向 AI 眼镜
+- **另见**：[极米记得商业产品卡](../../../awesome/commercial-products/by-category/07-recorder.md#极米记得-ai-记忆眼镜-g1--ai-记忆手环-l1极米-xgimi)
 
 ### 案例：通义听悟 / 钉钉听记（阿里云 / 钉钉）— 软件参考
 
