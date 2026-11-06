@@ -243,6 +243,29 @@
 
 ---
 
+### XREAL AURA（XREAL）
+
+- **上市状态**：接受订购（2026-10-28 美/加/韩开放订购；日本 11-02；发货约 11 月中旬；18+；查证 2026-11-06）。[Google 博客（2026-10-28）](https://blog.google/products-and-platforms/platforms/android/xreal-aura/) 写当日在美国、加拿大、韩国开放订购，日本 11 月 2 日起，原文 "with shipments beginning in mid-November"，并写 "available for users 18+"。产品页按钮为 "Order Now"；[美国商店](https://us.shop.xreal.com/products/xreal-aura) 写 "Shipping is expected to begin in mid-November 2026"。查证当日页面未改写成已发货
+- **官网/渠道**：<https://www.xreal.com/aura>（产品页）；美国商店 <https://us.shop.xreal.com/products/xreal-aura>；美国 Best Buy（博客写可在 BestBuy.com 订购，具体商品页待核实）。加/韩/日及其他渠道待核实
+- **形态**：光学透视眼镜约 95 g + 有线 Compute Puck 约 265 g。页面不一致：博客写 under 95 g，产品页与规格文档写 95 g，卡片取约 95 g。Sony Micro-OLED 1920×1200/眼，70° FOV，最高约 1050 nits（产品页 "Up to 1050 nits"），最高 120 Hz；电致变色 5 档调光；Bose EQ + 四麦；双追踪相机 + 高清 RGB 相机（带隐私指示灯）；6DoF / 手势追踪；有线镜像（Wired Mirroring）、空间视图转 3D；IPD 分 M（60–66 mm）/ L（66–72 mm）；镜架集成 X1S 空间协处理器；Puck 为 Snapdragon Reality Elite，系统 Android XR；12GB/256GB 或 16GB/512GB；电池额定 4,455 mAh（规格文档；同页另列典型容量 4,550 mAh）
+- **定价**：
+  - 首发价：$1,099 USD（12GB+256GB）/ $1,299 USD（16GB+512GB），至年底限时价 · 美国 · [Google 博客（2026-10-28）](https://blog.google/products-and-platforms/platforms/android/xreal-aura/) 原文 "launch pricing starting at USD 1,099 through the end of the year"；[产品页](https://www.xreal.com/aura) 写 "Through the end of the year, XREAL AURA is available starting at $1,099." · 查证 2026-11-06
+  - 现价（产品页/结账页，查证 2026-11-06）：$1,099 USD（12GB+256GB）/ $1,299 USD（16GB+512GB）· 美国 · [产品页](https://www.xreal.com/aura) · [美国商店](https://us.shop.xreal.com/products/xreal-aura)。结账页未登录可读，两档行价与此相同
+  - MSRP：待核实
+  - 页面称按原价省 $180（12GB+256GB）/ $200（16GB+512GB），原文 "Based on the original prices"，原价待核实
+  - CAD / KRW / JPY：待核实
+- **目标市场**：美国、加拿大、韩国、日本（博客脚注 "Available in the U.S., Canada, Japan, and Korea. Compatible account required, 18+."）。其他市场待核实
+- **AI 能力**：
+  - AI 功能：Gemini on Android XR 能理解佩戴者眼前的现实环境，以及屏幕和应用上的内容，可用自然语言对话协助（整理窗口、对镜像笔记本内容提问、游戏中求助等）；可共享视野，由 Gemini 标出房间里或屏幕上应关注的内容；产品页另写可用语音控制系统，并可就眼前所见提问。实现方式：模型名为 Gemini，子型号未公开；官方未写推理位置，只写需要兼容账号，规格页写 "Some features require setup or subscription"，故记为 Gemini（推理位置官方未写）。端侧为厂商称：眼镜内 X1S 协处理器做常开的 AI 视觉处理；高清 RGB 相机做实时 AI 感知，带隐私指示灯；Puck 标称 48 TOPS。（[Google 博客（2026-10-28）](https://blog.google/products-and-platforms/platforms/android/xreal-aura/) · [产品页](https://www.xreal.com/aura) · [规格文档](https://tutorials.xreal.com/docs/aura/specifications/)，查证 2026-11-06）
+- **大模型方案**：Gemini（子型号未公开；推理位置官方未写）（非千问默认绑定）
+- **公开数据**：未见公开销量
+- **关键差异化**：① Android XR 有线分体式 XR 眼镜（眼镜 + Compute Puck）；Google 博客原文 "the first wired XR glasses powered by Android XR"（[Google 博客（2026-10-28）](https://blog.google/products-and-platforms/platforms/android/xreal-aura/)）；② Gemini 可对现实环境与屏幕内容做对话协助；③ 眼镜端 X1S + 带隐私灯的 RGB 相机做感知（厂商称），Puck 跑 Android XR
+- **商业模式**：硬件销售。规格页写 "Some features require setup or subscription"，订阅价格待核实
+
+> 来源：[Google 博客（2026-10-28）](https://blog.google/products-and-platforms/platforms/android/xreal-aura/) · [XREAL AURA 产品页](https://www.xreal.com/aura) · [规格文档](https://tutorials.xreal.com/docs/aura/specifications/) · [美国商店](https://us.shop.xreal.com/products/xreal-aura)（均查证 2026-11-06）
+
+---
+
 ## 待补充清单
 
 ### 海外标杆
@@ -251,7 +274,7 @@
 
 ### 国内品牌
 
-- [ ] **Xreal** 显示向 One / 1S 系列
+- [ ] **Xreal** 显示向 One / 1S 系列（AURA 已收，见上）
 - [ ] **小米 / 华为 / 百度** 大厂 AI 眼镜 SKU 动态（阿里千问 N1 已收）
 
 ### 垂直场景
