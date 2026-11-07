@@ -129,10 +129,10 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px}
 <p class="eyebrow">原理阅读 · 2026-11-01</p>
 <h1>Personal Agent 设备，会是什么样？</h1>
 <p class="lead">个人助手正在从「能聊天」过渡到「能办事」：读邮件、改日程、整理纪要、在浏览器里跑腿、在支付环节下单。公开产品在这一阶段给出的差异，主要不在对话文案，而在三处工程选择——<strong>任务闭环跑在谁的机器上、外向动作由谁批准、真实凭证是否进入模型上下文</strong>。</p>
-<nav class="roadmap" aria-label="章节跳转"><a href="#scene"><b>场景</b></a><a href="#blocks"><b>五块积木</b></a><a href="#compare"><b>七列对照</b></a><a href="#story"><b>串景</b></a><a href="#criteria"><b>三条标准</b></a></nav>
+<nav class="roadmap" aria-label="章节跳转"><a href="#context"><b>个人上下文</b></a><a href="#scene"><b>场景</b></a><a href="#blocks"><b>五块积木</b></a><a href="#compare"><b>七列对照</b></a><a href="#story"><b>串景</b></a><a href="#criteria"><b>三条标准</b></a></nav>
 </div></div>
 <div class="wrap layout">
-<aside class="toc"><details open><summary><span class="toc-kicker">本文内容</span><span class="toc-now">当前：文首</span></summary><nav aria-label="文章目录"><a href="#scene">场景：四类事</a><a href="#mail">邮件与日程</a><a href="#minutes">会议纪要</a><a href="#browser">浏览器跑腿</a><a href="#pay">支付与下单</a><a href="#blocks">五块积木</a><a href="#entry">入口与调度</a><a href="#memory">记忆</a><a href="#spectrum">任务闭环光谱</a><a href="#approval">审批门</a><a href="#credentials">凭证与外联</a><a href="#compare">七列对照</a><a href="#story">串景</a><a href="#criteria">三条标准</a></nav></details></aside>
+<aside class="toc"><details open><summary><span class="toc-kicker">本文内容</span><span class="toc-now">当前：文首</span></summary><nav aria-label="文章目录"><a href="#context">个人上下文：端设备真正多出来的能力</a><a href="#scene">场景：四类事</a><a href="#mail">邮件与日程</a><a href="#minutes">会议纪要</a><a href="#browser">浏览器跑腿</a><a href="#pay">支付与下单</a><a href="#blocks">五块积木</a><a href="#entry">入口与调度</a><a href="#memory">记忆</a><a href="#spectrum">任务闭环光谱</a><a href="#approval">审批门</a><a href="#credentials">凭证与外联</a><a href="#compare">七列对照</a><a href="#story">串景</a><a href="#criteria">三条标准</a></nav></details></aside>
 <main class="article" id="article">
 <p>下面按场景与技术架构，对照七份公开材料里已经写进文档与仓库说明的机制。七份材料分别是：<a href="https://github.com/QwenLM/Qwen-Live-Harness" target="_blank" rel="noopener noreferrer">Qwen-Live-Harness</a>（采集面与调度面拆分、Realtime 主会话加本机后台委托）、<a href="https://github.com/2049lab/personos" target="_blank" rel="noopener noreferrer">PersonOS</a>（证据层长期记忆框架，不做任务闭环）、<a href="https://underdog.ai/" target="_blank" rel="noopener noreferrer">Underdog</a>（Conway Research；本机推理与本机记忆，支付前需人批）、<a href="https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/" target="_blank" rel="noopener noreferrer">Meta Muse</a>（每人一台 Muse Secure VM，Sentinel 管外联；消费端界面与主动环见 <a href="https://youtu.be/1ruyEeWvEbY" target="_blank" rel="noopener noreferrer">Lightning Demo 走查</a>）、<a href="https://openai.com/index/introducing-dots/" target="_blank" rel="noopener noreferrer">OpenAI dots</a>（产品名 dots，单实例称 dot；默认在云电脑上执行）、<a href="https://cursor.com/docs/grok-bot" target="_blank" rel="noopener noreferrer">Cursor Grok Bot</a>（Cursor 托管的常驻 Bot；主工作面在账户级云电脑，可再挂注册本机，并不是「推理权重全在用户电脑」）、<a href="https://github.com/milind-soni/OpenMausBot" target="_blank" rel="noopener noreferrer">OpenMausBot</a>（亦称 MausBot；本机 harness 上跑 BYO 的 <code>claude</code>/<code>codex</code>/<code>grok</code> CLI，可选 Boat 云桌面、Local VM 或显式 opt-in 的本机控制，权限经 permission broker 出审批卡）。</p>
 <div class="filters-bar">
@@ -149,41 +149,49 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px}
 </div>
 <p class="filter-status" id="filter-status" role="status" aria-live="polite">点选产品名，高亮七列表中的对应列，并标出正文里的专名。</p>
 </div>
+<section id="context">
+<h2>1. 个人上下文：端设备真正多出来的能力</h2>
+<p>前面说的三处差别，都发生在「已经要办事」之后。在那之前还有一层：系统怎样持续获得这个人的上下文。</p>
+<p>云端助手也可以很会推理、很会调用工具，也能通过邮箱、日历和聊天软件拿到一部分数字上下文。但「这个人此刻在哪、在和谁、刚结束了什么、眼前正在看什么」这类连续的个人上下文，只有跟着人走的端设备才有机会稳定获取。这是端设备相对纯云助手最大的优势，不是把同一套办事闭环搬到一块更小的芯片上，也不是在端上把模型变得更聪明。</p>
+<p>连续获取可以落成几种形态，不必先裁定哪一种一定更好。胸前或其他第一视角可穿戴是一种；<a href="https://mp.weixin.qq.com/s/jb3E2RNjKh3v2xRivU1Bxw" target="_blank" rel="noopener noreferrer">Looki</a> 走的就是这条路——把全天感知收成场景、变化和事件，再决定要不要开口，或把上下文交给别的 Agent 去办事。它是比较可能成立的一种形态，不是唯一解。AI 眼镜是相近的另一条，采集面在眼前而不是胸前，同样取决于人是否一直戴着。手机、电脑或小型主机如果持续能听、能看到当前屏幕或身边的声音，也是在采集个人上下文，只是视野、连续性和社交接受度不同。后文对照的 Qwen-Live-Harness，已经把采集面和办事用的执行器拆开，说明采集不必塞满执行器。</p>
+<p>对这一层，真正要核对的不是外壳像不像「个人助手」，而是：它能不能连续获取个人上下文；原始流会不会先变成可检查的场景、变化和事件，而不是直接灌进大模型；以及它何时选择沉默。主动服务一旦判错意图，就会从体贴变成冒犯；存得更多也不等于更理解这个人。</p>
+<p>一旦上下文已经变成「该开口」或「该办事」，后面的差别才回到本文要对照的三处：任务闭环跑在谁的机器上、外向动作由谁批准、真实凭证是否进入模型上下文。Looki 这类设备也可以只做到感知、事件和记忆，把办事交给别的 Agent；那正好对应后文 PersonOS 的位置——记忆层不能代替审批，办事层也不能代替理解。下文的七列对照仍只收已经能从公开文档核对闭环、审批与凭证的材料。</p>
+</section>
 <section id="scene">
-<h2>1. 场景：个人 Agent 常办的四类事</h2>
+<h2>2. 场景：个人 Agent 常办的四类事</h2>
 <p>下面四类场景在输入、中间状态、外向动作上结构相近；差别主要在闭环落在本机还是「一人一电脑」的云执行面，以及哪一步必须过审批。</p>
 <section id="mail">
-<h3>1.1 邮件与日程</h3>
+<h3>2.1 邮件与日程</h3>
 <p><strong>输入</strong>通常是邮箱与日历同步流，加上用户口头或文字意图（摘要、起草、改期、找空档）。<strong>中间状态</strong>包括线程上下文、联系人偏好、已有会议冲突、草稿版本。<strong>外向动作</strong>是发送邮件、创建或修改日历事件，有时还包括退订或批量归档。</p>
 <p>同步本身几乎总会连到邮件服务商：Underdog 写明邮件在用户电脑与邮箱提供商之间直连，摘要与起草在本机模型完成；Muse、dots、Grok Bot 则通过连接器或插件访问邮箱，读与写往往分开授权；OpenMausBot 的公开说明把 Gmail 等接入写成经 Composio 的 OAuth 会话，连接后多个 Bot 可共用同一连接器面。Lightning Demo 里 Muse 连接 Gmail / Calendar 时，界面表述偏「邮件可读、日历事件可删」，与「读宽写窄」一致；发送侧对照也很整齐——Muse 把发信列为需确认的敏感动作；dots 用 auto-review 与 Custom Rules 决定免问、先问或交给用户；Grok Bot 对「用户未在当轮明确要求发出」的邮件、例程触发的外发，常先落成 draft，等人点 Send；Underdog 在本机侧对敏感下一步要求批准后再发出；OpenMausBot 文档把外发类敏感步放进 permission broker 的 Allow / Deny 卡（具体覆盖面随引擎与工具而变，仓库说明写明并非每一步都保证暂停）。读收件箱可以较宽，写出发信则普遍更窄：这是几类产品里重复出现的权限切分。</p>
 </section>
 <section id="minutes">
-<h3>1.2 会议纪要</h3>
+<h3>2.2 会议纪要</h3>
 <p><strong>输入</strong>是录音、导入音视频或会后文本。<strong>中间状态</strong>是转写、摘要、决议与待办条目，以及这些条目与联系人、项目的关联。<strong>外向动作</strong>可能是把待办写进日程、把纪要发到邮件或协作工具。</p>
 <p>原文与派生摘要「住在哪」直接绑定产品信任边界：Underdog 将录音、笔记、转写放在本机；Muse 把工作区与记忆放在用户自己的 Secure VM 内，并支持对已学内容说 forget；dots 使用 ChatGPT memory 与 dot 自建 notes；Grok Bot 按 Bot 保留偏好与工作摘要，同账户多个 Bot 共享一台云电脑上的文件与浏览器会话；OpenMausBot 把 transcripts、keys、events 默认落在本机 <code>~/.openmausbot</code>，按 Bot / channel 分线程，工作文件夹可按任务另挂。纪要是否离机、是否进入训练轨迹，取决于各产品默认策略与用户开关（例如 Muse 的训练 opt-out、dots 个人计划上的训练控件；OpenMausBot 文档写明提示词会发往所选模型提供商，本地存储不等于模型请求不出本机），而不是「有没有纪要功能」本身。</p>
 </section>
 <section id="browser">
-<h3>1.3 浏览器跑腿</h3>
+<h3>2.3 浏览器跑腿</h3>
 <p><strong>输入</strong>是比价、填表、订位、查政策、整理资料一类目标。<strong>中间状态</strong>是浏览会话、页面结构摘要、多步骤任务进度、失败重试记录。<strong>外向动作</strong>是提交表单、创建预订草稿、下载文件或进入结账页。</p>
 <p>执行面分叉很清楚：Muse、dots、Grok Bot 默认在云端浏览器里操作，用户可随时接管。Lightning Demo 里订票时，聊天内嵌的是 Muse 自有虚拟机上的 persistent 浏览器视图，并提供「Take control of the browser」把验证码、密码或纠错交回人再交还 Agent；Underdog 使用本机浏览器与本机模型；Qwen-Live-Harness 的前台 Realtime 会话可以继续聊天，同时把改文件、跑命令一类工作委托给本机 ACP / CLI 后台 harness；OpenMausBot 则把每个 Bot 的「电脑」写成可选面——Boat 云 Linux 桌面、隔离 Local VM，或在平台安全边界已认证处显式 opt-in 后的本机控制（文档写明 macOS / Ubuntu Xorg 可开，Wayland 主机控制仍关闭），云桌面侧提供预览与「Open desktop」接管。渠道能对话不等于已授权浏览器或本机：dots 文档写明，消息渠道、插件、本机连接是三套独立授权——在 Slack 里能提到 dot，并不自动打开 Gmail 或用户笔记本；OpenMausBot 同样把聊天、连接器与电脑访问拆开启用。站点若拦截自动化、会话过期或需要人机验证，公开产品普遍选择把步骤交回用户，而不是绕过登录墙。</p>
 </section>
 <section id="pay">
-<h3>1.4 支付与下单</h3>
+<h3>2.4 支付与下单</h3>
 <p><strong>输入</strong>是购物或订票意图与约束（预算、商家、时间、退改规则）。<strong>中间状态</strong>是比选结果、商户页上下文、待确认金额。<strong>外向动作</strong>是生成支付凭据并完成扣款，或把购物车留给用户。</p>
 <p>Muse 与 Stripe Link 对接，结账使用一次性卡，并在支付前要求人确认；Demo 里绑钱包走显式「Link by Stripe」按钮与条款确认，支付门故意留摩擦，与日历类低风险连接形成对照；Underdog 同样走一次性卡路径，公开商业表述与交易抽成相关，购物研究可在本机完成，扣款仍需批准。dots 与 Grok Bot 将改密、对外共享、影响账户的动作放进自动评审或审批卡；OpenMausBot 公开材料把 shell、文件改动与高风险步统一收成聊天内 Allow / Deny 卡，未单独宣称一次性支付卡路径——「搜得到」与「付得出」仍应按审批对象是否绑定金额与商户来核对。对分析而言，支付场景的价值不在「会不会买」，而在是否把金额、商户、凭证作用域绑在一次明确批准上。</p>
 <p>四类场景共用同一组底座：入口与意图、记忆、执行面（任务闭环）、审批与凭证。下一节按五块对照七家材料。</p>
 </section>
 </section>
 <section id="blocks">
-<h2>2. 技术架构：五块可对照积木</h2>
+<h2>3. 技术架构：五块可对照积木</h2>
 <section id="entry">
-<h3>2.1 入口与调度</h3>
+<h3>3.1 入口与调度</h3>
 <p><a href="https://github.com/QwenLM/Qwen-Live-Harness" target="_blank" rel="noopener noreferrer">Qwen-Live-Harness</a> 把系统拆成 Host 与 daemon：Host（Electron）负责麦、屏、呈现与系统权限；daemon 负责对话、工具、后台 harness、Proactive 与 Memory；二者经本机 WebSocket 通信。理解侧默认走云端 Qwen Omni Realtime；复杂执行可委托本机 ACP 后端（Qwen Code、Codex、Claude Code、Gemini CLI 等）。不装后台 harness 时，仍可做音视频交互、搜索、主动提醒与记忆——采集面不必塞满执行器。</p>
 <p>云产品侧则常见 thin client：Muse 客户端经安全通道连到用户 VM；dots 在 ChatGPT、Slack、Teams 收发意图，工作在云电脑上继续；Grok Bot 在桌面与移动端收消息，主执行面在 Cursor 云电脑。OpenMausBot 的公开架构更接近「本机 thin UI + 本机 harness」：React 应用经 HTTP 发命令、经 SSE 收事件；<code>127.0.0.1</code> 上的 harness 持有全部 agent 进程，并把各提供商原生协议归一成一条事件流；Electron 桌面壳内嵌该 harness。共同点是：<strong>采集与呈现可以很薄，协调与执行可以侧置</strong>；差别在侧置目标是本机 daemon/ACP/harness，还是一人一电脑的云 VM（OpenMausBot 还可把执行面再挂到 Boat 云桌面或 Local VM）。选型时若先定「入口形态」而不定执行面，后面的审批与凭证设计会对不齐。</p>
 <p>消费端界面把「主动」写成可操作原语，而不只写在发布文案里。Lightning Demo 中 Muse 客户端可见：Soul（系统指令）与 Memory（长期事实）可检视与改写；Goals 按 Health、Relationships、Finance 等分类提供上下文；Ideas 根据近期对话生成提案，确认后可设为日/周/月 recurring（任务日志里可见添加 cron）；Artifacts 收生成物；通知用于异步 ping。这些控件对应同一执行面——用户的 Secure VM——把「持续跑着的个人 Agent」落成可核对的产品表面。</p>
 </section>
 <section id="memory">
-<h3>2.2 记忆：证据层与归属</h3>
+<h3>3.2 记忆：证据层与归属</h3>
 <p><a href="https://github.com/2049lab/personos" target="_blank" rel="noopener noreferrer">PersonOS</a> 把记忆写成可检视的链：原始陈述保留为 <strong>evidence</strong>；情景（episode / cell）保留上下文；<strong>atoms</strong> 承载可检索事实；<strong>chains</strong> 连接前后陈述并保留历史；<strong>profile</strong> 再做画像汇总。框架只向宿主 Agent 提供 materials，生成权留在宿主；无个人内容的片段可以只留证据、不产事实。默认存储可落本地 SQLite，提取与向量则依赖配置的远端模型——「记忆库在本地」与「抽取模型在本地」需要分开写。</p>
 <p>各产品记忆归属不同，但都可对照「能否打开材料」这一观察点：</p>
 <div class="table-scroll" role="region" aria-label="记忆归属表，可横向滚动" tabindex="0">
@@ -233,7 +241,7 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px}
 <p>没有证据或材料层时，「记得你」难以审计；有材料层也不等于记忆正确，仍依赖提取模型与宿主如何使用检索结果。PersonOS 刻意不做任务闭环，也提醒一句：记忆子系统不能代替发信、订位、支付的执行与审批设计。</p>
 </section>
 <section id="spectrum">
-<h3>2.3 任务闭环光谱</h3>
+<h3>3.3 任务闭环光谱</h3>
 <p>把七家放在一条光谱上，比「本地好 / 云端好」更贴近公开设计：</p>
 <nav class="spectrum" aria-label="任务闭环光谱"><a href="#loop-local"><span class="seg-no">1</span>本机闭环</a><a href="#loop-cloud"><span class="seg-no">2</span>云端一人一电脑</a><a href="#loop-memory"><span class="seg-no">3</span>只记忆</a></nav>
 <ol>
@@ -244,7 +252,7 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px}
 <p>取舍可以直接写成工程参数：本机侧换数据驻留位置与算力上限；云 VM 侧换 always-on 与重活能力，并引入运营方对 VM / 轨迹的访问策略。Muse 另规划用户持有密钥的 Confidential VM；dots 与 Grok Bot 用计划类型与设置项表述训练与数据用途。光谱中间没有「纯本地又永远 online 且无限算力」的点；产品文案若同时承诺三者，需要回到具体外联白名单与模型位置核对。</p>
 </section>
 <section id="approval">
-<h3>2.4 审批门</h3>
+<h3>3.4 审批门</h3>
 <p>外向动作的门，各家命名不同，结构接近：<strong>策略层先判，必要时弹到人；内置安全不被用户规则关掉</strong>。</p>
 <ul>
 <li><strong>Underdog</strong>：敏感下一步与支付前要求批准；本机 vault 按账户存密钥。</li>
@@ -257,14 +265,14 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px}
 <p>共性还有一条操作语义：<strong>批准不等于已经执行成功</strong>。预订页失败、支付被拒、连接器超时，都需要产品把「门开了」和「事办成了」分开呈现；Muse、dots、Grok Bot 与 OpenMausBot 的公开说明都强调回顾已完成动作与后果，而不是只展示一次同意。对集成方而言，审批卡的对象应是可识别的目标与效果，而不是模糊的「继续」。</p>
 </section>
 <section id="credentials">
-<h3>2.5 凭证与外联边界</h3>
+<h3>3.5 凭证与外联边界</h3>
 <p>跨产品重复出现的硬约定是：<strong>模型上下文尽量不持有真实密钥</strong>。</p>
 <p>Muse 用 <code>hatch-authd</code> 发 surrogate，Sentinel 在出口处替换为真凭证；运行时 cell 内的代码与主 Agent 看不到 OAuth 真 token。浏览器登录经客户端进安全存储；浏览器子代理读 accessibility tree，而不是可执行页面脚本随意刮密。dots 用私密登录表单，凭证进云浏览器会话而非对话文本。Grok Bot 用 Vault、Secure Form 或连接器后端 token，填充时模型看不到密码或卡号；连接器 token 留在 Cursor 后端，不落在云电脑磁盘上当明文给模型读。Underdog 强调每账户 vault、密钥留在本机。OpenMausBot 把提供商密钥与集成密钥写在本机配置里，UI 侧只暴露「已配置」类 write-only 标志；应用连接走 Composio OAuth；本机控制需显式 opt-in，且受平台安全门限制。仓库另注明 CLI/<code>openmausbot</code> 路径下 API 密钥以明文保存在私有 <code>config.json</code>（Unix 上 <code>0600</code>）——「密钥不进模型上下文」与「磁盘上如何存放」仍是两句不同的话。</p>
 <p>「本地」也不等于零外联。Underdog 的邮件同步、已批准外发与预订仍会出网；Naval mode 是显式断外联开关，而不是默认态。OpenMausBot 本机 harness 默认不出项目方代理，但模型请求仍发往用户所选提供商，Composio / Boat 等可选集成各自出网。云 VM 产品则把外联写成策略对象：Muse 的 runtime cell 与 cell 外的 Sentinel、authd、safety 分类器分域；未读用户数据的干净进程与已 tainted 进程，自动放行范围不同。dots 把渠道、插件、本机连接拆开授权。写产品说明时，把「推理在哪算」和「哪些 socket 被允许」分成两句，可以减少「100% local」类表述与真实流量日志对不上的情况。</p>
 </section>
 </section>
 <section id="compare">
-<h2>3. 七列对照</h2>
+<h2>4. 七列对照</h2>
 <p class="scroll-hint">七列较宽，可在表内横向滚动。点上方产品名可只高亮一列。</p>
 <div class="table-scroll" role="region" aria-label="七列对照表，可横向滚动" tabindex="0">
 <table class="matrix" id="matrix">
@@ -335,10 +343,10 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px}
 <p>Conway Research 的 Underdog 在公开报道中被写成 Muse 等个人 Agent 的本机向对照；首轮融资由 a16z 领投，投资方含 Khosla、Hummingbird、SV Angel 与 <strong>Anthology Fund（Menlo Ventures 与 Anthropic 的合作基金）</strong> 等（见 <a href="https://techcrunch.com/2026/10/06/silicon-valleys-ai-wunderkind-launches-underdog-the-most-private-instinct-muse-competitor-yet/" target="_blank" rel="noopener noreferrer">TechCrunch 2026-10-06</a> 与 <a href="https://a16z.com/announcement/investing-in-conway-the-creator-of-underdog/" target="_blank" rel="noopener noreferrer">a16z 公告</a>）。表中机制对照不依赖融资叙事；若文中提及投资，Anthropic 应对齐 Anthology，而不是写成对 Conway 的直投。</p>
 </section>
 <section id="story">
-<h2>4. 一条串景：会后到支付</h2>
+<h2>5. 一条串景：会后到支付</h2>
 <p>以「开完会 → 纪要进记忆 → 改日程 → 浏览器订会议室并支付」为例，只标机制落点。</p>
 <ol>
-<li><strong>采集</strong>：录音或导入到达入口。Qwen 路径上，Host 采音视频，daemon 协调；云产品路径上，客户端把材料送进 VM 或云电脑工作区；OpenMausBot 路径上，材料进本机 harness 工作区（或 Bot 所选电脑面）。入口此时只解决「材料进得去」，不决定事后能不能静默发信。</li>
+<li><strong>采集</strong>：录音或导入到达入口。Qwen 路径上，Host 采音视频，daemon 协调；云产品路径上，客户端把材料送进 VM 或云电脑工作区；OpenMausBot 路径上，材料进本机 harness 工作区（或 Bot 所选电脑面）。若采集来自一直戴着的眼镜、第一视角设备，或持续打开的手机和电脑，这一步还包含先认出稳定场景和变化——例如认出这是一场会、以及会已经结束——再让录音或纪要进入入口。没有这一步，后面的链路仍可能被启动，但时机是盲的。入口此时只解决「材料进得去」，不决定事后能不能静默发信。</li>
 <li><strong>纪要与记忆</strong>：转写与决议写入执行面所在存储。若接 PersonOS 一类证据层，原始语句进 evidence，决议进 atoms/chains，供后续检索；Underdog 写本机记忆项；Muse、dots、Grok Bot 写 VM 或 Bot 侧笔记与文件；OpenMausBot 写本机 transcripts / 工作文件夹。此步的外联主要是转写/抽取所用的模型 API（若未本机化），以及是否把轨迹送去训练。</li>
 <li><strong>改日程</strong>：读日历冲突、写出新事件。读权限可较宽；写权限在 Muse 连接器策略、dots 插件权限、Grok 连接器与 Auto-review、Underdog 本机批准、OpenMausBot 的 Composio 连接加 permission broker 卡中分别受约束。写入成功与否应回读日历源，而不是以模型口头确认为准。</li>
 <li><strong>订会议室</strong>：浏览器跑腿落在默认执行面——云浏览器、本机浏览器，或 OpenMausBot 所选的 Boat 云桌面 / Local VM /（opt-in）本机。页面内容对模型可见，但登录密码按各产品设计走 surrogate、私密表单、vault 或 OAuth 会话。若站点要求验证码或风控，流程在人接管处停下。</li>
@@ -347,14 +355,14 @@ footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px}
 <p>这条链路里，记忆、闭环、审批、凭证是四道不同的闸。同一句用户指令可能穿过多层，但产品若把四道闸收成一个「全自动」开关，出问题后难以定位是记错、跑错机器、门没开，还是凭证作用域过宽。</p>
 </section>
 <section id="criteria">
-<h2>5. 可观察的对照标准</h2>
+<h2>6. 可观察的对照标准</h2>
 <p>综合公开机制，评估一款个人 Agent 时，有三条不必依赖口号、可以直接核对的标准：</p>
 <ol>
 <li><strong>记忆是否可检视</strong>：用户能否打开材料、出处或记忆项并编辑删除；仅有「更懂你」的描述、无法核对证据时，正确性与隐私声明都缺少审计面。</li>
 <li><strong>外向动作是否有门</strong>：发信、日历写权限、下单与支付是否默认经过策略层或人批；批准与执行成功是否分开呈现；用户规则能否压过内置安全（公开设计里通常不能）。若产品提供 Ideas / recurring / cron 一类主动环，还应能核对提案如何变成定时任务、以及任务日志是否可审。</li>
 <li><strong>外联与训练/运营边界是否写清</strong>：本机产品的同步与已批外发白名单；云 VM 产品的 egress 策略、运营方访问范围、训练 opt-out 或计划级默认值。本地推理不等于零 socket；一人一电脑也不自动等于「服务商不可读」。</li>
 </ol>
-<p>按上述标准回看七家材料：差异已经落在闭环位置、审批门与凭证是否进入模型，而不是落在是否宣称「个人」或是否先做出某一外壳。形态可以后定；这三处机制则已经有足够公开文本可供对照。</p>
+<p>按上述标准回看七家材料：差异已经落在闭环位置、审批门与凭证是否进入模型，而不是落在是否宣称「个人」或是否先做出某一外壳。就「能办事」而言，聊天窗还是云电脑这类外壳可以后定；但连续获取个人上下文的形态——眼镜、第一视角可穿戴，或一直开着的手机和电脑——会决定后面有没有上下文可算，这一层不能后定。</p>
 </section>
 <p class="meta"><a href="index.html#deep-title">返回原理阅读</a> · <a href="voice-agent-runtime.html">继续阅读：语音 Agent</a></p>
 </main>
