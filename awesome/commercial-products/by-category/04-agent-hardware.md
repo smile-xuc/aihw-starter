@@ -318,6 +318,27 @@
 
 > 来源：[Framework Desktop 产品页](https://frame.work/desktop) · [规格页](https://frame.work/desktop?slug=desktop-diy-amd-aimax300&tab=specs) · [AI Max 300 系列配置页](https://frame.work/products/desktop-diy-amd-aimax300/configuration/new) · [AI Max PRO 400 系列配置页](https://frame.work/products/desktop-diy-amd-aimax400/configuration/new)（均查证 2026-10-12）
 
+### CSDN AMD CTONE 开发者一体机（CSDN / AMD / 创通新科）〔已发布·售价及开售待核实〕
+
+- **上市状态**：已发布（据 CSDN 来源发布稿，2026-11-06 进博会期间在央视新闻「进博新品汇」由 CSDN、AMD、创通新科发布）。开售 / 预售状态未核实（截至 2026-11-07 未见联名版购买页或公开报价）。
+- **官网/渠道**：未见独立联名产品页或购买入口（查证 2026-11-07）。发布稿：[微信稿](https://mp.weixin.qq.com/s/9RqHL-N0qrKvUwehvjFSwg) · [网易转载（页面署来源: CSDN）](https://www.163.com/dy/article/LB2SQEJP0511FQO9.html)。底座参考：[创通新科 F9A 新闻](https://www.ctonetech.com/Index/news/newsinfo?article_id=5168) · [阿迈奇（ACEMAGIC）F9A 商品页](https://acemagic.com/products/f9a-495-ai-workstation)（基础硬件，不是本联名 SKU，其报价不可移用）。CSDN 商城首页未见该联名商品。
+- **形态**：桌面本地 AI 开发者一体机，发布稿称以创通新科旗下阿迈奇（ACEMAGIC）F9A 为整机底座；158.5×158.5×81.5 mm；风冷（五热管 + 铜底座 + 涡轮风扇）；发布稿称 CNC 金属机身；四单元远场麦克风（厂商称约 3 米拾音）、内置扬声器；双 USB4、OCuLink、双 2.5GbE、Wi-Fi 7。存储容量与联名交付 SKU 未公开。
+- **定价**：
+  - 首发价：价格未公开（查证 2026-11-07）
+  - 现价：价格未公开（查证 2026-11-07；发布稿未标价，亦未见联名购买页）
+  - MSRP：价格未公开（查证 2026-11-07）
+  - 订阅 / 软件授权：未公开。不可把基础 F9A 的海外官方预订价或国内媒体报道价写入本栏。
+- **目标市场**：开发者与 IT 技术人员；发布稿称既可作为个人 AI 开发终端，也可充当团队算力中枢
+- **AI 能力**：
+  - AI 功能：发布稿称预装 CSDN 的 AI 原生操作系统 LingOS，将模型服务、智能体工作台与设备管理整合到统一环境；支持本地模型快速部署、选择切换、运行管理与可视化体验；通过统一模型网关将本地模型接入编程工具、智能体及自建应用；可为手机、电脑及可穿戴设备提供模型调用入口，并承诺后续提供模型与系统的 OTA。实现方式：在 F9A 底座上调用本机 CPU / GPU / NPU 算力，并结合 ROCm 软件生态；具体推理框架、ROCm 版本、网关协议、智能体框架与工具执行权限未公开。模型：发布稿称内置 200 多款主流开源大模型，预装模型名单未公开（[微信稿](https://mp.weixin.qq.com/s/9RqHL-N0qrKvUwehvjFSwg) · [网易转载（来源: CSDN）](https://www.163.com/dy/article/LB2SQEJP0511FQO9.html)，查证 2026-11-07）。
+  - 端侧推理：本地（发布稿称模型在这台主机上运行）。发布稿称在相应量化与配置条件下最高支持 300B 参数量级本地部署；CTONE 具体模型名、量化、上下文与速度未公开，不能写成任意 300B 稠密模型均可运行。芯片：AMD Ryzen AI Max+ PRO 495，16 核 32 线程 Zen 5；GPU 为 Radeon 8065S（40 CU；发布稿称 RDNA 3.5 架构）；另有 NPU（AMD 芯片页最高 55 TOPS）。统一内存最高 192GB（256-bit LPDDR5x-8533），发布稿与底座官方称可为 GPU 划拨最高 160GB（统一内存分配，不是额外 160GB 独立显存）。平台 AI 算力：发布稿与 F9A 厂商材料称最高 131 TOPS；AMD 芯片页 Overall TOPS 为最高 132 TOPS——两处口径并存，不要自行调和，也不要把 131 写成 NPU 算力。发布稿未说明是否另接云端模型，不能断言完全离线或数据绝不上云（OTA 需要网络）。（[微信稿 / CSDN 同文](https://mp.weixin.qq.com/s/9RqHL-N0qrKvUwehvjFSwg) · [AMD 芯片页](https://www.amd.com/en/products/processors/laptop/ryzen-pro/ai-max-pro-400-series/amd-ryzen-ai-max-plus-pro-495.html) · [创通新科 F9A 新闻](https://www.ctonetech.com/Index/news/newsinfo?article_id=5168) · [阿迈奇 F9A 商品页](https://acemagic.com/products/f9a-495-ai-workstation)，查证 2026-11-07）
+- **大模型方案**：本地开源模型服务；发布稿称内置 200 多款，名单及默认模型未公开；统一模型网关供编程工具、智能体与自建应用接入；云端模型接入细节未公开（非千问默认绑定）
+- **公开数据**：未见公开销量
+- **关键差异化**：① 发布稿称在阿迈奇 F9A 底座上预装 LingOS，把模型服务、智能体工作台与设备管理放在同一环境，而不只提供裸机算力；② 统一内存最高 192GB，发布稿称量化及配置条件下最高支持 300B 参数量级本地部署；③ 发布稿称既可作个人开发终端，也可作团队算力中枢，为手机 / 电脑 / 可穿戴提供模型调用入口（厂商称）
+- **商业模式**：联名版定价、是否订阅以及软件授权方式均未公开，不能写成确定的硬件买断或无订阅
+
+> 来源：[微信稿](https://mp.weixin.qq.com/s/9RqHL-N0qrKvUwehvjFSwg) · [网易转载（页面署来源: CSDN，2026-11-06）](https://www.163.com/dy/article/LB2SQEJP0511FQO9.html) · [AMD Ryzen AI Max+ PRO 495 芯片页](https://www.amd.com/en/products/processors/laptop/ryzen-pro/ai-max-pro-400-series/amd-ryzen-ai-max-plus-pro-495.html) · [创通新科 F9A 新闻](https://www.ctonetech.com/Index/news/newsinfo?article_id=5168) · [阿迈奇（ACEMAGIC）F9A 商品页](https://acemagic.com/products/f9a-495-ai-workstation)（底座参考，非联名报价）（均查证 2026-11-07）
+
 ### Jetson Orin Nano Super Developer Kit（NVIDIA）
 
 - **上市状态**：在售，经授权分销商销售（查证 2026-10-12）。产品页写 "Purchase from one of our partners."，并写 "It can be purchased through NVIDIA authorized distributors worldwide."；官方博客 2024-12-17 发布时写 "Available today"
@@ -366,6 +387,7 @@
 - [ ] DFRobot AI 智能体盒子正式定价后补卡
 - [ ] Muse Charm（Meta）：2026-09-23 在 Meta Connect 2026 发布，未开售；正式定价或开售后补卡 · 官方来源 [The Biggest News From Connect 2026（2026-09-24）](https://about.fb.com/news/2026/09/the-biggest-news-from-connect-2026/)（查证 2026-10-02）
 - [ ] 更多国内桌面 Agent 盒公开 SKU
+- [ ] CSDN AMD CTONE 联名版正式售价 / 购买渠道、LingOS 预装模型名单与交付配置公开后补齐
 - [x] SwitchBot AI Hub
 - [x] Sandbar Stream
 - [x] Pebble Index 01
