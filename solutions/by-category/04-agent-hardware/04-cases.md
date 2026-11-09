@@ -35,6 +35,7 @@
 | **Limitless Pendant** | Limitless（Meta 收购） | 记忆挂件 | 云端转录 / 记忆 | 常开麦 | 硬件加订阅，另见 [Limitless 主卡][pendant] | **2025-12 停售新客** |
 | **铠盒 AIBOX-A1** | 铠盒智能 | 桌面 Agent 盒 | 本地轻量 + 云端千问等 | 常开盒子 / OpenClaw | **¥1,199 CNY** · [产品页](https://agentaibox.com/products/a1) · 查证 2026-09-30 | 公开在售页 |
 | **SwitchBot AI Hub** | SwitchBot | 桌面家庭中枢 | 商品页写 Vision Language Model，未写模型名 | 摄像头理解后联动设备 | **$259.99 USD** · [美国商品页](https://us.switch-bot.com/products/switchbot-ai-hub) · 查证 2026-09-30 | 在售（美国官方商店、欧盟官方商店、英国官方商店，查证 2026-09-30） |
+| **CSDN AMD CTONE** | CSDN / AMD / 创通新科 | 桌面本地 AI 开发者一体机（F9A 底座 + LingOS） | 本地开源模型服务（名单未公开） | 本地部署 / 模型网关 / 智能体工作台 | **价格未公开**（查证随商业卡 2026-11-07；不可移用 F9A / ACEMAGIC 报价） | 已发布·售价及开售待核实 |
 | **Sandbar Stream** | Sandbar | 语音戒指 | 未公开 | 按住说话 | 预购价 **$249 USD** · [官方商店](https://shop.sandbar.com/) · 查证 2026-09-30 | 预售（官方商店，查证 2026-09-30） |
 | **Pebble Index 01** | Core Devices / Pebble | 语音备忘戒指 | 博客写端侧大模型，未写模型名 | 一键录音，手机上选动作 | 预购价 **$75 USD** · [产品页](https://repebble.com/index) · 查证 2026-09-30 | 预售（官网；新订单 1–2 个月发货，查证 2026-10-01） |
 
@@ -46,6 +47,8 @@
          │                         │                        │
       Rabbit R1               铠盒 A1 等              Humane / Limitless
 ```
+
+桌面侧另有开发者一体机 / 本地模型中枢：CSDN AMD CTONE（F9A 底座 + LingOS；价格未公开，查证随商业卡 2026-11-07）。
 
 ---
 
@@ -88,6 +91,21 @@
 - **公开数据**：美国 $259.99 USD，欧盟 €259.99 EUR，英国 £259.99 GBP（查证 2026-09-30）。首发价与 MSRP 待核实。未见公开销量
 - **可借鉴点**：摄像头理解与设备联动放在同一中枢，VLM 服务和硬件价分开标
 - **另见**：[SwitchBot AI Hub 商业产品卡][hw]
+
+### 案例：CSDN AMD CTONE — 联名开发者一体机 + LingOS
+
+- **公开信息源**：[CSDN AMD CTONE 商业产品卡](../../../awesome/commercial-products/by-category/04-agent-hardware.md#csdn-amd-ctone-开发者一体机csdn--amd--创通新科已发布售价及开售待核实)（卡内来源查证 2026-11-07）
+- **形态**：桌面本地 AI 开发者一体机（F9A 底座 + LingOS）
+- **技术路线**：本地开源模型服务（发布稿称内置 200 多款，名单未公开）；统一模型网关接入编程工具、智能体与自建应用
+- **亮点**：
+  - 已发布（2026-11-06 进博会期间）；售价及开售待核实，截至商业卡查证日未见联名购买页
+  - 预装 LingOS，把模型服务、智能体工作台与设备管理放在同一环境；预装模型名单未公开
+  - 发布稿称在相应量化与配置条件下最高支持 300B 参数量级本地部署；具体模型名、量化、上下文与速度未公开
+  - 平台算力两处口径并存：发布稿与 F9A 材料称最高 131 TOPS，AMD 芯片页 Overall 最高 132 TOPS；不自行调和，也不把 131 写成 NPU 算力
+  - 价格三栏均为价格未公开；不可把基础 F9A / ACEMAGIC 报价移作本机价格
+- **公开数据**：未见公开销量。价格未公开（查证随商业卡 2026-11-07）
+- **可借鉴点**：联名版卖的是预装本地模型服务与工作台，不是裸机算力；售价未公开时不要借用底座报价
+- **另见**：[CSDN AMD CTONE 商业产品卡](../../../awesome/commercial-products/by-category/04-agent-hardware.md#csdn-amd-ctone-开发者一体机csdn--amd--创通新科已发布售价及开售待核实)
 
 ### 案例：Pebble Index 01（Core Devices / Pebble）— 端侧意图路由
 
