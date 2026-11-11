@@ -115,7 +115,21 @@
 - **亮点**：待核实
 - **可借鉴点**：音频档的长期价值在「全天佩戴的耳机替代」——不依赖视觉功能也能形成稳定使用习惯；可换镜框设计兼容传统验光配镜渠道
 
-## 五、待补充清单（欢迎 PR）
+## 五、分体式 XR 眼镜（Android XR）
+
+### 案例：XREAL AURA — 有线分体 Android XR
+
+- **公开信息源**：[XREAL AURA 商业产品卡](../../../awesome/commercial-products/by-category/02-ai-glasses.md#xreal-auraxreal)（查证 2026-11-06）· [美国商店](https://us.shop.xreal.com/products/xreal-aura)（发货句查证 2026-11-11）
+- **形态**：双眼 Micro-OLED 光学透视眼镜（约 95 g）+ 有线 Compute Puck（约 265 g）。不是单绿光波导，所以不放在「二、AI 显示眼镜（单绿光波导）」
+- **亮点**：
+  - 有线分体：眼镜端 Micro-OLED，有线 Compute Puck 跑 Android XR
+  - Gemini，子型号未公开；推理位置官方未写
+  - 至年底限时 **$1,099 / $1,299**（12GB+256GB / 16GB+512GB），沿用商业卡（查证 2026-11-06）。不把页面「按原价省」的推断原价写成事实
+  - 发货沿用商业卡：约 2026 年 11 月中旬起滚动发出。2026-11-11 美国商店仍写 "Shipping is expected to begin in mid-November 2026, with orders shipped on a rolling basis"，不改写成已经发货
+- **可借鉴点**：分体式 Android XR 与单绿光波导、无显示拍照眼镜分开记
+- **另见**：[XREAL AURA 商业产品卡](../../../awesome/commercial-products/by-category/02-ai-glasses.md#xreal-auraxreal)
+
+## 六、待补充清单（欢迎 PR）
 
 - [ ] 小度 AI 眼镜（百度）的公开技术路线
 - [ ] 星纪魅族、影目 INMO、李未可等品牌的最新产品线

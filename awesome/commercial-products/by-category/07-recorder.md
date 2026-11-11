@@ -388,6 +388,26 @@
 
 > 来源：[官方商城 · G1 圆框终身会员版](https://order.xgimi.com/goods/1233001720) · [官方商城 · G1 圆框标准版](https://order.xgimi.com/goods/1233001719) · [官方商城 · L1 黑色标准版](https://shop.xgimi.com/goods/1233001721) · [官方商城 · L1 米色标准版](https://order.xgimi.com/goods/1233001723) · [官方商城 · L1 黑色终身会员版](https://order.xgimi.com/goods/1233001722) · [官方商城 · L1 米色终身会员版](https://order.xgimi.com/goods/1233001724) · [IT之家（2026-10-28）](https://www.ithome.com/1/019/210.htm) · [视听圈（2026-10-29）](http://www.avq360.com/2026102937532.shtml) · [OFweek（2026-11-02）](https://wearable.ofweek.com/2026-11/ART-8330-5011-30709899.html)（均查证 2026-11-05）
 
+### Pebble Qore Vox（印度 Pebble / SRK Powertech）
+
+- **上市状态**：在售（官方店三色可加购，查证 2026-11-11。JSON-LD 为 InStock；`/products/qore-vox.js` 三色 `available: true`）。Shopify `published_at` 为 2026-10-31T15:17:10+05:30。媒体写 2026-11-02 在印度开售（[Gadgets360（2026-11-02）](https://www.gadgets360.com/wearables/news/pebble-qore-vox-price-in-india-launch-specifications-features-12271849)）。不以第三方店价为现价
+- **官网/渠道**：<https://www.pebblecart.com/products/qore-vox>；店面 JSON <https://www.pebblecart.com/products/qore-vox.js>；专题页 <https://www.pebblecart.com/pages/qore-vox>；主题脚本 <https://www.pebblecart.com/cdn/shop/t/224/assets/qv-tweaks.js>。商品页写 Imported & Marketed By SRK Powertech Pvt Ltd。不是 [04 里的 Core Devices Pebble Index 01](./04-agent-hardware.md)（repebble.com）
+- **形态**：无屏智能带，型号 PFB29，约 53 g。侧键双击开始录音、单击停止。带上约可存 100 分钟，手机不在场也能录，之后同步到官方 Pebble Vox App。规格表 Voice Assistance: No，不是语音助手手环。页面不一致：商品规格表写 3ATM，专题页写 IP68，官方未解释换算，两套并列，不取其中一套当作已核。保修条款把 Water Damage 列为不保。健康传感不写入 AI 能力
+- **定价**：
+  - 首发价：待核实。媒体把 ₹5,799 称为 introductory（[Gadgets360（2026-11-02）](https://www.gadgets360.com/wearables/news/pebble-qore-vox-price-in-india-launch-specifications-features-12271849)）。官方商品页写 Sale / Regular 都是 ₹5,799，对照划线 M.R.P. ₹9,999，未使用 introductory。不把媒体「introductory」写成官方首发价
+  - 现价：**₹5,799 INR** · 印度 · [商品页](https://www.pebblecart.com/products/qore-vox) · 查证 2026-11-11。三色同价，页写含税。JSON-LD 三个 Offer 的 price 均为 5799、INR、InStock；[店面 JSON](https://www.pebblecart.com/products/qore-vox.js) 三色 price 579900、compare_at_price 999900、available true。SKU：PFB29-STEALTH-BLACK / PFB29-STORM-BLUE / PFB29-SUMMIT-BROWN。未进入结账。页面不一致：专题页静态 HTML 仍写 ₹6,999；[qv-tweaks.js](https://www.pebblecart.com/cdn/shop/t/224/assets/qv-tweaks.js) 的 `price()` 会把页内 ₹6,999 改成 ₹5,799，并补上划线 M.R.P. ₹9,999。静态稿过期，现价取商品页 / 店面 JSON
+  - MSRP：**₹9,999 INR** · 印度 · [商品页](https://www.pebblecart.com/products/qore-vox) · 查证 2026-11-11。这是页面划线 M.R.P.。商品页 Sale 与 Regular 都是 ₹5,799，不把 M.R.P. 再写成另一套「官方常规价」
+- **目标市场**：印度。销售主体为 SRK Powertech Pvt Ltd（pebblecart.com）。与 Core Devices / repebble.com 的 Pebble Index 01 不是同一厂商、同一产品
+- **AI 能力**：
+  - AI 功能：侧键录音，同步到 Pebble Vox App 后可查看音频、完整转写和 AI 摘要，并可从 App 分享（官方脚本 FAQ 举例 WhatsApp、email）。实现方式：手环本地录音（约 100 分钟，可不连手机）+ 手机 Pebble Vox App 做转写和摘要。底层模型未公开，转写和摘要的推理位置官方未写。专题页原文 "Recordings, transcripts and summaries stay on your Qore Vox and your phone." 是存储声明，不是手环在本地运行大模型。官方脚本 FAQ 写转写和 AI 摘要不限次数，无订阅费，也无额外 AI 处理费；不扩大成全部 App 功能永久免费。语种：脚本替换表有目标句 “English, 7 Indian regional languages and 24 foreign languages”，查证日专题页静态 HTML 没有对应的源句，页面是否仍展示待直取。不写媒体语种名单。官方脚本 FAQ 没有语种问答。不把 4PD 健康传感、心率 / HRV / 血氧 / 睡眠 / 压力、Recovery Score、「AI Health Report」，或演示 UI 上的 “Real-time Translation” 写成听记 AI（[商品页](https://www.pebblecart.com/products/qore-vox) · [专题页](https://www.pebblecart.com/pages/qore-vox) · [qv-tweaks.js](https://www.pebblecart.com/cdn/shop/t/224/assets/qv-tweaks.js)，查证 2026-11-11）
+- **大模型方案**：官网未公开具体基座模型（非千问默认绑定）。推理位置官方未写
+- **公开数据**：未见公开销量。Shopify `published_at` 2026-10-31（IST）。媒体写 2026-11-02 在印度开售（[Gadgets360（2026-11-02）](https://www.gadgets360.com/wearables/news/pebble-qore-vox-price-in-india-launch-specifications-features-12271849)）
+- **关键差异化**：① 无屏手环按键录音，转写和摘要在手机 Pebble Vox App，对照同文件极米 L1；规格表写 Voice Assistance: No；② 官方脚本 FAQ 写转写与 AI 摘要不限次数、无订阅费、无额外 AI 处理费，不扩大到全部 App 功能永久免费；③ 印度 Pebble（SRK Powertech / pebblecart.com），与 04 的 Core Devices Pebble Index 01 分开
+- **商业模式**：硬件销售。商品页 Sale / Regular 均为 ₹5,799，划线 M.R.P. ₹9,999。转写和摘要按官方脚本 FAQ 不另收订阅费或 AI 处理费；不写成全部功能永久免费
+- **另见**：[Pebble Index 01](./04-agent-hardware.md)（Core Devices，另一厂商、另一产品，不在本卡）
+
+> 来源：[Qore Vox 商品页](https://www.pebblecart.com/products/qore-vox) · [店面 JSON](https://www.pebblecart.com/products/qore-vox.js) · [专题页](https://www.pebblecart.com/pages/qore-vox) · [qv-tweaks.js](https://www.pebblecart.com/cdn/shop/t/224/assets/qv-tweaks.js) · [Gadgets360（2026-11-02）](https://www.gadgets360.com/wearables/news/pebble-qore-vox-price-in-india-launch-specifications-features-12271849) · [Mint（2026-11-02）](https://www.livemint.com/technology/pebble-qore-vox-brings-ai-meeting-notes-to-your-wrist-check-price-features-and-battery-life-11793617392293.html)（均查证 2026-11-11）
+
 ## 待补充清单
 
 ### 海外 / 可穿戴
