@@ -44,3 +44,5 @@
 
 # 用户批准（2026-11-04，经 Designer 转达）：Brilliant Labs Halo 的 Business Wire 新闻稿。lychee 对该 URL 报 HTTP/2 protocol error，站点拦截爬虫，已获批准；精确 URL，不排除整个 businesswire.com 域名。
 ^https://www\.businesswire\.com/news/home/20261027712724/en/Brilliant-Labs-Launches-Halo-Glasses-A-New-Generation-of-Privacy-First-Smartglasses$
+# 该 URL 返回 202 Accepted，属于检查器状态码策略问题，不是死链。
+^https://www\.iyiou\.com/news/202610231144269$
