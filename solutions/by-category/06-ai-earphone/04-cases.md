@@ -37,6 +37,10 @@
 | **品牌 TWS + 翻译卖点** | 华为 / 三星 / Apple 等 | 成熟声学 TWS | 系统级实时翻译或助手（能力随系统版本变化） | 随声学旗舰定价 |
 | **Vasco Translator E1** | Vasco Electronics | 开放式耳挂 | 51 种语言；规格写 10 translation engines | [$389](https://vasco-translator.com/translators/vasco-translator-e1)（查证 2026-09-30） |
 | **Pixel Buds Pro 2** | Google | 主动降噪 TWS | Gemini；Live Translate | [$229](https://store.google.com/us/product/pixel_buds_pro_2)（查证 2026-09-30） |
+| **OpenFit 2 AI** | 韶音 / Shokz | 开放式耳挂 | 耳机、充电盒、Shokz App 录音转写与 AI 总结；千问大模型（官网） | 首发价 ¥1398 CNY；现价待核实（[官网产品页](https://www.shokz.com.cn/OpenFit2AI) 未标价，查证 2026-10-29） |
+| **Kieslect AI Earbuds Open2** | Kieslect | 开放式耳夹 | Ear Dance App，164 种语言实时翻译；ChatGPT 语音助手 | 现价 [$49 USD](https://us.kieslect.com/products/kieslect-ai-earbuds-open2)（Sale price；Regular price $69 USD）（查证 2026-10-02） |
+| **viaim RecDot** | viaim | 入耳式 ANC 录音耳机 | 一键录音，78 种语言转写与摘要；Basic 每月 600 分钟 | 现价 [$229.00 USD](https://store.viaim.ai/products/viaim-recdot)（查证 2026-10-06） |
+| **Mymanu Orb** | Mymanu | 开放式翻译耳机 | 40+ 语言实时翻译、会议转写 | 现价 [$179.99 USD](https://mymanu.com/products/mymanu-orb)（查证 2026-10-15） |
 
 ### 形态路线图
 
@@ -112,6 +116,42 @@
 - **公开数据**：博客写预购价 $229 USD。商店现价 $229 USD（查证 2026-09-30）。博客摘要写 "hitting shelves on September 26"（年份待核实）
 - **可借鉴点**：译文一路进耳机，一路从手机外放
 - **另见**：[Pixel Buds Pro 2 商业产品卡][ear]
+
+### 案例：OpenFit 2 AI（韶音 / Shokz）— 开放式耳挂录音与千问总结
+
+- **公开信息源**：[韶音官网产品页](https://www.shokz.com.cn/OpenFit2AI)（查证 2026-10-29）
+- **形态**：开放式耳挂耳机；21×11 mm 复合振膜 + 5.5 mm 平板单元；四麦阵列通话降噪；蓝牙 5.4（AAC / SBC），支持双设备连接；单耳电池 56 mAh，充电盒 600 mAh，支持无线充电；耳机单次 11 h，配合充电盒 48 h（官网，厂商称）
+- **亮点**：单只耳机、充电盒、Shokz App 三处都能发起录音（8 小时双耳录音，5 米录音距离），转写时区分发言人；转写覆盖 30 类语种和 19 种方言（官网标题合称「49种语言」），内置 12 个行业热词库；会后用 19 种行业模板生成 AI 总结；通话翻译、同声传译、面对面翻译、音视频字幕四种翻译模式，语音互译 11 类语种。基于千问大模型的联网云端服务（官网注明总结和实时翻译需联网）
+- **公开数据**：在售（2026-08-24 开售；京东韶音官方旗舰店现货，查证 2026-10-29）。首发价 ¥1398 CNY · 中国大陆（开售稿写首发价 1398 元，查证 2026-10-29）。现价待核实（官网产品页未标价）。MSRP 待核实（开售稿只写首发价，未见独立建议零售价）。未见公开销量
+- **可借鉴点**：补上翻译以外的录音与会后总结；充电盒也能发起录音，形态向录音笔靠拢；千问为默认模型
+- **另见**：[OpenFit 2 AI 商业产品卡][ear]
+
+### 案例：Kieslect AI Earbuds Open2（Kieslect）— 开放式耳夹翻译
+
+- **公开信息源**：[Kieslect 美国官方商店](https://us.kieslect.com/products/kieslect-ai-earbuds-open2) · [Kieslect 官网产品页](https://www.kieslect.com/product/kieslect-ai-earbuds-open2/)（均查证 2026-10-02）
+- **形态**：开放式耳夹（Floating Clip-On），单耳 5.1 g，钛振膜，60 ms 低延迟游戏模式，触控 + 实体按键，10 h 播放（官方商店，厂商称）
+- **亮点**：通过 Ear Dance App 做 164 种语言实时翻译（自由对话、翻译模式、语音笔记、拍照翻译）；集成 ChatGPT 语音助手，可免手动语音控制和快速问答；AI-ENC 算法做通话环境降噪。实现方式：手机 App 侧的翻译服务 + ChatGPT 助手，翻译引擎没有公开
+- **公开数据**：在售（Kieslect 美国官方商店，查证 2026-10-02）。首发价待核实（查证 2026-10-02）。现价 $49 USD（Sale price）· 美国。MSRP $69 USD（Regular price）· 美国（查证 2026-10-02）。未见公开销量。App 功能是否收费待核实
+- **可借鉴点**：客单在 $100 USD 以下；开放式耳夹兼顾运动；翻译和助手都在 App 里实现，硬件本身是普通 TWS
+- **另见**：[Kieslect AI Earbuds Open2 商业产品卡][ear]
+
+### 案例：viaim RecDot（viaim）— 入耳录音与转写订阅
+
+- **公开信息源**：[viaim 官方商店 · RecDot](https://store.viaim.ai/products/viaim-recdot) · [语言支持](https://store.viaim.ai/pages/language-support)（均查证 2026-10-06）
+- **形态**：入耳式 ANC 录音耳机；11 mm 钛涂层动圈，48 dB 主动降噪，三麦克风 + 骨传导麦克风，蓝牙 5.2，双设备连接；单耳 4.8 g，耳机 9 小时、连充电盒 36 小时；耳机与充电盒均可一键录音（官方商店）
+- **亮点**：一键录下现场对话与手机 / 网络通话，78 种语言实时转写（含口音识别），会后生成摘要与待办，可用行业模板或自定义模板，并用指令改写摘要；翻译模式边录原声边实时翻译，译文可在耳机里直接播放。官方称 FlashRecord 录音存在耳机本地（最多 4 小时）、“No app, no cloud”；官方称转写与摘要在 viaim App 中进行并计入套餐分钟（官方未写运行位置）。套餐页列出所用模型：Basic 为 Gemini 3.1 Pro Preview、GPT‑5.6 Luna、Claude Haiku 4.5，Pro / Ultra 为 GPT‑5.6 Sol、Gemini 3.6 Flash、Claude Sonnet 5
+- **公开数据**：在售（viaim 官方商店，查证 2026-10-06）。首发价待核实。现价 $229.00 USD（官网售价，RecDot 单机，黑 / 银同价，查证 2026-10-06）。MSRP 待核实。订阅：Basic 免费，每月 600 分钟转写；Pro $9.99 USD/月或 $79.99 USD/年（每月 1,800 分钟）；Ultra $19.99 USD/月或 $159.99 USD/年（不限时长）（查证 2026-10-06）。未见官方公开销量
+- **可借鉴点**：录音放进日常 ANC 耳机，耳机与充电盒都能一键录；通话、会议、面对面翻译一套 App 处理；免费档每月 600 分钟，订阅只卖更多时长与更高档模型
+- **另见**：[viaim RecDot 商业产品卡][ear]
+
+### 案例：Mymanu Orb（Mymanu）— 开放式通话与现场翻译
+
+- **公开信息源**：[Mymanu Orb 官方商店](https://mymanu.com/products/mymanu-orb) · [Mymanu 官方新闻稿（2025-01-08）](https://mymanu.com/blogs/newsroom/mymanu-introduces-orb-worlds-first-open-ear-live-call-translation-earbuds-at-ces2025)（均查证 2026-10-15）
+- **形态**：开放式翻译耳机 + 充电盒；单耳 6.8 g，5.7 mm 动圈；耳机连充电盒最长 35 小时；包装内含 USB-C AI 翻译适配器（官方商店）
+- **亮点**：通话实时翻译、面对面翻译、会议转写（语音转文字并生成文字记录）、音视频翻译并生成字幕，以及把周围的外语对话译后通过耳机播放。官方商店写 "Translate 40+ languages in real time without missing a beat of the world around you." 实现方式：AI 自然语言处理（官方称）；云端用于语言更新，翻译是否在云端运行未公开。2025-01 官方新闻稿称离线翻译为计划中的更新。官方商店写 "Ai Translation requires iPhone 15 or later models; iPads equipped with a Type-C port"。翻译所用模型未公开
+- **公开数据**：在售（官方商店，查证 2026-10-15）。首发价待核实（查证 2026-10-15）。现价 $179.99 USD（官网售价，查证 2026-10-15）。MSRP 待核实（查证 2026-10-15）。未见公开销量。翻译功能是否收费未公开
+- **可借鉴点**：开放式设计，翻译时仍能听到周围环境；一副耳机兼顾运动听歌、通话和翻译；附带 USB-C AI 翻译适配器（厂商称）
+- **另见**：[Mymanu Orb 商业产品卡][ear]
 
 ---
 
