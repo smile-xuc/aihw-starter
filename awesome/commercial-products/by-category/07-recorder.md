@@ -24,6 +24,7 @@
 - **公开数据**：持续主推「硬件 + AI Membership」；订阅档位见下条 Plaud 套餐
 - **关键差异化**：① 卡片形态 + 磁吸配件降低携带摩擦；② 开箱即送转写分钟降低试用门槛；③ 摘要模板与工作流（日历 / Zapier / MCP 等）做续费锚点
 - **商业模式**：硬件销售 + Starter 附赠时长；升级 Pro / Unlimited / Team 订阅。**Plaud 订阅公开价（年付折月，官网）**：Pro **~$8.33/mo**（$99.99/yr，1200 min/mo）；Unlimited **~$19.99/mo**（$239.99/yr，至 24h/天）；Team 另有席位价。详见 [plaud-ai-plan-pricing](https://www.plaud.ai/pages/plaud-ai-plan-pricing)。
+- **另见**：同厂 Plaud One 主卡见 [06 AI 耳机](./06-ai-earphone.md)
 
 > 来源：[Plaud Note 产品页](https://www.plaud.ai/products/plaud-note-ai-voice-recorder) · [Plaud AI Plan Pricing](https://www.plaud.ai/pages/plaud-ai-plan-pricing)（查证 2026-09-30）
 

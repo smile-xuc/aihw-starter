@@ -252,6 +252,29 @@
 
 ---
 
+### Plaud One（Plaud）
+
+- **上市状态**：预售（本轮限量预购已截止，查证 2026-11-12）。商品页购买按钮为 Out of Stock，弹层原文 "The current pre-order has ended."，并写 pre-orders reopen，可 Join the Waitlist；商品数据 available 为 false。页面不一致：FAQ "Is this a pre-order?" 仍答 "available for pre-order"，卡片取购买按钮与 available，不记为可购买。售罄博客正文写 2026-08-27 发布，美国预售一天售罄，并写 "shipments expected to begin in Q4 2026"；FAQ 写预计发货时间在结账页显示。首轮发货待核实。[美国预售一天售罄（页日期 2026-11-02）](https://www.plaud.ai/blogs/news/plaud-one-ai-earbuds-sell-out-us-pre-sale-in-one-day)
+- **官网/渠道**：<https://www.plaud.ai/products/plaud-one>；Meet 博客 <https://www.plaud.ai/blogs/news/meet-plaud-one-wearable-ai>；售罄博客 <https://www.plaud.ai/blogs/news/plaud-one-ai-earbuds-sell-out-us-pre-sale-in-one-day>
+- **形态**：半入耳 AI 录音耳机 + 充电盒（Limited Explorer Edition）。充电盒 4 颗 MEMS 麦克风，官方写 AI beamforming，现场拾音约 5 m（16.4 ft）；耳机录通话与线上会议（每只 3 颗 MEMS + 1 颗 VPU）。盒内置 eSIM，4G LTE，Meet 博客写覆盖 80+ 国家/地区，录音同步不依赖手机。盒上 Agent 键用于语音派活；Record 键可录音，短按标记重点，并可补照片、笔记或文件。单只耳机 0.16 oz，充电盒 2.20 oz（商品页规格；Meet 博客写半入耳 4.5 g）。聆听续航：降噪开 4 小时、关 6 小时，连充电盒最长 36 小时；连续录音耳机最长 3.5 小时、充电盒最长 25 小时（商品页规格。eSIM、波束成形与续航不是 AI 功能）
+- **定价**：
+  - 首发价：$249.99 USD · 美国 · [Plaud One 商品页](https://www.plaud.ai/products/plaud-one) · [Meet Plaud One 博客（页日期 2026-11-02）](https://www.plaud.ai/blogs/news/meet-plaud-one-wearable-ai) · Regular price，compare-at 为空；含 Starter Plan（导航文案 "300 minutes of transcription per month"）与 $200 USD Plaud credits · 查证 2026-11-12
+  - 现价：—（限量预购已截止，购买按钮 Out of Stock，不记为可购买现价。商品页仍显示 Regular price $249.99 USD）· [Plaud One 商品页](https://www.plaud.ai/products/plaud-one) · 查证 2026-11-12
+  - MSRP：待核实（compare-at 为空，未见独立建议零售价）· [Plaud One 商品页](https://www.plaud.ai/products/plaud-one) · 查证 2026-11-12
+  - 订阅：随设备含 Starter Plan，每月 300 分钟转写；另含 $200 USD Plaud credits（FAQ 写当地等值，额度与可用范围随地区、币种与套餐）· [Plaud One 商品页](https://www.plaud.ai/products/plaud-one) · 查证 2026-11-12
+- **目标市场**：现场对话、手机通话与线上会议。可购买与配送仅美国、法国、德国、英国、意大利、西班牙、加拿大、荷兰（官方 FAQ "Where do you ship?"，8 国）。eSIM 的 4G LTE 覆盖（Meet 博客写 80+ 国家/地区）与上述可购买地区不是同一范围
+- **AI 能力**：
+  - AI 功能：录音自动转写、自动摘要，并写入 Plaud Agent 上下文（商品页列为基线）。语音派活由 Plaud Agent 规划步骤并编排 agents；Connectors 覆盖 Gmail、Google Drive、Calendar、Slack、Notion 与 MCP；另有 Skills / Plugins 与定时 Routines。Agent 派活、Connectors、Skills 为 beta / Preview，各功能是否已上线待核实。商品页免责声明："Hey Plaud" 需要 Plaud Intelligence beta；beta 功能可能变更；部分集成首发未必可用；部分功能留待后续固件。FAQ 写转写与摘要支持 112+ 语言，部分 Intelligence beta 与 Agent 功能英语优先。实现方式：录音经 eSIM / 4G 上传，由 Plaud Intelligence 处理；具体模型未公开；推理位置官方未写。[Plaud One 商品页](https://www.plaud.ai/products/plaud-one) · [Meet Plaud One 博客（页日期 2026-11-02）](https://www.plaud.ai/blogs/news/meet-plaud-one-wearable-ai)（查证 2026-11-12）
+- **大模型方案**：官网未公开具体基座模型（非千问默认绑定）。商品页与两篇官方博客均未写模型名。推理位置官方未写
+- **公开数据**：未见公开销量。商品页写全球限量 2,000 台。隐私声明（非 AI 功能）：对话数据默认不用于训练模型，除非明确选择加入；传输与静态存储均加密（商品页免责声明原文 "Conversation data is not used to train models unless the user explicitly opts in. Data is encrypted in transit and at rest."，查证 2026-11-12）
+- **关键差异化**：① 充电盒用 4 麦波束成形录现场（约 5 m），耳机录通话与线上会议；② 盒内 eSIM / 4G，同步不依赖手机，覆盖范围与 8 国可购买地区分开写；③ 自动转写与摘要为基线能力，Agent 派活、Connectors、Skills 标 beta / Preview，是否已上线待核实
+- **商业模式**：硬件限量预购（本轮已截止，不能按现价下单）+ 随附 Starter Plan（每月 300 分钟转写）与 $200 USD Plaud credits。更高档会员价不在本卡套用
+- **另见**：同厂卡片录音机 [Plaud Note](./07-recorder.md)
+
+> 来源：[Plaud One 商品页](https://www.plaud.ai/products/plaud-one) · [Meet Plaud One 博客（页日期 2026-11-02）](https://www.plaud.ai/blogs/news/meet-plaud-one-wearable-ai) · [美国预售一天售罄（页日期 2026-11-02）](https://www.plaud.ai/blogs/news/plaud-one-ai-earbuds-sell-out-us-pre-sale-in-one-day)（均查证 2026-11-12）
+
+---
+
 ## 待补充清单
 
 ### 品牌 TWS + 系统翻译
