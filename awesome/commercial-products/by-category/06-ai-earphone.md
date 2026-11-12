@@ -98,6 +98,30 @@
 
 ---
 
+### Timekettle LiveTalk（时空壶）
+
+- **上市状态**：在售（全球官方商店可下单，查证 2026-11-11。商品页 JSON-LD 三个 SKU 均为 InStock）。[PR Newswire（2026-10-22）](https://www.prnewswire.com/news-releases/timekettle-livetalk-brings-ai-interpreting-and-everyday-audio-together-in-an-open-ear-design-302916855.html) 发布。商品页 Estimated Arrives：2026-11-10 为 Nov 13–17；2026-11-11 再打开同一组件为 Nov 14 – Nov 18。只记录当日页面预计送达，不写成已经发出，也不另编发货延期
+- **官网/渠道**：<https://www.timekettle.co/products/livetalk-ai-translation-earbuds>；中国大陆介绍页 <https://cn.timekettle.co/pages/livetalk-ai-translation-earbuds>（无价格）；大陆「立即购买」指向京东 <https://item.jd.com/100425463058.html>（价格未取得）
+- **形态**：开放式耳挂，单耳约 6.9 g（[商品页](https://www.timekettle.co/products/livetalk-ai-translation-earbuds) · [PR Newswire（2026-10-22）](https://www.prnewswire.com/news-releases/timekettle-livetalk-brings-ai-interpreting-and-everyday-audio-together-in-an-open-ear-design-302916855.html)）。同品牌日常款，对照上方 W4 Plus 的商务向。耳挂、单耳重量、音乐 EQ、音乐续航和双设备蓝牙不计入 AI
+- **定价**：
+  - 首发价：$129 USD · 全球 · [PR Newswire（2026-10-22）](https://www.prnewswire.com/news-releases/timekettle-livetalk-brings-ai-interpreting-and-everyday-audio-together-in-an-open-ear-design-302916855.html) · 新闻稿写 "At $129" · 查证 2026-11-11
+  - 首发价（日本）：¥21,580 JPY（税込）· 日本 · [PR Times（2026-10-22）](https://prtimes.jp/main/html/rd/p/000000005.000179245.html) · 稿内写 2026-10-09 起在日本官网与 Amazon 销售。这是日本官方发布价，不是中国大陆或美国现价 · 查证 2026-11-11
+  - 现价：**$109 USD** · 全球 · [商品页](https://www.timekettle.co/products/livetalk-ai-translation-earbuds) · 查证 2026-11-11。页面为 Sale $109 / Regular $129；JSON-LD 三个 SKU 的 price 均为 109、USD、InStock；compare_at_price 为 12900（即 $129.00）。未进入结账，不是含税含运费总价。页面写订单超过 $119 免运，不把 $109 写成包邮
+  - 现价（中国大陆）：待核实 · [介绍页](https://cn.timekettle.co/pages/livetalk-ai-translation-earbuds) 无售价（2026-11-11 页内仅有语言切换里的「¥ JPY」）；购买按钮指向 [京东](https://item.jd.com/100425463058.html)（价格未取得）。不采用媒体「¥899」
+  - MSRP：待核实（Regular $129 与 10-22 新闻稿的 $129 一致；Regular 不等于另有出处的 MSRP）
+  - 订阅：当前商品页（查证 2026-11-11）。每设备每月 200 分钟免费在线翻译，面对面、现场收听、通话、音视频四种模式共用；每月 1 日覆盖重置，不结转；绑定该设备，多台设备的免费分钟不合并。Pro 每个计费周期另加 300 分钟，Unlimited 另列为不限分钟；Pro 与 Booster 绑在账号上，同一账号下的 LiveTalk 设备共享；订阅分钟按周期刷新，订阅结束后未用完的订阅分钟失效；开通订阅不影响每月免费额度。Booster 一次 600 分钟，用完前有效。扣减顺序为 Free → Pro → Booster。页面不一致：当前商品页写免费 200 分钟与 Pro 300 分钟并存、先扣免费；旧英文 FAQ PDF Q15/Q17 写 Pro 每周期 500 分钟，且订阅者没有免费额度（[LiveTalk Product FAQs EN](https://cdn.timekettle.co/Manuals/LiveTalk_Product_FAQs_EN_20260901.pdf)）。两套写法即使分钟总数可以对上，也不是同一条权益；卡片取当前商品页，并保留 PDF 差异，以 App 当期权益为准。PDF 里的订阅标价不写入本卡作为现价，金额待核实。免费档是否包含 AI Refine / 摘要，以及现行订阅标价，均待核实。不把免费 200 分钟写成包含全部 AI 功能，也不把 Booster 写成解锁全部 AI
+- **目标市场**：日常跨语言沟通。新闻稿把 LiveTalk 写成相对 W4 产品线更易入手的一档。中国大陆介绍页不标价，购买跳到京东
+- **AI 能力**：
+  - AI 功能：四种实时翻译（面对面、现场收听、通话、音视频）。商品页写 54 种语言、108 种口音，25 组离线语言对。AI LLM Engine；AI Refine 做句子润色，并保持语气前后一致；AI Meeting Assistant 做实时双语转写和带时间戳的摘要。AI Live Summary 按官方 2026-10-30 博客写在收听（Live Listening）模式：边听边按时间轴整理话题和摘要，不扩大成四种模式都支持。25 组离线语言对要先在手机下载语言包，在手机完成本地翻译，不是耳机自己离线运行大模型。在线翻译需要网络；在线润色和摘要的推理位置官方未单独写。实现方式：Timekettle App + Babel OS 3.0；官方称按场景和网络选择翻译引擎。Babel OS 是系统名，不是基座模型名。厂商称语音实时处理后丢弃，转写和笔记保存在手机本地（厂商声明，不是独立审计）。上方 W4 Plus 卡仍是 2026-10-03 查证的 52 种语言、106 种口音、13 组离线，不与本卡混用（[商品页](https://www.timekettle.co/products/livetalk-ai-translation-earbuds) · [PR Newswire（2026-10-22）](https://www.prnewswire.com/news-releases/timekettle-livetalk-brings-ai-interpreting-and-everyday-audio-together-in-an-open-ear-design-302916855.html) · [官方说明（2026-10-30）](https://www.timekettle.co/blogs/tips-and-tricks/all-you-need-to-know-about-timekettle-livetalk) · [中国大陆介绍页](https://cn.timekettle.co/pages/livetalk-ai-translation-earbuds)，查证 2026-11-11）
+- **大模型方案**：官网未公开具体基座模型（非千问默认绑定）。Babel OS 3.0 不是基座模型名
+- **公开数据**：未见公开销量。PR Newswire 2026-10-22 发布。日本稿写 2026-10-09 起在日本官网与 Amazon 销售（[PR Times（2026-10-22）](https://prtimes.jp/main/html/rd/p/000000005.000179245.html)）
+- **关键差异化**：① 日常耳挂款，对照同文件 W4 Plus；语种和离线对数各用各卡的查证日，不混用；② 每设备每月 200 分钟免费在线翻译，可另加 Pro / Unlimited / Booster，当前网页与旧英文 FAQ 的分钟规则不一致；③ 离线语言包在手机完成，在线翻译要联网
+- **商业模式**：硬件销售，另加在线翻译分钟（每设备每月免费额度，以及 Pro / Unlimited / Booster）。订阅标价待核实，以 App 当期权益为准。免费档是否包含 AI Refine / 摘要待核实
+
+> 来源：[LiveTalk 商品页](https://www.timekettle.co/products/livetalk-ai-translation-earbuds) · [PR Newswire（2026-10-22）](https://www.prnewswire.com/news-releases/timekettle-livetalk-brings-ai-interpreting-and-everyday-audio-together-in-an-open-ear-design-302916855.html) · [中国大陆介绍页](https://cn.timekettle.co/pages/livetalk-ai-translation-earbuds) · [京东跳转（价格未取得）](https://item.jd.com/100425463058.html) · [官方说明（2026-10-30）](https://www.timekettle.co/blogs/tips-and-tricks/all-you-need-to-know-about-timekettle-livetalk) · [英文 FAQ PDF](https://cdn.timekettle.co/Manuals/LiveTalk_Product_FAQs_EN_20260901.pdf) · [PR Times（2026-10-22）](https://prtimes.jp/main/html/rd/p/000000005.000179245.html)（均查证 2026-11-11）
+
+---
+
 ### Vasco Translator E1（Vasco Electronics）
 
 - **上市状态**：在售（官方商品页，查证 2026-09-30）
@@ -144,11 +168,11 @@
 
 ### OpenFit 2 AI（韶音 / Shokz）
 
-- **上市状态**：在售（[IT之家（2026-08-24）](https://www.ithome.com/0/993/557.htm) 开售；京东韶音官方旗舰店现货，查证 2026-10-29）
+- **上市状态**：在售（[韶音官方新闻稿](https://www.shokz.com.cn/artical/82) 称 8 月 17 日预售、8 月 24 日正式开售；京东韶音官方旗舰店现货，查证 2026-10-29）
 - **官网/渠道**：<https://www.shokz.com.cn/OpenFit2AI> 官网产品页
 - **形态**：开放式耳挂耳机；21×11 mm 复合振膜 + 5.5 mm 平板单元；四麦阵列通话降噪；蓝牙 5.4（AAC / SBC），支持双设备连接；单耳电池 56 mAh，充电盒 600 mAh，支持无线充电；耳机单次 11 h，配合充电盒 48 h（官网，厂商称）
 - **定价**：
-  - 首发价：¥1398 CNY · 中国大陆 · [IT之家（2026-08-24）](https://www.ithome.com/0/993/557.htm) · 开售稿写首发价 1398 元 · 查证 2026-10-29
+  - 首发价：¥1398 CNY · 中国大陆 · [韶音官方新闻稿](https://www.shokz.com.cn/artical/82) · 新闻稿写「售价1398元」· 查证 2026-11-12
   - 现价：待核实（[官网产品页](https://www.shokz.com.cn/OpenFit2AI) 未标价；[京东移动商品页](https://item.m.jd.com/product/10231661001360.html) 为 SHOKZ韶音官方旗舰店 SKU 10231661001360，现货，未登录标价打码为 ¥1??0，页内提示登录后查看到手价并挂国补「登录最高省 15%」。标题「首降600元」为促销文案，未取得可引用到手价）· 查证 2026-10-29
   - MSRP：待核实（开售稿只写首发价，未见独立建议零售价）· 查证 2026-10-29
 - **目标市场**：商务通话、线上会议、讲座记录的职场用户；开放式佩戴人群
@@ -160,7 +184,7 @@
 - **商业模式**：硬件销售；转写 / 云同步是否收费待核实
 - **另见**：07 录音（耳机录音形态对照）
 
-> 来源：[韶音 OpenFit 2 AI 官网](https://www.shokz.com.cn/OpenFit2AI) · [IT之家（2026-08-24）](https://www.ithome.com/0/993/557.htm) · [京东商品页](https://item.m.jd.com/product/10231661001360.html)（均查证 2026-10-29）
+> 来源：[韶音 OpenFit 2 AI 官网](https://www.shokz.com.cn/OpenFit2AI) · [韶音官方新闻稿（8 月 18 日沟通会）](https://www.shokz.com.cn/artical/82) · [京东商品页](https://item.m.jd.com/product/10231661001360.html)（官网、京东查证 2026-10-29；新闻稿查证 2026-11-12）
 
 ---
 
