@@ -46,3 +46,5 @@
 ^https://www\.businesswire\.com/news/home/20261027712724/en/Brilliant-Labs-Launches-Halo-Glasses-A-New-Generation-of-Privacy-First-Smartglasses$
 # 该 URL 返回 202 Accepted，属于检查器状态码策略问题，不是死链。
 ^https://www\.iyiou\.com/news/202610231144269$
+# 用户批准（2026-11-12，经 Designer 转达）：Oakley Meta 页面拦截检查器返回 403，不是死链；精确 URL，不排除整个 oakley.com 域名。
+^https://www\.oakley\.com/en-us/l/oakley-meta$
