@@ -35,6 +35,7 @@
 | **Plaud NotePin** | Plaud | 别针可穿戴（盒内磁吸别针 + 夹子；变体 S 另含项链与腕带） | Plaud Intelligence；套餐 FAQ 列 GPT-5、Gemini 3 Pro、Claude Sonnet 等 | 现场录音 + 112 语转写 + 模板摘要 + Ask Plaud；不支持通话录音 | [$159](https://www.plaud.ai/products/plaud-notepin)（含 300 min/mo；查证 2026-10-28）。变体 NotePin S [$179](https://www.plaud.ai/products/plaud-notepin-s) |
 | **Notta Memo** | Notta | 口袋卡片 + 磁吸 | Notta App AI 转写 / 摘要 / 翻译 | 4 MEMS + 骨传导，58 语种 | 套装 [$152.39](https://shop.notta.ai/en-us/products/notta-memo)（查证 2026-09-30） |
 | **讯飞 SR502 星火版** | 科大讯飞 | 带屏录音笔 | 讯飞星火 / 听见转写 | 离线转写、OCR、会议向 | [¥2499 官网标价](https://www.iflytekrecord.com/Goods_parms/1/511.html) |
+| **科大讯飞 AI 录音环** | 科大讯飞 | MagSafe 圆环（磁吸手机背，可展开作支架） | 讯飞语音识别大模型（子型号未公开）；配套 App 转写与纪要（推理位置官方未写） | 转写 + AI 纪要/待办；听见会员版另有洞察 / Chat / Skill+Agent（不写成整机标配） | 标准版 **¥1,299.00**（[单品页 goodsId=2454](https://www.xunfei.cn/goods?goodsId=2454)，查证随商业卡 2026-11-09）；听见会员版媒体口径 ¥1,099，官方商城未见独立 SKU。[商业产品卡](../../../awesome/commercial-products/by-category/07-recorder.md#科大讯飞-ai-录音环科大讯飞) |
 | **HiDock H1 Lite** | HiDock | USB-C 桌面扬声器电话 | HiNotes；产品页列 GPT-5.4 / Claude 4.6 / Gemini 3.1 Pro | BlueCatch 双端录音，无会议 bot；Call / Room | [官网 $189](https://www.hidock.com/products/hidock-h1-lite)；[Amazon $189.99](https://www.amazon.com/HiDock-Conference-Speakerphone-Noise-Canceling-Transcription/dp/B0GZ3GZ3DT) |
 | **Limitless Pendant** | Limitless（Meta 收购后公开停售） | 挂件可穿戴 | 云端转写 + 日记式检索 | 持续录音、隐私声明 | 历史公开约 $99；[官网说明停售](https://www.limitless.ai/) |
 | **Bee Frontier**（前代 Pioneer 已换代） | Bee（已加入 Amazon） | 腕带 / 夹扣可穿戴 | 未公开具体基座模型；音频处理后即删 | 摘要、要点、建议待办、对话搜索、语音笔记；Bee Pro 集成邮件 / 日历 | [官网 $74.99](https://bee.computer/products/frontier)；[Bee Pro](https://bee.computer/bee-pro) $11.99/月 |
@@ -59,7 +60,7 @@
   硬件+订阅    可穿戴探索*
 ```
 
-\*NotePin：Plaud 别针可穿戴，官网在售 $159.00（盒内磁吸别针与夹子；变体 NotePin S $179.00，查证 2026-10-28），软件仍走 Plaud Intelligence 会员，见 [商业产品卡][rec]。Limitless Pendant：公开信息称 2025-12 起不再向新用户销售，作历史对标。Bee Frontier（前代 Pioneer 已换代）为仍在官网在售的可穿戴对照（$74.99，Bee Pro $11.99/月或 $99.99/年），见 [商业产品卡][rec]。眼镜/手环记忆（极米 G1/L1）：无摄像头记忆眼镜 + 无屏手环，做全天候录音记忆，见 [商业产品卡](../../../awesome/commercial-products/by-category/07-recorder.md#极米记得-ai-记忆眼镜-g1--ai-记忆手环-l1极米-xgimi)。
+\*NotePin：Plaud 别针可穿戴，官网在售 $159.00（盒内磁吸别针与夹子；变体 NotePin S $179.00，查证 2026-10-28），软件仍走 Plaud Intelligence 会员，见 [商业产品卡][rec]。Limitless Pendant：公开信息称 2025-12 起不再向新用户销售，作历史对标。Bee Frontier（前代 Pioneer 已换代）为仍在官网在售的可穿戴对照（$74.99，Bee Pro $11.99/月或 $99.99/年），见 [商业产品卡][rec]。眼镜/手环记忆（极米 G1/L1）：无摄像头记忆眼镜 + 无屏手环，做全天候录音记忆，见 [商业产品卡](../../../awesome/commercial-products/by-category/07-recorder.md#极米记得-ai-记忆眼镜-g1--ai-记忆手环-l1极米-xgimi)。MagSafe 录音环（科大讯飞 AI 录音环）：磁吸在手机背面，圆环可展开作支架；转写与纪要走配套 App（推理位置官方未写），见 [商业产品卡](../../../awesome/commercial-products/by-category/07-recorder.md#科大讯飞-ai-录音环科大讯飞)。
 
 ---
 
@@ -85,6 +86,18 @@
 - **亮点**：带屏、离线转写、与听见生态绑定的时长 / 会员
 - **可借鉴点**：国内可走「更高硬件客单 + 时长包」，不必完全复制海外 $159 卡片机
 - **另见**：[讯飞录音笔商业产品卡][rec]
+
+### 案例：科大讯飞 AI 录音环 — MagSafe 圆环录音
+
+- **公开信息源**：[科大讯飞 AI 录音环商业产品卡](../../../awesome/commercial-products/by-category/07-recorder.md#科大讯飞-ai-录音环科大讯飞) · [单品页 goodsId=2454](https://www.xunfei.cn/goods?goodsId=2454)（查证随商业卡 2026-11-09）
+- **亮点**：
+  - MagSafe 圆环，磁吸在手机背面，展开可作支架
+  - 标准版现价 **¥1,299.00**（单品页 goodsId=2454，查证随商业卡 2026-11-09）
+  - 同硬件两套卖法：标准版走讯飞录音笔 App；听见会员版媒体口径 ¥1,099，官方商城未见独立 SKU
+  - 转写 + AI 纪要/待办走配套 App，推理位置官方未写。模型为讯飞语音识别大模型，子型号未公开
+  - 听见会员版另有洞察 / Chat / Skill+Agent，不写成整机标配
+- **可借鉴点**：圆环磁吸手机背，和同页 SR502 笔形态分开记。会员版能力只记在会员版
+- **另见**：[科大讯飞 AI 录音环商业产品卡](../../../awesome/commercial-products/by-category/07-recorder.md#科大讯飞-ai-录音环科大讯飞)
 
 ### 案例：Limitless Pendant（Limitless → Meta）— 可穿戴探索与停售启示〔已停售〕
 
