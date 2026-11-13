@@ -281,12 +281,35 @@
 
 ---
 
+### Suunto Race 3S（Suunto）
+
+- **上市状态**：在售（美国官方商店，Titanium Black / Orchid / Feather 三色商店接口均为 `available: true`，查证 2026-11-13；官方新闻写 2026-10-15 与 Suunto AI Coach 同期发布；中国大陆渠道待核实）
+- **官网/渠道**：<https://us.suunto.com/products/suunto-race-3s-titanium-black>；<https://us.suunto.com/products/suunto-race-3s-titanium-orchid>；<https://us.suunto.com/products/suunto-race-3s-titanium-feather>；[Suunto AI Coach](https://us.suunto.com/pages/suunto-ai-coach)；[官方新闻（2026-10-15）](https://www.suunto.com/News/why-we-built-suunto-ai-coach/)；[发布博客（2026-10-15）](https://us.suunto.com/blogs/news/suunto-launches-race-3s-next-generation-performance-watch)；全球产品页 <https://www.suunto.com/Products/sports-watches/suunto-race-3s/suunto-race-3s-titanium-black/>（价格动态加载，欧洲价待核实）
+- **形态**：46 mm 钛金属表圈运动手表；商品页写含硅胶表带约 56 g，[发布博客](https://us.suunto.com/blogs/news/suunto-launches-race-3s-next-generation-performance-watch) 另写表头 38 g（查证 2026-11-13）；1.32 英寸最高 2000 nits AMOLED（466×466）；双频 GPS（官方写 dual-band GPS 续航最长 38 小时，与表头重量不是一回事）；蓝宝石玻璃
+- **定价**：
+  - 首发价：待核实（现价未见划线，是否即首发价待核实）
+  - 现价：$599.00 USD · 美国 · 三色相同 · [美国商品页](https://us.suunto.com/products/suunto-race-3s-titanium-black) · 查证 2026-11-13
+  - MSRP：待核实
+  - 订阅：2026-12-31 前在 Suunto App 激活 Race 3S，送 3 个月 Suunto AI Coach；官方 FAQ 写无需绑卡，试用三个月后自动结束，不会自动续订；之后需付费订阅，价格官方写 later in 2026 公布，待核实。2027 年初向其他兼容 Suunto 表型开放（细节官方称稍后公布）
+- **目标市场**：越野与训练向运动手表用户（官方以 trail / training 定位）
+- **AI 能力**：
+  - AI 功能：在 Suunto App 里用自然语言询问训练、恢复、睡眠和路线问题，结合账号里已有的训练 / 恢复 / 睡眠 / 负荷 / 路线历史作答，可带图表、表格和地图；可生成结构化训练课、训练计划和路线，保存在 App 并同步到手表。与原来只生成计划、不能对话的「Suunto Coach」分开写。实现方式：官方写 "an AI-powered conversational coaching experience in the Suunto app"。FAQ：「Your data and conversations aren't used to train AI models, and your name, email and account details aren't sent to the AI models.」未写模型名，也未写推理位置。在 Suunto App 中提供对话教练，推理位置官方未写。商品页 "guidance to your wrist" 只表示课表 / 路线会同步到表，不是表上推理。官方 FAQ 写 Suunto AI Coach 不是医疗服务，仅提供一般训练、恢复和户外指导。（来源：[Suunto AI Coach](https://us.suunto.com/pages/suunto-ai-coach) · [官方新闻（2026-10-15）](https://www.suunto.com/News/why-we-built-suunto-ai-coach/) · [美国商品页](https://us.suunto.com/products/suunto-race-3s-titanium-black)，查证 2026-11-13）
+- **大模型方案**：未公开。官方只称 Suunto AI Coach（非千问默认绑定）；推理位置官方未写
+- **公开数据**：未见公开销量
+- **关键差异化**：① 对话教练做在 Suunto App 里，答案来自账号已有训练数据，并可把课表 / 路线同步到表；② 与非对话的「Suunto Coach」分开；③ 硬件销售 + 激活截止日后需付费订阅（订阅价待核实）
+- **商业模式**：硬件销售；Suunto AI Coach 在激活截止日前送 3 个月，之后为付费订阅（价格待核实）
+- **另见**：[公开案例](../../../solutions/by-category/08-smart-watch/04-cases.md)
+
+> 来源：[美国商品页](https://us.suunto.com/products/suunto-race-3s-titanium-black) · [Suunto AI Coach](https://us.suunto.com/pages/suunto-ai-coach) · [官方新闻（2026-10-15）](https://www.suunto.com/News/why-we-built-suunto-ai-coach/) · [发布博客（2026-10-15）](https://us.suunto.com/blogs/news/suunto-launches-race-3s-next-generation-performance-watch)（查证 2026-11-13）
+
+---
 
 ## 待补充清单
 
 - [x] Amazfit Balance 2（Zepp Flow / Zepp Coach）
 - [x] TicNote Watch（腕上 AI 录音和纪要）
 - [x] Google Fitbit Edge（Google Health Coach / Gemini）
+- [x] Suunto Race 3S（Suunto AI Coach）
 - [ ] Garmin 公开 AI 解读 SKU
 - [ ] 医疗级注册手表公开案例
 

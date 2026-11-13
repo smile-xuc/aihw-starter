@@ -35,6 +35,11 @@
 | **Galaxy Watch9** | 40 mm / 44 mm，圆形表盘 | Gemini；raise to talk | 美国 40 mm 蓝牙 $379.99、44 mm 蓝牙 $409.99（SammyGuru）；LTE $429.99（40 mm）/ $459.99（44 mm）USD · 美国（SammyGuru、AT&T，查证 2026-10-01）；加拿大 44 mm 蓝牙 $559.99 CAD（Aubaine） | 未见公开订阅价 |
 | **Amazfit Balance 2** | 运动健康手表 | Zepp Flow；Zepp Coach | $299.99（查证 2026-09-30） | 未见公开订阅价 |
 | **TicNote Watch** | 1.43 英寸圆形 AMOLED | 腕上录音；转写 / 摘要走 App；官网称 120+ 语种、<1.5s | 现价 $199.00 USD（划线价 $249.00 USD）（查证 2026-10-01） | 订阅价待核实 |
+| **小米手环 11** | 手环 | AI 睡眠解读与建议（经小米运动健康 App）；AI 泳姿识别；官网未写模型与推理位置 | NFC 版黑色现价 ¥339 CNY、标准版 ¥289 CNY（查证 2026-10-02 / 10-03） | 未见公开订阅价 |
+| **小天才电话手表 Z12** | 儿童 4G 电话手表 | 天才兔智能助手 2.0；PPG + GSR 情绪 / 压力算法；官网未写大模型名称 | 首发价 / 现价 / MSRP 待核实（查证 2026-10-02） | 增值服务费用待核实 |
+| **Ultrahuman Ring PRO** | 钛合金智能指环 | AI 助手 Jade 对话解读数据；指环规格写 on-chip machine learning；Jade 模型与运行位置未公开 | 现价 $479.00 USD（查证 2026-10-14） | 官方购买页写看数据不收订阅费 |
+| **Google Fitbit Edge** | 超薄腕带健身追踪器 | Google Health Coach（商店页写 built with Gemini，含于 Health Premium）；Health Guardian | 博客 / 商店 From $179.99 USD（查证 2026-10-22） | Health Premium From $9.99/月；购机含 3 个月 |
+| **Suunto Race 3S** | 46 mm 钛金属表圈运动手表 | Suunto AI Coach：在 App 里用自然语言问训练 / 恢复 / 睡眠 / 路线，可生成训练课 / 计划 / 路线后同步到表；模型未公开，推理位置官方未写 | 美国现价 $599.00 USD（查证 2026-11-13）；是否即首发价待核实 | 2026-12-31 前激活送 3 个月，不用绑卡，到期自动结束、不自动续订；之后订阅价待核实 |
 
 ## 三、关键案例速览
 
@@ -102,10 +107,55 @@
 - **可借鉴点**：录音放在腕上，本地能录能放；转写和摘要留在 App，健康指标另写非医疗器械
 - **另见**：[TicNote Watch 商业产品卡][watch]
 
+### 案例：小米手环 11（小米）— App 内 AI 睡眠解读
+
+- **公开信息源**：[小米手环 11 官方概述页](https://www.mi.com/prod/xiaomi-smart-band-11) · [小米商城](https://www.mi.com/shop/buy/detail?product_id=25307)（查证 2026-10-02）
+- **形态**：手环。标准版约 15.58 g；1.72″ 跑道屏
+- **技术路线**：「AI 睡眠解读与建议」需通过小米运动健康 App 使用；另有游泳时「AI 泳姿识别」。官网没有写模型，也没有写在端侧还是云端运行
+- **公开数据**：NFC 版黑色现价 ¥339 CNY（商城划线价 ¥349 CNY，查证 2026-10-02）；标准版 ¥289 CNY（查证 2026-10-03）。首发价待核实。未见公开销量
+- **另见**：[小米手环 11 商业产品卡][watch]
+
+### 案例：小天才电话手表 Z12（小天才）— 儿童表上的助手与守护
+
+- **公开信息源**：[小天才 Z12 官网](https://www.okii.com/html/pc/products/z12.html) · [Z12 FAQ](https://www.okii.com/html/pc/service/faq.html)（查证 2026-10-02）
+- **形态**：儿童 4G 电话手表。上市状态待核实（渠道待核实，查证 2026-10-02）
+- **技术路线**：天才兔智能助手 2.0 可代接电话、查诗词 / 成语、AI 识屏（FAQ 写识屏功能预计 6 月上线，年份待核实）；PPG + GSR 识别情绪和压力；复杂场景自动切换定位算法。官网未写大模型名称
+- **公开数据**：首发价 / 现价 / MSRP 待核实（查证 2026-10-02）。未见公开销量
+- **另见**：[小天才电话手表 Z12 商业产品卡][watch]
+
+### 案例：Ultrahuman Ring PRO（Ultrahuman）— 指环数据的对话解读
+
+- **公开信息源**：[产品页](https://www.ultrahuman.com/us/ring-pro/) · [官方购买页](https://www.ultrahuman.com/us/ring-pro/buy/)（查证 2026-10-14）
+- **形态**：钛合金智能指环 + PRO 充电盒
+- **技术路线**：通过平台上的 AI 助手 Jade 对话解读指环及其他 Ultrahuman 设备指标；指环规格表写 "Dual-core with on-chip machine learning"。Jade 的运行位置和所用模型未公开
+- **公开数据**：现价 $479.00 USD（查证 2026-10-14）。首发价 / MSRP 待核实。官方购买页写看数据不收订阅费。未见公开销量
+- **另见**：[Ultrahuman Ring PRO 商业产品卡][watch]
+
+### 案例：Google Fitbit Edge（Google / Fitbit）— Health Coach / Gemini
+
+- **公开信息源**：[官方博客（2026-10-12）](https://blog.google/products-and-platforms/devices/fitbit/google-fitbit-edge/) · [Google Store · Fitbit Edge](https://store.google.com/us/product/google_fitbit_edge?hl=en-US)（查证 2026-10-22）
+- **形态**：超薄腕带健身追踪器。上市状态：预售（Google Store 可预购；博客写 2026-10-27 开卖，查证 2026-10-22）
+- **技术路线**：Google Health Coach 按个人状态给出健康与健身指导；商店页写 personalized coaching built with Gemini，含在 Google Health Premium 内。官方未写具体 Gemini 型号
+- **公开数据**：博客写 retails for $179.99 USD；商店预购价 From $179.99 USD（查证 2026-10-22）。购机含 3 个月 Health Premium，之后 From $9.99 USD/月。未见公开销量
+- **另见**：[Google Fitbit Edge 商业产品卡][watch]
+
+### 案例：Suunto Race 3S（Suunto）— App 内对话教练
+
+- **公开信息源**：[美国商品页](https://us.suunto.com/products/suunto-race-3s-titanium-black) · [Suunto AI Coach](https://us.suunto.com/pages/suunto-ai-coach) · [官方新闻（2026-10-15）](https://www.suunto.com/News/why-we-built-suunto-ai-coach/) · [发布博客（2026-10-15）](https://us.suunto.com/blogs/news/suunto-launches-race-3s-next-generation-performance-watch)（查证 2026-11-13）
+- **形态**：46 mm 钛金属表圈运动手表；商品页写含硅胶表带约 56 g，[发布博客](https://us.suunto.com/blogs/news/suunto-launches-race-3s-next-generation-performance-watch) 另写表头 38 g（查证 2026-11-13）。美国官方商店三色在售，现价 $599.00 USD（查证 2026-11-13）
+- **技术路线**：Suunto AI Coach 是 Suunto App 里的对话教练，结合账号历史回答训练 / 恢复 / 睡眠 / 路线问题，并可生成训练课、计划和路线后同步到表。模型未公开，推理位置官方未写。与非对话的「Suunto Coach」分开
+- **公开数据**：现价 $599.00 USD，是否即首发价待核实。2026-12-31 前激活送 3 个月，不用绑卡，到期自动结束、不自动续订；之后订阅价待核实。未见公开销量
+- **另见**：[Suunto Race 3S 商业产品卡][watch]
+
 ## 四、待补充清单（欢迎 PR）
 
 - [x] Amazfit Balance 2（Zepp Flow / Zepp Coach）
 - [x] TicNote Watch（腕上 AI 录音和纪要）
+- [x] 小米手环 11（AI 睡眠解读与建议）
+- [x] 小天才电话手表 Z12（天才兔智能助手 2.0）
+- [x] Ultrahuman Ring PRO（Jade）
+- [x] Google Fitbit Edge（Google Health Coach / Gemini）
+- [x] Suunto Race 3S（Suunto AI Coach）
 - [ ] Garmin 公开 AI 解读 SKU
 - [ ] 国内医疗级手表注册案例（仅公开）
 
@@ -114,7 +164,7 @@
 [watch]: ../../../awesome/commercial-products/by-category/08-smart-watch.md
 
 **版本**：千问大模型方案
-**更新日期**：2026-10
+**更新日期**：2026-11
 
 <!-- FOOTER:START -->
 
