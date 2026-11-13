@@ -284,7 +284,7 @@
 ### Suunto Race 3S（Suunto）
 
 - **上市状态**：在售（美国官方商店，Titanium Black / Orchid / Feather 三色商店接口均为 `available: true`，查证 2026-11-13；官方新闻写 2026-10-15 与 Suunto AI Coach 同期发布；中国大陆渠道待核实）
-- **官网/渠道**：<https://us.suunto.com/products/suunto-race-3s-titanium-black>；<https://us.suunto.com/products/suunto-race-3s-titanium-orchid>；<https://us.suunto.com/products/suunto-race-3s-titanium-feather>；[Suunto AI Coach](https://us.suunto.com/pages/suunto-ai-coach)；[官方新闻（2026-10-15）](https://www.suunto.com/News/why-we-built-suunto-ai-coach/)；[发布博客（2026-10-15）](https://us.suunto.com/blogs/news/suunto-launches-race-3s-next-generation-performance-watch)；全球产品页 <https://www.suunto.com/Products/sports-watches/suunto-race-3s/suunto-race-3s-titanium-black/>（价格动态加载，勿从该页写欧洲价）
+- **官网/渠道**：<https://us.suunto.com/products/suunto-race-3s-titanium-black>；<https://us.suunto.com/products/suunto-race-3s-titanium-orchid>；<https://us.suunto.com/products/suunto-race-3s-titanium-feather>；[Suunto AI Coach](https://us.suunto.com/pages/suunto-ai-coach)；[官方新闻（2026-10-15）](https://www.suunto.com/News/why-we-built-suunto-ai-coach/)；[发布博客（2026-10-15）](https://us.suunto.com/blogs/news/suunto-launches-race-3s-next-generation-performance-watch)；全球产品页 <https://www.suunto.com/Products/sports-watches/suunto-race-3s/suunto-race-3s-titanium-black/>（价格动态加载，欧洲价待核实）
 - **形态**：46 mm 钛金属表圈运动手表；商品页写含硅胶表带约 56 g，[发布博客](https://us.suunto.com/blogs/news/suunto-launches-race-3s-next-generation-performance-watch) 另写表头 38 g（查证 2026-11-13）；1.32 英寸最高 2000 nits AMOLED（466×466）；双频 GPS（官方写 dual-band GPS 续航最长 38 小时，与表头重量不是一回事）；蓝宝石玻璃
 - **定价**：
   - 首发价：待核实（现价未见划线，是否即首发价待核实）

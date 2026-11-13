@@ -134,7 +134,7 @@
 ### 案例：Google Fitbit Edge（Google / Fitbit）— Health Coach / Gemini
 
 - **公开信息源**：[官方博客（2026-10-12）](https://blog.google/products-and-platforms/devices/fitbit/google-fitbit-edge/) · [Google Store · Fitbit Edge](https://store.google.com/us/product/google_fitbit_edge?hl=en-US)（查证 2026-10-22）
-- **形态**：超薄腕带健身追踪器。**上市状态仍写预售**（Google Store 可预购；博客写 2026-10-27 开卖，查证 2026-10-22）。**不要改成在售**
+- **形态**：超薄腕带健身追踪器。上市状态：预售（Google Store 可预购；博客写 2026-10-27 开卖，查证 2026-10-22）
 - **技术路线**：Google Health Coach 按个人状态给出健康与健身指导；商店页写 personalized coaching built with Gemini，含在 Google Health Premium 内。官方未写具体 Gemini 型号
 - **公开数据**：博客写 retails for $179.99 USD；商店预购价 From $179.99 USD（查证 2026-10-22）。购机含 3 个月 Health Premium，之后 From $9.99 USD/月。未见公开销量
 - **另见**：[Google Fitbit Edge 商业产品卡][watch]
@@ -143,7 +143,7 @@
 
 - **公开信息源**：[美国商品页](https://us.suunto.com/products/suunto-race-3s-titanium-black) · [Suunto AI Coach](https://us.suunto.com/pages/suunto-ai-coach) · [官方新闻（2026-10-15）](https://www.suunto.com/News/why-we-built-suunto-ai-coach/) · [发布博客（2026-10-15）](https://us.suunto.com/blogs/news/suunto-launches-race-3s-next-generation-performance-watch)（查证 2026-11-13）
 - **形态**：46 mm 钛金属表圈运动手表；商品页写含硅胶表带约 56 g，[发布博客](https://us.suunto.com/blogs/news/suunto-launches-race-3s-next-generation-performance-watch) 另写表头 38 g（查证 2026-11-13）。美国官方商店三色在售，现价 $599.00 USD（查证 2026-11-13）
-- **技术路线**：Suunto AI Coach 是 Suunto App 里的对话教练，结合账号历史回答训练 / 恢复 / 睡眠 / 路线问题，并可生成训练课、计划和路线后同步到表。模型未公开，推理位置官方未写。不要写成端侧或直接写云端。与非对话的「Suunto Coach」分开
+- **技术路线**：Suunto AI Coach 是 Suunto App 里的对话教练，结合账号历史回答训练 / 恢复 / 睡眠 / 路线问题，并可生成训练课、计划和路线后同步到表。模型未公开，推理位置官方未写。与非对话的「Suunto Coach」分开
 - **公开数据**：现价 $599.00 USD，是否即首发价待核实。2026-12-31 前激活送 3 个月，不用绑卡，到期自动结束、不自动续订；之后订阅价待核实。未见公开销量
 - **另见**：[Suunto Race 3S 商业产品卡][watch]
 
