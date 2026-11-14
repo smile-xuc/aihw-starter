@@ -38,7 +38,7 @@ try {
     const size=await page.evaluate(()=>({actual:document.documentElement.scrollWidth,width:innerWidth}));
     assert.ok(size.actual<=size.width+1,label+' overflows '+JSON.stringify(size));
   }
-  const routes=[['','.featured-card'],...Object.keys(CATEGORY_BUSINESS).map(id=>['c/'+id,'[data-case]']),['s/02-ai-glasses.bailian/default','.stage'],['s/07-recorder.bailian/default','.stage'],['me','form[data-form]'],['hardware','[data-project-card]'],...PROJECTS.map(p=>['hardware/'+p.id,'[data-budget-form]']),['cost-lab','[data-price-editor]']];
+  const routes=[['','.featured-card'],...Object.keys(CATEGORY_BUSINESS).map(id=>['c/'+id,'[data-case]']),['s/02-ai-glasses.bailian/default','.stage'],['s/07-recorder.bailian/default','.stage'],['session','[data-live-session]'],['me','form[data-form]'],['hardware','[data-project-card]'],...PROJECTS.map(p=>['hardware/'+p.id,'[data-budget-form]']),['cost-lab','[data-price-editor]']];
   for(const [width,height] of [[320,740],[390,844],[768,1024],[1024,768],[1280,900],[1440,900]]){
     await page.setViewportSize({width,height});
     for(const [route,selector] of routes){await go(route,selector);await fits(width+' '+route);}
@@ -157,7 +157,7 @@ try {
   },cacheName);
   assert.deepEqual(cache.names.filter(name=>name.startsWith('aihw-app-')),[cacheName],'activation replaces stale app caches with the declared cache');
   assert.ok(cache.names.includes('other-app-sentinel'));assert.ok(!cache.names.includes('aihw-app-v15'));
-  for(const asset of ['js/agent-lab.js','js/pages/lab.js','js/realtime-meeting.js','js/live/realtime-asr.js','js/live/microphone.js','js/live/pcm.js','js/live/pcm-worklet.js','js/meeting-evidence.js','js/photo-questions.js','js/photo-results.js','js/meeting-results.js','js/live/audio-channels.js','js/live/file-transcription.js','js/projects.js','js/positioning.js','js/cost.js','js/pages/hardware.js','js/pages/cost-lab.js','data/registry.json'])assert.ok(cache.urls.includes(base+asset),asset+' not precached');
+  for(const asset of ['js/agent-lab.js','js/pages/lab.js','js/pages/session.js','js/live/session-turn.js','js/live/realtime-omni.js','js/realtime-meeting.js','js/live/realtime-asr.js','js/live/microphone.js','js/live/pcm.js','js/live/pcm-worklet.js','js/meeting-evidence.js','js/photo-questions.js','js/photo-results.js','js/meeting-results.js','js/live/audio-channels.js','js/live/file-transcription.js','js/projects.js','js/positioning.js','js/cost.js','js/pages/hardware.js','js/pages/cost-lab.js','data/registry.json'])assert.ok(cache.urls.includes(base+asset),asset+' not precached');
   await offline.setOffline(true);
   for(const [route,selector] of [['c/02-ai-glasses','[data-case="qwen-mm-plugins"]'],['c/04-agent-hardware','[data-case="qwen-live-harness"]'],['c/05-desktop-pet','[data-case="stackchan"]'],['hardware','[data-project-card]'],...PROJECTS.map(p=>['hardware/'+p.id,'[data-budget-form]']),['cost-lab','[data-price-editor]']]){
     await op.goto(base+'#/'+route);await op.reload();await op.waitForSelector(selector);

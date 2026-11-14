@@ -27,5 +27,13 @@
  },
  "SAMPLE_IMAGE": "samples/dish.jpg",
  "SAMPLE_AUDIO": "samples/ask_dish.wav",
- "OUT_RATE": 24000
+ "OUT_RATE": 24000,
+ "REALTIME_MODEL": "qwen3.8-omni-flash-realtime",
+ "REALTIME_VOICE": "Tina",
+ "REALTIME_INSTRUCTIONS": "你是一副 AI 眼镜里的语音助手，能实时看到镜腿摄像头的画面（约 1 帧/秒）。\n用口语化中文回答，每次两三句话，先给结论；画面和问题有关时结合画面回答。\n不识别画面中人的身份；看不清就直说，不要编造。",
+ "ASR_MODEL": "qwen3-asr-flash-realtime",
+ "IN_RATE": 16000,
+ "CHUNK_BYTES": 3200,
+ "FRAME_EVERY": 10,
+ "MAX_FRAME_BYTES": 194560
 }
