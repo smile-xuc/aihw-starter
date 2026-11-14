@@ -2,6 +2,7 @@ import { liveConstants } from '../data.js';
 import { chat, postJson, toBase64 } from '../live/client.js';
 import { microphone } from '../live/microphone.js';
 import { SAMPLE_RATE } from '../live/pcm.js';
+import { MONITOR_TOOL, SEARCH_TOOL, isSilentMonitor, monitorTask, openMonitor, searchMessages, toolArguments } from '../live/monitor.js';
 import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
 import { functionCalls } from '../live/product-session.js';
 import { connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, splitPcm } from '../live/realtime-omni.js';
@@ -18,6 +19,12 @@ const SETUP = `#/me?return=${encodeURIComponent('#/session')}`;
 const LIVE_INSTRUCTIONS = `你是看说体验里的语音助手，能看到用户打开的摄像头或屏幕，大约每秒一帧。
 用口语化中文回答，每次两三句话，先给结论。画面和问题有关时结合画面回答。
 需要事实或最新信息时可以联网搜索，并用口语说明依据。
+不识别画面中人的身份；看不清就直说，不要编造。
+用户可以随时插话。`;
+const LIVE_TOOL_INSTRUCTIONS = `你是看说体验里的语音助手，能看到用户打开的摄像头或屏幕，大约每秒一帧。
+用口语化中文回答，每次两三句话，先给结论。画面和问题有关时结合画面回答。
+需要事实或最新信息时调用 web_search，并用口语说明依据。
+用户要求盯着画面、出现某种情况就提醒时，调用 create_proactive_monitor。没有调用成功就不要说已经在监视。
 不识别画面中人的身份；看不清就直说，不要编造。
 用户可以随时插话。`;
 const MEMORY_KEY = 'aihw.session.memory';
@@ -139,7 +146,7 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧，主会话可以联网。按需看一眼只在问到画面时另开一次看图，主会话这一档不联网。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 收成一段摘要，另计费，不含 Key、画面和录音。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒会另开一条看画面的连接，条件没发生就不出声，费用另计。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 收成一段摘要，另计费，不含 Key、画面和录音。</p>
       <p class="small" data-memory></p>
       <button type="button" class="secondary-action" data-forget>清空本机记忆</button>
       <label class="field">补充问题，可留空<textarea data-question rows="3" maxlength="500" placeholder="实时通话直接说话；文字只用于「只发这一帧」"></textarea></label>
@@ -155,7 +162,7 @@ export function renderSession(view, reg) {
     <section class="panel">
       <h2>还能用 Key 直接跑的玩法</h2>
       <div class="link-list">${runnable.map((item) => html`<a href="${item.href}">${item.label}</a>`)}</div>
-      <p class="small">上面这些都能用同一把 Key 在浏览器里跑。主动提醒和后台委托要在 Mac 上用 <a href="https://github.com/QwenLM/Qwen-Live-Harness" rel="noopener">Qwen-Live-Harness</a>。</p>
+      <p class="small">上面这些都能用同一把 Key 在浏览器里跑。可以说「盯着画面，出现报错就提醒我」。定时提醒、听声音提醒和后台委托要在 Mac 上用 <a href="https://github.com/QwenLM/Qwen-Live-Harness" rel="noopener">Qwen-Live-Harness</a>。</p>
     </section>`);
 
   const video = page.querySelector('[data-preview]');
@@ -192,8 +199,9 @@ export function renderSession(view, reg) {
   let captureMode = 'live';
   let liveValues = null;
   let lastHeard = '';
-  let lookRounds = 0;
+  let toolRounds = 0;
   let lookGeneration = 0;
+  let monitorStop = null;
   const memoryLabel = page.querySelector('[data-memory]');
 
   const say = (text) => { if (active) status.textContent = redactSecret(text, secret); };
@@ -273,6 +281,7 @@ export function renderSession(view, reg) {
   }
 
   function endCall(message) {
+    monitorStop?.();
     callGeneration += 1;
     const handle = call;
     call = null;
@@ -332,7 +341,7 @@ export function renderSession(view, reg) {
       return;
     }
     if (event.type === 'input_audio_buffer.speech_started') {
-      lookRounds = 0;
+      toolRounds = 0;
       lookGeneration += 1;
       if (playback?.playing()) {
         playback.interrupt();
@@ -374,10 +383,19 @@ export function renderSession(view, reg) {
       return;
     }
     if (event.type === 'response.done') {
-      const calls = captureMode === 'demand' ? functionCalls(event, 1, lookRounds) : [];
+      const calls = functionCalls(event, 2, toolRounds);
       if (calls.length && call) {
-        lookRounds += 1;
-        void answerLook(calls[0], mine, lookGeneration);
+        toolRounds += 1;
+        const item = calls[0];
+        if (item.name === 'analyze_view') void answerLook(item, mine, lookGeneration);
+        else if (item.name === 'web_search') void answerSearch(item, mine);
+        else if (item.name === 'create_proactive_monitor') void answerMonitor(item, mine);
+        else {
+          try {
+            call.send('conversation.item.create', { item: { type: 'function_call_output', call_id: item.call_id, output: '没有这个工具' } });
+            call.send('response.create');
+          } catch (error) { say(error.message); }
+        }
         return;
       }
       remember('', assistantText);
@@ -420,6 +438,90 @@ export function renderSession(view, reg) {
       call.send('response.create');
     } catch (error) {
       say(error.message);
+    }
+  }
+
+  function replyTool(item, output) {
+    const text = redactSecret(output, secret);
+    const line = document.createElement('li');
+    line.textContent = text;
+    log.append(line);
+    call.send('conversation.item.create', { item: { type: 'function_call_output', call_id: item.call_id, output: text } });
+    call.send('response.create');
+  }
+
+  async function answerSearch(item, mine) {
+    let output;
+    try {
+      const messages = searchMessages(toolArguments(item.arguments).query);
+      say('正在联网搜索…');
+      const turn = await chat({ stack: reg.stacks.get('bailian'), values: liveValues }, {
+        model: liveSpec.OMNI_MODEL,
+        messages,
+        enable_search: true,
+        enable_thinking: false,
+      }, { allowNetworkFallback: false });
+      output = redactSecret(turn.text, secret).replace(/\s+/g, ' ').trim() || '没有查到结果。';
+    } catch (error) {
+      output = `搜索失败：${error.message}`;
+    }
+    if (!active || mine !== callGeneration || !call) return;
+    try { replyTool(item, output); } catch (error) { say(error.message); }
+  }
+
+  async function answerMonitor(item, mine) {
+    let output;
+    let condition = '';
+    try {
+      condition = monitorTask(toolArguments(item.arguments).condition).replace(/^只判断这个条件：/, '');
+      output = liveSpec && captureJpeg(video, liveSpec.MAX_FRAME_BYTES)
+        ? '已开始按这个条件看画面。没有发生时不会出声。这会另开一条实时连接，费用另计。'
+        : '没有打开摄像头或屏幕，无法监视。';
+    } catch (error) {
+      output = error.message;
+    }
+    if (!active || mine !== callGeneration || !call) return;
+    try { replyTool(item, output); } catch (error) { say(error.message); return; }
+    if (output.startsWith('已开始')) void runMonitor(condition, mine);
+  }
+
+  async function runMonitor(condition, mine) {
+    monitorStop?.();
+    let stopped = false;
+    let monitor = null;
+    const stop = () => { stopped = true; monitor?.close(); };
+    monitorStop = stop;
+    try {
+      monitor = openMonitor({
+        url: realtimeSocketUrl(reg.stacks.get('bailian'), liveValues, liveSpec.REALTIME_MODEL),
+        secret,
+        condition,
+        voice: liveSpec.REALTIME_VOICE,
+        inputRate: liveSpec.IN_RATE,
+        outputRate: liveSpec.OUT_RATE,
+        asrModel: liveSpec.ASR_MODEL,
+      });
+      await monitor.ready;
+      while (!stopped && mine === callGeneration && active) {
+        const first = captureJpeg(video, liveSpec.MAX_FRAME_BYTES);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        if (stopped || mine !== callGeneration || !active) return;
+        const second = captureJpeg(video, liveSpec.MAX_FRAME_BYTES);
+        if (!first || !second) { say('主动提醒停了：画面中断。'); return; }
+        const result = await monitor.round([first, second]);
+        if (stopped || mine !== callGeneration || !active || isSilentMonitor(result.text)) continue;
+        const line = document.createElement('li');
+        line.textContent = redactSecret(`提醒：${result.text}`, secret);
+        log.append(line);
+        if (playback && !playback.playing()) {
+          for (const chunk of result.audio) playback.push(chunk, liveSpec.OUT_RATE);
+        }
+      }
+    } catch (error) {
+      if (!stopped && mine === callGeneration && active && error.message !== '主动提醒已停止') say(`主动提醒停了：${error.message}`);
+    } finally {
+      monitor?.close();
+      if (monitorStop === stop) monitorStop = null;
     }
   }
 
@@ -471,34 +573,34 @@ export function renderSession(view, reg) {
       const url = realtimeSocketUrl(stack, values, constants.REALTIME_MODEL);
       const demand = captureMode === 'demand';
       liveValues = values;
-      const openSocket = (search) => connectRealtime({
+      const openSocket = (tools) => connectRealtime({
         url,
         secret,
         session: sessionConfig({
-          instructions: instructionsWithMemory(demand ? DEMAND_INSTRUCTIONS : LIVE_INSTRUCTIONS, memory, summary),
+          instructions: instructionsWithMemory(demand ? DEMAND_INSTRUCTIONS : (tools ? LIVE_TOOL_INSTRUCTIONS : LIVE_INSTRUCTIONS), memory, summary),
           voice: constants.REALTIME_VOICE,
           inputRate: constants.IN_RATE,
           outputRate: constants.OUT_RATE,
           asrModel: constants.ASR_MODEL,
           turnDetection: SEMANTIC_TURN,
-          search: demand ? false : search,
+          search: tools ? false : !demand,
           video: !demand,
-          tools: demand ? [LOOK_TOOL] : null,
+          tools: tools ? (demand ? [LOOK_TOOL, SEARCH_TOOL, MONITOR_TOOL] : [SEARCH_TOOL, MONITOR_TOOL]) : null,
         }),
         onEvent: (event) => onRealtime(event, mine),
       });
-      let handle = openSocket(!demand);
+      let handle = openSocket(true);
       call = handle;
       liveSpec = constants;
       playback = speaker;
       try {
         await handle.ready;
       } catch (error) {
-        const blocked = /search|enable_search|联网/.test(error.message || '');
-        if (demand || !blocked || mine !== callGeneration || !active) throw error;
+        const blocked = /tool|function|工具/.test(error.message || '');
+        if (!blocked || mine !== callGeneration || !active) throw error;
         handle.close();
         if (call === handle) call = null;
-        say('当前账号不能联网搜索，改为只对话。');
+        say('当前账号不能使用工具，改为只对话。');
         handle = openSocket(false);
         call = handle;
         await handle.ready;
@@ -620,7 +722,7 @@ export function renderSession(view, reg) {
     if (capture && !call) {
       captureMode = capture.dataset.capture === 'demand' ? 'demand' : 'live';
       for (const button of page.querySelectorAll('[data-capture]')) button.setAttribute('aria-pressed', String(button === capture));
-      say(captureMode === 'demand' ? '已改为按需看一眼。问到画面时才会另开一次看图，主会话不联网。' : '已改为实时画面。接通后大约每秒送一帧，主会话可以联网。');
+      say(captureMode === 'demand' ? '已改为按需看一眼。问到画面时才会另开一次看图。' : '已改为实时画面。接通后大约每秒送一帧。');
     }
     const source = event.target.closest('[data-source]');
     if (source) void openSource(source.dataset.source);
