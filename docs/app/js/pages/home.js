@@ -40,7 +40,7 @@ export function modeBanner(reg) {
   const n = runnerCount() + LIVE_PRODUCTS.filter((item) => item.kind !== 'link').length;
   if (saved.length) {
     return html`<div class="mode-banner live">${icon('key')}<div><strong>已填 ${saved.map((s) => s.name).join('、')} 的 Key</strong>
-      <p>${n} 个玩法可以在浏览器里直接真跑（待真 Key 验证）：请求直接发往官方接入点，按你的账单计费。也可以打开<a href="#/session">看说体验</a>，接通后对着摄像头或屏幕说话。声音、画面、到点提醒和连续解说可以在看说体验里开。后台委托仍要在 Mac 上运行。<a href="#/me">管理 Key</a></p></div></div>`;
+      <p>${n} 个玩法可以在浏览器里直接真跑（待真 Key 验证）：请求直接发往官方接入点，按你的账单计费。也可以打开<a href="#/session">看说体验</a>，接通后对着摄像头或屏幕说话。声音、画面、到点提醒、连续解说和多套记忆库可以在看说体验里开。后台委托仍要在 Mac 上运行。<a href="#/me">管理 Key</a></p></div></div>`;
   }
   return html`<div class="mode-banner">${icon('info')}<div><strong>先看免费样本</strong>
     <p>样本展示预先保存的结果，不调用模型、不产生费用。想用自己的素材生成回答或纪要，可从体验页面进入设置、填写百炼 Key，保存后返回再确认开始。<a href="#/me">查看设置与使用说明</a></p></div></div>`;
@@ -67,7 +67,7 @@ export function renderHome(view, reg) {
       <span class="feature-link"><span>开始体验 <span class="feature-free">免费样本</span></span>${icon('arrow')}</span></a>`)}</section>
     ${recent.length ? html`<section class="section"><div class="section-title"><h2>最近体验</h2><a href="#/me">查看历史</a></div><div class="panel">${recent.map(r=>html`<a class="history-preview" href="#/me?history=${encodeURIComponent(r.id)}"><span><strong>${PRODUCTS[r.trace.solution]?.title || r.trace.title}</strong><small>${new Date(r.trace.ran_at).toLocaleString('zh-CN')}</small></span><span class="chip">${statusLabel(r.trace)}</span></a>`)}</div></section>` : ''}
     <section class="workspace-links" aria-label="继续验证"><a class="panel" href="#/hardware"><span class="workspace-icon">${icon('chip')}</span><span><strong>把能力做进硬件</strong><p>3 条 ESP32 路线与成本规划</p></span>${icon('arrow')}</a><a class="panel" href="#/cost-lab"><span class="workspace-icon">${icon('chart')}</span><span><strong>核对每次调用成本</strong><p>用自己的价格与运行记录算账</p></span>${icon('arrow')}</a></section>
-    <section class="section panel"><p class="eyebrow">KEY / 看说</p><h2>填入百炼 Key，对着画面说话。</h2><p>打开摄像头或共享屏幕，接通后直接说话。说完稍停就会回答。玩具、桌宠和同传耳机用同一把 Key。声音、画面、到点提醒和连续解说可以说出来。后台委托仍在 Mac 上的 Qwen-Live-Harness。</p><a class="primary-action" href="#/session">打开看说体验</a><div class="btn-row"><a class="secondary-action" href="#/live/toy">玩具</a><a class="secondary-action" href="#/live/pet">桌宠</a><a class="secondary-action" href="#/live/earphone">同传耳机</a></div></section>
+    <section class="section panel"><p class="eyebrow">KEY / 看说</p><h2>填入百炼 Key，对着画面说话。</h2><p>打开摄像头或共享屏幕，接通后直接说话。说完稍停就会回答。玩具、桌宠和同传耳机用同一把 Key。声音、画面、到点提醒和连续解说可以说出来。记忆库可以在通话前新建或切换。后台委托仍在 Mac 上的 Qwen-Live-Harness。</p><a class="primary-action" href="#/session">打开看说体验</a><div class="btn-row"><a class="secondary-action" href="#/live/toy">玩具</a><a class="secondary-action" href="#/live/pet">桌宠</a><a class="secondary-action" href="#/live/earphone">同传耳机</a></div></section>
     <section class="section panel"><p class="eyebrow">NEW / 开发者能力实验室</p><h2>从调用工具，到持续办事。</h2><p>Bailian CLI 命令模板、视频证据与图片检查、纯语音任务编排、视觉上下文演练。四条能力路线，附本地运行步骤。</p><a class="primary-action" href="#/lab">打开能力实验室 →</a></section>
     ${modeBanner(reg)}
     <section class="section">

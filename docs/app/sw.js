@@ -1,5 +1,5 @@
 // 离线回放：只缓存本站的 GET 请求；云端接口是跨域请求，这里一律不碰。
-const CACHE = 'aihw-app-v28';
+const CACHE = 'aihw-app-v29';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css', 'data/registry.json',
   'data/assets/02-ai-glasses.bailian/samples/dish.jpg',
@@ -7,7 +7,7 @@ const SHELL = [
   'js/main.js', 'js/agent-lab.js', 'js/pages/lab.js', 'js/experience.js', 'js/meeting-results.js', 'js/meeting-evidence.js', 'js/realtime-meeting.js', 'js/photo-questions.js', 'js/photo-results.js', 'js/history.js', 'js/live/input.js', 'js/ui.js', 'js/meta.js', 'js/data.js', 'js/replay.js', 'js/settings.js',
   'js/projects.js', 'js/positioning.js', 'js/cost.js', 'js/pages/hardware.js', 'js/pages/cost-lab.js',
   'js/pages/home.js', 'js/pages/category.js', 'js/pages/solution.js', 'js/pages/me.js', 'js/pages/session.js', 'js/pages/product-live.js',
-  'js/live/index.js', 'js/live/client.js', 'js/live/file-transcription.js', 'js/live/audio-channels.js', 'js/live/session-turn.js', 'js/live/realtime-omni.js', 'js/live/on-demand.js', 'js/live/monitor.js', 'js/live/product-session.js',
+  'js/live/index.js', 'js/live/client.js', 'js/live/file-transcription.js', 'js/live/audio-channels.js', 'js/live/session-turn.js', 'js/live/realtime-omni.js', 'js/live/on-demand.js', 'js/live/monitor.js', 'js/live/memory-libraries.js', 'js/live/product-session.js',
   'js/live/realtime-asr.js', 'js/live/microphone.js', 'js/live/pcm.js', 'js/live/pcm-worklet.js',
   'js/live/run-01-ipc.js', 'js/live/run-02-ai-glasses.js', 'js/live/run-04-agent-hardware.js',
   'js/live/run-07-recorder.js', 'js/live/run-08-smart-watch.js', 'js/live/run-09-embodied.js',
