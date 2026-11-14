@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildUserContent, encodeWav, isSessionReturn, nextTextHistory, requestMessages, safeAudioUrl, spokenText } from '../js/live/session-turn.js';
+import { buildUserContent, encodeWav, instructionsWithMemory, isSessionReturn, nextMemory, nextTextHistory, requestMessages, safeAudioUrl, spokenText } from '../js/live/session-turn.js';
 
 test('session return accepts only the exact page', () => {
   assert.equal(isSessionReturn('#/session'), true);
@@ -50,4 +50,14 @@ test('playback url stays on official https hosts', () => {
   assert.equal(safeAudioUrl('https://user:secret@evil.aliyuncs.com/a.wav'), null);
   assert.equal(safeAudioUrl('https://evil.test/a.wav'), null);
   assert.equal(spokenText('**看**一下\n这张图'), '看 一下 这张图');
+});
+
+test('memory keeps recent text and leaves instructions unchanged when empty', () => {
+  assert.deepEqual(nextMemory(['旧'], '', ''), ['旧']);
+  assert.equal(nextMemory([], '看到杯子', '这是杯子')[0], '看到杯子 → 这是杯子');
+  const trimmed = nextMemory(Array.from({ length: 10 }, (_, i) => `第${i}句`), '新', '', 8);
+  assert.equal(trimmed.length, 8);
+  assert.equal(trimmed.at(-1), '新');
+  assert.equal(instructionsWithMemory('你好', []), '你好');
+  assert.match(instructionsWithMemory('你好', ['记得这个']), /记得这个/);
 });

@@ -46,6 +46,8 @@ test('session config is manual turn with audio and one compact video stream', ()
   const semantic = sessionConfig({ instructions: '看画面', voice: 'Tina', inputRate: 16000, outputRate: 24000, asrModel: 'qwen3-asr-flash-realtime', turnDetection: SEMANTIC_TURN });
   assert.equal(semantic.turn_detection.type, 'semantic_vad');
   assert.equal(semantic.turn_detection.silence_duration_ms, 800);
+  assert.equal(session.enable_search, undefined);
+  assert.equal(sessionConfig({ instructions: '看画面', voice: 'Tina', inputRate: 16000, outputRate: 24000, asrModel: 'qwen3-asr-flash-realtime', turnDetection: SEMANTIC_TURN, search: true }).enable_search, true);
   assert.equal(splitPcm(new Uint8Array(10), 4).length, 3);
   const audio = new Uint8Array([0, 1, 2, 3]);
   assert.deepEqual(decodeBase64(pcmBase64(audio)), audio);
