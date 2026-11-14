@@ -5,7 +5,7 @@ import { SAMPLE_RATE } from '../live/pcm.js';
 import { connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, splitPcm } from '../live/realtime-omni.js';
 import { browserSupport } from '../live/index.js';
 import {
-  SYSTEM_PROMPT, buildUserContent, encodeWav, instructionsWithMemory, isSessionReturn, nextMemory, nextTextHistory, requestMessages, safeAudioUrl, spokenText,
+  SUMMARY_MODEL, SYSTEM_PROMPT, buildUserContent, clipSummary, encodeWav, instructionsWithMemory, isSessionReturn, nextMemory, nextTextHistory, requestMessages, safeAudioUrl, spokenText, summaryMessages,
 } from '../live/session-turn.js';
 import { fieldValues, loadCredentials } from '../settings.js';
 import { html, mount, mountPage } from '../ui.js';
@@ -19,6 +19,7 @@ const LIVE_INSTRUCTIONS = `你是看说体验里的语音助手，能看到用�
 不识别画面中人的身份；看不清就直说，不要编造。
 用户可以随时插话。`;
 const MEMORY_KEY = 'aihw.session.memory';
+const SUMMARY_KEY = 'aihw.session.summary';
 
 function frameDataUrl(video) {
   const width = video.videoWidth;
@@ -132,7 +133,7 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-source="screen">屏幕</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。模型可自行联网搜索。最近对话的文字留在这台浏览器，供下一次通话接着记得，不含 Key、画面和录音。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。模型可自行联网搜索。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 收成一段摘要，另计费，不含 Key、画面和录音。</p>
       <p class="small" data-memory></p>
       <button type="button" class="secondary-action" data-forget>清空本机记忆</button>
       <label class="field">补充问题，可留空<textarea data-question rows="3" maxlength="500" placeholder="实时通话直接说话；文字只用于「只发这一帧」"></textarea></label>
@@ -179,6 +180,9 @@ export function renderSession(view, reg) {
   let assistantLine = null;
   let assistantText = '';
   let memory = readMemory();
+  let summary = readSummary();
+  let memoryAtStart = JSON.stringify(memory);
+  let folding = false;
   const memoryLabel = page.querySelector('[data-memory]');
 
   const say = (text) => { if (active) status.textContent = redactSecret(text, secret); };
@@ -188,8 +192,13 @@ export function renderSession(view, reg) {
       return Array.isArray(raw) ? raw.filter((line) => typeof line === 'string') : [];
     } catch { return []; }
   }
+  function readSummary() {
+    try { return clipSummary(localStorage.getItem(SUMMARY_KEY) || ''); } catch { return ''; }
+  }
   function showMemory() {
-    if (memoryLabel) memoryLabel.textContent = memory.length ? `这台浏览器记得最近 ${memory.length} 句对话。` : '这台浏览器还没有记住对话。';
+    if (!memoryLabel) return;
+    if (!memory.length && !summary) memoryLabel.textContent = '这台浏览器还没有记住对话。';
+    else memoryLabel.textContent = `这台浏览器记得最近 ${memory.length} 句对话${summary ? '，并保留一段更早的摘要' : ''}。`;
   }
   function remember(heard, answer) {
     memory = nextMemory(memory, redactSecret(heard, secret), redactSecret(answer, secret));
@@ -266,6 +275,33 @@ export function renderSession(view, reg) {
     const meter = page.querySelector('[data-meter]');
     if (meter) meter.textContent = '';
     say(message);
+    void foldMemory();
+  }
+
+  async function foldMemory() {
+    if (folding || JSON.stringify(memory) === memoryAtStart || !memory.length) return;
+    folding = true;
+    const stack = reg.stacks.get('bailian');
+    const stored = loadCredentials('bailian');
+    const values = stack && stored?.values ? fieldValues(stack, stored.values) : null;
+    if (!values?.DASHSCOPE_API_KEY) { folding = false; return; }
+    say('正在用 qwen3.7-plus 整理记忆…');
+    try {
+      const turn = await chat({ stack, values }, {
+        model: SUMMARY_MODEL,
+        messages: summaryMessages(summary, memory.map((line) => redactSecret(line, values.DASHSCOPE_API_KEY))),
+        enable_thinking: false,
+      }, { allowNetworkFallback: false });
+      summary = clipSummary(redactSecret(turn.text, values.DASHSCOPE_API_KEY));
+      try { localStorage.setItem(SUMMARY_KEY, summary); } catch { /* 存不下就只留在这一次 */ }
+      memoryAtStart = JSON.stringify(memory);
+      showMemory();
+      say('记忆已整理，留在这台浏览器。');
+    } catch (error) {
+      say(`通话已结束。记忆摘要没有写成：${error.message}`);
+    } finally {
+      folding = false;
+    }
   }
 
   function onRealtime(event, mine) {
@@ -280,6 +316,7 @@ export function renderSession(view, reg) {
       playback = null;
       void speaker?.close();
       say('实时连接已断开');
+      void foldMemory();
       return;
     }
     if (event.type === 'input_audio_buffer.speech_started') {
@@ -380,7 +417,7 @@ export function renderSession(view, reg) {
         url,
         secret,
         session: sessionConfig({
-          instructions: instructionsWithMemory(LIVE_INSTRUCTIONS, memory),
+          instructions: instructionsWithMemory(LIVE_INSTRUCTIONS, memory, summary),
           voice: constants.REALTIME_VOICE,
           inputRate: constants.IN_RATE,
           outputRate: constants.OUT_RATE,
@@ -525,7 +562,9 @@ export function renderSession(view, reg) {
     if (event.target.closest('[data-send]')) void ask(null);
     if (event.target.closest('[data-forget]')) {
       memory = [];
-      try { localStorage.removeItem(MEMORY_KEY); } catch { /* 清不掉就只清这一页的显示 */ }
+      summary = '';
+      memoryAtStart = '[]';
+      try { localStorage.removeItem(MEMORY_KEY); localStorage.removeItem(SUMMARY_KEY); } catch { /* 清不掉就只清这一页的显示 */ }
       showMemory();
       say('已清空这台浏览器记住的对话。');
     }

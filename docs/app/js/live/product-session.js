@@ -113,6 +113,13 @@ export function petFace(emotion, face) {
   return [top, `|${center(eyes)}|`, `|${center(mouth)}|`, `'${'-'.repeat(11)}'`].join('\n');
 }
 
+export function appendCaption(captions, event) {
+  const id = String(event?.item_id || 'current');
+  const next = { ...(captions || {}) };
+  next[id] = `${next[id] || ''}${event?.delta || ''}`;
+  return next;
+}
+
 export function functionCalls(event, limit = 2, used = 0) {
   if (used >= limit) return [];
   const output = event?.response?.output || [];
