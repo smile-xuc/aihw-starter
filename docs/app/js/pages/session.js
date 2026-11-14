@@ -2,7 +2,7 @@ import { liveConstants } from '../data.js';
 import { chat, postJson, toBase64 } from '../live/client.js';
 import { microphone } from '../live/microphone.js';
 import { SAMPLE_RATE } from '../live/pcm.js';
-import { BIO_TOOL, EMBED_MODEL, RETRIEVE_TOOL, activeLibrary, applyBio, bioResult, clearLibrary, createLibrary, hybridRetrieval, memoryCorpus, memoryLabel as libraryStatus, readStore, redactOperations, renameLibrary, replaceActive, retrieveMemory, switchLibrary, vectorMatches, vectorsFromEmbedding, writeStore } from '../live/memory-libraries.js';
+import { BIO_TOOL, EMBED_MODEL, OBSERVE_EVERY_MS, RETRIEVE_TOOL, activeLibrary, applyBio, bioResult, cleanObservation, clearLibrary, createLibrary, envCorpus, hybridRetrieval, memoryCorpus, memoryLabel as libraryStatus, observerPrompt, readStore, recordObservation, redactOperations, renameLibrary, replaceActive, retrieveMemory, switchLibrary, vectorMatches, vectorsFromEmbedding, writeStore } from '../live/memory-libraries.js';
 import { MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, isSilentMonitor, monitorTask, narrateTask, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, timerRequest, toolArguments } from '../live/monitor.js';
 import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
 import { functionCalls } from '../live/product-session.js';
@@ -29,7 +29,7 @@ const LIVE_TOOL_INSTRUCTIONS = `你是看说体验里的语音助手，能看到
 用户明确说了多久以后提醒时，调用 create_proactive_timer。没有调用成功就不要说已经设好。
 用户要求连续解说画面或声音的变化时，调用 create_live_narration。没有明显变化就不要主动开口。
 用户说出会在以后多次用到的个人事实时，调用 omnibio 记下。已经记下的不要重复。
-用户问起更早的对话、而当前记忆里没有时，调用 omniretrieve，source 用 dialogue。不要用 env，这台浏览器没有视觉观察。
+用户问起更早的对话、而当前记忆里没有时，调用 omniretrieve，source 用 dialogue。问起以前看到的环境时，source 用 env。
 不识别画面中人的身份；看不清就直说，不要编造。
 用户可以随时插话。`;
 const SESSION_TOOLS = [SEARCH_TOOL, MONITOR_TOOL, TIMER_TOOL, NARRATE_TOOL, BIO_TOOL, RETRIEVE_TOOL];
@@ -150,12 +150,13 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。没有视觉观察。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
       <label class="field">记忆库<select data-library></select></label>
       <div class="btn-row">
         <button type="button" class="secondary-action" data-library-new>新建记忆库</button>
         <button type="button" class="secondary-action" data-library-rename>重命名</button>
         <button type="button" class="secondary-action" data-forget>清空当前记忆库</button>
+        <button type="button" class="secondary-action" data-visual aria-pressed="false">视觉记忆</button>
       </div>
       <p class="small" data-memory></p>
       <label class="field">补充问题，可留空<textarea data-question rows="3" maxlength="500" placeholder="实时通话直接说话；文字只用于「只发这一帧」"></textarea></label>
@@ -215,6 +216,10 @@ export function renderSession(view, reg) {
   let lookGeneration = 0;
   let monitorStop = null;
   let embedAbort = null;
+  let observeTimer = null;
+  let observeGeneration = 0;
+  let observeAbort = null;
+  let videoSource = 'camera';
   let monitorAudio = { parts: [], total: 0 };
   let captureMonitorAudio = false;
   const timers = new Set();
@@ -235,6 +240,7 @@ export function renderSession(view, reg) {
   }
   function showMemory() {
     if (memoryLabel) memoryLabel.textContent = libraryStatus(store);
+    showVisual();
     if (!librarySelect) return;
     const selected = store.activeId;
     librarySelect.replaceChildren();
@@ -245,6 +251,66 @@ export function renderSession(view, reg) {
       librarySelect.append(option);
     }
     librarySelect.value = selected;
+  }
+  function showVisual() {
+    const button = page.querySelector('[data-visual]');
+    if (!button) return;
+    const on = store.visual === true;
+    button.setAttribute('aria-pressed', on ? 'true' : 'false');
+    button.textContent = on ? '视觉记忆开' : '视觉记忆';
+  }
+  function stopObserver() {
+    observeGeneration += 1;
+    if (observeTimer) clearInterval(observeTimer);
+    observeTimer = null;
+    observeAbort?.abort();
+    observeAbort = null;
+  }
+  function startObserver(mine) {
+    stopObserver();
+    if (!store.visual || !call || mine !== callGeneration) return;
+    const generation = observeGeneration;
+    void observeFrame(mine, generation);
+    observeTimer = setInterval(() => { void observeFrame(mine, generation); }, OBSERVE_EVERY_MS);
+  }
+  async function observeFrame(mine, generation) {
+    if (!store.visual || !call || busy || mine !== callGeneration || generation !== observeGeneration || !liveSpec || !liveValues) return;
+    const stack = reg.stacks.get('bailian');
+    if (!stack) return;
+    let jpeg = null;
+    try { jpeg = captureJpeg(video, liveSpec.MAX_FRAME_BYTES); }
+    catch (error) {
+      if (active && mine === callGeneration && generation === observeGeneration) say(`这一帧没有记下：${redactSecret(error.message, secret)}`);
+      return;
+    }
+    if (!jpeg || generation !== observeGeneration || !call) return;
+    const controller = new AbortController();
+    observeAbort = controller;
+    const signal = AbortSignal.any([controller.signal, AbortSignal.timeout(20000)]);
+    try {
+      const turn = await chat({ stack, values: liveValues }, {
+        model: liveSpec.OMNI_MODEL,
+        messages: [
+          { role: 'system', content: observerPrompt(videoSource) },
+          { role: 'user', content: buildUserContent({ imageDataUrl: `data:image/jpeg;base64,${toBase64(jpeg)}`, question: '记录这一帧。' }) },
+        ],
+        modalities: ['text'],
+        enable_thinking: false,
+      }, { allowNetworkFallback: false, signal });
+      if (!active || mine !== callGeneration || generation !== observeGeneration || !store.visual || !call) return;
+      const text = cleanObservation(redactSecret(turn.text, secret));
+      if (!text) { say('这一帧没有记下：模型没有给出可用的一句。'); return; }
+      const library = activeLibrary(store);
+      library.env = recordObservation(library, text);
+      saveActive();
+      showMemory();
+      const line = document.createElement('li');
+      line.textContent = `看到：${text}`;
+      log.append(line);
+    } catch (error) {
+      if (!active || mine !== callGeneration || generation !== observeGeneration || error.name === 'AbortError') return;
+      say(`这一帧没有记下：${redactSecret(error.message, secret)}`);
+    }
   }
   function lockLibrary(on) {
     if (librarySelect) librarySelect.disabled = on;
@@ -285,6 +351,7 @@ export function renderSession(view, reg) {
         : await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
       if (!active) { media.getTracks().forEach((track) => track.stop()); return; }
       stream = media;
+      videoSource = kind === 'screen' ? 'screen' : 'camera';
       video.srcObject = media;
       await video.play();
       media.getVideoTracks()[0]?.addEventListener('ended', () => {
@@ -323,6 +390,7 @@ export function renderSession(view, reg) {
 
   function endCall(message) {
     clearTimers();
+    stopObserver();
     monitorStop?.();
     embedAbort?.abort();
     callGeneration += 1;
@@ -372,6 +440,7 @@ export function renderSession(view, reg) {
     if (!active || mine !== callGeneration) return;
     if (event.type === 'error') { say(event.message); return; }
     if (event.type === 'socket.close') {
+      stopObserver();
       embedAbort?.abort();
       call = null;
       callReady = false;
@@ -583,22 +652,19 @@ export function renderSession(view, reg) {
       const request = toolArguments(item.arguments);
       const library = activeLibrary(store);
       const keyword = retrieveMemory(library, request);
-      if (request.source !== 'dialogue') output = keyword;
-      else {
-        const corpus = memoryCorpus(library);
-        const query = redactSecret(String(request.query || ''), secret).replace(/\s+/g, ' ').trim();
-        let hits = [];
-        let note = '';
-        if (corpus.length && query) {
-          try {
-            const vectors = await embedMemory([query, ...corpus]);
-            hits = vectorMatches(corpus, vectors[0], vectors.slice(1));
-          } catch (error) {
-            note = '向量检索没有完成，这次只按关键词查找。';
-          }
+      const corpus = request.source === 'env' ? envCorpus(library) : memoryCorpus(library);
+      const query = redactSecret(String(request.query || ''), secret).replace(/\s+/g, ' ').trim();
+      let hits = [];
+      let note = '';
+      if (corpus.length && query) {
+        try {
+          const vectors = await embedMemory([query, ...corpus]);
+          hits = vectorMatches(corpus, vectors[0], vectors.slice(1));
+        } catch (error) {
+          note = '向量检索没有完成，这次只按关键词查找。';
         }
-        output = [note, hybridRetrieval(keyword, hits)].filter(Boolean).join('\n');
       }
+      output = [note, hybridRetrieval(keyword, hits)].filter(Boolean).join('\n');
     } catch (error) { output = error.message; }
     if (!active || mine !== callGeneration || !call) return;
     try { replyTool(item, output); } catch (error) { say(error.message); }
@@ -801,7 +867,9 @@ export function renderSession(view, reg) {
       await openLiveMic(mine);
       if (mine !== callGeneration || !active) return;
       say(demand ? '对着麦克风说话即可。问到画面时才会另看一眼。' : '对着画面说话即可。说完稍停就会回答，插话会停下当前回答。');
+      if (store.visual) startObserver(mine);
     } catch (error) {
+      stopObserver();
       if (call && mine === callGeneration) { call.close(); call = null; }
       callReady = false;
       setLiveLabel(false);
@@ -994,6 +1062,15 @@ export function renderSession(view, reg) {
       showMemory();
       say(`已清空记忆库「${activeLibrary(store).name}」。`);
     }
+    const visual = event.target.closest('[data-visual]');
+    if (visual) {
+      try { store = writeStore(localStorage, { ...store, visual: store.visual !== true }); }
+      catch (error) { say(error.message); return; }
+      showMemory();
+      if (store.visual && call && callReady) startObserver(callGeneration);
+      else stopObserver();
+      say(store.visual ? '视觉记忆已打开。接通后会先记一帧，之后大约每 60 秒再记一帧，另计费。' : '视觉记忆已关闭。已记下的观察还在当前记忆库。');
+    }
     if (event.target.closest('[data-library-new]')) void addLibrary();
     if (event.target.closest('[data-library-rename]')) void renameCurrentLibrary();
     if (event.target.closest('[data-stop]')) abort?.abort();
@@ -1028,6 +1105,7 @@ export function renderSession(view, reg) {
 
   return { cleanup() {
     active = false;
+    stopObserver();
     clearTimers();
     callGeneration += 1;
     abort?.abort();

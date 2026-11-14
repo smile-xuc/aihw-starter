@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, RETRIEVE_TOOL,
-  activeLibrary, applyBio, bioResult, clearLibrary, createLibrary, hybridRetrieval, memoryLabel, normalizeVector, readStore, redactOperations,
+  activeLibrary, applyBio, bioResult, cleanObservation, clearLibrary, createLibrary, hybridRetrieval, memoryLabel, normalizeVector, observerPrompt, readStore, recordObservation, redactOperations,
   renameLibrary, replaceActive, retrieveMemory, switchLibrary, vectorMatches, vectorsFromEmbedding, writeStore,
 } from '../js/live/memory-libraries.js';
 
@@ -72,7 +72,7 @@ test('bio edits keep numbered facts and retrieval stays on this library', () => 
   assert.match(found, /绿茶/);
   assert.match(found, /开会/);
   assert.match(retrieveMemory(library, { query: '杯子', source: 'dialogue' }), /杯子/);
-  assert.equal(retrieveMemory(library, { query: '窗外的树', source: 'env' }), '这台浏览器没有视觉观察记录。');
+  assert.equal(retrieveMemory(library, { query: '窗外的树', source: 'env' }), '这套记忆库还没有视觉观察。');
   assert.equal(retrieveMemory(library, { query: '没有的词', source: 'dialogue' }), '没有找到相关记忆。');
   assert.throws(() => retrieveMemory(library, { query: '  ', source: 'dialogue' }), /检索词是空的/);
   const saved = writeStore(storage({ [LIBRARIES_KEY]: 'null' }), { activeId: 'default', libraries: [{ ...library, bio }] });
@@ -97,4 +97,37 @@ test('vector retrieval ranks by cosine and merges with keyword hits', () => {
   assert.equal(merged, '看到杯子');
   const both = hybridRetrieval('用户喜欢喝茶\n看到杯子', hits);
   assert.equal(both.split('\n')[0], '看到杯子');
+});
+
+test('visual observations stay in the active library and out of dialogue search', () => {
+  const sentence = '用户在厨房水槽前冲洗绿色黄瓜。';
+  assert.equal(cleanObservation(`好的，${sentence}旁边还有一把刀。`), sentence);
+  assert.equal(cleanObservation('你好。'), '');
+  assert.equal(cleanObservation(sentence), sentence);
+  assert.equal(cleanObservation('用户的钥匙是 sk-abcdefghijklmn。'), '');
+  assert.equal(recordObservation({ env: [] }, '用户的钥匙是 sk-abcdefghijklmn。').length, 0);
+  assert.match(observerPrompt('screen'), /屏幕截图/);
+  assert.doesNotMatch(observerPrompt('camera'), /屏幕截图/);
+  let lines = recordObservation({ env: [] }, `好的，${sentence}`);
+  lines = recordObservation({ env: lines }, sentence);
+  assert.deepEqual(lines, [sentence]);
+  for (let i = 0; i < 25; i += 1) lines = recordObservation({ env: lines }, `用户看到编号${i}的白色杯子放在桌上。`);
+  assert.equal(lines.length, 20);
+  assert.match(lines.at(-1), /编号24/);
+  const library = { bio: ['用户喜欢喝茶'], notes: ['看到杯子'], summary: '', env: [sentence] };
+  assert.match(retrieveMemory(library, { query: '厨房', source: 'env' }), /厨房/);
+  assert.equal(retrieveMemory(library, { query: '厨房', source: 'dialogue' }), '没有找到相关记忆。');
+  assert.equal(retrieveMemory({ bio: [], notes: [], summary: '' }, { query: '厨房', source: 'env' }), '这套记忆库还没有视觉观察。');
+  const box = storage();
+  let store = writeStore(box, { ...readStore(box).store, visual: true });
+  store = replaceActive(store, { ...activeLibrary(store), env: [sentence] });
+  store = writeStore(box, store);
+  assert.equal(readStore(box).store.visual, true);
+  assert.equal(activeLibrary(readStore(box).store).env[0], sentence);
+  store = createLibrary(store, '工作', 'work');
+  assert.equal(store.visual, true);
+  assert.equal(activeLibrary(store).env.length, 0);
+  store = clearLibrary(switchLibrary(store, 'default'), 'default');
+  assert.equal(activeLibrary(store).env.length, 0);
+  assert.match(memoryLabel(readStore(box).store), /视觉观察 1 条/);
 });

@@ -25,7 +25,7 @@ export const DEMAND_INSTRUCTIONS = `你是看说体验里的语音助手。你�
 用户明确说了多久以后提醒时，调用 create_proactive_timer。没有调用成功就不要说已经设好。
 用户要求连续解说画面或声音的变化时，调用 create_live_narration。没有明显变化就不要主动开口。
 用户说出会在以后多次用到的个人事实时，调用 omnibio 记下。已经记下的不要重复。
-用户问起更早的对话、而当前记忆里没有时，调用 omniretrieve，source 用 dialogue。不要用 env，这台浏览器没有视觉观察。
+用户问起更早的对话、而当前记忆里没有时，调用 omniretrieve，source 用 dialogue。问起以前看到的环境时，source 用 env。
 用口语化中文回答，每次两三句话。不识别画面中人的身份。用户可以随时插话。`;
 
 export function silencePcm(sampleRate = 16000, seconds = 1) {
