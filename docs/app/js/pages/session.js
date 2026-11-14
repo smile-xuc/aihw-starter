@@ -223,7 +223,7 @@ export function renderSession(view, reg) {
       media.getVideoTracks()[0]?.addEventListener('ended', () => {
         if (stream === media) { stream = null; video.removeAttribute('src'); video.srcObject = null; say('画面已关闭'); }
       });
-      say(kind === 'screen' ? '正在共享屏幕。实时通话会按住说话时发送这一路画面。' : '摄像头已打开。实时通话会按住说话时发送这一路画面。');
+      say(kind === 'screen' ? '正在共享屏幕。实时通话会持续发送这一路画面。' : '摄像头已打开。实时通话会持续发送这一路画面。');
     } catch (error) {
       say(error.name === 'NotAllowedError' ? '没有获得画面权限。允许后重新打开。' : `打不开画面：${error.message}`);
     }
