@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { MONITOR_TOOL, SEARCH_TOOL, TIMER_TOOL, isSilentMonitor, monitorTask, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, timerRequest } from '../js/live/monitor.js';
+import { MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, isSilentMonitor, monitorTask, narrateTask, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, timerRequest } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -118,4 +118,21 @@ test('monitor keeps the latest two seconds of microphone audio', () => {
   assert.equal(clips[0][0], 4);
   assert.equal(clips[1][0], 9);
   assert.equal(clips[0].byteLength, 32000);
+});
+
+test('narration uses its own rules and only speaks about the focus', async () => {
+  assert.equal(narrateTask('  屏幕变化 '), '解说重点：屏幕变化');
+  assert.equal(narrateTask(''), '解说刚发生的变化。');
+  assert.equal(narrateTask('x'.repeat(300)).length, '解说重点：'.length + 200);
+  assert.equal(NARRATE_TOOL.function.name, 'create_live_narration');
+  const monitor = openMonitor({ ...common, rules: NARRATE_RULES, task: narrateTask('报错') });
+  open(FakeSocket.latest);
+  await monitor.ready;
+  const session = FakeSocket.latest.sent.find((item) => item.type === 'session.update').session;
+  assert.equal(session.instructions, NARRATE_RULES);
+  assert.equal(session.turn_detection, null);
+  await monitor.round(frames);
+  const created = FakeSocket.latest.sent.find((item) => item.type === 'response.create');
+  assert.equal(created.response.instructions, '解说重点：报错');
+  monitor.close();
 });
