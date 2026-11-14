@@ -25,7 +25,7 @@ export function realtimeSocketUrl(stack, values, model) {
 
 export const SEMANTIC_TURN = { type: 'semantic_vad', threshold: 0.5, silence_duration_ms: 800 };
 
-export function sessionConfig({ instructions, voice, inputRate, outputRate, asrModel, turnDetection = null, search = false }) {
+export function sessionConfig({ instructions, voice, inputRate, outputRate, asrModel, turnDetection = null, search = false, tools = null, video = true }) {
   const session = {
     modalities: ['text', 'audio'],
     instructions,
@@ -35,10 +35,17 @@ export function sessionConfig({ instructions, voice, inputRate, outputRate, asrM
       output: { voice, format: { type: 'pcm', sample_rate: outputRate } },
     },
     input_audio_transcription: { model: asrModel },
-    video: { input: { representation_compact: 'normal' } },
   };
-  if (search) session.enable_search = true;
+  if (video) session.video = { input: { representation_compact: 'normal' } };
+  if (Array.isArray(tools) && tools.length) session.tools = tools;
+  else if (search) session.enable_search = true;
   return session;
+}
+
+export function translationSession({ language = 'en', textOnly = false, phrases = null } = {}) {
+  const translation = { language: String(language || 'en') };
+  if (phrases && typeof phrases === 'object' && Object.keys(phrases).length) translation.corpus = { phrases };
+  return { output_modalities: textOnly ? ['text'] : ['text', 'audio'], translation };
 }
 
 export function pcmBase64(bytes) {

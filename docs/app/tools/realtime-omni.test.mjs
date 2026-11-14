@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, splitPcm } from '../js/live/realtime-omni.js';
+import { connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, splitPcm, translationSession } from '../js/live/realtime-omni.js';
 
 const stack = {
   fields: [
@@ -48,6 +48,15 @@ test('session config is manual turn with audio and one compact video stream', ()
   assert.equal(semantic.turn_detection.silence_duration_ms, 800);
   assert.equal(session.enable_search, undefined);
   assert.equal(sessionConfig({ instructions: '看画面', voice: 'Tina', inputRate: 16000, outputRate: 24000, asrModel: 'qwen3-asr-flash-realtime', turnDetection: SEMANTIC_TURN, search: true }).enable_search, true);
+  const withTools = sessionConfig({ instructions: '玩具', voice: 'Tina', inputRate: 16000, outputRate: 24000, asrModel: 'qwen3-asr-flash-realtime', search: true, video: false, tools: [{ type: 'function', function: { name: 'toy_action' } }] });
+  assert.equal(withTools.tools[0].function.name, 'toy_action');
+  assert.equal(withTools.enable_search, undefined);
+  assert.equal(withTools.video, undefined);
+  const translation = translationSession({ language: 'ja', phrases: { 降噪: 'noise cancellation' } });
+  assert.deepEqual(translation.output_modalities, ['text', 'audio']);
+  assert.equal(translation.translation.language, 'ja');
+  assert.equal(translation.translation.corpus.phrases.降噪, 'noise cancellation');
+  assert.deepEqual(translationSession({ textOnly: true }).output_modalities, ['text']);
   assert.equal(splitPcm(new Uint8Array(10), 4).length, 3);
   const audio = new Uint8Array([0, 1, 2, 3]);
   assert.deepEqual(decodeBase64(pcmBase64(audio)), audio);

@@ -1,0 +1,64 @@
+{
+ "solution": "03-toys-companion.bailian",
+ "source": "solutions/by-category/03-toys-companion/demo/bailian",
+ "MODEL": "qwen3.8-omni-flash-realtime",
+ "ASR_MODEL": "qwen3-asr-flash-realtime",
+ "DEFAULT_VOICE": "longanlingxin",
+ "IN_RATE": 16000,
+ "OUT_RATE": 24000,
+ "CHUNK_BYTES": 3200,
+ "MAX_IMAGE_BYTES": 194560,
+ "MAX_TOOL_ROUNDS": 2,
+ "INSTRUCTIONS": "你是毛绒小熊玩具「团团」里的 AI，陪 4–8 岁的小朋友聊天、讲故事。\n- 用简单口语化的中文，每次不超过 6 句；讲故事控制在 150 字以内，结尾问小朋友一个问题\n- 能看到玩具眼睛摄像头拍到的画面；画面和问题有关时，自然地说出看到了什么\n- 你是 AI 玩具，不冒充真人，也不扮演爸爸妈妈、亲戚或恋人\n- 不谈暴力、恐怖、色情等内容，把话题引到动物、绘本、游戏；遇到受伤、生病、走丢，提醒快去找爸爸妈妈或老师\n- 不询问住址、学校、电话等隐私；不提购买、付费、充值\n- 想配合动作或灯光时调用 toy_action，例如开始讲故事时挥挥手",
+ "TOOLS": [
+  {
+   "type": "function",
+   "function": {
+    "name": "toy_action",
+    "description": "控制毛绒玩具的身体动作和胸前灯光。打招呼、讲故事、表达开心或安慰小朋友时配合使用。",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "motion": {
+       "type": "string",
+       "enum": [
+        "nod",
+        "shake_head",
+        "wave",
+        "dance",
+        "hug"
+       ],
+       "description": "身体动作"
+      },
+      "light": {
+       "type": "string",
+       "enum": [
+        "warm",
+        "blue",
+        "rainbow",
+        "off"
+       ],
+       "description": "胸前灯光颜色"
+      }
+     },
+     "required": [
+      "motion"
+     ]
+    }
+   }
+  }
+ ],
+ "MOTIONS": {
+  "nod": "点点头",
+  "shake_head": "摇摇头",
+  "wave": "挥挥手",
+  "dance": "扭一扭",
+  "hug": "张开手臂抱抱"
+ },
+ "LIGHTS": {
+  "warm": "暖黄光",
+  "blue": "蓝光",
+  "rainbow": "彩虹灯",
+  "off": "熄灭"
+ }
+}
