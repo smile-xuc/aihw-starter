@@ -90,7 +90,7 @@ function capabilities(reg) {
     <div class="panel">
       ${rows.map(({ s, v, sup }) => html`<a class="cap-row" href="${sup.href || `#/s/${s.id}${s.variants.length > 1 ? `/${v.id}` : ''}`}"><span class="chip ${sup.status === 'runnable' ? 'cloud' : ''}">${s.category.slice(0, 2)}</span>
         <span>${s.title.split('·')[0].trim()}${s.variants.length > 1 ? ` · ${v.title}` : ''}</span><b>${text[sup.status]}</b></a>`)}
-      <p class="info-note">${icon('info')}<span>看说体验、玩具、桌宠、同传耳机和「给 AI 打电话」把 Key 放进发往百炼官方域名的连接参数。会议实时录音仍要你自己的网关。声音和画面条件提醒在看说体验里。定时提醒和后台委托仍要在 Mac 上跑 Qwen-Live-Harness。</span></p>
+      <p class="info-note">${icon('info')}<span>看说体验、玩具、桌宠、同传耳机和「给 AI 打电话」把 Key 放进发往百炼官方域名的连接参数。会议实时录音仍要你自己的网关。声音、画面和到点提醒在看说体验里。后台委托仍要在 Mac 上跑 Qwen-Live-Harness。</span></p>
     </div>
   </section>`;
 }

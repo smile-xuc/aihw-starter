@@ -25,7 +25,7 @@ const RUNNERS = {
 };
 
 // 依据：百炼「Realtime Token 鉴权」「WebRTC 最佳实践」「Realtime API 概述」（2026-10-02）
-const REALTIME_DETAIL = '看说体验、玩具、桌宠、同传耳机和「给 AI 打电话」已经把 Key 放进发往官方域名的 WebSocket 连接参数。会议实时录音仍要你自己的网关，不使用查询参数。声音和画面条件提醒在看说体验里另开一条连接。定时提醒和后台委托仍在 Mac 上的 Qwen-Live-Harness。';
+const REALTIME_DETAIL = '看说体验、玩具、桌宠、同传耳机和「给 AI 打电话」已经把 Key 放进发往官方域名的 WebSocket 连接参数。会议实时录音仍要你自己的网关，不使用查询参数。声音、画面和到点提醒在看说体验里。后台委托仍在 Mac 上的 Qwen-Live-Harness。';
 
 export function browserSupport(reg, sol, variant) {
   const stack = reg.stacks.get(sol.stack);

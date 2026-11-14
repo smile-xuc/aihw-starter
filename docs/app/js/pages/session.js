@@ -2,7 +2,7 @@ import { liveConstants } from '../data.js';
 import { chat, postJson, toBase64 } from '../live/client.js';
 import { microphone } from '../live/microphone.js';
 import { SAMPLE_RATE } from '../live/pcm.js';
-import { MONITOR_TOOL, SEARCH_TOOL, isSilentMonitor, monitorTask, openMonitor, pushMonitorAudio, searchMessages, takeMonitorAudio, toolArguments } from '../live/monitor.js';
+import { MONITOR_TOOL, SEARCH_TOOL, TIMER_TOOL, isSilentMonitor, monitorTask, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, timerRequest, toolArguments } from '../live/monitor.js';
 import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
 import { functionCalls } from '../live/product-session.js';
 import { connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, splitPcm } from '../live/realtime-omni.js';
@@ -24,7 +24,8 @@ const LIVE_INSTRUCTIONS = `你是看说体验里的语音助手，能看到用�
 const LIVE_TOOL_INSTRUCTIONS = `你是看说体验里的语音助手，能看到用户打开的摄像头或屏幕，大约每秒一帧。
 用口语化中文回答，每次两三句话，先给结论。画面和问题有关时结合画面回答。
 需要事实或最新信息时调用 web_search，并用口语说明依据。
-用户要求盯着画面、出现某种情况就提醒时，调用 create_proactive_monitor。没有调用成功就不要说已经在监视。
+用户要求盯着画面或听某种声音、出现情况就提醒时，调用 create_proactive_monitor。没有调用成功就不要说已经在监视。
+用户明确说了多久以后提醒时，调用 create_proactive_timer。没有调用成功就不要说已经设好。
 不识别画面中人的身份；看不清就直说，不要编造。
 用户可以随时插话。`;
 const MEMORY_KEY = 'aihw.session.memory';
@@ -146,7 +147,7 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒会另开一条连接，送上这两秒的麦克风和画面，条件没发生就不出声，费用另计。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 收成一段摘要，另计费，不含 Key、画面和录音。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒会另开一条连接，送上这两秒的麦克风和画面，条件没发生就不出声。到点提醒会另读一句。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 收成一段摘要，另计费，不含 Key、画面和录音。</p>
       <p class="small" data-memory></p>
       <button type="button" class="secondary-action" data-forget>清空本机记忆</button>
       <label class="field">补充问题，可留空<textarea data-question rows="3" maxlength="500" placeholder="实时通话直接说话；文字只用于「只发这一帧」"></textarea></label>
@@ -162,7 +163,7 @@ export function renderSession(view, reg) {
     <section class="panel">
       <h2>还能用 Key 直接跑的玩法</h2>
       <div class="link-list">${runnable.map((item) => html`<a href="${item.href}">${item.label}</a>`)}</div>
-      <p class="small">上面这些都能用同一把 Key 在浏览器里跑。可以说「盯着画面，出现报错就提醒我」或「听到警报就提醒我」。定时提醒和后台委托要在 Mac 上用 <a href="https://github.com/QwenLM/Qwen-Live-Harness" rel="noopener">Qwen-Live-Harness</a>。</p>
+      <p class="small">上面这些都能用同一把 Key 在浏览器里跑。可以说「盯着画面，出现报错就提醒我」「听到警报就提醒我」或「一分钟后提醒我喝水」。后台委托要在 Mac 上用 <a href="https://github.com/QwenLM/Qwen-Live-Harness" rel="noopener">Qwen-Live-Harness</a>。</p>
     </section>`);
 
   const video = page.querySelector('[data-preview]');
@@ -204,6 +205,7 @@ export function renderSession(view, reg) {
   let monitorStop = null;
   let monitorAudio = { parts: [], total: 0 };
   let captureMonitorAudio = false;
+  const timers = new Set();
   const memoryLabel = page.querySelector('[data-memory]');
 
   const say = (text) => { if (active) status.textContent = redactSecret(text, secret); };
@@ -282,7 +284,13 @@ export function renderSession(view, reg) {
     say(framesSent ? `正在提交这一轮（${framesSent} 帧画面）…` : '正在提交这一轮…');
   }
 
+  function clearTimers() {
+    for (const id of timers) clearTimeout(id);
+    timers.clear();
+  }
+
   function endCall(message) {
+    clearTimers();
     monitorStop?.();
     callGeneration += 1;
     const handle = call;
@@ -392,6 +400,7 @@ export function renderSession(view, reg) {
         if (item.name === 'analyze_view') void answerLook(item, mine, lookGeneration);
         else if (item.name === 'web_search') void answerSearch(item, mine);
         else if (item.name === 'create_proactive_monitor') void answerMonitor(item, mine);
+        else if (item.name === 'create_proactive_timer') void answerTimer(item, mine);
         else {
           try {
             call.send('conversation.item.create', { item: { type: 'function_call_output', call_id: item.call_id, output: '没有这个工具' } });
@@ -485,6 +494,49 @@ export function renderSession(view, reg) {
     if (!active || mine !== callGeneration || !call) return;
     try { replyTool(item, output); } catch (error) { say(error.message); return; }
     if (output.startsWith('已开始')) void runMonitor(condition, mine);
+  }
+
+  async function answerTimer(item, mine) {
+    let plan = null;
+    let output;
+    try {
+      plan = timerRequest(toolArguments(item.arguments));
+      output = `${plan.seconds} 秒后提醒。到点会另读这一句，费用另计。结束通话会取消还没到点的提醒。`;
+    } catch (error) {
+      output = error.message;
+    }
+    if (!active || mine !== callGeneration || !call) return;
+    try { replyTool(item, output); } catch (error) { say(error.message); return; }
+    if (!plan) return;
+    const id = setTimeout(() => { timers.delete(id); void fireTimer(plan.text, mine); }, plan.seconds * 1000);
+    timers.add(id);
+  }
+
+  async function fireTimer(text, mine) {
+    if (!active || mine !== callGeneration) return;
+    const line = document.createElement('li');
+    line.textContent = redactSecret(`提醒：${text}`, secret);
+    log.append(line);
+    const deadline = Date.now() + 30000;
+    while (playback?.playing() && Date.now() < deadline && mine === callGeneration && active) {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    }
+    if (!active || mine !== callGeneration || !liveSpec || !liveValues) return;
+    try {
+      const spoken = await speakReminder({
+        url: realtimeSocketUrl(reg.stacks.get('bailian'), liveValues, liveSpec.REALTIME_MODEL),
+        secret,
+        text,
+        voice: liveSpec.REALTIME_VOICE,
+        inputRate: liveSpec.IN_RATE,
+        outputRate: liveSpec.OUT_RATE,
+        asrModel: liveSpec.ASR_MODEL,
+      });
+      if (!active || mine !== callGeneration || !playback || playback.playing()) return;
+      for (const chunk of spoken.audio) playback.push(chunk, liveSpec.OUT_RATE);
+    } catch (error) {
+      if (active && mine === callGeneration) say(`到点了，但没有读出来：${error.message}`);
+    }
   }
 
   async function runMonitor(condition, mine) {
@@ -605,7 +657,7 @@ export function renderSession(view, reg) {
           turnDetection: SEMANTIC_TURN,
           search: tools ? false : !demand,
           video: !demand,
-          tools: tools ? (demand ? [LOOK_TOOL, SEARCH_TOOL, MONITOR_TOOL] : [SEARCH_TOOL, MONITOR_TOOL]) : null,
+          tools: tools ? (demand ? [LOOK_TOOL, SEARCH_TOOL, MONITOR_TOOL, TIMER_TOOL] : [SEARCH_TOOL, MONITOR_TOOL, TIMER_TOOL]) : null,
         }),
         onEvent: (event) => onRealtime(event, mine),
       });
@@ -788,6 +840,7 @@ export function renderSession(view, reg) {
 
   return { cleanup() {
     active = false;
+    clearTimers();
     callGeneration += 1;
     abort?.abort();
     call?.close();

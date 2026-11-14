@@ -18,6 +18,22 @@ export const SEARCH_TOOL = {
   },
 };
 
+export const TIMER_TOOL = {
+  type: 'function',
+  function: {
+    name: 'create_proactive_timer',
+    description: '在用户明确说了多久以后，提醒一句指定的话。',
+    parameters: {
+      type: 'object',
+      properties: {
+        delay_sec: { type: 'integer', description: '多少秒后提醒，5 到 3600。' },
+        message: { type: 'string', description: '到点要说的那句话。' },
+      },
+      required: ['delay_sec', 'message'],
+    },
+  },
+};
+
 export const MONITOR_TOOL = {
   type: 'function',
   function: {
@@ -34,6 +50,75 @@ export const MONITOR_TOOL = {
 export const MONITOR_RULES = `你是主动提醒监视器，只判断这一小段新的声音和画面。
 条件没有发生时，只输出 remain_silent。
 条件发生时，用一句中文说明听到或看到了什么。不要编造，也不要提醒条件以外的事。`;
+
+export const SPEAK_RULES = '你只朗读给出的那句话，不要改写，不要加称呼或解释。';
+
+export function timerRequest(raw) {
+  const args = raw && typeof raw === 'object' ? raw : {};
+  let seconds = Number(args.delay_sec ?? args.seconds);
+  if (!Number.isFinite(seconds) && args.minutes != null) seconds = Number(args.minutes) * 60;
+  if (!Number.isFinite(seconds)) throw new Error('提醒时间要在 5 秒到 1 小时之间');
+  seconds = Math.round(seconds);
+  const text = String(args.message || args.text || '').replace(/\s+/g, ' ').trim().slice(0, 120);
+  if (seconds < 5 || seconds > 3600) throw new Error('提醒时间要在 5 秒到 1 小时之间');
+  if (!text) throw new Error('提醒内容是空的');
+  return { seconds, text };
+}
+
+export async function speakReminder(options) {
+  const connect = options.connect || connectRealtime;
+  const sentence = String(options.text || '').replace(/\s+/g, ' ').trim().slice(0, 120);
+  if (!sentence) throw new Error('提醒内容是空的');
+  let audio = [];
+  let settled = false;
+  let resolve;
+  let reject;
+  const finished = new Promise((ok, bad) => { resolve = ok; reject = bad; });
+  const finish = (error, value) => {
+    if (settled) return;
+    settled = true;
+    clearTimeout(timer);
+    if (error) reject(error);
+    else resolve(value);
+  };
+  const timer = setTimeout(() => finish(new Error('朗读超时')), options.timeoutMs || 25000);
+  let handle;
+  try {
+    handle = connect({
+      url: options.url,
+      secret: options.secret,
+      timeoutMs: options.timeoutMs || 25000,
+      WebSocketImpl: options.WebSocketImpl,
+      session: sessionConfig({
+        instructions: SPEAK_RULES,
+        voice: options.voice,
+        inputRate: options.inputRate,
+        outputRate: options.outputRate,
+        asrModel: options.asrModel,
+        turnDetection: null,
+        video: false,
+      }),
+      onEvent(event) {
+        if (event.type === 'error') finish(new Error(event.message || '朗读失败'));
+        if (event.type === 'response.audio.delta' && event.delta) {
+          try { audio.push(decodeBase64(event.delta)); } catch { /* 这一小段声音无效就只留文字 */ }
+        }
+        if (event.type === 'input_audio_buffer.committed') {
+          try { handle.send('response.create', { response: { instructions: sentence } }); }
+          catch (error) { finish(error); }
+        }
+        if (event.type === 'response.done') finish(null, { audio });
+      },
+    });
+    await handle.ready;
+    handle.send('input_audio_buffer.append', { audio: pcmBase64(silencePcm(options.inputRate, 1)) });
+    handle.send('input_audio_buffer.commit');
+    return await finished;
+  } finally {
+    clearTimeout(timer);
+    handle?.close();
+  }
+}
 
 export function monitorTask(condition) {
   const text = String(condition || '').replace(/\s+/g, ' ').trim().slice(0, 200);
