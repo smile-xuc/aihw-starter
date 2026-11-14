@@ -2,6 +2,8 @@ import { liveConstants } from '../data.js';
 import { chat, postJson, toBase64 } from '../live/client.js';
 import { microphone } from '../live/microphone.js';
 import { SAMPLE_RATE } from '../live/pcm.js';
+import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
+import { functionCalls } from '../live/product-session.js';
 import { connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, splitPcm } from '../live/realtime-omni.js';
 import { browserSupport } from '../live/index.js';
 import {
@@ -132,8 +134,12 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-source="camera">摄像头</button>
         <button type="button" class="secondary-action" data-source="screen">屏幕</button>
       </div>
+      <div class="btn-row" role="group" aria-label="采集模式">
+        <button type="button" class="secondary-action" data-capture="live" aria-pressed="true">实时画面</button>
+        <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
+      </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。模型可自行联网搜索。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 收成一段摘要，另计费，不含 Key、画面和录音。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧，主会话可以联网。按需看一眼只在问到画面时另开一次看图，主会话这一档不联网。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 收成一段摘要，另计费，不含 Key、画面和录音。</p>
       <p class="small" data-memory></p>
       <button type="button" class="secondary-action" data-forget>清空本机记忆</button>
       <label class="field">补充问题，可留空<textarea data-question rows="3" maxlength="500" placeholder="实时通话直接说话；文字只用于「只发这一帧」"></textarea></label>
@@ -183,6 +189,11 @@ export function renderSession(view, reg) {
   let summary = readSummary();
   let memoryAtStart = JSON.stringify(memory);
   let folding = false;
+  let captureMode = 'live';
+  let liveValues = null;
+  let lastHeard = '';
+  let lookRounds = 0;
+  let lookGeneration = 0;
   const memoryLabel = page.querySelector('[data-memory]');
 
   const say = (text) => { if (active) status.textContent = redactSecret(text, secret); };
@@ -211,6 +222,7 @@ export function renderSession(view, reg) {
     liveButton.setAttribute('aria-pressed', on ? 'true' : 'false');
     const talkButton = page.querySelector('[data-talk]');
     if (talkButton) talkButton.disabled = on;
+    for (const button of page.querySelectorAll('[data-capture]')) button.disabled = on;
   };
   const setBusy = (on) => {
     busy = on;
@@ -320,6 +332,8 @@ export function renderSession(view, reg) {
       return;
     }
     if (event.type === 'input_audio_buffer.speech_started') {
+      lookRounds = 0;
+      lookGeneration += 1;
       if (playback?.playing()) {
         playback.interrupt();
         try { call?.send('response.cancel'); } catch { /* 当前没有可打断的回答 */ }
@@ -341,6 +355,7 @@ export function renderSession(view, reg) {
       return;
     }
     if (event.type === 'conversation.item.input_audio_transcription.completed' && event.transcript) {
+      lastHeard = event.transcript;
       const item = document.createElement('li');
       item.textContent = redactSecret(`听到：${event.transcript}`, secret);
       log.append(item);
@@ -359,11 +374,52 @@ export function renderSession(view, reg) {
       return;
     }
     if (event.type === 'response.done') {
+      const calls = captureMode === 'demand' ? functionCalls(event, 1, lookRounds) : [];
+      if (calls.length && call) {
+        lookRounds += 1;
+        void answerLook(calls[0], mine, lookGeneration);
+        return;
+      }
       remember('', assistantText);
       assistantText = '';
       assistantLine = null;
       const failed = event.response?.status && event.response.status !== 'completed';
       say(failed ? `这一轮没有完成（${event.response.status}）。可以继续说话。` : '可以继续说话。');
+    }
+  }
+
+  async function answerLook(item, mine, generation) {
+    let args = {};
+    try { args = JSON.parse(item.arguments || '{}'); } catch { args = {}; }
+    const question = visualQuestion(args.query, lastHeard);
+    const jpeg = liveSpec ? captureJpeg(video, liveSpec.MAX_FRAME_BYTES) : null;
+    let output = '没有打开摄像头或屏幕，看不到画面。';
+    if (jpeg) {
+      say('正在另开一次看图…');
+      try {
+        output = await analyzeFrame({
+          url: realtimeSocketUrl(reg.stacks.get('bailian'), liveValues, liveSpec.REALTIME_MODEL),
+          secret,
+          jpeg,
+          question,
+          voice: liveSpec.REALTIME_VOICE,
+          inputRate: liveSpec.IN_RATE,
+          outputRate: liveSpec.OUT_RATE,
+          asrModel: liveSpec.ASR_MODEL,
+        }) || '看图没有返回文字。';
+      } catch (error) {
+        output = `看图失败：${error.message}`;
+      }
+    }
+    if (!active || mine !== callGeneration || generation !== lookGeneration || !call) return;
+    const line = document.createElement('li');
+    line.textContent = redactSecret(`画面：${output}`, secret);
+    log.append(line);
+    try {
+      call.send('conversation.item.create', { item: { type: 'function_call_output', call_id: item.call_id, output: redactSecret(output, secret) } });
+      call.send('response.create');
+    } catch (error) {
+      say(error.message);
     }
   }
 
@@ -377,7 +433,7 @@ export function renderSession(view, reg) {
           for (const piece of splitPcm(bytes, liveSpec.CHUNK_BYTES)) {
             if (piece.byteLength < 2 || piece.byteLength % 2) continue;
             call.send('input_audio_buffer.append', { audio: pcmBase64(piece) });
-            if (audioPackets % liveSpec.FRAME_EVERY === 0) pushFrame();
+            if (captureMode === 'live' && audioPackets % liveSpec.FRAME_EVERY === 0) pushFrame();
             audioPackets += 1;
           }
         } catch (error) {
@@ -413,21 +469,25 @@ export function renderSession(view, reg) {
       if (mine !== callGeneration || !active) { await speaker.close(); return; }
       say('正在接通实时通话…');
       const url = realtimeSocketUrl(stack, values, constants.REALTIME_MODEL);
+      const demand = captureMode === 'demand';
+      liveValues = values;
       const openSocket = (search) => connectRealtime({
         url,
         secret,
         session: sessionConfig({
-          instructions: instructionsWithMemory(LIVE_INSTRUCTIONS, memory, summary),
+          instructions: instructionsWithMemory(demand ? DEMAND_INSTRUCTIONS : LIVE_INSTRUCTIONS, memory, summary),
           voice: constants.REALTIME_VOICE,
           inputRate: constants.IN_RATE,
           outputRate: constants.OUT_RATE,
           asrModel: constants.ASR_MODEL,
           turnDetection: SEMANTIC_TURN,
-          search,
+          search: demand ? false : search,
+          video: !demand,
+          tools: demand ? [LOOK_TOOL] : null,
         }),
         onEvent: (event) => onRealtime(event, mine),
       });
-      let handle = openSocket(true);
+      let handle = openSocket(!demand);
       call = handle;
       liveSpec = constants;
       playback = speaker;
@@ -435,7 +495,7 @@ export function renderSession(view, reg) {
         await handle.ready;
       } catch (error) {
         const blocked = /search|enable_search|联网/.test(error.message || '');
-        if (!blocked || mine !== callGeneration || !active) throw error;
+        if (demand || !blocked || mine !== callGeneration || !active) throw error;
         handle.close();
         if (call === handle) call = null;
         say('当前账号不能联网搜索，改为只对话。');
@@ -455,7 +515,7 @@ export function renderSession(view, reg) {
       say('实时通话已接通，正在打开麦克风…');
       await openLiveMic(mine);
       if (mine !== callGeneration || !active) return;
-      say('对着画面说话即可。说完稍停就会回答，插话会停下当前回答。');
+      say(demand ? '对着麦克风说话即可。问到画面时才会另看一眼。' : '对着画面说话即可。说完稍停就会回答，插话会停下当前回答。');
     } catch (error) {
       if (call && mine === callGeneration) { call.close(); call = null; }
       callReady = false;
@@ -556,6 +616,12 @@ export function renderSession(view, reg) {
   }
 
   page.addEventListener('click', (event) => {
+    const capture = event.target.closest('[data-capture]');
+    if (capture && !call) {
+      captureMode = capture.dataset.capture === 'demand' ? 'demand' : 'live';
+      for (const button of page.querySelectorAll('[data-capture]')) button.setAttribute('aria-pressed', String(button === capture));
+      say(captureMode === 'demand' ? '已改为按需看一眼。问到画面时才会另开一次看图，主会话不联网。' : '已改为实时画面。接通后大约每秒送一帧，主会话可以联网。');
+    }
     const source = event.target.closest('[data-source]');
     if (source) void openSource(source.dataset.source);
     if (event.target.closest('[data-live]')) void (call ? endCall('已结束实时通话') : startCall());
