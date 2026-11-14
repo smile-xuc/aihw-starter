@@ -1,5 +1,5 @@
 // 看说体验的多套记忆库。事实和对话只留在这台浏览器。
-// 检索按关键词匹配当前这一套，不调用向量模型，也没有视觉观察。
+// 检索把关键词和 text-embedding-v4 的余弦相似度合在一起。没有视觉观察。
 
 import { clipSummary, MAX_MEMORY_CHARS, MAX_MEMORY_NOTES } from './session-turn.js';
 
@@ -11,6 +11,9 @@ export const MAX_LIBRARIES = 8;
 export const MAX_BIO = 24;
 export const MAX_BIO_CHARS = 160;
 export const MAX_NAME_CHARS = 40;
+export const EMBED_MODEL = 'text-embedding-v4';
+export const MIN_SIMILARITY = 0.4;
+export const RETRIEVE_LIMIT = 5;
 const ID_RE = /^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/;
 const SECRET_RE = /sk-[A-Za-z0-9]{8,}/;
 
@@ -50,7 +53,7 @@ export const RETRIEVE_TOOL = {
   type: 'function',
   function: {
     name: 'omniretrieve',
-    description: '在当前记忆库里查找更早的对话或长期事实。当前提示里已经有的内容不要再查。这台浏览器没有视觉观察，source 不要用 env。先调用，再回答。',
+    description: '在当前记忆库里查找更早的对话或长期事实。会用向量相似度和关键词一起找。当前提示里已经有的内容不要再查。这台浏览器没有视觉观察，source 不要用 env。先调用，再回答。',
     parameters: {
       type: 'object',
       properties: {
@@ -242,17 +245,66 @@ export function bioResult(lines) {
   return facts.map((line, index) => `${index}. ${line}`).join('\n');
 }
 
+export function memoryCorpus(library) {
+  return [library?.bio, library?.summary, library?.notes].flat().map((line) => String(line || '').replace(/\s+/g, ' ').trim()).filter((line) => line && !SECRET_RE.test(line));
+}
+
+export function normalizeVector(values) {
+  if (!Array.isArray(values) || !values.length || values.length > 65536) return null;
+  if (values.some((value) => typeof value !== 'number' || !Number.isFinite(value))) return null;
+  let square = 0;
+  for (const value of values) square += value * value;
+  const norm = Math.sqrt(square);
+  if (!Number.isFinite(norm) || norm <= 0) return null;
+  return values.map((value) => value / norm);
+}
+
+export function vectorsFromEmbedding(body, count) {
+  const rows = body?.data;
+  if (!Number.isInteger(count) || count < 1 || !Array.isArray(rows) || rows.length !== count) return null;
+  const vectors = Array(count);
+  for (const item of rows) {
+    const index = item?.index;
+    const vector = normalizeVector(item?.embedding);
+    if (!Number.isInteger(index) || index < 0 || index >= count || vectors[index] || !vector) return null;
+    vectors[index] = vector;
+  }
+  return vectors.every(Boolean) ? vectors : null;
+}
+
+export function vectorMatches(corpus, queryVector, docVectors, minSim = MIN_SIMILARITY, limit = RETRIEVE_LIMIT) {
+  if (!queryVector || !Array.isArray(corpus) || !Array.isArray(docVectors)) return [];
+  return corpus.map((text, index) => {
+    const doc = docVectors[index];
+    if (!doc || doc.length !== queryVector.length) return null;
+    let similarity = 0;
+    for (let i = 0; i < queryVector.length; i += 1) similarity += queryVector[i] * doc[i];
+    return Number.isFinite(similarity) && similarity >= minSim ? { text, similarity } : null;
+  }).filter(Boolean).sort((a, b) => b.similarity - a.similarity || a.text.localeCompare(b.text)).slice(0, limit);
+}
+
+export function hybridRetrieval(keywordText, vectorHits) {
+  const keyword = keywordText === '没有找到相关记忆。' ? [] : String(keywordText || '').split('\n').map((line) => line.trim()).filter(Boolean);
+  const vector = (Array.isArray(vectorHits) ? vectorHits : []).map((item) => String(item?.text || '').trim()).filter(Boolean);
+  const scores = new Map();
+  const add = (lines) => lines.forEach((text, rank) => scores.set(text, (scores.get(text) || 0) + 1 / (61 + rank)));
+  add(keyword);
+  add(vector);
+  const ranked = [...scores.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, RETRIEVE_LIMIT);
+  if (!ranked.length) return '没有找到相关记忆。';
+  return ranked.map(([text]) => text).join('\n');
+}
+
 export function retrieveMemory(library, request) {
   const source = request?.source;
   if (source === 'env') return '这台浏览器没有视觉观察记录。';
   if (source !== 'dialogue') throw new Error('只能检索对话或视觉观察');
   const words = String(request?.query || '').replace(/\s+/g, ' ').trim().slice(0, 200).split(' ').map((word) => word.trim()).filter(Boolean).slice(0, 5);
   if (!words.length) throw new Error('检索词是空的');
-  const corpus = [...library.bio, library.summary, ...library.notes].map((line) => String(line || '').replace(/\s+/g, ' ').trim()).filter((line) => line && !SECRET_RE.test(line));
-  const found = corpus.map((text) => ({ text, hits: words.filter((word) => text.includes(word)).length }))
+  const found = memoryCorpus(library).map((text) => ({ text, hits: words.filter((word) => text.includes(word)).length }))
     .filter((item) => item.hits > 0)
-    .sort((a, b) => b.hits - a.hits)
-    .slice(0, 5);
+    .sort((a, b) => b.hits - a.hits || a.text.localeCompare(b.text))
+    .slice(0, RETRIEVE_LIMIT);
   if (!found.length) return '没有找到相关记忆。';
   return found.map((item) => item.text).join('\n');
 }

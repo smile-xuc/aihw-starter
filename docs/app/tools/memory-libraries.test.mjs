@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  BIO_TOOL, DEFAULT_LIBRARY_ID, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, RETRIEVE_TOOL,
-  activeLibrary, applyBio, bioResult, clearLibrary, createLibrary, memoryLabel, readStore, redactOperations,
-  renameLibrary, replaceActive, retrieveMemory, switchLibrary, writeStore,
+  BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, RETRIEVE_TOOL,
+  activeLibrary, applyBio, bioResult, clearLibrary, createLibrary, hybridRetrieval, memoryLabel, normalizeVector, readStore, redactOperations,
+  renameLibrary, replaceActive, retrieveMemory, switchLibrary, vectorMatches, vectorsFromEmbedding, writeStore,
 } from '../js/live/memory-libraries.js';
 
 function storage(initial = {}) {
@@ -77,4 +77,24 @@ test('bio edits keep numbered facts and retrieval stays on this library', () => 
   assert.throws(() => retrieveMemory(library, { query: '  ', source: 'dialogue' }), /检索词是空的/);
   const saved = writeStore(storage({ [LIBRARIES_KEY]: 'null' }), { activeId: 'default', libraries: [{ ...library, bio }] });
   assert.equal(activeLibrary(saved).bio[0], '用户喜欢喝绿茶');
+});
+
+test('vector retrieval ranks by cosine and merges with keyword hits', () => {
+  assert.equal(EMBED_MODEL, 'text-embedding-v4');
+  const unit = normalizeVector([3, 4]);
+  assert.equal(unit.length, 2);
+  assert.ok(Math.abs(unit[0] - 0.6) < 1e-12);
+  assert.equal(normalizeVector([0, 0]), null);
+  assert.equal(normalizeVector([Number.NaN]), null);
+  const body = { data: [{ index: 1, embedding: [0, 1] }, { index: 0, embedding: [1, 0] }] };
+  const parsed = vectorsFromEmbedding(body, 2);
+  assert.deepEqual(parsed[0], [1, 0]);
+  assert.equal(vectorsFromEmbedding({ data: [{ index: 0, embedding: [1] }] }, 2), null);
+  const corpus = ['用户喜欢喝茶', '看到杯子'];
+  const hits = vectorMatches(corpus, [1, 0], [[0, 1], [1, 0]]);
+  assert.deepEqual(hits.map((item) => item.text), ['看到杯子']);
+  const merged = hybridRetrieval('没有找到相关记忆。', hits);
+  assert.equal(merged, '看到杯子');
+  const both = hybridRetrieval('用户喜欢喝茶\n看到杯子', hits);
+  assert.equal(both.split('\n')[0], '看到杯子');
 });
