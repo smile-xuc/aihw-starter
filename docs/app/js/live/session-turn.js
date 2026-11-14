@@ -1,5 +1,4 @@
-// 浏览器看说回合。只组请求，不保存 Key、画面或录音。
-// 全双工 Realtime 仍要本机进程设置 Authorization 头，这里走已放行的 HTTP。
+// 浏览器看说的请求组装和本机文字记忆。不保存 Key、画面或录音。
 
 export const MAX_TURN_SECONDS = 20;
 export const MAX_HISTORY_TURNS = 6;
@@ -72,6 +71,29 @@ export function nextTextHistory(history, question, answer, limit = MAX_HISTORY_T
 
 export function requestMessages(system, history, userContent) {
   return [{ role: 'system', content: system }, ...(history || []), { role: 'user', content: userContent }];
+}
+
+export const MAX_MEMORY_NOTES = 8;
+export const MAX_MEMORY_CHARS = 160;
+
+export function nextMemory(notes, heard, answer, limit = MAX_MEMORY_NOTES) {
+  const clean = (value) => String(value || '').replace(/\s+/g, ' ').trim().slice(0, MAX_MEMORY_CHARS);
+  const left = clean(heard);
+  const right = clean(answer);
+  const kept = (Array.isArray(notes) ? notes : []).filter((line) => typeof line === 'string' && line.trim());
+  const max = Math.max(1, limit);
+  if (!left && !right) return kept.slice(-max);
+  const line = left && right ? `${left} → ${right}` : (left || right);
+  return [...kept, line].slice(-max);
+}
+
+export function instructionsWithMemory(base, notes) {
+  const lines = (Array.isArray(notes) ? notes : [])
+    .map((line) => String(line || '').replace(/\s+/g, ' ').trim())
+    .filter(Boolean)
+    .slice(-MAX_MEMORY_NOTES);
+  if (!lines.length) return String(base || '');
+  return `${base}\n这台设备记得最近的文字对话。只在相关时使用，不要复述密钥，也不要编造没发生的事：\n${lines.map((line) => `- ${line}`).join('\n')}`;
 }
 
 export function spokenText(text) {

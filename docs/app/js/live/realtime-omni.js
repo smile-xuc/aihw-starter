@@ -25,8 +25,8 @@ export function realtimeSocketUrl(stack, values, model) {
 
 export const SEMANTIC_TURN = { type: 'semantic_vad', threshold: 0.5, silence_duration_ms: 800 };
 
-export function sessionConfig({ instructions, voice, inputRate, outputRate, asrModel, turnDetection = null }) {
-  return {
+export function sessionConfig({ instructions, voice, inputRate, outputRate, asrModel, turnDetection = null, search = false }) {
+  const session = {
     modalities: ['text', 'audio'],
     instructions,
     turn_detection: turnDetection,
@@ -37,6 +37,8 @@ export function sessionConfig({ instructions, voice, inputRate, outputRate, asrM
     input_audio_transcription: { model: asrModel },
     video: { input: { representation_compact: 'normal' } },
   };
+  if (search) session.enable_search = true;
+  return session;
 }
 
 export function pcmBase64(bytes) {

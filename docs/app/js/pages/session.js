@@ -5,7 +5,7 @@ import { SAMPLE_RATE } from '../live/pcm.js';
 import { connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, splitPcm } from '../live/realtime-omni.js';
 import { browserSupport } from '../live/index.js';
 import {
-  SYSTEM_PROMPT, buildUserContent, encodeWav, isSessionReturn, nextTextHistory, requestMessages, safeAudioUrl, spokenText,
+  SYSTEM_PROMPT, buildUserContent, encodeWav, instructionsWithMemory, isSessionReturn, nextMemory, nextTextHistory, requestMessages, safeAudioUrl, spokenText,
 } from '../live/session-turn.js';
 import { fieldValues, loadCredentials } from '../settings.js';
 import { html, mount, mountPage } from '../ui.js';
@@ -15,8 +15,10 @@ export { isSessionReturn };
 const SETUP = `#/me?return=${encodeURIComponent('#/session')}`;
 const LIVE_INSTRUCTIONS = `你是看说体验里的语音助手，能看到用户打开的摄像头或屏幕，大约每秒一帧。
 用口语化中文回答，每次两三句话，先给结论。画面和问题有关时结合画面回答。
+需要事实或最新信息时可以联网搜索，并用口语说明依据。
 不识别画面中人的身份；看不清就直说，不要编造。
 用户可以随时插话。`;
+const MEMORY_KEY = 'aihw.session.memory';
 
 function frameDataUrl(video) {
   const width = video.videoWidth;
@@ -128,7 +130,9 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-source="screen">屏幕</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。模型可自行联网搜索。最近对话的文字留在这台浏览器，供下一次通话接着记得，不含 Key、画面和录音。</p>
+      <p class="small" data-memory></p>
+      <button type="button" class="secondary-action" data-forget>清空本机记忆</button>
       <label class="field">补充问题，可留空<textarea data-question rows="3" maxlength="500" placeholder="实时通话直接说话；文字只用于「只发这一帧」"></textarea></label>
       <div class="btn-row">
         <button type="button" class="primary-action" data-live>开始实时通话</button>
@@ -172,8 +176,25 @@ export function renderSession(view, reg) {
   let framesSent = 0;
   let assistantLine = null;
   let assistantText = '';
+  let memory = readMemory();
+  const memoryLabel = page.querySelector('[data-memory]');
 
   const say = (text) => { if (active) status.textContent = redactSecret(text, secret); };
+  function readMemory() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(MEMORY_KEY) || '[]');
+      return Array.isArray(raw) ? raw.filter((line) => typeof line === 'string') : [];
+    } catch { return []; }
+  }
+  function showMemory() {
+    if (memoryLabel) memoryLabel.textContent = memory.length ? `这台浏览器记得最近 ${memory.length} 句对话。` : '这台浏览器还没有记住对话。';
+  }
+  function remember(heard, answer) {
+    memory = nextMemory(memory, redactSecret(heard, secret), redactSecret(answer, secret));
+    try { localStorage.setItem(MEMORY_KEY, JSON.stringify(memory)); } catch { /* 存不下就只留在这一次通话 */ }
+    showMemory();
+  }
+  showMemory();
   const setLiveLabel = (on) => {
     liveButton.textContent = on ? '结束实时通话' : '开始实时通话';
     liveButton.setAttribute('aria-pressed', on ? 'true' : 'false');
@@ -284,6 +305,7 @@ export function renderSession(view, reg) {
       const item = document.createElement('li');
       item.textContent = redactSecret(`听到：${event.transcript}`, secret);
       log.append(item);
+      remember(event.transcript, '');
       return;
     }
     if (event.type === 'response.audio.delta' && event.delta) {
@@ -298,6 +320,7 @@ export function renderSession(view, reg) {
       return;
     }
     if (event.type === 'response.done') {
+      remember('', assistantText);
       assistantText = '';
       assistantLine = null;
       const failed = event.response?.status && event.response.status !== 'completed';
@@ -351,23 +374,36 @@ export function renderSession(view, reg) {
       if (mine !== callGeneration || !active) { await speaker.close(); return; }
       say('正在接通实时通话…');
       const url = realtimeSocketUrl(stack, values, constants.REALTIME_MODEL);
-      const handle = connectRealtime({
+      const openSocket = (search) => connectRealtime({
         url,
         secret,
         session: sessionConfig({
-          instructions: LIVE_INSTRUCTIONS,
+          instructions: instructionsWithMemory(LIVE_INSTRUCTIONS, memory),
           voice: constants.REALTIME_VOICE,
           inputRate: constants.IN_RATE,
           outputRate: constants.OUT_RATE,
           asrModel: constants.ASR_MODEL,
           turnDetection: SEMANTIC_TURN,
+          search,
         }),
         onEvent: (event) => onRealtime(event, mine),
       });
+      let handle = openSocket(true);
       call = handle;
       liveSpec = constants;
       playback = speaker;
-      await handle.ready;
+      try {
+        await handle.ready;
+      } catch (error) {
+        const blocked = /search|enable_search|联网/.test(error.message || '');
+        if (!blocked || mine !== callGeneration || !active) throw error;
+        handle.close();
+        if (call === handle) call = null;
+        say('当前账号不能联网搜索，改为只对话。');
+        handle = openSocket(false);
+        call = handle;
+        await handle.ready;
+      }
       if (mine !== callGeneration || !active) {
         handle.close();
         if (call === handle) call = null;
@@ -485,6 +521,12 @@ export function renderSession(view, reg) {
     if (source) void openSource(source.dataset.source);
     if (event.target.closest('[data-live]')) void (call ? endCall('已结束实时通话') : startCall());
     if (event.target.closest('[data-send]')) void ask(null);
+    if (event.target.closest('[data-forget]')) {
+      memory = [];
+      try { localStorage.removeItem(MEMORY_KEY); } catch { /* 清不掉就只清这一页的显示 */ }
+      showMemory();
+      say('已清空这台浏览器记住的对话。');
+    }
     if (event.target.closest('[data-stop]')) abort?.abort();
   });
   const talk = page.querySelector('[data-talk]');
