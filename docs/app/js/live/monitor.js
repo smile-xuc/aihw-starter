@@ -47,6 +47,28 @@ export const MONITOR_TOOL = {
   },
 };
 
+export const NARRATE_TOOL = {
+  type: 'function',
+  function: {
+    name: 'create_live_narration',
+    description: '连续解说当前摄像头或屏幕，以及这两秒的声音。只在出现值得一提的变化时开口。',
+    parameters: {
+      type: 'object',
+      properties: { narration_focus: { type: 'string', description: '解说时重点看什么。留空则概述刚发生的变化。' } },
+    },
+  },
+};
+
+export const NARRATE_RULES = `你在连续解说这一小段新的声音和画面。
+只说刚出现的、值得一提的变化。
+没有明显变化时，只输出 remain_silent。
+不要编造，不要重复没有变化的内容。`;
+
+export function narrateTask(focus) {
+  const text = String(focus || '').replace(/\s+/g, ' ').trim().slice(0, 200);
+  return text ? `解说重点：${text}` : '解说刚发生的变化。';
+}
+
 export const MONITOR_RULES = `你是主动提醒监视器，只判断这一小段新的声音和画面。
 条件没有发生时，只输出 remain_silent。
 条件发生时，用一句中文说明听到或看到了什么。不要编造，也不要提醒条件以外的事。`;
@@ -170,7 +192,7 @@ export function toolArguments(raw) {
 
 export function openMonitor(options) {
   const connect = options.connect || connectRealtime;
-  const task = monitorTask(options.condition);
+  const task = options.task || monitorTask(options.condition);
   let text = '';
   let audio = [];
   let firstRound = true;
@@ -189,7 +211,7 @@ export function openMonitor(options) {
     timeoutMs: options.timeoutMs || 25000,
     WebSocketImpl: options.WebSocketImpl,
     session: sessionConfig({
-      instructions: MONITOR_RULES,
+      instructions: options.rules || MONITOR_RULES,
       voice: options.voice,
       inputRate: options.inputRate,
       outputRate: options.outputRate,

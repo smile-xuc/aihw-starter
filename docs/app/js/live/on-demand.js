@@ -23,6 +23,7 @@ export const DEMAND_INSTRUCTIONS = `你是看说体验里的语音助手。你�
 需要事实或最新信息时调用 web_search，并用口语说明依据。
 用户要求盯着画面或听某种声音、出现情况就提醒时，调用 create_proactive_monitor。没有调用成功就不要说已经在监视。
 用户明确说了多久以后提醒时，调用 create_proactive_timer。没有调用成功就不要说已经设好。
+用户要求连续解说画面或声音的变化时，调用 create_live_narration。没有明显变化就不要主动开口。
 用口语化中文回答，每次两三句话。不识别画面中人的身份。用户可以随时插话。`;
 
 export function silencePcm(sampleRate = 16000, seconds = 1) {
