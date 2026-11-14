@@ -2,6 +2,8 @@ import { DataMissing, registry } from './data.js';
 import { renderCategory } from './pages/category.js';
 import { renderHome } from './pages/home.js';
 import { renderLab } from './pages/lab.js';
+import { renderProductLive } from './pages/product-live.js';
+import { liveProduct } from './live/product-session.js';
 import { renderSession } from './pages/session.js';
 import { CAPABILITIES } from './agent-lab.js';
 import { renderMe } from './pages/me.js';
@@ -97,7 +99,8 @@ async function route() {
         || (page === 'c' && parts.length === 2) || (page === 's' && [2, 3].includes(parts.length))
         || (page === 'hardware' && parts.length <= 2)
         || (page === 'lab' && parts.length <= 2)
-        || (page === 'session' && parts.length === 1);
+        || (page === 'session' && parts.length === 1)
+        || (page === 'live' && parts.length === 2);
       if (!validShape) {
         setNav('');renderNotFound();
       } else if (page === 'lab') {
@@ -121,6 +124,11 @@ async function route() {
         else if (page === 'hardware') result = renderHardware(view, reg, parts[1] || '');
         else if (page === 'cost-lab') result = renderCostLab(view, reg);
         else if (page === 'session') result = renderSession(view, reg);
+        else if (page === 'live') {
+          const product = liveProduct(parts[1]);
+          if (!product) { setNav(''); renderNotFound(); }
+          else result = renderProductLive(view, reg, product);
+        }
         else result = renderHome(view, reg);
         if (!isCurrent()) { result?.cleanup?.(); return; }
         cleanup = result?.cleanup || null;

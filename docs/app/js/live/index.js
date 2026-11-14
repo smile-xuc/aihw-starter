@@ -5,6 +5,7 @@ import { liveConstants, sampleUrl } from '../data.js';
 import { kindOf } from '../meta.js';
 import { missingFields } from '../settings.js';
 import { chat, now, postJson, serviceOf, validCount } from './client.js';
+import { liveProductFor } from './product-session.js';
 import { validateInput } from './input.js';
 import { transcribeFile } from './file-transcription.js';
 import { validateTranscript } from '../meeting-evidence.js';
@@ -24,10 +25,12 @@ const RUNNERS = {
 };
 
 // 依据：百炼「Realtime Token 鉴权」「WebRTC 最佳实践」「Realtime API 概述」（2026-10-02）
-const REALTIME_DETAIL = 'Realtime API 的 WebSocket、WebRTC、AOQ 都只在建连时认 Authorization 请求头：浏览器的 WebSocket 不能设请求头；WebRTC 的建连请求（SDP 交换）被浏览器跨域拦截，官方要求由服务端代理；AOQ 只有原生 SDK。临时 Key（st-）也放在同一个请求头里，换成临时 Key 也解决不了。看说体验改把 Key 放进发往官方域名的 WebSocket 连接参数，用来接通同一种 Omni 实时会话；玩具、桌宠、耳机和「给 AI 打电话」的产品流程仍只放回放。';
+const REALTIME_DETAIL = '看说体验、玩具、桌宠、同传耳机和「给 AI 打电话」已经把 Key 放进发往官方域名的 WebSocket 连接参数。会议实时录音仍要你自己的网关，不使用查询参数。主动提醒和后台委托仍在 Mac 上的 Qwen-Live-Harness。';
 
 export function browserSupport(reg, sol, variant) {
   const stack = reg.stacks.get(sol.stack);
+  const live = liveProductFor(sol.id, variant.id);
+  if (live) return { status: 'runnable', note: live.note, href: live.href, services: ['realtime'] };
   const runner = RUNNERS[sol.id]?.[variant.id];
   if (runner && stack) {
     const notOk = runner.services.filter((id) => serviceOf(stack, id)?.browser !== 'ok');

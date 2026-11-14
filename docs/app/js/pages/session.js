@@ -109,8 +109,10 @@ export function renderSession(view, reg) {
   const runnable = [];
   for (const sol of reg.solutions || []) {
     for (const variant of sol.variants || []) {
-      if (browserSupport(reg, sol, variant).status === 'runnable') {
-        runnable.push({ href: `#/s/${sol.id}/${variant.id}`, label: variant.title && variant.title !== '默认' ? `${sol.title} · ${variant.title}` : sol.title });
+      const support = browserSupport(reg, sol, variant);
+      if (support.status === 'runnable') {
+        const href = support.href || `#/s/${sol.id}/${variant.id}`;
+        if (href !== '#/session') runnable.push({ href, label: variant.title && variant.title !== '默认' ? `${sol.title} · ${variant.title}` : sol.title });
       }
     }
   }
@@ -146,7 +148,7 @@ export function renderSession(view, reg) {
     <section class="panel">
       <h2>还能用 Key 直接跑的玩法</h2>
       <div class="link-list">${runnable.map((item) => html`<a href="${item.href}">${item.label}</a>`)}</div>
-      <p class="small">下面这些是已经能在浏览器里跑的单次玩法。玩具、桌宠、耳机和「给 AI 打电话」的全双工协议与这里的实时通话相同，但各自的产品流程仍以回放展示。主动提醒和后台委托要在 Mac 上用 <a href="https://github.com/QwenLM/Qwen-Live-Harness" rel="noopener">Qwen-Live-Harness</a>。</p>
+      <p class="small">上面这些都能用同一把 Key 在浏览器里跑。主动提醒和后台委托要在 Mac 上用 <a href="https://github.com/QwenLM/Qwen-Live-Harness" rel="noopener">Qwen-Live-Harness</a>。</p>
     </section>`);
 
   const video = page.querySelector('[data-preview]');

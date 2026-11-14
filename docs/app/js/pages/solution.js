@@ -25,6 +25,9 @@ function regionLabel(stack, region) {
 
 function effectActions(reg, sol, variant, cred) {
   const support = browserSupport(reg, sol, variant);
+  if (support.href) {
+    return html`<a class="primary-action block" href="${support.href}">${icon('play')}用我的 Key 接通</a><p class="small">${support.note} 下方回放不调用模型。</p>`;
+  }
   if (support.status === 'runnable') {
     if (!cred) {
       return html`<a class="secondary-action block" href="${setupRoute(sol, variant)}">${icon('key')}填自己的百炼 Key 后，可以在浏览器里真跑</a><p class="small">${support.note}</p>`;

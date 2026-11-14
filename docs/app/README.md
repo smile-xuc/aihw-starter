@@ -83,19 +83,19 @@ node docs/app/tools/cost-run.mjs --mock \
 
 ## 哪些玩法能在浏览器里真跑
 
-一个玩法能网页真跑，要同时满足：APP 里有它的 runner（`js/live/run-*.js`），并且 runner 实际调用的接入点在栈声明里都是 `browser: ok`。方案页还会按 `credentials.required` 提示缺哪些字段。
+一个 HTTP 玩法能网页真跑，要同时满足：APP 里有它的 runner（`js/live/run-*.js`），并且 runner 实际调用的接入点在栈声明里都是 `browser: ok`。实时语音玩法走看说体验或 `#/live/*`，Key 只放进官方 WebSocket 参数。方案页还会按 `credentials.required` 提示缺哪些字段。
 
 | 方案 · 玩法 | 网页真跑 | 说明 |
 |---|---|---|
 | 01 IPC | ✅ 待真 Key 验证 | 4 帧事件卡 + 检索 + 日报 |
 | 02 AI 眼镜 · 拍照即问 | ✅ 待真 Key 验证 | 样本或个人图片 + 问题；设备播报走任务制 WebSocket，浏览器版用非实时 HTTP 合成（仅北京），新加坡只出文字；必须填业务空间 ID |
 | 看说体验 `#/session` | ✅ 待真 Key 验证 | 摄像头或屏幕 + 连续说话。接通 `qwen3.8-omni-flash-realtime` 后麦克风保持打开，语义轮次自动提交，约每秒一帧画面，插话会停下当前回答，模型可自行联网搜索。最近对话文字留在这台浏览器，供下一次通话使用。浏览器把 Key 放进发往官方域名的 WebSocket 连接参数。单次最长 3 分钟。另保留一帧 HTTP 提问。主动提醒和后台委托不在此页 |
-| 02 AI 眼镜 · 给 AI 打电话 | ❌ 只放回放 | 实时语音 |
-| 03 AI 玩具 | ❌ 只放回放 | 实时语音 |
+| 02 AI 眼镜 · 给 AI 打电话 | ✅ 待真 Key 验证 | 进入看说体验 `#/session`，同一条 Omni 实时会话 |
+| 03 AI 玩具 `#/live/toy` | ✅ 待真 Key 验证 | `qwen3.8-omni-flash-realtime` 连续说话，可选摄像头。`toy_action` 的动作和灯光显示在页面上，不驱动真玩具 |
 | 04 Agent 硬件 · 端侧 + 云端编排 | ✅ 待真 Key 验证 | 端侧规则 + 语音转写 + 多轮工具编排 |
 | 04 Agent 硬件 · 断网降级 | — | 不调用云端，回放就是完整过程 |
-| 05 桌宠 | ❌ 只放回放 | 实时语音 |
-| 06 AI 耳机 | ❌ 只放回放 | 实时语音（同传） |
+| 05 桌宠 `#/live/pet` | ✅ 待真 Key 验证 | 连续说话，`pet_expression` 换页面上的表情。结束时 `qwen3.7-flash` 写日记，记忆留在这台浏览器 |
+| 06 AI 耳机 `#/live/earphone` | ✅ 待真 Key 验证 | `qwen3.8-livetranslate-flash-realtime` 边说边出译文和译音，结束时 `session.finish` |
 | 07 录音卡 | ✅ 待真 Key 验证 | 样本或个人 WAV/MP3，≤3 分钟、7 MiB 文件上传 + 异步 filetrans + 3.8 纪要；双声道完整识别；上传 CORS 待真 Key 验证 |
 | 08 智能手表 | ✅ 待真 Key 验证 | 两份日报；抬腕播报没做 |
 | 09 具身智能 | ✅ 待真 Key 验证 | 本地安全门 + 看图多轮技能调用 |
@@ -104,7 +104,7 @@ node docs/app/tools/cost-run.mjs --mock \
 
 录音前提供浏览器／凭证／网关配置清单，显示当前页面 Origin，便于配置网关来源白名单。「检查网关连接」只在用户确认目标后向自选网关发送 `probe`，无需 Key、不申请麦克风、不发送音频、不连接模型；只验证 WebSocket 和兼容协议，不验证真实模型或费用。旧网关需更新后才能支持检查；修改地址、取消检查和离开页面均会使检查结束，不自动重试。摘要重试、诊断与录音操作防止重复提交，停止时释放麦克风，包括权限请求迟到返回的情况。
 
-其他实时语音入口为什么仍只放回放：百炼官方 [Token 鉴权](https://help.aliyun.com/zh/model-studio/realtime-token-authentication) 写明 WebSocket、WebRTC、AOQ 都只在建连时认 `Authorization` 请求头——浏览器的 WebSocket 不能设请求头；WebRTC 的 SDP 交换被浏览器跨域拦截，[官方说明](https://help.aliyun.com/zh/model-studio/best-practice-webrtc-omni-realtime)要由服务端代理；AOQ 只有原生 SDK。[临时 Key](https://help.aliyun.com/zh/model-studio/generate-temporary-api-key) 也走同一个请求头。2026-11-15 再次实测：`OPTIONS /api/v1/tokens` 没有 `Access-Control-Allow-Origin`，浏览器换不到临时 Key；同一天对 `wss://dashscope.aliyuncs.com/api-ws/v1/realtime` 的握手里，查询参数 `api_key` 会被网关读取（无 Key 为 “No API-key provided”，带查询参数为 “Invalid API-key provided”），`Sec-WebSocket-Protocol` 不会被当成 Key。这条查询参数没有写进官方文档。看说体验因此只在内存里的 WebSocket 地址上使用它，并且只发往栈声明里的官方 `wss` 域名；页面地址、历史、导出和界面文案都会把 Key 抹掉。会议 ASR 网关仍不采用查询参数。玩具、桌宠、耳机和「给 AI 打电话」的产品流程还没有接到这条会话上，继续只放回放。主动提醒、连续看屏和后台委托仍要在 Mac 上用 Qwen-Live-Harness。
+其他实时语音入口为什么仍只放回放：百炼官方 [Token 鉴权](https://help.aliyun.com/zh/model-studio/realtime-token-authentication) 写明 WebSocket、WebRTC、AOQ 都只在建连时认 `Authorization` 请求头——浏览器的 WebSocket 不能设请求头；WebRTC 的 SDP 交换被浏览器跨域拦截，[官方说明](https://help.aliyun.com/zh/model-studio/best-practice-webrtc-omni-realtime)要由服务端代理；AOQ 只有原生 SDK。[临时 Key](https://help.aliyun.com/zh/model-studio/generate-temporary-api-key) 也走同一个请求头。2026-11-15 再次实测：`OPTIONS /api/v1/tokens` 没有 `Access-Control-Allow-Origin`，浏览器换不到临时 Key；同一天对 `wss://dashscope.aliyuncs.com/api-ws/v1/realtime` 的握手里，查询参数 `api_key` 会被网关读取（无 Key 为 “No API-key provided”，带查询参数为 “Invalid API-key provided”），`Sec-WebSocket-Protocol` 不会被当成 Key。这条查询参数没有写进官方文档。看说体验、玩具、桌宠、同传耳机和「给 AI 打电话」因此只在内存里的 WebSocket 地址上使用它，并且只发往栈声明里的官方 `wss` 域名；页面地址、历史、导出和界面文案都会把 Key 抹掉。会议 ASR 网关仍不采用查询参数。主动提醒、连续看屏和后台委托仍要在 Mac 上用 Qwen-Live-Harness。
 
 ## 数据
 

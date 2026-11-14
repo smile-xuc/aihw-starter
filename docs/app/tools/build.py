@@ -33,6 +33,18 @@ LIVE = {
                 "OUT_RATE", "REALTIME_MODEL", "REALTIME_VOICE", "REALTIME_INSTRUCTIONS", "ASR_MODEL", "IN_RATE",
                 "CHUNK_BYTES", "FRAME_EVERY", "MAX_FRAME_BYTES"],
     },
+    "03-toys-companion.bailian": {
+        "run": ["MODEL", "ASR_MODEL", "DEFAULT_VOICE", "IN_RATE", "OUT_RATE", "CHUNK_BYTES", "MAX_IMAGE_BYTES",
+                "MAX_TOOL_ROUNDS", "INSTRUCTIONS", "TOOLS", "MOTIONS", "LIGHTS"],
+    },
+    "05-desktop-pet.bailian": {
+        "run": ["MODEL", "DIARY_MODEL", "ASR_MODEL", "DEFAULT_VOICE", "IN_RATE", "OUT_RATE", "CHUNK_BYTES",
+                "MAX_TOOL_ROUNDS", "PET_NAME", "INSTRUCTIONS", "EMOTIONS", "ACTIONS", "LIGHTS", "FACES", "TOOLS"],
+        "diary": ["PROMPT", "MEMORY_SLOT", "MAX_MEMORIES", "RECALL_MEMORIES"],
+    },
+    "06-ai-earphone.bailian": {
+        "run": ["MODEL", "IN_RATE", "DEFAULT_OUT_RATE", "CHUNK_BYTES", "AUDIO_LANGS"],
+    },
     "04-agent-hardware.bailian": {
         "run": ["LLM_MODEL", "CHEAP_MODEL", "ASR_MODEL", "MAX_ROUNDS", "SYSTEM", "TOOLS", "PRICES", "WEEKDAYS",
                 "DEFAULT_SESSION"],
