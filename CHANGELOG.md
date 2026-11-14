@@ -11,8 +11,8 @@
 
 ### 新增
 
-- 体验中心用百炼 Key 接通玩具（`#/live/toy`）、桌宠（`#/live/pet`）和同传耳机（`#/live/earphone`）。玩具动作和桌宠表情显示在页面上；桌宠结束时写日记并记住文字；耳机按句子分开译文。给 AI 打电话进入看说体验。看说体验结束通话后用 `qwen3.7-plus` 把最近文字收成一段本机摘要，另计费。看说体验可选实时画面或按需看一眼；按需看一眼另开一次看图，不把画面持续送进主会话。主动提醒和后台委托仍只在 Mac 上的 Qwen-Live-Harness
-- 体验中心「看说体验」（`#/session`）接通 `qwen3.8-omni-flash-realtime`：保存百炼 Key 后打开摄像头或屏幕，麦克风保持打开，用语义轮次连续对话，大约每秒送一帧画面，插话会取消当前回答，模型可自行联网搜索。最近对话的文字留在这台浏览器，下一次通话会接着记得，不含 Key、画面和录音。浏览器不能设置 WebSocket 的 Authorization 头，临时 Key 接口也没有跨域，因此 Key 只放进发往官方域名的连接参数。单次最长 3 分钟。一帧 HTTP 提问仍保留。主动提醒和后台委托仍走 Qwen-Live-Harness 桌面版
+- 体验中心用百炼 Key 接通玩具（`#/live/toy`）、桌宠（`#/live/pet`）和同传耳机（`#/live/earphone`）。玩具动作和桌宠表情显示在页面上；桌宠结束时写日记并记住文字；耳机按句子分开译文。给 AI 打电话进入看说体验。看说体验结束通话后用 `qwen3.7-plus` 把最近文字收成一段本机摘要，另计费。看说体验可选实时画面或按需看一眼；按需看一眼另开一次看图，不把画面持续送进主会话。看说体验里说出画面条件后，会另开一条监视连接，条件没发生不出声，费用另计。定时提醒、听声音提醒和后台委托仍只在 Mac 上的 Qwen-Live-Harness
+- 体验中心「看说体验」（`#/session`）接通 `qwen3.8-omni-flash-realtime`：保存百炼 Key 后打开摄像头或屏幕，麦克风保持打开，用语义轮次连续对话，大约每秒送一帧画面，插话会取消当前回答，模型可自行联网搜索。最近对话的文字留在这台浏览器，下一次通话会接着记得，不含 Key、画面和录音。浏览器不能设置 WebSocket 的 Authorization 头，临时 Key 接口也没有跨域，因此 Key 只放进发往官方域名的连接参数。单次最长 3 分钟。一帧 HTTP 提问仍保留。定时提醒、听声音提醒和后台委托仍走 Qwen-Live-Harness 桌面版
 - 根 README 增加「AI 硬件方案分层」：共同底座、L1 交互与控制、L2 任务完成（harness）、L3 生成与外设闭环，以及读案例的三问。价位锚点为常见约 1～10 元/台/年，市场上也有 <5 元/设备终身的方案（查证/写入日 2026-10-26）。「快速开始」增加「理解方案厚薄」；`docs/app/README.md` 与 `solutions/by-solution/README.md` 回链该节
 - 体验中心开发者工具与开源运行时：`solutions/by-solution/` 新增 09 百炼 CLI、10 Qwen-MM-Plugins、11 Qwen-Live-Harness（仅 macOS）导读，08 补 npm 2.0.1 版本针脚与本仓示例，品类方案页互链。专题 demo：`04-agent-hardware/demo/bailian-cli/`（A，无 Key 停在鉴权，`demo-smoke` 只跑 `--mock`）、`02-ai-glasses/demo/mm-plugins-core/`（B，fixture PDF + MCP 直连自检，`core` 无需 DashScope Key）、`04-agent-hardware/demo/qwen-audio-agent/`（C 前台语音回合；D `acp-edit/` 语音委派后台改文件）；Demo E 看屏解说为 11 页 macOS 附录。A / C / D 待真 Key 验证，B 待 Harness 实测。体验中心 02 / 04 增加 4 张开发者工具卡，品类页把未接入的栈收进「规划中」折叠，专题 demo 说明改为本机运行、以目录 README 为准
 - 体验广场对齐官网视觉系统：统一暖白／深灰／亮蓝色值、字体栈、按钮悬停与选中状态；照片和录音卡使用同一品牌色，绿色保留给语义状态。同步浏览器与 PWA 底色、中性边线和阴影，修复成本页多行状态提示覆盖按钮，SW 升级 v10

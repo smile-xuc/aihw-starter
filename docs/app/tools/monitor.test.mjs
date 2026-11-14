@@ -1,0 +1,73 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { MONITOR_TOOL, SEARCH_TOOL, isSilentMonitor, monitorTask, openMonitor, searchMessages } from '../js/live/monitor.js';
+
+class FakeSocket {
+  static latest = null;
+  constructor(url) { this.url = url; this.readyState = 1; this.sent = []; FakeSocket.latest = this; }
+  send(data) {
+    const message = JSON.parse(data);
+    this.sent.push(message);
+    if (message.type === 'input_audio_buffer.commit') {
+      queueMicrotask(() => this.onmessage?.({ data: JSON.stringify({ type: 'input_audio_buffer.committed' }) }));
+    }
+    if (message.type === 'response.create') {
+      const silent = message.response?.instructions;
+      queueMicrotask(() => {
+        this.onmessage?.({ data: JSON.stringify({ type: 'response.text.delta', delta: silent ? 'remain_silent' : '屏幕上出现报错' }) });
+        this.onmessage?.({ data: JSON.stringify({ type: 'response.audio.delta', delta: 'AAA=' }) });
+        this.onmessage?.({ data: JSON.stringify({ type: 'response.done', response: { status: 'completed' } }) });
+      });
+    }
+  }
+  close() { this.readyState = 3; }
+}
+
+function open(socket) {
+  socket.onmessage({ data: JSON.stringify({ type: 'session.created' }) });
+  socket.onmessage({ data: JSON.stringify({ type: 'session.updated' }) });
+}
+
+const frames = [new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6])];
+const common = {
+  url: 'wss://dashscope.aliyuncs.com/api-ws/v1/realtime?model=qwen3.8-omni-flash-realtime',
+  secret: 'sk-not-a-real-key',
+  condition: '出现报错时提醒',
+  voice: 'Tina',
+  inputRate: 16000,
+  outputRate: 24000,
+  asrModel: 'qwen3-asr-flash-realtime',
+  WebSocketImpl: FakeSocket,
+};
+
+test('monitor task and search query stay bounded', () => {
+  assert.equal(monitorTask('  出现报错  '), '只判断这个条件：出现报错');
+  assert.throws(() => monitorTask('   '), /提醒条件是空的/);
+  assert.equal(isSilentMonitor('remain_silent'), true);
+  assert.equal(isSilentMonitor('屏幕上出现报错'), false);
+  assert.equal(searchMessages('  今天的新闻 ')[1].content, '今天的新闻');
+  assert.throws(() => searchMessages(' '), /搜索内容是空的/);
+  assert.equal(MONITOR_TOOL.function.name, 'create_proactive_monitor');
+  assert.equal(SEARCH_TOOL.function.name, 'web_search');
+});
+
+test('monitor sends two new frames and only the first round carries the condition', async () => {
+  const monitor = openMonitor(common);
+  open(FakeSocket.latest);
+  await monitor.ready;
+  const session = FakeSocket.latest.sent.find((item) => item.type === 'session.update').session;
+  assert.equal(session.turn_detection, null);
+  assert.equal(session.tools, undefined);
+  assert.equal(session.enable_search, undefined);
+  const first = await monitor.round(frames);
+  assert.equal(isSilentMonitor(first.text), true);
+  const second = await monitor.round([new Uint8Array([7]), new Uint8Array([8])]);
+  assert.equal(second.text, '屏幕上出现报错');
+  assert.equal(second.audio.length, 1);
+  const creates = FakeSocket.latest.sent.filter((item) => item.type === 'response.create');
+  assert.equal(creates[0].response.instructions, '只判断这个条件：出现报错时提醒');
+  assert.equal(creates[1].response, undefined);
+  const images = FakeSocket.latest.sent.filter((item) => item.type === 'input_image_buffer.append').map((item) => item.image);
+  assert.equal(new Set(images).size, 4);
+  monitor.close();
+});
