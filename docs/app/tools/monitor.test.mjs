@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { MONITOR_TOOL, SEARCH_TOOL, isSilentMonitor, monitorTask, openMonitor, pushMonitorAudio, searchMessages, takeMonitorAudio } from '../js/live/monitor.js';
+import { MONITOR_TOOL, SEARCH_TOOL, TIMER_TOOL, isSilentMonitor, monitorTask, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, timerRequest } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -50,6 +50,23 @@ test('monitor task and search query stay bounded', () => {
   assert.throws(() => searchMessages(' '), /搜索内容是空的/);
   assert.equal(MONITOR_TOOL.function.name, 'create_proactive_monitor');
   assert.equal(SEARCH_TOOL.function.name, 'web_search');
+  assert.equal(TIMER_TOOL.function.name, 'create_proactive_timer');
+  assert.deepEqual(timerRequest({ delay_sec: '30', message: ' 喝水 ' }), { seconds: 30, text: '喝水' });
+  assert.equal(timerRequest({ minutes: 2, text: '休息' }).seconds, 120);
+  assert.throws(() => timerRequest({ delay_sec: 2, message: '太短' }), /5 秒到 1 小时/);
+  assert.throws(() => timerRequest({ delay_sec: 30, message: ' ' }), /提醒内容是空的/);
+});
+
+test('timer speech sends one silent second and the sentence', async () => {
+  const pending = speakReminder({ ...common, text: '该喝水了' });
+  open(FakeSocket.latest);
+  assert.deepEqual((await pending).audio.length, 1);
+  const session = FakeSocket.latest.sent.find((item) => item.type === 'session.update').session;
+  assert.equal(session.video, undefined);
+  assert.equal(session.tools, undefined);
+  const created = FakeSocket.latest.sent.find((item) => item.type === 'response.create');
+  assert.equal(created.response.instructions, '该喝水了');
+  assert.equal(decodeBase64(FakeSocket.latest.sent.find((item) => item.type === 'input_audio_buffer.append').audio).byteLength, 32000);
 });
 
 test('monitor sends two new frames and only the first round carries the condition', async () => {

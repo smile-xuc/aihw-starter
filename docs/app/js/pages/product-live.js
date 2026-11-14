@@ -80,7 +80,7 @@ export function renderProductLive(view, reg, product) {
     <section class="intro" data-product-live="${product.id}">
       <p class="eyebrow">百炼 Key · ${product.title}</p>
       <h1>${product.lead}</h1>
-      <p>${product.note} 费用记在你的百炼账号上。画面条件提醒在看说体验里。定时提醒和后台委托仍在 Mac 上的 Qwen-Live-Harness。</p>
+      <p>${product.note} 费用记在你的百炼账号上。声音、画面和到点提醒在看说体验里。后台委托仍在 Mac 上的 Qwen-Live-Harness。</p>
     </section>
     ${saved?.values?.DASHSCOPE_API_KEY ? html`<p class="inline-ok">已读取本机百炼 Key。接通后才会调用模型。</p>` : html`<div class="mode-banner"><div><strong>还没有百炼 Key</strong><p>保存后回到这里，不会自动调用模型。qwen3.8 实时模型通常还要填写业务空间 ID。</p><a href="${setup}">去填写 Key</a></div></div>`}
     <section class="panel session-stage">
