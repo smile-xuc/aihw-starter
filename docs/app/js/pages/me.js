@@ -1,6 +1,7 @@
 import { normalizeTrace, sampleUrl } from '../data.js';
 import { hostsFor, testConnection } from '../live/client.js';
 import { browserSupport, requiredMissing } from '../live/index.js';
+import { isSessionReturn } from '../live/session-turn.js';
 import { CONNECTION_TEST } from '../meta.js';
 import { playTrace, Stage } from '../replay.js';
 import { clearCredentials, fieldValues, loadCredentials, maskSecret, saveCredentials, validateCredentials } from '../settings.js';
@@ -42,7 +43,7 @@ function hostsHtml(stack, values) {
   return html`<ul class="host-list">${shown.map((h) => html`<li>${h}</li>`)}</ul>`;
 }
 
-function stackPanel(stack, target) {
+function stackPanel(stack, target, sessionReturn) {
   const saved = loadCredentials(stack.id);
   const values = fieldValues(stack, saved?.values || {});
   const groups = [['credential', '凭证'], ['endpoint', '接入点']];
@@ -59,7 +60,7 @@ function stackPanel(stack, target) {
         <label class="check-row"><input type="checkbox" name="remember" ${saved && !saved.remember ? '' : 'checked'}>
           <span>记在这台设备上<small>关掉后只保存在本次打开期间，关闭页面就清掉</small></span></label>
         <div class="btn-row">
-          <button type="submit" class="primary-action">${target?.sol.stack === stack.id ? '保存并继续体验' : '保存'}</button>
+          <button type="submit" class="primary-action">${target?.sol.stack === stack.id || (sessionReturn && stack.id === 'bailian') ? '保存并继续体验' : '保存'}</button>
           ${CONNECTION_TEST[stack.id] ? html`<button type="button" class="secondary-action" data-act="test">测试连接</button>` : ''}
         </div>
         <button type="button" class="secondary-action block danger-action" data-act="clear">清除这台设备上的 ${stack.name} 凭证</button>
@@ -88,7 +89,7 @@ function capabilities(reg) {
     <div class="panel">
       ${rows.map(({ s, v, sup }) => html`<a class="cap-row" href="#/s/${s.id}${s.variants.length > 1 ? `/${v.id}` : ''}"><span class="chip ${sup.status === 'runnable' ? 'cloud' : ''}">${s.category.slice(0, 2)}</span>
         <span>${s.title.split('·')[0].trim()}${s.variants.length > 1 ? ` · ${v.title}` : ''}</span><b>${text[sup.status]}</b></a>`)}
-      <p class="info-note">${icon('info')}<span>实时语音（03 玩具、05 桌宠、06 耳机、02 的「给 AI 打电话」）只放回放：Realtime API 只在建连时认 Authorization 请求头，浏览器的 WebSocket 设不了请求头，WebRTC 建连被跨域拦截，AOQ 只有原生 SDK。请在电脑上跑。</span></p>
+      <p class="info-note">${icon('info')}<span>玩具、桌宠、耳机和「给 AI 打电话」的产品流程仍只放回放。浏览器不能给 WebSocket 加 Authorization 头，临时 Key 接口也没有跨域。看说体验把 Key 放进发往百炼官方域名的连接参数，用来接通 Omni 实时会话；主动提醒和后台委托仍要在 Mac 上跑 Qwen-Live-Harness。</span></p>
     </div>
   </section>`;
 }
@@ -102,14 +103,15 @@ export function renderMe(view, reg) {
   let active = true, localReplay = null;
   const parameters = new URLSearchParams(location.hash.split('?')[1] || '');
   const requestedReturn = parameters.get('return');
+  const sessionReturn = isSessionReturn(requestedReturn);
   const target = returnTarget(reg, requestedReturn);
   const stacks = reg ? [...reg.stacks.values()] : [];
   const secrets=stacks.flatMap(stack=>(stack.fields||[]).filter(f=>f.input==='secret').map(f=>loadCredentials(stack.id)?.values[f.key])).filter(Boolean);
   const page = mountPage(view, html`
     <header class="app-top"><span class="wordmark"><span class="brandmark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>我的</span></header>
-    ${target ? html`<div class="mode-banner"><div><strong>继续体验：${PRODUCTS[target.sol.id]?.title || target.sol.title} · ${target.variant.title}</strong><p>请补全当前体验所需凭证。保存后返回素材页面，再由你点击开始，不会自动调用模型。本次打开期间可保留已选素材与问题；刷新或关闭页面后需重新选择。</p><a href="${target.hash}" data-return-experience>暂不配置，返回体验</a></div></div>` : requestedReturn ? html`<p class="inline-error">返回地址无效，请从<a href="#/">体验中心</a>重新选择体验，再进入设置。</p>` : !secrets.length && reg ? html`<section class="panel" data-first-visit aria-label="第一次使用"><h2>先看免费样本，无需 Key</h2><p>打开「一看即懂」或「会议纪要」即可查看样本结果、回放和导出，不调用模型、不产生费用。</p>${sampleLinks(reg)}<p class="small">想用自己的素材生成结果时，在体验页面选择素材，再通过填写百炼 Key 的入口进入设置。保存后会回到原体验，由你确认开始；也可先不配置，返回原体验。</p></section>` : ''}
+    ${sessionReturn ? html`<div class="mode-banner" data-session-return><div><strong>继续体验：看说体验</strong><p>保存百炼 Key 后回到看说页面。接通实时通话或发送这一帧时才会调用模型并计费。</p><a href="#/session" data-return-experience>暂不配置，返回体验</a></div></div>` : target ? html`<div class="mode-banner"><div><strong>继续体验：${PRODUCTS[target.sol.id]?.title || target.sol.title} · ${target.variant.title}</strong><p>请补全当前体验所需凭证。保存后返回素材页面，再由你点击开始，不会自动调用模型。本次打开期间可保留已选素材与问题；刷新或关闭页面后需重新选择。</p><a href="${target.hash}" data-return-experience>暂不配置，返回体验</a></div></div>` : requestedReturn ? html`<p class="inline-error">返回地址无效，请从<a href="#/">体验中心</a>重新选择体验，再进入设置。</p>` : !secrets.length && reg ? html`<section class="panel" data-first-visit aria-label="第一次使用"><h2>先看免费样本，无需 Key</h2><p>打开「一看即懂」或「会议纪要」即可查看样本结果、回放和导出，不调用模型、不产生费用。</p>${sampleLinks(reg)}<p class="small">想用自己的素材生成结果时，在体验页面选择素材，再通过填写百炼 Key 的入口进入设置。保存后会回到原体验，由你确认开始；也可先不配置，返回原体验。</p></section>` : ''}
     <section class="section history-panel"><div class="section-title"><h2>体验历史</h2><button type="button" class="secondary-action" data-history-clear>清空历史</button></div><p class="small">这里只保存本机文字结果与运行记录，最多 20 条、共 2 MiB。历史不保存原始照片、录音、临时播报或 Key；打开记录不会恢复旧素材和旧 Key。</p><div class="panel" data-history-list></div><div data-history-result role="region" aria-label="打开的历史记录"></div></section>
-    ${stacks.length ? stacks.map(s=>stackPanel(s,target)) : html`<div class="inline-error">体验数据暂时无法加载，当前无法配置 Key 或打开新样本。请稍后刷新，或<a href="#/">返回体验中心重试</a>；已保存的凭证与文字历史仍在本机。</div>
+    ${stacks.length ? stacks.map(s=>stackPanel(s,target,sessionReturn)) : html`<div class="inline-error">体验数据暂时无法加载，当前无法配置 Key 或打开新样本。请稍后刷新，或<a href="#/">返回体验中心重试</a>；已保存的凭证与文字历史仍在本机。</div>
       <button type="button" class="secondary-action block danger-action" data-act="clear-all">清除这台设备上保存的全部凭证</button>`}
     ${reg ? capabilities(reg) : ''}
 
@@ -140,7 +142,7 @@ export function renderMe(view, reg) {
       <p class="footnote">${reg ? `数据：方案注册表 · demo 标准 v${reg.standard}` : '方案数据未加载'}</p>
     </section>`);
 
-  const stackCleanups = stacks.map(stack=>bindStack(page, stack, reg, target, ()=>active));
+  const stackCleanups = stacks.map(stack=>bindStack(page, stack, reg, target, ()=>active, sessionReturn));
   const showHistory = id => {
     const slot=page.querySelector('[data-history-result]');
     const {records,error}=readHistory(),record=records.find(r=>r.id===id);
@@ -195,7 +197,7 @@ export function renderMe(view, reg) {
   return { cleanup(){active=false;localReplay?.stop();stackCleanups.forEach(fn=>fn?.());} };
 }
 
-function bindStack(page, stack, reg, target, isActive) {
+function bindStack(page, stack, reg, target, isActive, sessionReturn) {
   const root = page.querySelector(`[data-stack="${stack.id}"]`);
   const form = root.querySelector('form');
   const result = root.querySelector('[data-slot="result"]');
@@ -228,7 +230,8 @@ function bindStack(page, stack, reg, target, isActive) {
     }
     show([], warnings, form.remember.checked ? '已保存在这台设备上' : '已保存，关闭页面后清掉');
     refresh();
-    if (target?.sol.stack === stack.id) location.hash = target.hash;
+    if (sessionReturn && stack.id === 'bailian') location.hash = '#/session';
+    else if (target?.sol.stack === stack.id) location.hash = target.hash;
     return undefined;
   });
 

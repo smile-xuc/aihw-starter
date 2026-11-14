@@ -30,7 +30,8 @@ LIVE = {
     },
     "02-ai-glasses.bailian": {
         "run": ["OMNI_MODEL", "TTS_MODEL", "TTS_VOICE", "ASK_PROMPT", "PRICES", "SAMPLE_IMAGE", "SAMPLE_AUDIO",
-                "OUT_RATE"],
+                "OUT_RATE", "REALTIME_MODEL", "REALTIME_VOICE", "REALTIME_INSTRUCTIONS", "ASR_MODEL", "IN_RATE",
+                "CHUNK_BYTES", "FRAME_EVERY", "MAX_FRAME_BYTES"],
     },
     "04-agent-hardware.bailian": {
         "run": ["LLM_MODEL", "CHEAP_MODEL", "ASR_MODEL", "MAX_ROUNDS", "SYSTEM", "TOOLS", "PRICES", "WEEKDAYS",
