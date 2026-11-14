@@ -2,7 +2,7 @@ import { liveConstants } from '../data.js';
 import { chat, postJson, toBase64 } from '../live/client.js';
 import { microphone } from '../live/microphone.js';
 import { SAMPLE_RATE } from '../live/pcm.js';
-import { BIO_TOOL, RETRIEVE_TOOL, activeLibrary, applyBio, bioResult, clearLibrary, createLibrary, memoryLabel as libraryStatus, readStore, redactOperations, renameLibrary, replaceActive, retrieveMemory, switchLibrary, writeStore } from '../live/memory-libraries.js';
+import { BIO_TOOL, EMBED_MODEL, RETRIEVE_TOOL, activeLibrary, applyBio, bioResult, clearLibrary, createLibrary, hybridRetrieval, memoryCorpus, memoryLabel as libraryStatus, readStore, redactOperations, renameLibrary, replaceActive, retrieveMemory, switchLibrary, vectorMatches, vectorsFromEmbedding, writeStore } from '../live/memory-libraries.js';
 import { MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, isSilentMonitor, monitorTask, narrateTask, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, timerRequest, toolArguments } from '../live/monitor.js';
 import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
 import { functionCalls } from '../live/product-session.js';
@@ -150,7 +150,7 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时按关键词查找，不是向量检索，也没有视觉观察。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。没有视觉观察。</p>
       <label class="field">记忆库<select data-library></select></label>
       <div class="btn-row">
         <button type="button" class="secondary-action" data-library-new>新建记忆库</button>
@@ -214,6 +214,7 @@ export function renderSession(view, reg) {
   let toolRounds = 0;
   let lookGeneration = 0;
   let monitorStop = null;
+  let embedAbort = null;
   let monitorAudio = { parts: [], total: 0 };
   let captureMonitorAudio = false;
   const timers = new Set();
@@ -323,6 +324,7 @@ export function renderSession(view, reg) {
   function endCall(message) {
     clearTimers();
     monitorStop?.();
+    embedAbort?.abort();
     callGeneration += 1;
     const handle = call;
     call = null;
@@ -370,6 +372,7 @@ export function renderSession(view, reg) {
     if (!active || mine !== callGeneration) return;
     if (event.type === 'error') { say(event.message); return; }
     if (event.type === 'socket.close') {
+      embedAbort?.abort();
       call = null;
       callReady = false;
       pendingCommit = false;
@@ -554,10 +557,49 @@ export function renderSession(view, reg) {
     try { replyTool(item, output); } catch (error) { say(error.message); }
   }
 
+  async function embedMemory(texts) {
+    const stack = reg.stacks.get('bailian');
+    if (!stack || !liveValues?.DASHSCOPE_API_KEY) throw new Error('没有百炼 Key');
+    embedAbort?.abort();
+    embedAbort = new AbortController();
+    const signal = AbortSignal.any([embedAbort.signal, AbortSignal.timeout(8000)]);
+    const vectors = [];
+    for (let start = 0; start < texts.length; start += 10) {
+      const batch = texts.slice(start, start + 10);
+      const body = await postJson({ stack, values: liveValues }, 'compatible', '/embeddings', {
+        model: EMBED_MODEL,
+        input: batch,
+      }, { allowNetworkFallback: false, signal });
+      const parsed = vectorsFromEmbedding(body, batch.length);
+      if (!parsed) throw new Error('向量结果无效');
+      vectors.push(...parsed);
+    }
+    return vectors;
+  }
+
   async function answerRetrieve(item, mine) {
     let output;
-    try { output = retrieveMemory(activeLibrary(store), toolArguments(item.arguments)); }
-    catch (error) { output = error.message; }
+    try {
+      const request = toolArguments(item.arguments);
+      const library = activeLibrary(store);
+      const keyword = retrieveMemory(library, request);
+      if (request.source !== 'dialogue') output = keyword;
+      else {
+        const corpus = memoryCorpus(library);
+        const query = redactSecret(String(request.query || ''), secret).replace(/\s+/g, ' ').trim();
+        let hits = [];
+        let note = '';
+        if (corpus.length && query) {
+          try {
+            const vectors = await embedMemory([query, ...corpus]);
+            hits = vectorMatches(corpus, vectors[0], vectors.slice(1));
+          } catch (error) {
+            note = '向量检索没有完成，这次只按关键词查找。';
+          }
+        }
+        output = [note, hybridRetrieval(keyword, hits)].filter(Boolean).join('\n');
+      }
+    } catch (error) { output = error.message; }
     if (!active || mine !== callGeneration || !call) return;
     try { replyTool(item, output); } catch (error) { say(error.message); }
   }
