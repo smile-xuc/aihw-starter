@@ -1,5 +1,5 @@
 // 离线回放：只缓存本站的 GET 请求；云端接口是跨域请求，这里一律不碰。
-const CACHE = 'aihw-app-v20';
+const CACHE = 'aihw-app-v21';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css', 'data/registry.json',
   'data/assets/02-ai-glasses.bailian/samples/dish.jpg',
@@ -27,7 +27,7 @@ self.addEventListener('activate', (event) => {
 async function networkFirst(request) {
   const cache = await caches.open(CACHE);
   try {
-    const res = await fetch(request);
+    const res = await fetch(request, { cache: 'no-cache' });
     if (res.ok) {
       try { await cache.put(request, res.clone()); } catch { /* 在线资源仍可用；缓存界面会报告未写入。 */ }
     }
