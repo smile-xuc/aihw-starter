@@ -22,7 +22,7 @@ export const MONITOR_TOOL = {
   type: 'function',
   function: {
     name: 'create_proactive_monitor',
-    description: '盯着当前摄像头或屏幕。条件发生时才提醒，没发生就保持安静。',
+    description: '盯着当前摄像头或屏幕，并听这两秒的麦克风。条件发生时才提醒，没发生就保持安静。',
     parameters: {
       type: 'object',
       properties: { condition: { type: 'string', description: '要盯的条件，例如出现报错时提醒。' } },
@@ -31,9 +31,9 @@ export const MONITOR_TOOL = {
   },
 };
 
-export const MONITOR_RULES = `你是主动提醒监视器，只判断这一小段新画面。
+export const MONITOR_RULES = `你是主动提醒监视器，只判断这一小段新的声音和画面。
 条件没有发生时，只输出 remain_silent。
-条件发生时，用一句中文说明看到了什么。不要编造，也不要提醒条件以外的事。`;
+条件发生时，用一句中文说明听到或看到了什么。不要编造，也不要提醒条件以外的事。`;
 
 export function monitorTask(condition) {
   const text = String(condition || '').replace(/\s+/g, ' ').trim().slice(0, 200);
@@ -53,6 +53,30 @@ export function searchMessages(query) {
     { role: 'system', content: '只根据联网结果用简短中文回答。没有结果就说没查到，不要编造来源。' },
     { role: 'user', content: text },
   ];
+}
+
+export function pushMonitorAudio(state, chunk, sampleRate = 16000) {
+  if (!(chunk instanceof Uint8Array) || chunk.byteLength < 2 || chunk.byteLength % 2) throw new Error('监视音频无效');
+  const keep = sampleRate * 2 * 3;
+  const parts = [...(state?.parts || []), chunk];
+  let total = (state?.total || 0) + chunk.byteLength;
+  let start = 0;
+  while (start < parts.length - 1 && total - parts[start].byteLength >= keep) {
+    total -= parts[start].byteLength;
+    start += 1;
+  }
+  return { parts: parts.slice(start), total };
+}
+
+export function takeMonitorAudio(state, sampleRate = 16000) {
+  const need = sampleRate * 2 * 2;
+  if (!state || state.total < need) return null;
+  const merged = new Uint8Array(state.total);
+  let offset = 0;
+  for (const part of state.parts) { merged.set(part, offset); offset += part.byteLength; }
+  const slice = merged.subarray(merged.byteLength - need);
+  const half = need / 2;
+  return [slice.slice(0, half), slice.slice(half)];
 }
 
 export function toolArguments(raw) {
@@ -111,19 +135,25 @@ export function openMonitor(options) {
   });
   return {
     ready: handle.ready,
-    round(frames) {
+    round(frames, audioClips = null) {
       if (pending) return Promise.reject(new Error('上一次监视还没结束'));
       if (!Array.isArray(frames) || frames.length < 2 || !(frames[0] instanceof Uint8Array) || !(frames[1] instanceof Uint8Array)) {
         return Promise.reject(new Error('监视画面不足'));
       }
+      const size = options.inputRate * 2;
+      const heard = Array.isArray(audioClips) && audioClips.length >= 2
+        && audioClips[0] instanceof Uint8Array && audioClips[0].byteLength === size
+        && audioClips[1] instanceof Uint8Array && audioClips[1].byteLength === size
+        ? [pcmBase64(audioClips[0]), pcmBase64(audioClips[1])]
+        : null;
+      const silence = heard ? null : pcmBase64(silencePcm(options.inputRate, 1));
       const run = new Promise((resolve, reject) => { pending = { resolve, reject }; });
-      const silence = pcmBase64(silencePcm(options.inputRate, 1));
       rounds.push({ first: firstRound });
       firstRound = false;
       try {
-        handle.send('input_audio_buffer.append', { audio: silence });
+        handle.send('input_audio_buffer.append', { audio: heard ? heard[0] : silence });
         handle.send('input_image_buffer.append', { image: toBase64(frames[0]) });
-        handle.send('input_audio_buffer.append', { audio: silence });
+        handle.send('input_audio_buffer.append', { audio: heard ? heard[1] : silence });
         handle.send('input_image_buffer.append', { image: toBase64(frames[1]) });
         handle.send('input_audio_buffer.commit');
       } catch (error) {

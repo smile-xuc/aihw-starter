@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { MONITOR_TOOL, SEARCH_TOOL, isSilentMonitor, monitorTask, openMonitor, searchMessages } from '../js/live/monitor.js';
+import { MONITOR_TOOL, SEARCH_TOOL, isSilentMonitor, monitorTask, openMonitor, pushMonitorAudio, searchMessages, takeMonitorAudio } from '../js/live/monitor.js';
+import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
   static latest = null;
@@ -69,5 +70,35 @@ test('monitor sends two new frames and only the first round carries the conditio
   assert.equal(creates[1].response, undefined);
   const images = FakeSocket.latest.sent.filter((item) => item.type === 'input_image_buffer.append').map((item) => item.image);
   assert.equal(new Set(images).size, 4);
+  const silence = FakeSocket.latest.sent.filter((item) => item.type === 'input_audio_buffer.append').at(-1).audio;
+  assert.equal(decodeBase64(silence)[0], 0);
   monitor.close();
+});
+
+test('monitor forwards two seconds of microphone audio', async () => {
+  const monitor = openMonitor(common);
+  open(FakeSocket.latest);
+  await monitor.ready;
+  const heard = [new Uint8Array(32000), new Uint8Array(32000)];
+  heard[0][0] = 4;
+  heard[1][0] = 9;
+  await monitor.round(frames, heard);
+  const audio = FakeSocket.latest.sent.filter((item) => item.type === 'input_audio_buffer.append');
+  assert.equal(decodeBase64(audio[0].audio)[0], 4);
+  assert.equal(decodeBase64(audio[1].audio)[0], 9);
+  monitor.close();
+});
+
+test('monitor keeps the latest two seconds of microphone audio', () => {
+  const one = new Uint8Array(32000);
+  const two = new Uint8Array(32000);
+  one[0] = 4;
+  two[0] = 9;
+  let state = pushMonitorAudio(null, one, 16000);
+  assert.equal(takeMonitorAudio(state, 16000), null);
+  state = pushMonitorAudio(state, two, 16000);
+  const clips = takeMonitorAudio(state, 16000);
+  assert.equal(clips[0][0], 4);
+  assert.equal(clips[1][0], 9);
+  assert.equal(clips[0].byteLength, 32000);
 });

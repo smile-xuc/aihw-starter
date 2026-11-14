@@ -2,7 +2,7 @@ import { liveConstants } from '../data.js';
 import { chat, postJson, toBase64 } from '../live/client.js';
 import { microphone } from '../live/microphone.js';
 import { SAMPLE_RATE } from '../live/pcm.js';
-import { MONITOR_TOOL, SEARCH_TOOL, isSilentMonitor, monitorTask, openMonitor, searchMessages, toolArguments } from '../live/monitor.js';
+import { MONITOR_TOOL, SEARCH_TOOL, isSilentMonitor, monitorTask, openMonitor, pushMonitorAudio, searchMessages, takeMonitorAudio, toolArguments } from '../live/monitor.js';
 import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
 import { functionCalls } from '../live/product-session.js';
 import { connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, splitPcm } from '../live/realtime-omni.js';
@@ -146,7 +146,7 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒会另开一条看画面的连接，条件没发生就不出声，费用另计。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 收成一段摘要，另计费，不含 Key、画面和录音。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒会另开一条连接，送上这两秒的麦克风和画面，条件没发生就不出声，费用另计。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 收成一段摘要，另计费，不含 Key、画面和录音。</p>
       <p class="small" data-memory></p>
       <button type="button" class="secondary-action" data-forget>清空本机记忆</button>
       <label class="field">补充问题，可留空<textarea data-question rows="3" maxlength="500" placeholder="实时通话直接说话；文字只用于「只发这一帧」"></textarea></label>
@@ -162,7 +162,7 @@ export function renderSession(view, reg) {
     <section class="panel">
       <h2>还能用 Key 直接跑的玩法</h2>
       <div class="link-list">${runnable.map((item) => html`<a href="${item.href}">${item.label}</a>`)}</div>
-      <p class="small">上面这些都能用同一把 Key 在浏览器里跑。可以说「盯着画面，出现报错就提醒我」。定时提醒、听声音提醒和后台委托要在 Mac 上用 <a href="https://github.com/QwenLM/Qwen-Live-Harness" rel="noopener">Qwen-Live-Harness</a>。</p>
+      <p class="small">上面这些都能用同一把 Key 在浏览器里跑。可以说「盯着画面，出现报错就提醒我」或「听到警报就提醒我」。定时提醒和后台委托要在 Mac 上用 <a href="https://github.com/QwenLM/Qwen-Live-Harness" rel="noopener">Qwen-Live-Harness</a>。</p>
     </section>`);
 
   const video = page.querySelector('[data-preview]');
@@ -202,6 +202,8 @@ export function renderSession(view, reg) {
   let toolRounds = 0;
   let lookGeneration = 0;
   let monitorStop = null;
+  let monitorAudio = { parts: [], total: 0 };
+  let captureMonitorAudio = false;
   const memoryLabel = page.querySelector('[data-memory]');
 
   const say = (text) => { if (active) status.textContent = redactSecret(text, secret); };
@@ -475,7 +477,7 @@ export function renderSession(view, reg) {
     try {
       condition = monitorTask(toolArguments(item.arguments).condition).replace(/^只判断这个条件：/, '');
       output = liveSpec && captureJpeg(video, liveSpec.MAX_FRAME_BYTES)
-        ? '已开始按这个条件看画面。没有发生时不会出声。这会另开一条实时连接，费用另计。'
+        ? '已开始听这两秒的声音并看画面。没有发生时不会出声。这会另开一条实时连接，费用另计。'
         : '没有打开摄像头或屏幕，无法监视。';
     } catch (error) {
       output = error.message;
@@ -502,13 +504,18 @@ export function renderSession(view, reg) {
         asrModel: liveSpec.ASR_MODEL,
       });
       await monitor.ready;
+      monitorAudio = { parts: [], total: 0 };
+      captureMonitorAudio = true;
+      const oneSecond = liveSpec.IN_RATE * 2;
       while (!stopped && mine === callGeneration && active) {
+        const mark = monitorAudio.total;
         const first = captureJpeg(video, liveSpec.MAX_FRAME_BYTES);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await waitForAudio(mark + oneSecond, 1200);
         if (stopped || mine !== callGeneration || !active) return;
         const second = captureJpeg(video, liveSpec.MAX_FRAME_BYTES);
+        await waitForAudio(mark + oneSecond * 2, 1300);
         if (!first || !second) { say('主动提醒停了：画面中断。'); return; }
-        const result = await monitor.round([first, second]);
+        const result = await monitor.round([first, second], takeMonitorAudio(monitorAudio, liveSpec.IN_RATE));
         if (stopped || mine !== callGeneration || !active || isSilentMonitor(result.text)) continue;
         const line = document.createElement('li');
         line.textContent = redactSecret(`提醒：${result.text}`, secret);
@@ -520,9 +527,21 @@ export function renderSession(view, reg) {
     } catch (error) {
       if (!stopped && mine === callGeneration && active && error.message !== '主动提醒已停止') say(`主动提醒停了：${error.message}`);
     } finally {
+      captureMonitorAudio = false;
       monitor?.close();
       if (monitorStop === stop) monitorStop = null;
     }
+  }
+
+  function waitForAudio(need, ms) {
+    const deadline = Date.now() + ms;
+    return new Promise((resolve) => {
+      const tick = () => {
+        if (monitorAudio.total >= need || Date.now() >= deadline) resolve();
+        else setTimeout(tick, 100);
+      };
+      tick();
+    });
   }
 
   async function openLiveMic(mine) {
@@ -535,6 +554,7 @@ export function renderSession(view, reg) {
           for (const piece of splitPcm(bytes, liveSpec.CHUNK_BYTES)) {
             if (piece.byteLength < 2 || piece.byteLength % 2) continue;
             call.send('input_audio_buffer.append', { audio: pcmBase64(piece) });
+            if (captureMonitorAudio) monitorAudio = pushMonitorAudio(monitorAudio, piece, liveSpec.IN_RATE);
             if (captureMode === 'live' && audioPackets % liveSpec.FRAME_EVERY === 0) pushFrame();
             audioPackets += 1;
           }
