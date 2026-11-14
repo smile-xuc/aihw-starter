@@ -101,16 +101,21 @@ export function summaryMessages(previous, notes) {
   ];
 }
 
-export function instructionsWithMemory(base, notes, summary = '') {
+export function instructionsWithMemory(base, notes, summary = '', bio = []) {
   const lines = (Array.isArray(notes) ? notes : [])
     .map((line) => String(line || '').replace(/\s+/g, ' ').trim())
     .filter(Boolean)
     .slice(-MAX_MEMORY_NOTES);
+  const facts = (Array.isArray(bio) ? bio : [])
+    .map((line) => String(line || '').replace(/\s+/g, ' ').trim())
+    .filter(Boolean)
+    .slice(-24);
   const brief = clipSummary(summary);
-  if (!lines.length && !brief) return String(base || '');
+  if (!lines.length && !brief && !facts.length) return String(base || '');
+  const personal = facts.length ? `\n关于用户的长期事实，编号从 0 开始。只在相关时使用，不要复述密钥，也不要编造没发生的事：\n${facts.map((line, index) => `${index}. ${line}`).join('\n')}` : '';
   const older = brief ? `\n更早的对话摘要。只在相关时使用，不要复述密钥，也不要编造没发生的事：\n${brief}` : '';
   const recent = lines.length ? `\n最近的文字对话。只在相关时使用，不要复述密钥，也不要编造没发生的事：\n${lines.map((line) => `- ${line}`).join('\n')}` : '';
-  return `${base}${older}${recent}`;
+  return `${base}${personal}${older}${recent}`;
 }
 
 export function spokenText(text) {
