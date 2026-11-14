@@ -101,7 +101,7 @@ export function summaryMessages(previous, notes) {
   ];
 }
 
-export function instructionsWithMemory(base, notes, summary = '', bio = []) {
+export function instructionsWithMemory(base, notes, summary = '', bio = [], profile = '', upcoming = '') {
   const lines = (Array.isArray(notes) ? notes : [])
     .map((line) => String(line || '').replace(/\s+/g, ' ').trim())
     .filter(Boolean)
@@ -111,11 +111,15 @@ export function instructionsWithMemory(base, notes, summary = '', bio = []) {
     .filter(Boolean)
     .slice(-24);
   const brief = clipSummary(summary);
-  if (!lines.length && !brief && !facts.length) return String(base || '');
+  const portrait = String(profile || '').trim();
+  const coming = String(upcoming || '').trim();
+  if (!lines.length && !brief && !facts.length && !portrait && !coming) return String(base || '');
   const personal = facts.length ? `\n关于用户的长期事实，编号从 0 开始。只在相关时使用，不要复述密钥，也不要编造没发生的事：\n${facts.map((line, index) => `${index}. ${line}`).join('\n')}` : '';
+  const stable = portrait ? `\n长期资料。只在相关时使用，不要复述密钥，也不要编造没发生的事：\n${portrait}` : '';
+  const soon = coming ? `\n近期事项。只在相关时使用，不要复述密钥，也不要编造没发生的事：\n${coming}` : '';
   const older = brief ? `\n更早的对话摘要。只在相关时使用，不要复述密钥，也不要编造没发生的事：\n${brief}` : '';
   const recent = lines.length ? `\n最近的文字对话。只在相关时使用，不要复述密钥，也不要编造没发生的事：\n${lines.map((line) => `- ${line}`).join('\n')}` : '';
-  return `${base}${personal}${older}${recent}`;
+  return `${base}${personal}${stable}${soon}${older}${recent}`;
 }
 
 export function spokenText(text) {

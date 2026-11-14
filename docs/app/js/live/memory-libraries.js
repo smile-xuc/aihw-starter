@@ -33,6 +33,104 @@ export const OBSERVER_PROMPT = `你是一个记忆系统的视觉观察器。每
 示例输出：
 用户在紧凑的家用厨房水槽前，一只手将绿色黄瓜冲洗后放上不锈钢台面，另一只手从墙上磁吸刀架取下菜刀，水槽上方有白色置物架。`;
 
+// 整理提示词与 Qwen-Live-Harness memory/prompts.ts 的 UPDATER_PROMPT 一致。
+export const UPDATER_PROMPT = `You are a memory management system. After a video call ends, your job is to update the user's Long-Term Memory (LTM) and Short-Term Memory (STM) from the Working Memory of that call.
+
+## Definitions
+
+### LTM (long-term memory) = who the user is over time
+Holds the user's relatively stable personal profile. The test: can the information complete the sentence "over the long run, this user is ..."?
+
+LTM has a fixed set of fields:
+- name: the user's name (single value, null if unknown)
+- occupation_or_role: long-term occupation or role (list)
+- preferences: stable preferences (list)
+- routines: long-term repeated habits (list)
+- interests: long-term interests (list)
+- long_term_goals: goals that span sessions (list)
+- relationships: important personal relationships (list)
+- appearance: stable physical characteristics (list, e.g. hairstyle, build, glasses, dress style)
+
+### STM (short-term memory) = what has been going on with the user lately
+
+**items**: events and states. Holds what happened recently, is happening now, or is about to happen. The test: can the information complete "lately / currently / soon ..."?
+
+Each item has:
+- content: a description of the event, with its time in ONE trailing parenthesis and nowhere else. Same shape for both kinds — an ongoing item states when it is expected to end, an upcoming one when it happens:
+ - "赶公司的一个项目（预计2026年8月28日星期五结束）"
+ - "去上海出差参加人工智能学术会议（2026年8月31日至9月6日）"
+ - "正在装修新房子" ← no parenthesis when no date is known
+ **Absolute dates only, in any language.** Never a relative expression — not "tomorrow" / "this week" / "next month", and not "明天" / "这周" / "下周" / "下个月" — and not even alongside the resolved date: write "（2026年8月31日至9月6日）", never "下周（2026年8月31日至9月6日）". Resolve every relative expression against the current date and keep only the result. Do not nest parentheses.
+- status: "ongoing" (in progress) or "upcoming" (about to happen)
+- event_date: WHEN IT HAPPENS (YYYY-MM-DD). For something spanning several days, the day it STARTS. Only for "upcoming" items; use null when the day is genuinely unknown ("thinking of moving at some point") and for "ongoing" ones.
+- expires: WHEN IT CAN BE FORGOTTEN (YYYY-MM-DD). For a one-off event, the day of the event itself; for something spanning several days, the day it ends; null for a long-running ongoing state whose end cannot be determined.
+
+event_date and expires answer different questions and are often different days. "Going to Shanghai next week" starting Monday and ending Sunday is event_date=Monday, expires=Sunday — the first says when to treat it as imminent, the second when it stops being worth mentioning. For a one-off they are the same day, and that is fine.
+
+## Classification rules
+
+For each piece of information in Working Memory, decide:
+A. a stable attribute of the user → LTM
+B. a recent, current or near-future event or temporary state **that has some duration** (days or more) → STM
+C. **discard outright** in these cases:
+ - a one-off historical detail ("bought milk today", "just finished eating")
+ - momentary behaviour ("watching a film", "waiting for a delivery", "just had a shower") — over within hours, and meaningless to the next conversation
+ - events or states about **other people** ("a colleague got promoted", "a friend bought a flat", "the neighbour had a second child") — unless it establishes a new relationship of the user's own ("the user has a new colleague called X")
+ - a past hobby or habit the user has **explicitly given up** — do not add it to LTM ("used to like X, doesn't any more" → no interests/routines entry)
+
+Key distinctions:
+- "goes running every morning" → LTM.routines (a long-term habit)
+- "has a meeting at 8pm every evening this week" → STM (a temporary arrangement with a time range)
+- "fancies hotpot tonight" → STM (a near-term plan)
+- "has always loved hotpot" → LTM.preferences (a stable preference)
+- "bought milk at the supermarket today" → discard (one-off, no lasting meaning)
+- "watching a film" / "waiting for a delivery" / "just had a shower" → discard (momentary; over within minutes to hours, meaningless next time)
+- "the user's colleague got promoted" / "the user's friend bought a house" → discard (about someone else, not about the user)
+- "used to play basketball, doesn't any more" → do not add to interests (an explicitly abandoned hobby is not recorded)
+- "the user wears black-framed glasses and has short hair" → LTM.appearance (stable physical characteristics)
+- "recently had their hair cut short (it was long before)" → an STM item (a change in appearance) + LTM.appearance remove the old + add the new
+- "wore a red dress today" → discard (a single outfit carries no lasting meaning)
+
+## Relation to existing memory
+
+- new information **conflicts** with existing LTM (a changed job, say) → replace it with remove + add
+- new information is **semantically the same** as existing LTM (just reworded) → do not add it again
+- new information shows an existing STM event is **finished / resolved / no longer valid** → **remove** that STM item (not update)
+- new information is an **attribute update** to an existing STM item (a date pushed back, a detail refined, but the event still stands) → update. When a date moves, put \`content\` in the same update and rewrite the parenthesis in it: the date appears both in the fields and in the text, and changing only the field leaves the text stating the old one
+- pets belong in relationships ("has a cat called xx")
+- never put the same information in both LTM and STM; if it is "recently learning X" and X is also a long-term interest, prefer STM (because "recently" describes a current state)
+- appearance records only characteristics that are **stable across sessions** (hairstyle, build, glasses, tattoos, dress style), never a single outfit
+- a **change** of appearance (a new hairstyle, say) needs LTM.appearance remove the old + add the new
+
+## Output format
+
+Output exactly the following JSON and nothing else:
+
+\`\`\`json
+{
+ "ltm_patch": {
+ "set": {"name": "..."},
+ "add": {"preferences": [...], "routines": [...], ...},
+ "remove": {"preferences": [...], ...}
+ },
+ "stm_patch": {
+ "add": [{"content": "...(absolute date)", "status": "ongoing/upcoming", "event_date": "YYYY-MM-DD or null", "expires": "YYYY-MM-DD or null"}],
+ "update": [{"id": "stm_xxx", "fields": {"content": "...", "status": "...", "event_date": "...", "expires": "..."}}],
+ "remove": ["stm_xxx"]
+ }
+}
+\`\`\`
+
+Rules:
+- set: use it only when the name field changes
+- omit any field in add/remove that has not changed
+- do not output empty arrays for parts that need no change
+- one-off events are discarded outright and appear in no patch
+- **write every entry in the language the user speaks, not in the language of these instructions** — these memories are read back to the user later
+- **times in STM content must be absolute dates**: work them out from the "current date" field. With a current date of 2026-08-10, "tomorrow" → "11 August", "this Friday" → "15 August", "next month" → "September"
+- **date rules**: a one-off event has event_date = expires = the day itself (an interview on 11 August → both 2026-08-11); something spanning days has event_date = the first day and expires = the last; an ongoing state has event_date = null and expires = its expected end, or null when that cannot be determined
+`;
+
 const SCREEN_OBSERVER_NOTE = '\n\n当前输入源是用户的屏幕截图，不是摄像头。只记录屏幕中可见的事实，并说明这是屏幕内容；不要将屏幕中的人物或环境当作用户现实中的人物或环境。';
 
 export function observerPrompt(source) {
@@ -126,7 +224,7 @@ function cleanNote(value) {
 }
 
 export function emptyLibrary(id, name) {
-  return { id, name, bio: [], notes: [], summary: '', env: [] };
+  return { id, name, bio: [], notes: [], summary: '', env: [], ltm: emptyLtm(), stm: [], stmSeq: 0 };
 }
 
 export function emptyStore() {
@@ -148,7 +246,9 @@ function asLibrary(raw) {
   const bio = (Array.isArray(raw.bio) ? raw.bio : []).map(cleanFact).filter(Boolean).slice(-MAX_BIO);
   const notes = (Array.isArray(raw.notes) ? raw.notes : []).map(cleanNote).filter(Boolean).slice(-MAX_MEMORY_NOTES);
   const env = (Array.isArray(raw.env) ? raw.env : []).map((line) => cleanObservation(line)).filter(Boolean).slice(-MAX_ENV);
-  return { id: raw.id, name, bio, notes, summary: clipSummary(raw.summary), env };
+  const ltm = cleanLtm(raw.ltm);
+  const timed = cleanStm(raw.stm, localDate(), Number(raw.stmSeq) || 0);
+  return { id: raw.id, name, bio, notes, summary: clipSummary(raw.summary), env, ltm, stm: timed.stm, stmSeq: timed.stmSeq };
 }
 
 export function normalizeStore(raw) {
@@ -205,10 +305,14 @@ export function memoryLabel(store) {
   const library = activeLibrary(store);
   const count = store.libraries.length > 1 ? `这台浏览器有 ${store.libraries.length} 个记忆库。` : '';
   const seen = Array.isArray(library.env) ? library.env.length : 0;
-  if (!library.bio.length && !library.notes.length && !library.summary && !seen) return `${count}记忆库「${library.name}」还没有记住对话。`;
+  const facts = ltmCount(library.ltm);
+  const soon = cleanStm(library.stm, localDate()).stm.length;
+  if (!library.bio.length && !library.notes.length && !library.summary && !seen && !facts && !soon) return `${count}记忆库「${library.name}」还没有记住对话。`;
   const older = library.summary ? '，并保留一段更早的摘要' : '';
   const visual = seen ? `，视觉观察 ${seen} 条` : '';
-  return `${count}记忆库「${library.name}」有长期事实 ${library.bio.length} 条，最近 ${library.notes.length} 句对话${older}${visual}。`;
+  const stable = facts ? `，长期资料 ${facts} 条` : '';
+  const coming = soon ? `，近期事项 ${soon} 条` : '';
+  return `${count}记忆库「${library.name}」有长期事实 ${library.bio.length} 条，最近 ${library.notes.length} 句对话${older}${visual}${stable}${coming}。`;
 }
 
 export function createLibrary(store, name, id) {
@@ -238,7 +342,7 @@ export function clearLibrary(store, id) {
   if (!store.libraries.some((item) => item.id === id)) throw new Error('没有这个记忆库');
   return {
     ...store,
-    libraries: store.libraries.map((item) => (item.id === id ? { ...item, bio: [], notes: [], summary: '', env: [] } : item)),
+    libraries: store.libraries.map((item) => (item.id === id ? { ...item, bio: [], notes: [], summary: '', env: [], ltm: emptyLtm(), stm: [], stmSeq: 0 } : item)),
   };
 }
 
@@ -295,8 +399,8 @@ function visibleLines(lines) {
   return list.flat().map((line) => String(line || '').replace(/\s+/g, ' ').trim()).filter((line) => line && !SECRET_RE.test(line));
 }
 
-export function memoryCorpus(library) {
-  return visibleLines([library?.bio, library?.summary, library?.notes]);
+export function memoryCorpus(library, today = localDate()) {
+  return visibleLines([library?.bio, library?.summary, library?.notes, profileLines(library?.ltm), stmLines(library?.stm, today)]);
 }
 
 export function envCorpus(library) {
@@ -307,6 +411,286 @@ export function recordObservation(library, text) {
   const content = cleanObservation(text);
   if (!content) return envCorpus(library);
   return [...envCorpus(library).filter((line) => line !== content), content].slice(-MAX_ENV);
+}
+
+export const LTM_FIELDS = ['name', 'occupation_or_role', 'preferences', 'routines', 'interests', 'long_term_goals', 'relationships', 'appearance'];
+export const MAX_LTM_ITEMS = 8;
+export const MAX_LTM_CHARS = 80;
+export const MAX_STM = 12;
+export const MAX_STM_CHARS = 160;
+const LTM_LABELS = {
+  name: '姓名',
+  occupation_or_role: '长期角色',
+  preferences: '偏好',
+  routines: '习惯',
+  interests: '兴趣',
+  long_term_goals: '长期目标',
+  relationships: '关系',
+  appearance: '外形',
+};
+
+export function emptyLtm() {
+  return {
+    name: '',
+    occupation_or_role: [],
+    preferences: [],
+    routines: [],
+    interests: [],
+    long_term_goals: [],
+    relationships: [],
+    appearance: [],
+  };
+}
+
+function clipMemoryText(value, max) {
+  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  if (!text || SECRET_RE.test(text)) return '';
+  const chars = [...text];
+  return chars.length > max ? chars.slice(0, max).join('') : text;
+}
+
+export function localDate(date = new Date()) {
+  const part = (value) => String(value).padStart(2, '0');
+  return `${date.getFullYear()}-${part(date.getMonth() + 1)}-${part(date.getDate())}`;
+}
+
+export function normalizeDate(value) {
+  if (typeof value !== 'string') return null;
+  const match = /^(\d{4})-(\d{2})(?:-(\d{2}))?$/u.exec(value.trim());
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  if (month < 1 || month > 12 || year < 1) return null;
+  const maxDay = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  const day = match[3] === undefined ? maxDay : Number(match[3]);
+  return day >= 1 && day <= maxDay ? `${match[1]}-${match[2]}-${String(day).padStart(2, '0')}` : null;
+}
+
+export function cleanLtm(raw) {
+  const ltm = emptyLtm();
+  if (!raw || typeof raw !== 'object') return ltm;
+  ltm.name = clipMemoryText(raw.name, 40);
+  for (const field of LTM_FIELDS) {
+    if (field === 'name') continue;
+    const unique = [];
+    for (const item of Array.isArray(raw[field]) ? raw[field] : []) {
+      const text = clipMemoryText(item, MAX_LTM_CHARS);
+      if (text && !unique.includes(text)) unique.push(text);
+    }
+    ltm[field] = unique.slice(-MAX_LTM_ITEMS);
+  }
+  return ltm;
+}
+
+function stmNumber(id) {
+  const match = /^stm_(\d+)$/u.exec(String(id || ''));
+  return match ? Number(match[1]) : 0;
+}
+
+export function cleanStm(raw, today = '', seq = 0) {
+  const items = [];
+  const seen = new Set();
+  for (const item of Array.isArray(raw) ? raw : []) {
+    if (!item || typeof item !== 'object') continue;
+    const content = clipMemoryText(item.content, MAX_STM_CHARS);
+    const status = item.status === 'upcoming' || item.status === 'ongoing' ? item.status : '';
+    const number = stmNumber(item.id);
+    if (!content || !status || !number || seen.has(number)) continue;
+    const event_date = normalizeDate(item.event_date);
+    const expires = normalizeDate(item.expires);
+    if (expires && today && expires < today) continue;
+    seen.add(number);
+    items.push({ id: `stm_${number}`, content, status, event_date, expires });
+  }
+  const stm = items.slice(-MAX_STM);
+  const stmSeq = stm.reduce((max, item) => Math.max(max, stmNumber(item.id)), Number.isInteger(seq) && seq > 0 ? seq : 0);
+  return { stm, stmSeq };
+}
+
+export function ltmCount(ltm) {
+  const clean = cleanLtm(ltm);
+  return (clean.name ? 1 : 0) + LTM_FIELDS.filter((field) => field !== 'name').reduce((sum, field) => sum + clean[field].length, 0);
+}
+
+export function renderProfile(ltm) {
+  const clean = cleanLtm(ltm);
+  return LTM_FIELDS.flatMap((field) => {
+    if (field === 'name') return clean.name ? [`- 姓名：${clean.name}`] : [];
+    return clean[field].length ? [`- ${LTM_LABELS[field]}：${clean[field].join('、')}`] : [];
+  }).join('\n');
+}
+
+export function renderRecent(stm, today = localDate()) {
+  return cleanStm(stm, today).stm.map((item) => `- [${item.status === 'upcoming' ? '即将发生' : '进行中'}] ${item.content}`).join('\n');
+}
+
+export function profileLines(ltm) {
+  const clean = cleanLtm(ltm);
+  const lines = clean.name ? [`姓名：${clean.name}`] : [];
+  for (const field of LTM_FIELDS) {
+    if (field === 'name') continue;
+    for (const item of clean[field]) lines.push(`${LTM_LABELS[field]}：${item}`);
+  }
+  return lines;
+}
+
+export function stmLines(stm, today = localDate()) {
+  return cleanStm(stm, today).stm.map((item) => item.content);
+}
+
+function isRecord(value) {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+export function parsePatch(text) {
+  if (typeof text !== 'string' || !text.trim()) return null;
+  const raw = text.trim();
+  const fenced = /```(?:json)?\s*(\{[\s\S]*\})\s*```/u.exec(raw)?.[1];
+  const slice = raw.includes('{') ? raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1) : '';
+  for (const candidate of [raw, fenced, slice]) {
+    if (!candidate) continue;
+    try {
+      const parsed = JSON.parse(candidate);
+      if (isRecord(parsed)) return parsed;
+    } catch { /* 再试下一种模型输出 */ }
+  }
+  return null;
+}
+
+export function isEmptyPatch(patch) {
+  if (!isRecord(patch)) return true;
+  const filled = (value) => (Array.isArray(value) ? value.length > 0 : Boolean(value));
+  const ltm = patch.ltm_patch;
+  if (isRecord(ltm)) {
+    for (const key of ['set', 'add', 'remove']) {
+      if (isRecord(ltm[key]) && Object.values(ltm[key]).some(filled)) return false;
+    }
+  }
+  const stm = patch.stm_patch;
+  return !(isRecord(stm) && ['add', 'update', 'remove'].some((key) => Array.isArray(stm[key]) && stm[key].length > 0));
+}
+
+export function formatUpdaterInput({ ltm, stm, notes, today }) {
+  const clean = cleanLtm(ltm);
+  const profile = { name: clean.name || null };
+  for (const field of LTM_FIELDS) {
+    if (field !== 'name') profile[field] = clean[field];
+  }
+  const hasLtm = Object.values(profile).some((value) => (Array.isArray(value) ? value.length > 0 : Boolean(value)));
+  const items = cleanStm(stm, today).stm.map((item) => ({
+    id: item.id,
+    content: item.content,
+    status: item.status,
+    ...(item.event_date ? { event_date: item.event_date } : {}),
+    ...(item.expires ? { expires: item.expires } : {}),
+  }));
+  const entries = (Array.isArray(notes) ? notes : []).map((line) => String(line || '').trim()).filter((line) => line && !SECRET_RE.test(line)).slice(-MAX_MEMORY_NOTES);
+  return [
+    `## 当前日期\n${today}`,
+    hasLtm ? `## 当前 LTM（长期记忆）\n\`\`\`json\n${JSON.stringify(profile, null, 2)}\n\`\`\`` : '## 当前 LTM（长期记忆）\n（空，用户是全新用户）',
+    items.length ? `## 当前 STM（短期记忆）\n\`\`\`json\n${JSON.stringify(items, null, 2)}\n\`\`\`` : '## 当前 STM（短期记忆）\n（空）',
+    entries.length ? `## 本次通话结束时的 Working Memory\n${entries.map((entry) => `- ${entry}`).join('\n')}` : '## 本次通话结束时的 Working Memory\n（空）',
+    '请根据以上信息输出 LTM/STM patch（JSON格式）。',
+  ].join('\n\n');
+}
+
+function patchEntries(raw) {
+  const input = typeof raw === 'string' ? [raw] : (Array.isArray(raw) ? raw : []);
+  return input.filter((item) => typeof item === 'string').map((item) => item.trim()).filter(Boolean);
+}
+
+export function applyMemoryPatch(library, patch, today) {
+  const ltm = cleanLtm(library?.ltm);
+  let { stm, stmSeq } = cleanStm(library?.stm, today, Number(library?.stmSeq) || 0);
+  const report = { ltmSet: 0, ltmAdded: 0, ltmRemoved: 0, stmAdded: 0, stmUpdated: 0, stmRemoved: 0, rejected: 0 };
+  const reject = () => { report.rejected += 1; };
+  const ltmPatch = isRecord(patch?.ltm_patch) ? patch.ltm_patch : null;
+  if (patch?.ltm_patch && !ltmPatch) reject();
+  if (ltmPatch) {
+    const set = isRecord(ltmPatch.set) ? ltmPatch.set : {};
+    if (Object.hasOwn(set, 'name')) {
+      const name = clipMemoryText(set.name, 40);
+      if (name) { ltm.name = name; report.ltmSet += 1; }
+      else reject();
+    }
+    for (const field of Object.keys(set)) if (field !== 'name') reject();
+    for (const [field, raw] of Object.entries(isRecord(ltmPatch.remove) ? ltmPatch.remove : {})) {
+      if (!LTM_FIELDS.includes(field)) { reject(); continue; }
+      for (const content of patchEntries(raw)) {
+        const text = clipMemoryText(content, field === 'name' ? 40 : MAX_LTM_CHARS);
+        if (!text) { reject(); continue; }
+        if (field === 'name') {
+          if (ltm.name === text) { ltm.name = ''; report.ltmRemoved += 1; }
+          continue;
+        }
+        const before = ltm[field].length;
+        ltm[field] = ltm[field].filter((item) => item !== text);
+        if (ltm[field].length < before) report.ltmRemoved += before - ltm[field].length;
+      }
+    }
+    for (const [field, raw] of Object.entries(isRecord(ltmPatch.add) ? ltmPatch.add : {})) {
+      if (!LTM_FIELDS.includes(field) || field === 'name') { reject(); continue; }
+      for (const content of patchEntries(raw)) {
+        const text = clipMemoryText(content, MAX_LTM_CHARS);
+        if (!text) { reject(); continue; }
+        ltm[field] = [...ltm[field].filter((item) => item !== text), text].slice(-MAX_LTM_ITEMS);
+        report.ltmAdded += 1;
+      }
+    }
+  }
+  const stmPatch = isRecord(patch?.stm_patch) ? patch.stm_patch : null;
+  if (patch?.stm_patch && !stmPatch) reject();
+  if (stmPatch) {
+    for (const value of Array.isArray(stmPatch.remove) ? stmPatch.remove : []) {
+      const id = stmNumber(value) ? `stm_${stmNumber(value)}` : '';
+      const before = stm.length;
+      if (!id) { reject(); continue; }
+      stm = stm.filter((item) => item.id !== id);
+      if (stm.length < before) report.stmRemoved += 1;
+      else reject();
+    }
+    for (const item of Array.isArray(stmPatch.update) ? stmPatch.update : []) {
+      if (!isRecord(item) || !isRecord(item.fields)) { reject(); continue; }
+      const id = stmNumber(item.id) ? `stm_${stmNumber(item.id)}` : '';
+      const index = stm.findIndex((row) => row.id === id);
+      if (!id || index < 0) { reject(); continue; }
+      const next = { ...stm[index] };
+      let changed = false;
+      if (typeof item.fields.content === 'string' && clipMemoryText(item.fields.content, MAX_STM_CHARS)) {
+        next.content = clipMemoryText(item.fields.content, MAX_STM_CHARS);
+        changed = true;
+      }
+      if (item.fields.status === 'ongoing' || item.fields.status === 'upcoming') { next.status = item.fields.status; changed = true; }
+      else if (item.fields.status !== undefined) reject();
+      if (Object.hasOwn(item.fields, 'event_date')) { next.event_date = normalizeDate(item.fields.event_date); changed = true; }
+      if (Object.hasOwn(item.fields, 'expires')) { next.expires = normalizeDate(item.fields.expires); changed = true; }
+      if (!changed) { reject(); continue; }
+      stm[index] = next;
+      report.stmUpdated += 1;
+    }
+    for (const item of Array.isArray(stmPatch.add) ? stmPatch.add : []) {
+      if (!isRecord(item)) { reject(); continue; }
+      const content = clipMemoryText(item.content, MAX_STM_CHARS);
+      const status = item.status === 'upcoming' ? 'upcoming' : (item.status === 'ongoing' || item.status == null ? 'ongoing' : '');
+      if (!content || !status) { reject(); continue; }
+      const event_date = normalizeDate(item.event_date);
+      const expires = normalizeDate(item.expires);
+      if (expires && today && expires < today) { reject(); continue; }
+      const existing = stm.find((row) => row.content === content);
+      if (existing) {
+        existing.status = status;
+        existing.event_date = event_date;
+        existing.expires = expires;
+        report.stmUpdated += 1;
+        continue;
+      }
+      stmSeq += 1;
+      stm.push({ id: `stm_${stmSeq}`, content, status, event_date, expires });
+      report.stmAdded += 1;
+    }
+  }
+  const pruned = cleanStm(stm, today, stmSeq);
+  return { ltm: cleanLtm(ltm), stm: pruned.stm, stmSeq: pruned.stmSeq, report };
 }
 
 export function normalizeVector(values) {

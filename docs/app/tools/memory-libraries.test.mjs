@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, RETRIEVE_TOOL,
-  activeLibrary, applyBio, bioResult, cleanObservation, clearLibrary, createLibrary, hybridRetrieval, memoryLabel, normalizeVector, observerPrompt, readStore, recordObservation, redactOperations,
-  renameLibrary, replaceActive, retrieveMemory, switchLibrary, vectorMatches, vectorsFromEmbedding, writeStore,
+  activeLibrary, applyBio, applyMemoryPatch, bioResult, cleanObservation, clearLibrary, createLibrary, emptyLtm, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, normalizeDate, normalizeVector, observerPrompt, parsePatch, readStore, recordObservation, redactOperations,
+  renameLibrary, renderProfile, renderRecent, replaceActive, retrieveMemory, switchLibrary, vectorMatches, vectorsFromEmbedding, writeStore,
 } from '../js/live/memory-libraries.js';
 
 function storage(initial = {}) {
@@ -130,4 +130,46 @@ test('visual observations stay in the active library and out of dialogue search'
   store = clearLibrary(switchLibrary(store, 'default'), 'default');
   assert.equal(activeLibrary(store).env.length, 0);
   assert.match(memoryLabel(readStore(box).store), /视觉观察 1 条/);
+});
+
+test('hangup patch updates the durable profile and upcoming items', () => {
+  assert.equal(normalizeDate('2026-11'), '2026-11-30');
+  assert.equal(normalizeDate('2026-02-31'), null);
+  const raw = '说明\n```json\n{"ltm_patch":{"set":{"name":"海铂"},"add":{"preferences":["喝茶"]}},"stm_patch":{"add":[{"content":"去上海出差（2026年11月18日）","status":"upcoming","event_date":"2026-11-18","expires":"2027-01-01"}]}}\n```';
+  const patch = parsePatch(raw);
+  assert.equal(isEmptyPatch(patch), false);
+  assert.equal(isEmptyPatch({ ltm_patch: { add: {} }, stm_patch: { add: [] } }), true);
+  let next = applyMemoryPatch({ ltm: emptyLtm(), stm: [], stmSeq: 0 }, patch, '2026-11-15');
+  assert.equal(next.ltm.name, '海铂');
+  assert.deepEqual(next.ltm.preferences, ['喝茶']);
+  assert.equal(next.stm[0].id, 'stm_1');
+  next = applyMemoryPatch({ ltm: next.ltm, stm: next.stm, stmSeq: next.stmSeq }, {
+    ltm_patch: { remove: { preferences: ['喝茶'] }, add: { preferences: ['sk-notarealkey12345678'] } },
+    stm_patch: { update: [{ id: 'stm_1', fields: { content: '去上海出差（2026年11月19日）', event_date: '2026-11-19' } }] },
+  }, '2026-11-15');
+  assert.deepEqual(next.ltm.preferences, []);
+  assert.equal(next.stm[0].event_date, '2026-11-19');
+  assert.match(next.stm[0].content, /11月19日/);
+  const expired = applyMemoryPatch({ stm: [], stmSeq: 0 }, {
+    stm_patch: { add: [{ content: '昨天的会（2026年11月14日）', status: 'upcoming', event_date: '2026-11-14', expires: '2026-11-14' }] },
+  }, '2026-11-15');
+  assert.equal(expired.stm.length, 0);
+  const input = formatUpdaterInput({ ltm: next.ltm, stm: next.stm, notes: ['用户说喜欢喝茶 → 记住了'], today: '2026-11-15' });
+  assert.match(input, /2026-11-15/);
+  assert.match(input, /海铂/);
+  assert.match(input, /stm_1/);
+  const library = { bio: [], notes: [], summary: '', ltm: next.ltm, stm: next.stm };
+  assert.match(retrieveMemory(library, { query: '海铂', source: 'dialogue' }), /海铂/);
+  assert.match(retrieveMemory(library, { query: '上海', source: 'dialogue' }), /上海/);
+  assert.equal(retrieveMemory(library, { query: '上海', source: 'env' }), '这套记忆库还没有视觉观察。');
+  const box = storage();
+  const saved = writeStore(box, replaceActive(readStore(box).store, { ...activeLibrary(readStore(box).store), ltm: next.ltm, stm: next.stm, stmSeq: next.stmSeq }));
+  assert.equal(activeLibrary(readStore(box).store).ltm.name, '海铂');
+  assert.match(memoryLabel(saved), /长期资料/);
+  assert.match(memoryLabel(saved), /近期事项/);
+  const cleared = clearLibrary(saved, 'default');
+  assert.equal(ltmCount(activeLibrary(cleared).ltm), 0);
+  assert.equal(activeLibrary(cleared).stm.length, 0);
+  assert.match(renderProfile(next.ltm), /姓名：海铂/);
+  assert.match(renderRecent(next.stm, '2026-11-15'), /即将发生/);
 });
