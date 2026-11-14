@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import {
-  applyTool, formatDiaryPrompt, functionCalls, instructionsWithPetMemory, liveProduct, liveProductFor, liveReturn,
+  appendCaption, applyTool, formatDiaryPrompt, functionCalls, instructionsWithPetMemory, liveProduct, liveProductFor, liveReturn,
   mergeMemories, parseDiary, petFace, phraseMap, renderDiary,
 } from '../js/live/product-session.js';
 
@@ -45,6 +45,10 @@ test('tools and diary stay local and bounded', () => {
   ] } }, 2, 1);
   assert.equal(calls.length, 1);
   assert.equal(calls[0].call_id, 'a');
+  const first = appendCaption({}, { item_id: 'a', delta: 'Hello' });
+  const second = appendCaption(first, { item_id: 'b', delta: '你好' });
+  assert.equal(second.a, 'Hello');
+  assert.equal(appendCaption(second, { item_id: 'a', delta: ' world' }).a, 'Hello world');
   const prompt = formatDiaryPrompt('你好{name}\n{{"title": "{name}"}}', '豆豆');
   assert.equal(prompt, '你好豆豆\n{"title": "豆豆"}');
   const diary = parseDiary('```json\n{"title":"今天","diary":"聊了画画","mood":"开心","mood_stars":4,"memories":[{"type":"兴趣偏好","content":"喜欢画画"}],"follow_up":"问画"}\n```');

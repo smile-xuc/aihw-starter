@@ -75,6 +75,8 @@ export function requestMessages(system, history, userContent) {
 
 export const MAX_MEMORY_NOTES = 8;
 export const MAX_MEMORY_CHARS = 160;
+export const SUMMARY_MODEL = 'qwen3.7-plus';
+export const MAX_SUMMARY_CHARS = 600;
 
 export function nextMemory(notes, heard, answer, limit = MAX_MEMORY_NOTES) {
   const clean = (value) => String(value || '').replace(/\s+/g, ' ').trim().slice(0, MAX_MEMORY_CHARS);
@@ -87,13 +89,28 @@ export function nextMemory(notes, heard, answer, limit = MAX_MEMORY_NOTES) {
   return [...kept, line].slice(-max);
 }
 
-export function instructionsWithMemory(base, notes) {
+export function clipSummary(text) {
+  return String(text || '').replace(/\s+/g, ' ').trim().slice(0, MAX_SUMMARY_CHARS);
+}
+
+export function summaryMessages(previous, notes) {
+  const recent = (Array.isArray(notes) ? notes : []).filter((line) => typeof line === 'string' && line.trim()).slice(-MAX_MEMORY_NOTES);
+  return [
+    { role: 'system', content: '你在整理语音助手留在这台设备上的记忆。只根据给出的文字，写成一段不超过 200 字的中文摘要。不要加入密钥、画面描述、猜测，或对话里没有的事实。不要用列表。' },
+    { role: 'user', content: `已有摘要：\n${clipSummary(previous) || '（无）'}\n\n新的对话：\n${recent.map((line) => `- ${line.trim()}`).join('\n')}` },
+  ];
+}
+
+export function instructionsWithMemory(base, notes, summary = '') {
   const lines = (Array.isArray(notes) ? notes : [])
     .map((line) => String(line || '').replace(/\s+/g, ' ').trim())
     .filter(Boolean)
     .slice(-MAX_MEMORY_NOTES);
-  if (!lines.length) return String(base || '');
-  return `${base}\n这台设备记得最近的文字对话。只在相关时使用，不要复述密钥，也不要编造没发生的事：\n${lines.map((line) => `- ${line}`).join('\n')}`;
+  const brief = clipSummary(summary);
+  if (!lines.length && !brief) return String(base || '');
+  const older = brief ? `\n更早的对话摘要。只在相关时使用，不要复述密钥，也不要编造没发生的事：\n${brief}` : '';
+  const recent = lines.length ? `\n最近的文字对话。只在相关时使用，不要复述密钥，也不要编造没发生的事：\n${lines.map((line) => `- ${line}`).join('\n')}` : '';
+  return `${base}${older}${recent}`;
 }
 
 export function spokenText(text) {

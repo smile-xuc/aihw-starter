@@ -1,6 +1,6 @@
 # Qwen-Live-Harness 开源实时音视频桌面 harness 导读
 
-> ⚠️ **仅 macOS 12+**：上游完整桌面体验目前只支持 macOS 12+（Apple Silicon 与 Intel），Windows、Linux 标为「正在进行」。本仓 Linux CI 不验收本项目的桌面进程。体验中心的 [看说体验](https://smile-xuc.github.io/aihw-starter/app/#/session) 可以用百炼 Key 接通同一条 Omni Realtime：摄像头或屏幕保持打开，语义轮次连续对话，模型可自行联网搜索，最近对话文字只留在这台浏览器。玩具、桌宠和同传耳机也在体验中心用这把 Key 接通各自的实时模型。主动提醒和后台委托仍只在下面的桌面能力里。下文 [Demo E](#附录demo-e--看屏解说macos) 只作 Mac 开发者的高级案例。
+> ⚠️ **仅 macOS 12+**：上游完整桌面体验目前只支持 macOS 12+（Apple Silicon 与 Intel），Windows、Linux 标为「正在进行」。本仓 Linux CI 不验收本项目的桌面进程。体验中心的 [看说体验](https://smile-xuc.github.io/aihw-starter/app/#/session) 可以用百炼 Key 接通同一条 Omni Realtime：摄像头或屏幕保持打开，语义轮次连续对话，模型可自行联网搜索，最近对话文字只留在这台浏览器，结束通话后用 `qwen3.7-plus` 收成一段摘要。玩具、桌宠和同传耳机也在体验中心用这把 Key 接通各自的实时模型。主动提醒和后台委托仍只在下面的桌面能力里。下文 [Demo E](#附录demo-e--看屏解说macos) 只作 Mac 开发者的高级案例。
 
 > [Qwen-Live-Harness](https://github.com/QwenLM/Qwen-Live-Harness) 是 Qwen 团队以 Apache-2.0 开源的桌面 harness，围绕 Qwen Omni Realtime API 构建：在 Mac 上用语音加屏幕或摄像头画面和模型实时对话，复杂任务委托给 Qwen Code、Codex、Claude Code 等后台 Harness，另有主动提醒（Proactive）和长期记忆。2026-09-21 随 Qwen3.8 Omni Flash Realtime 发布 v1.0.0。
 >

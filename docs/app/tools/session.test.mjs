@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildUserContent, encodeWav, instructionsWithMemory, isSessionReturn, nextMemory, nextTextHistory, requestMessages, safeAudioUrl, spokenText } from '../js/live/session-turn.js';
+import { SUMMARY_MODEL, buildUserContent, clipSummary, encodeWav, instructionsWithMemory, isSessionReturn, nextMemory, nextTextHistory, requestMessages, safeAudioUrl, spokenText, summaryMessages } from '../js/live/session-turn.js';
 
 test('session return accepts only the exact page', () => {
   assert.equal(isSessionReturn('#/session'), true);
@@ -60,4 +60,11 @@ test('memory keeps recent text and leaves instructions unchanged when empty', ()
   assert.equal(trimmed.at(-1), '新');
   assert.equal(instructionsWithMemory('你好', []), '你好');
   assert.match(instructionsWithMemory('你好', ['记得这个']), /记得这个/);
+  assert.match(instructionsWithMemory('你好', [], '上次说到杯子'), /上次说到杯子/);
+  assert.equal(clipSummary(`  ${'很'.repeat(700)}  `).length, 600);
+  const messages = summaryMessages('旧摘要', ['看到杯子 → 这是杯子']);
+  assert.equal(messages[0].role, 'system');
+  assert.match(messages[1].content, /旧摘要/);
+  assert.match(messages[1].content, /看到杯子/);
+  assert.equal(SUMMARY_MODEL, 'qwen3.7-plus');
 });

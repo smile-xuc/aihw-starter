@@ -2,7 +2,7 @@ import { liveConstants } from '../data.js';
 import { chat, toBase64 } from '../live/client.js';
 import { microphone } from '../live/microphone.js';
 import {
-  applyTool, formatDiaryPrompt, functionCalls, instructionsWithPetMemory, mergeMemories, parseDiary, petFace, phraseMap, renderDiary,
+  appendCaption, applyTool, formatDiaryPrompt, functionCalls, instructionsWithPetMemory, mergeMemories, parseDiary, petFace, phraseMap, renderDiary,
 } from '../live/product-session.js';
 import { connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, splitPcm, translationSession } from '../live/realtime-omni.js';
 import { fieldValues, loadCredentials } from '../settings.js';
@@ -118,7 +118,8 @@ export function renderProductLive(view, reg, product) {
   let toolRounds = 0;
   let assistantText = '';
   let assistantLine = null;
-  let translationLine = null;
+  let captions = {};
+  const captionLines = new Map();
   let history = [];
   let finishWait = null;
   let memory = product.diary ? readPetMemory() : {};
@@ -192,7 +193,6 @@ export function renderProductLive(view, reg, product) {
       item.textContent = redactSecret(`${product.kind === 'translate' ? '原文' : '听到'}：${event.transcript}`, secret);
       log.append(item);
       history.push({ heard: event.transcript, answer: '' });
-      translationLine = null;
       return;
     }
     if (event.type === 'response.audio.delta' && event.delta && !page.querySelector('[data-text-only]')?.checked) {
@@ -201,11 +201,14 @@ export function renderProductLive(view, reg, product) {
       return;
     }
     if (event.type === 'response.audio_transcript.delta' || event.type === 'response.text.delta') {
-      assistantText += event.delta || '';
       if (product.kind === 'translate') {
-        if (!translationLine) { translationLine = document.createElement('li'); log.append(translationLine); }
-        translationLine.textContent = redactSecret(`译文：${assistantText}`, secret);
+        captions = appendCaption(captions, event);
+        const id = String(event.item_id || 'current');
+        let line = captionLines.get(id);
+        if (!line) { line = document.createElement('li'); captionLines.set(id, line); log.append(line); }
+        line.textContent = redactSecret(`译文：${captions[id]}`, secret);
       } else {
+        assistantText += event.delta || '';
         if (!assistantLine) { assistantLine = document.createElement('li'); log.append(assistantLine); }
         assistantLine.textContent = redactSecret(assistantText, secret);
       }
