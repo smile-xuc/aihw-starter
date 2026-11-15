@@ -9,7 +9,7 @@ import { functionCalls } from '../live/product-session.js';
 import { connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, splitPcm } from '../live/realtime-omni.js';
 import { browserSupport } from '../live/index.js';
 import {
-  SUMMARY_MODEL, SYSTEM_PROMPT, buildUserContent, clipSummary, encodeWav, instructionsWithMemory, isSessionReturn, nextMemory, nextTextHistory, requestMessages, safeAudioUrl, spokenText, summaryMessages,
+  SUMMARY_MODEL, SYSTEM_PROMPT, buildUserContent, clipSummary, encodeWav, instructionsWithMemory, isSessionReturn, nextMemory, nextTextHistory, requestMessages, safeAudioUrl, spokenText, summaryMessages, withRetrieved,
 } from '../live/session-turn.js';
 import { fieldValues, loadCredentials } from '../settings.js';
 import { html, mount, mountPage, sheet } from '../ui.js';
@@ -150,7 +150,7 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
       <label class="field">记忆库<select data-library></select></label>
       <div class="btn-row">
         <button type="button" class="secondary-action" data-library-new>新建记忆库</button>
@@ -193,6 +193,9 @@ export function renderSession(view, reg) {
   let active = true;
   let call = null;
   let callReady = false;
+  let callUsesTools = false;
+  let retrieved = '';
+  let sentInstructions = '';
   let callGeneration = 0;
   let playback = null;
   let liveSpec = null;
@@ -325,6 +328,21 @@ export function renderSession(view, reg) {
     }
     saveActive();
     showMemory();
+    refreshLiveMemory();
+  }
+  function livePrompt(tools) {
+    const library = activeLibrary(store);
+    const demand = captureMode === 'demand';
+    const base = demand ? DEMAND_INSTRUCTIONS : (tools ? LIVE_TOOL_INSTRUCTIONS : LIVE_INSTRUCTIONS);
+    return withRetrieved(instructionsWithMemory(base, memory, summary, bio, renderProfile(library.ltm), renderRecent(library.stm, localDate())), retrieved);
+  }
+  function refreshLiveMemory() {
+    if (!call || !callReady) return;
+    const next = livePrompt(callUsesTools);
+    if (next === sentInstructions) return;
+    try { call.send('session.update', { session: { instructions: next } }); }
+    catch { return; }
+    sentInstructions = next;
   }
   syncMemory();
   if (loaded.migrated) saveActive();
@@ -398,6 +416,8 @@ export function renderSession(view, reg) {
     stopObserver();
     monitorStop?.();
     embedAbort?.abort();
+    retrieved = '';
+    sentInstructions = '';
     callGeneration += 1;
     const handle = call;
     call = null;
@@ -482,6 +502,8 @@ export function renderSession(view, reg) {
     if (event.type === 'socket.close') {
       stopObserver();
       embedAbort?.abort();
+      retrieved = '';
+      sentInstructions = '';
       call = null;
       callReady = false;
       pendingCommit = false;
@@ -658,6 +680,7 @@ export function renderSession(view, reg) {
       bio = applyBio(activeLibrary(store), redactOperations(toolArguments(item.arguments).operations, (value) => redactSecret(value, secret)));
       saveActive();
       showMemory();
+      refreshLiveMemory();
       output = `已更新长期事实：\n${bioResult(bio)}`;
     } catch (error) {
       output = error.message;
@@ -705,6 +728,9 @@ export function renderSession(view, reg) {
         }
       }
       output = [note, rankWithTime(keyword, hits, datedEntries(library, request.source), request.time_range)].filter(Boolean).join('\n');
+      const kept = output.replace(/^向量检索没有完成，这次只按关键词查找。\n?/u, '').trim();
+      retrieved = kept === '没有找到相关记忆。' || kept === '这套记忆库还没有视觉观察。' ? '' : redactSecret(kept, secret).slice(0, 600);
+      refreshLiveMemory();
     } catch (error) { output = error.message; }
     if (!active || mine !== callGeneration || !call) return;
     try { replyTool(item, output); } catch (error) { say(error.message); }
@@ -866,7 +892,7 @@ export function renderSession(view, reg) {
         url,
         secret,
         session: sessionConfig({
-          instructions: instructionsWithMemory(demand ? DEMAND_INSTRUCTIONS : (tools ? LIVE_TOOL_INSTRUCTIONS : LIVE_INSTRUCTIONS), memory, summary, bio, renderProfile(activeLibrary(store).ltm), renderRecent(activeLibrary(store).stm, localDate())),
+          instructions: livePrompt(tools),
           voice: constants.REALTIME_VOICE,
           inputRate: constants.IN_RATE,
           outputRate: constants.OUT_RATE,
@@ -879,6 +905,8 @@ export function renderSession(view, reg) {
         onEvent: (event) => onRealtime(event, mine),
       });
       let handle = openSocket(true);
+      callUsesTools = true;
+      sentInstructions = livePrompt(true);
       call = handle;
       liveSpec = constants;
       playback = speaker;
@@ -890,6 +918,8 @@ export function renderSession(view, reg) {
         handle.close();
         if (call === handle) call = null;
         say('当前账号不能使用工具，改为只对话。');
+        callUsesTools = false;
+        sentInstructions = livePrompt(false);
         handle = openSocket(false);
         call = handle;
         await handle.ready;
