@@ -3,7 +3,7 @@ import { chat, postJson, toBase64 } from '../live/client.js';
 import { microphone } from '../live/microphone.js';
 import { SAMPLE_RATE } from '../live/pcm.js';
 import { BIO_TOOL, EMBED_MODEL, OBSERVE_EVERY_MS, RETRIEVE_TOOL, UPDATER_PROMPT, activeLibrary, applyBio, applyMemoryPatch, bioReceipt, cleanObservation, clearLibrary, createLibrary, datedEntries, dialogueEntries, dialogueLines, envCorpus, finishDialogue, formatUpdaterInput, isEmptyPatch, localDate, memoryLabel as libraryStatus, mergeVectorHits, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn, renameLibrary, renderProfile, renderRecent, replaceActive, retrieveMemory, sessionFacts, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, normalizeVector } from '../live/memory-libraries.js';
-import { MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, isSilentMonitor, monitorTask, narrateTask, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, timerRequest, toolArguments } from '../live/monitor.js';
+import { MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, isSilentMonitor, monitorTask, narrateTask, nextSpokenAlert, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, timerRequest, toolArguments } from '../live/monitor.js';
 import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
 import { functionCalls } from '../live/product-session.js';
 import { connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, splitPcm } from '../live/realtime-omni.js';
@@ -150,7 +150,7 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
       <label class="field">记忆库<select data-library></select></label>
       <div class="btn-row">
         <button type="button" class="secondary-action" data-library-new>新建记忆库</button>
@@ -219,6 +219,9 @@ export function renderSession(view, reg) {
   let toolRounds = 0;
   let lookGeneration = 0;
   let monitorStop = null;
+  const spokenAlerts = [];
+  let drainingAlerts = false;
+  let userTurn = false;
   let embedAbort = null;
   let vectorAbort = null;
   let vectorJob = 0;
@@ -436,6 +439,7 @@ export function renderSession(view, reg) {
     clearTimers();
     stopObserver();
     monitorStop?.();
+    clearSpokenAlerts();
     embedAbort?.abort();
     retrieved = '';
     sentInstructions = '';
@@ -537,6 +541,7 @@ export function renderSession(view, reg) {
       embedAbort?.abort();
       retrieved = '';
       sentInstructions = '';
+      clearSpokenAlerts();
       call = null;
       callReady = false;
       pendingCommit = false;
@@ -551,6 +556,7 @@ export function renderSession(view, reg) {
     if (event.type === 'input_audio_buffer.speech_started') {
       toolRounds = 0;
       lookGeneration += 1;
+      userTurn = true;
       if (playback?.playing()) {
         playback.interrupt();
         try { call?.send('response.cancel'); } catch { /* 当前没有可打断的回答 */ }
@@ -613,8 +619,10 @@ export function renderSession(view, reg) {
       remember('', assistantText);
       assistantText = '';
       assistantLine = null;
+      userTurn = false;
       const failed = event.response?.status && event.response.status !== 'completed';
       say(failed ? `这一轮没有完成（${event.response.status}）。可以继续说话。` : '可以继续说话。');
+      void drainAlerts();
     }
   }
 
@@ -905,15 +913,48 @@ export function renderSession(view, reg) {
     timers.add(id);
   }
 
+  function clearSpokenAlerts() {
+    spokenAlerts.length = 0;
+    userTurn = false;
+  }
+  function enqueueAlert(chunks, mine) {
+    const audio = (Array.isArray(chunks) ? chunks : []).filter((chunk) => chunk && chunk.byteLength >= 2);
+    if (!audio.length || mine !== callGeneration) return;
+    spokenAlerts.push({ audio, mine });
+    void drainAlerts();
+  }
+  async function drainAlerts() {
+    if (drainingAlerts) return;
+    drainingAlerts = true;
+    try {
+      while (active && spokenAlerts.length) {
+        const head = spokenAlerts[0];
+        if (!head || head.mine !== callGeneration || !playback) { spokenAlerts.shift(); continue; }
+        const step = nextSpokenAlert(spokenAlerts, Boolean(playback.playing() || userTurn));
+        if (!step.audio) {
+          await new Promise((resolve) => setTimeout(resolve, 200));
+          continue;
+        }
+        spokenAlerts.splice(0, spokenAlerts.length, ...step.waiting);
+        for (const chunk of step.audio) {
+          if (head.mine !== callGeneration || !playback || userTurn) break;
+          playback.push(chunk, liveSpec.OUT_RATE);
+        }
+        while (playback?.playing() && head.mine === callGeneration && active && !userTurn) {
+          await new Promise((resolve) => setTimeout(resolve, 200));
+        }
+      }
+    } finally {
+      drainingAlerts = false;
+      if (active && spokenAlerts.length) void drainAlerts();
+    }
+  }
+
   async function fireTimer(text, mine) {
     if (!active || mine !== callGeneration) return;
     const line = document.createElement('li');
     line.textContent = redactSecret(`提醒：${text}`, secret);
     log.append(line);
-    const deadline = Date.now() + 30000;
-    while (playback?.playing() && Date.now() < deadline && mine === callGeneration && active) {
-      await new Promise((resolve) => setTimeout(resolve, 200));
-    }
     if (!active || mine !== callGeneration || !liveSpec || !liveValues) return;
     try {
       const spoken = await speakReminder({
@@ -925,8 +966,8 @@ export function renderSession(view, reg) {
         outputRate: liveSpec.OUT_RATE,
         asrModel: liveSpec.ASR_MODEL,
       });
-      if (!active || mine !== callGeneration || !playback || playback.playing()) return;
-      for (const chunk of spoken.audio) playback.push(chunk, liveSpec.OUT_RATE);
+      if (!active || mine !== callGeneration) return;
+      enqueueAlert(spoken.audio, mine);
     } catch (error) {
       if (active && mine === callGeneration) say(`到点了，但没有读出来：${error.message}`);
     }
@@ -967,9 +1008,7 @@ export function renderSession(view, reg) {
         const line = document.createElement('li');
         line.textContent = redactSecret(`${extra.label || '提醒'}：${result.text}`, secret);
         log.append(line);
-        if (playback && !playback.playing()) {
-          for (const chunk of result.audio) playback.push(chunk, liveSpec.OUT_RATE);
-        }
+        enqueueAlert(result.audio, mine);
       }
     } catch (error) {
       if (!stopped && mine === callGeneration && active && error.message !== '主动提醒已停止') say(`主动提醒停了：${error.message}`);

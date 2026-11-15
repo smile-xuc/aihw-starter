@@ -153,6 +153,12 @@ export function isSilentMonitor(text) {
   return !clean || /\bremain_silent\b/i.test(clean);
 }
 
+export function nextSpokenAlert(queue, busy) {
+  const waiting = (Array.isArray(queue) ? queue : []).filter((item) => item && Array.isArray(item.audio) && item.audio.length);
+  if (!waiting.length || busy) return { waiting, audio: null };
+  return { waiting: waiting.slice(1), audio: waiting[0].audio };
+}
+
 export function searchMessages(query) {
   const text = String(query || '').replace(/\s+/g, ' ').trim().slice(0, 300);
   if (!text) throw new Error('搜索内容是空的');
