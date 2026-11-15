@@ -3,7 +3,7 @@ import { chat, postJson, toBase64 } from '../live/client.js';
 import { microphone } from '../live/microphone.js';
 import { SAMPLE_RATE } from '../live/pcm.js';
 import { BIO_TOOL, EMBED_MODEL, OBSERVE_EVERY_MS, RETRIEVE_TOOL, UPDATER_PROMPT, activeLibrary, applyBio, applyMemoryPatch, bioReceipt, cleanObservation, clearLibrary, createLibrary, datedEntries, dialogueEntries, dialogueLines, envCorpus, finishDialogue, formatUpdaterInput, isEmptyPatch, localDate, memoryLabel as libraryStatus, mergeVectorHits, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn, renameLibrary, renderProfile, renderRecent, replaceActive, retrieveMemory, sessionFacts, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, normalizeVector } from '../live/memory-libraries.js';
-import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, cancelProactive, isSilentMonitor, listProactive, monitorTask, narrateTask, nextSpokenAlert, openMonitor, pushMonitorAudio, searchMessages, speakReminder, spokenWhileMuted, takeMonitorAudio, taskPrompt, timerRequest, toolArguments } from '../live/monitor.js';
+import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, cancelProactive, isSilentMonitor, listProactive, monitorTask, narrateTask, nextSpokenAlert, openMonitor, pushMonitorAudio, searchMessages, speakReminder, spokenWhileMuted, takeMonitorAudio, taskPrompt, timerRequest, toolArguments, updateProactive } from '../live/monitor.js';
 import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
 import { functionCalls } from '../live/product-session.js';
 import { MUTE_HEARTBEAT_MS, OMNI_38_VOICES, chooseVoice, connectRealtime, decodeBase64, pcmBase64, readVoice, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, silenceFrame, splitPcm, writeVoice } from '../live/realtime-omni.js';
@@ -29,11 +29,12 @@ const LIVE_TOOL_INSTRUCTIONS = `你是看说体验里的语音助手，能看到
 用户明确说了多久以后提醒时，调用 create_proactive_timer。没有调用成功就不要说已经设好。
 用户要求连续解说画面或声音的变化时，调用 create_live_narration。没有明显变化就不要主动开口。
 用户明确要求停下某一项监视、解说或到点提醒时，调用 cancel_proactive_task。停下说话、换话题或纠正回答都不算取消。没有调用成功就不要说已经停下。
+用户明确要求修改某一项正在进行的监视、解说或到点提醒时，调用 update_proactive_task。不能把一种任务改成另一种。没有调用成功就不要说已经改了。
 用户说出会在以后多次用到的个人事实时，调用 omnibio 记下。改掉或取消已有事实时，按提示里的编号 update 或 delete。已经记下的不要重复。名单满了就不要再加，不要删掉更早的事实来腾位置。
 用户问起更早的对话、而当前记忆里没有时，调用 omniretrieve，source 用 dialogue。问起以前看到的环境时，source 用 env。用户提到昨天、上周这类时间时，把时间放进 time_range，例如昨天用 [2, 0]，上周用 [14, 1]，不要写进 query。
 不识别画面中人的身份；看不清就直说，不要编造。
 用户可以随时插话。`;
-const SESSION_TOOLS = [SEARCH_TOOL, MONITOR_TOOL, TIMER_TOOL, NARRATE_TOOL, CANCEL_TOOL, LIST_TOOL, BIO_TOOL, RETRIEVE_TOOL];
+const SESSION_TOOLS = [SEARCH_TOOL, MONITOR_TOOL, TIMER_TOOL, NARRATE_TOOL, UPDATE_TOOL, CANCEL_TOOL, LIST_TOOL, BIO_TOOL, RETRIEVE_TOOL];
 
 function frameDataUrl(video) {
   const width = video.videoWidth;
@@ -154,7 +155,7 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。通话中可以麦克风静音或播报静音。麦克风静音后声音不再送进通话和监视，大约每 30 秒送一秒静音来保持连接。播报静音会立刻停掉正在说的话，还没播的提醒不再补播。音色默认 Tina，可换成 qwen3.8 支持的预设。这一通已经接通时，主对话仍用接通时的音色；监视、到点提醒和下一次通话用新的。复刻音色仍在 Mac 上。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。通话中可以麦克风静音或播报静音。麦克风静音后声音不再送进通话和监视，大约每 30 秒送一秒静音来保持连接。播报静音会立刻停掉正在说的话，还没播的提醒不再补播。音色默认 Tina，可换成 qwen3.8 支持的预设。这一通已经接通时，主对话仍用接通时的音色；监视、到点提醒和下一次通话用新的。复刻音色仍在 Mac 上。可以说「把条件改成只看红字」，正在进行的这一项会按新的来，不用先取消。改提醒时间会从现在重新计。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
       <label class="field">音色<select data-voice></select></label>
       <label class="field">记忆库<select data-library></select></label>
       <div class="btn-row">
@@ -252,6 +253,8 @@ export function renderSession(view, reg) {
   let toolRounds = 0;
   let lookGeneration = 0;
   let monitorStop = null;
+  let monitorHandle = null;
+  let activeWatchId = null;
   let tasks = [];
   let adjacentId = null;
   const timers = new Map();
@@ -534,6 +537,8 @@ export function renderSession(view, reg) {
   function resetTasks() {
     tasks = [];
     adjacentId = null;
+    activeWatchId = null;
+    monitorHandle = null;
     showTaskButton();
   }
 
@@ -715,6 +720,7 @@ export function renderSession(view, reg) {
         else if (item.name === 'create_proactive_monitor') void answerMonitor(item, mine);
         else if (item.name === 'create_proactive_timer') void answerTimer(item, mine);
         else if (item.name === 'create_live_narration') void answerNarrate(item, mine);
+        else if (item.name === 'update_proactive_task') void answerUpdate(item, mine);
         else if (item.name === 'cancel_proactive_task') void answerCancel(item, mine);
         else if (item.name === 'list_proactive_tasks') void answerList(item, mine);
         else if (item.name === 'omnibio') void answerBio(item, mine);
@@ -1021,13 +1027,64 @@ export function renderSession(view, reg) {
     try { replyTool(item, output); } catch (error) { say(error.message); return; }
     if (!plan) return;
     const taskId = `timer-${mine}-${Date.now()}`;
+    armTimer(taskId, plan.text, plan.seconds, mine);
+    rememberTask({ id: taskId, kind: 'timer', title: plan.text, reminder: plan.text });
+  }
+
+  function armTimer(taskId, text, seconds, mine) {
+    const previous = timers.get(taskId);
+    if (previous) clearTimeout(previous.handle);
     const handle = setTimeout(() => {
+      const spoken = timers.get(taskId)?.text || text;
       timers.delete(taskId);
       dropTask(taskId);
-      void fireTimer(plan.text, mine);
-    }, plan.seconds * 1000);
-    timers.set(taskId, { handle });
-    rememberTask({ id: taskId, kind: 'timer', title: plan.text });
+      void fireTimer(spoken, mine);
+    }, seconds * 1000);
+    timers.set(taskId, { handle, text });
+  }
+
+  function watchFocus(task) {
+    if (task.kind === 'narration') {
+      const base = task.focus ? narrateTask(task.focus) : task.title;
+      return task.style ? `${base}\n${task.style}` : base;
+    }
+    const base = monitorTask(task.condition || task.title);
+    return task.response ? `${base}\n${task.response}` : base;
+  }
+
+  function applyTaskUpdate(id, patch) {
+    const task = tasks.find((item) => item.id === id);
+    if (!task) return;
+    if (patch.title) task.title = patch.title;
+    if (patch.condition) task.condition = patch.condition;
+    if (patch.response) task.response = patch.response;
+    if (patch.focus) {
+      task.focus = patch.focus;
+      if (!patch.title) task.title = narrateTask(patch.focus);
+    }
+    if (patch.style) task.style = patch.style;
+    if (patch.reminder) {
+      task.reminder = patch.reminder;
+      if (!patch.title) task.title = patch.reminder;
+    }
+    if (task.kind === 'timer') {
+      const text = task.reminder || task.title;
+      const record = timers.get(task.id);
+      if (record) record.text = text;
+      if (patch.seconds) armTimer(task.id, text, patch.seconds, callGeneration);
+    } else if (task.id === activeWatchId) {
+      try { monitorHandle?.setFocus(watchFocus(task)); }
+      catch (error) { say(error.message); }
+    }
+    showTaskButton();
+    refreshLiveMemory();
+  }
+
+  function answerUpdate(item, mine) {
+    const decision = updateProactive(tasks, toolArguments(item.arguments));
+    if (decision.patch) applyTaskUpdate(decision.id, decision.patch);
+    if (!active || mine !== callGeneration || !call) return;
+    try { replyTool(item, decision.receipt); } catch (error) { say(error.message); }
   }
 
   function answerCancel(item, mine) {
@@ -1114,7 +1171,7 @@ export function renderSession(view, reg) {
     let monitor = null;
     const stop = () => { stopped = true; monitor?.close(); };
     monitorStop = stop;
-    rememberTask({ id, kind, title });
+    rememberTask({ id, kind, title, condition: kind === 'monitor' ? title : '' });
     try {
       monitor = openMonitor({
         url: realtimeSocketUrl(reg.stacks.get('bailian'), liveValues, liveSpec.REALTIME_MODEL),
@@ -1127,6 +1184,8 @@ export function renderSession(view, reg) {
         outputRate: liveSpec.OUT_RATE,
         asrModel: liveSpec.ASR_MODEL,
       });
+      monitorHandle = monitor;
+      activeWatchId = id;
       await monitor.ready;
       monitorAudio = { parts: [], total: 0 };
       captureMonitorAudio = true;
@@ -1152,6 +1211,10 @@ export function renderSession(view, reg) {
       captureMonitorAudio = false;
       monitor?.close();
       if (monitorStop === stop) monitorStop = null;
+      if (activeWatchId === id) {
+        monitorHandle = null;
+        activeWatchId = null;
+      }
       dropTask(id);
     }
   }

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, cancelProactive, isSilentMonitor, listProactive, monitorTask, narrateTask, nextSpokenAlert, openMonitor, pushMonitorAudio, searchMessages, speakReminder, spokenWhileMuted, takeMonitorAudio, taskPrompt, timerRequest } from '../js/live/monitor.js';
+import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, cancelProactive, isSilentMonitor, listProactive, monitorTask, narrateTask, nextSpokenAlert, openMonitor, pushMonitorAudio, searchMessages, speakReminder, spokenWhileMuted, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -189,4 +189,41 @@ test('speaker mute drops queued alerts instead of replaying them', () => {
   assert.equal(spokenWhileMuted(queued, true).length, 0);
   assert.equal(spokenWhileMuted(queued, false).length, 1);
   assert.equal(queued.length, 2);
+});
+
+test('update changes one active task and refuses a different kind', () => {
+  assert.equal(UPDATE_TOOL.function.name, 'update_proactive_task');
+  const tasks = [
+    { id: 'm', kind: 'monitor', title: '出现报错' },
+    { id: 't', kind: 'timer', title: '喝水', reminder: '喝水' },
+  ];
+  const changed = updateProactive(tasks, { target_title: '出现报错', condition: '只看红字' });
+  assert.equal(changed.id, 'm');
+  assert.deepEqual(changed.patch, { condition: '只看红字' });
+  assert.match(changed.receipt, /下一轮按新的来/);
+  const wrong = updateProactive(tasks, { target_title_contains: '报错', narration_focus: '红字' });
+  assert.equal(wrong.patch, null);
+  assert.match(wrong.receipt, /监视不能改成解说/);
+  const repeat = updateProactive(tasks, { target_title: '出现报错', repeat: false });
+  assert.match(repeat.receipt, /不能改成只提醒一次/);
+  const timer = updateProactive(tasks, { target_title: '喝水', duration_sec: 90, reminder_text: '站起来' });
+  assert.equal(timer.patch.seconds, 90);
+  assert.equal(timer.patch.reminder, '站起来');
+  assert.match(updateProactive(tasks, { target_title_contains: '喝', condition: '红字' }).receipt, /不止一项|到点提醒不能改/);
+  assert.match(updateProactive(tasks, { condition: '红字' }).receipt, /请说明要改哪一项/);
+  assert.equal(updateProactive(tasks, { target_title: '出现报错', condition: '出现报错' }).patch, null);
+  assert.deepEqual(tasks[0], { id: 'm', kind: 'monitor', title: '出现报错' });
+});
+
+test('an updated monitor focus is sent on the next round', async () => {
+  const monitor = openMonitor(common);
+  open(FakeSocket.latest);
+  await monitor.ready;
+  await monitor.round(frames);
+  monitor.setFocus('只判断这个条件：只看红字');
+  await monitor.round(frames);
+  const creates = FakeSocket.latest.sent.filter((item) => item.type === 'response.create');
+  assert.equal(creates[0].response.instructions, '只判断这个条件：出现报错时提醒');
+  assert.equal(creates[1].response.instructions, '只判断这个条件：只看红字');
+  monitor.close();
 });

@@ -217,6 +217,28 @@ export const CANCEL_TOOL = {
   },
 };
 
+export const UPDATE_TOOL = {
+  type: 'function',
+  function: {
+    name: 'update_proactive_task',
+    description: '只在用户明确要求修改某一项正在进行的监视、解说或到点提醒时调用。用标题精确匹配，或用一段能唯一对上的文字。监视只改条件和提醒说法，解说只改重点和风格，到点提醒只改内容和时间。不能把一种任务改成另一种。工具回执确认之前，不要说已经改了。',
+    parameters: {
+      type: 'object',
+      properties: {
+        target_title: { type: 'string', description: '要修改的任务标题，必须和现有任务完全一致。' },
+        target_title_contains: { type: 'string', description: '标题里能唯一对上的一段文字。' },
+        title: { type: 'string', description: '新的标题。' },
+        condition: { type: 'string', description: '监视的新条件。' },
+        trigger_response: { type: 'string', description: '监视发生时要怎么说。' },
+        narration_focus: { type: 'string', description: '解说的新重点。' },
+        narration_style: { type: 'string', description: '解说的新风格。' },
+        reminder_text: { type: 'string', description: '到点要读的新内容。' },
+        duration_sec: { type: 'number', description: '从现在起多少秒后提醒，5 到 3600。' },
+      },
+    },
+  },
+};
+
 export const LIST_TOOL = {
   type: 'function',
   function: {
@@ -285,13 +307,106 @@ export function cancelProactive(tasks, args, adjacentId) {
   return done(matches);
 }
 
+const UPDATE_KEYS = ['target_title', 'target_title_contains', 'title', 'condition', 'trigger_response', 'narration_focus', 'narration_style', 'reminder_text', 'duration_sec', 'repeat', 'modalities'];
+
+function clipPiece(value, max) {
+  return String(value || '').replace(/\s+/g, ' ').trim().slice(0, max);
+}
+
+export function updateProactive(tasks, args) {
+  const active = proactiveTasks(tasks);
+  const fail = (receipt) => ({ id: null, patch: null, receipt });
+  if (!args || typeof args !== 'object' || Array.isArray(args)) return fail('参数不是对象，没有改任何任务。');
+  const keys = Object.keys(args);
+  if (keys.some((key) => !UPDATE_KEYS.includes(key))) return fail('有不能识别的参数，没有改任何任务。');
+  const title = typeof args.target_title === 'string' ? args.target_title.trim() : '';
+  const contains = typeof args.target_title_contains === 'string' ? args.target_title_contains.trim() : '';
+  if (title && contains) return fail('一次只能用一种标题，没有改任何任务。');
+  const changes = keys.filter((key) => key !== 'target_title' && key !== 'target_title_contains');
+  if (!changes.length) return fail('没有要改的内容。');
+  if (!title && !contains) return fail('请说明要改哪一项。');
+  const needle = (title || contains).toLocaleLowerCase();
+  const matches = active.filter((task) => {
+    const name = task.title.trim().toLocaleLowerCase();
+    return title ? name === needle : name.includes(needle);
+  });
+  if (!matches.length) return fail('没有对上的主动任务。');
+  if (matches.length > 1) return fail('对上了不止一项。请用完整标题。');
+  const task = matches[0];
+  const present = (names) => names.filter((name) => args[name] !== undefined);
+  if (task.kind === 'timer' && present(['condition', 'trigger_response', 'narration_focus', 'narration_style', 'repeat', 'modalities']).length) {
+    return fail('到点提醒不能改监视或解说的内容。');
+  }
+  if (task.kind === 'narration' && present(['condition', 'trigger_response', 'repeat', 'reminder_text', 'duration_sec', 'modalities']).length) {
+    return fail('解说不能改成监视或到点提醒。');
+  }
+  if (task.kind !== 'timer' && task.kind !== 'narration') {
+    if (present(['narration_focus', 'narration_style', 'reminder_text', 'duration_sec']).length) return fail('监视不能改成解说或到点提醒。');
+    if (args.repeat !== undefined) return fail('这里的监视会一直进行，直到你停下，不能改成只提醒一次。');
+    if (args.modalities !== undefined) return fail('监视一直同时看画面和听这两秒的声音，不能单独改。');
+  }
+  const patch = {};
+  if (typeof args.title === 'string') {
+    const next = clipPiece(args.title, 200);
+    if (!next) return fail('新标题是空的，没有改。');
+    const clash = active.some((item) => item.id !== task.id && item.title.trim().toLocaleLowerCase() === next.toLocaleLowerCase());
+    if (clash) return fail('已经有同名的主动任务，没有改。');
+    if (next !== task.title.trim()) patch.title = next;
+  }
+  if (task.kind === 'monitor' || task.kind == null) {
+    if (typeof args.condition === 'string') {
+      const next = clipPiece(args.condition, 200);
+      if (!next) return fail('新的条件是空的，没有改。');
+      if (next !== String(task.condition || task.title).trim()) patch.condition = next;
+    }
+    if (typeof args.trigger_response === 'string') {
+      const next = clipPiece(args.trigger_response, 200);
+      if (!next) return fail('提醒说法是空的，没有改。');
+      if (next !== String(task.response || '').trim()) patch.response = next;
+    }
+  }
+  if (task.kind === 'narration') {
+    if (typeof args.narration_focus === 'string') {
+      const next = clipPiece(args.narration_focus, 200);
+      if (!next) return fail('解说重点是空的，没有改。');
+      if (next !== String(task.focus || '').trim()) patch.focus = next;
+    }
+    if (typeof args.narration_style === 'string') {
+      const next = clipPiece(args.narration_style, 200);
+      if (!next) return fail('解说风格是空的，没有改。');
+      if (next !== String(task.style || '').trim()) patch.style = next;
+    }
+  }
+  if (task.kind === 'timer') {
+    if (args.duration_sec !== undefined) {
+      const seconds = Math.round(Number(args.duration_sec));
+      if (!Number.isFinite(seconds) || seconds < 5 || seconds > 3600) return fail('提醒时间要在 5 秒到 1 小时之间，没有改。');
+      patch.seconds = seconds;
+    }
+    if (typeof args.reminder_text === 'string') {
+      const next = clipPiece(args.reminder_text, 120);
+      if (!next) return fail('提醒内容是空的，没有改。');
+      if (next !== String(task.reminder || task.title).trim()) patch.reminder = next;
+    }
+  }
+  if (!Object.keys(patch).length) return fail('内容和现在一样，没有改。');
+  const bits = [];
+  if (patch.title) bits.push(`标题「${patch.title}」`);
+  if (patch.condition) bits.push(`条件「${patch.condition}」`);
+  if (patch.response) bits.push(`说法「${patch.response}」`);
+  if (patch.focus) bits.push(`重点「${patch.focus}」`);
+  if (patch.style) bits.push(`风格「${patch.style}」`);
+  if (patch.reminder) bits.push(`内容「${patch.reminder}」`);
+  if (patch.seconds) bits.push(`从现在起 ${patch.seconds} 秒`);
+  return { id: task.id, patch, receipt: `已改${kindLabel(task.kind)}：${bits.join('，')}。下一轮按新的来。` };
+}
+
 export function openMonitor(options) {
   const connect = options.connect || connectRealtime;
-  const task = options.task || monitorTask(options.condition);
+  let focus = options.task || monitorTask(options.condition);
+  let announce = true;
   let text = '';
   let audio = [];
-  let firstRound = true;
-  const rounds = [];
   let pending = null;
   const settle = (error, value) => {
     if (!pending) return;
@@ -321,10 +436,11 @@ export function openMonitor(options) {
         try { audio.push(decodeBase64(event.delta)); } catch { /* 这一小段声音无效就只留文字 */ }
       }
       if (event.type === 'input_audio_buffer.committed') {
-        const meta = rounds.shift();
         try {
-          if (meta?.first) handle.send('response.create', { response: { instructions: task } });
-          else handle.send('response.create');
+          if (announce) {
+            handle.send('response.create', { response: { instructions: focus } });
+            announce = false;
+          } else handle.send('response.create');
         } catch (error) { settle(error); }
       }
       if (event.type === 'response.done') {
@@ -337,6 +453,12 @@ export function openMonitor(options) {
   });
   return {
     ready: handle.ready,
+    setFocus(next) {
+      const text = String(next || '').trim();
+      if (!text || text === focus) return;
+      focus = text;
+      announce = true;
+    },
     round(frames, audioClips = null) {
       if (pending) return Promise.reject(new Error('上一次监视还没结束'));
       if (!Array.isArray(frames) || frames.length < 2 || !(frames[0] instanceof Uint8Array) || !(frames[1] instanceof Uint8Array)) {
@@ -350,8 +472,6 @@ export function openMonitor(options) {
         : null;
       const silence = heard ? null : pcmBase64(silencePcm(options.inputRate, 1));
       const run = new Promise((resolve, reject) => { pending = { resolve, reject }; });
-      rounds.push({ first: firstRound });
-      firstRound = false;
       try {
         handle.send('input_audio_buffer.append', { audio: heard ? heard[0] : silence });
         handle.send('input_image_buffer.append', { image: toBase64(frames[0]) });
