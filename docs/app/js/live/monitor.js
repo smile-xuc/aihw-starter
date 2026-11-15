@@ -9,7 +9,7 @@ export const SEARCH_TOOL = {
   type: 'function',
   function: {
     name: 'web_search',
-    description: '查询公开信息。只有用户问到事实、新闻或你不确定的近况时才调用。',
+    description: '把公开信息交给后台查询。回执里没有答案。只有用户问到事实、新闻或你不确定的近况时才调用。调用后只用一句话告诉用户你去查了，不要在这一轮回答问题。',
     parameters: {
       type: 'object',
       properties: { query: { type: 'string', description: '要查的问题。' } },
@@ -38,7 +38,7 @@ export const MONITOR_TOOL = {
   type: 'function',
   function: {
     name: 'create_proactive_monitor',
-    description: '盯着当前摄像头或屏幕，并听这两秒的麦克风。条件发生时才提醒，没发生就保持安静。',
+    description: '把以后才发生的提醒交给后台。用户说关注身体、咳嗽了提醒、出现报错再提醒，或听到某种声音再提醒时调用。condition 写清听到或看到什么才开口。回执不表示条件已经发生。调用后只用一句话告诉用户会在发生时提醒。',
     parameters: {
       type: 'object',
       properties: { condition: { type: 'string', description: '要盯的条件，例如出现报错时提醒。' } },
@@ -51,7 +51,7 @@ export const NARRATE_TOOL = {
   type: 'function',
   function: {
     name: 'create_live_narration',
-    description: '连续解说当前摄像头或屏幕，以及这两秒的声音。只在出现值得一提的变化时开口。',
+    description: '把持续报告或变化解说交给后台。用户说持续报告手机屏幕、画面内容，或只解说变化时调用，narration_focus 写上要报告的内容。回执里没有画面。调用后只用一句话告诉用户已经开始，不要在这一轮描述画面。',
     parameters: {
       type: 'object',
       properties: { narration_focus: { type: 'string', description: '解说时重点看什么。留空则概述刚发生的变化。' } },
@@ -67,6 +67,108 @@ export const NARRATE_RULES = `你在连续解说这一小段新的声音和画�
 export function narrateTask(focus) {
   const text = String(focus || '').replace(/\s+/g, ' ').trim().slice(0, 200);
   return text ? `解说重点：${text}` : '解说刚发生的变化。';
+}
+
+export const CONTINUOUS_GAP_MS = 12000;
+
+export const CONTINUOUS_RULES = `你在后台持续报告这一小段画面，并参考这两秒的声音。
+每一轮都用一两句中文说出当前能看到的内容。
+不要输出 remain_silent。
+内容没变时说得更短，不要逐字重复上一轮。
+不要编造，也不要识别人的身份。`;
+
+export function narrationIsContinuous(focus) {
+  const text = String(focus || '').replace(/\s+/g, ' ').trim();
+  if (!text) return false;
+  if (/变化/.test(text) && !/持续|一直|不断|不停/.test(text)) return false;
+  return /持续|一直|不断|不停|实时报告|屏幕里|屏幕内容|画面内容|手机屏幕/.test(text);
+}
+
+export function narrationPlan(focus) {
+  const continuous = narrationIsContinuous(focus);
+  return {
+    continuous,
+    task: narrateTask(focus),
+    rules: continuous ? CONTINUOUS_RULES : NARRATE_RULES,
+    gapMs: continuous ? CONTINUOUS_GAP_MS : 0,
+  };
+}
+
+export function sourceHint(source, text) {
+  if (source === 'screen' || !/屏幕/.test(String(text || ''))) return '';
+  return '当前这一路是摄像头。要看手机屏幕，请点「屏幕」共享。';
+}
+
+export function fastAck(kind) {
+  const text = {
+    search: '已交给后台查询。回执里没有答案。只用一句话告诉用户你去查了，这一轮不要回答问题本身。结果稍后另说。',
+    look: '已交给后台看这一帧。回执里没有画面内容。只用一句话告诉用户你在看，这一轮不要描述画面。结果稍后另说。',
+    narration: '已交给后台持续报告。回执里没有画面内容。只用一句话告诉用户：你先接着听，画面内容过一会儿再说。不要现在描述画面。',
+    narrationChange: '已交给后台解说变化。没有明显变化时后台不会出声。只用一句话告诉用户已经开始，不要现在描述画面。',
+    monitor: '已交给后台盯着。回执不表示条件已经发生。只用一句话告诉用户你会在发生时提醒，不要说已经听到或看到了。',
+  }[kind];
+  if (!text) throw new Error('后台回执类型无效');
+  return text;
+}
+
+export function fastStatus(kind, title) {
+  const clean = String(title || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+  if (kind === 'search') return `后台已受理：查询「${clean || '公开信息'}」`;
+  if (kind === 'look') return '后台已受理：看这一帧';
+  if (kind === 'narration') return `后台已受理：持续报告「${clean || '当前画面'}」`;
+  if (kind === 'narrationChange') return '后台已受理：解说变化';
+  if (kind === 'monitor') return `后台已受理：监视「${clean || '稍后提醒'}」`;
+  throw new Error('后台回执类型无效');
+}
+
+const BACKGROUND_LANES = { search: '查询', look: '看图', narration: '解说', monitor: '监视', timer: '提醒' };
+
+function backgroundState(state) {
+  if (state === 'running') return '进行中';
+  if (state === 'delivered') return '刚送到';
+  if (state === 'failed') return '没完成';
+  return '已受理';
+}
+
+export function openBackground(jobs, job) {
+  const lane = BACKGROUND_LANES[job?.lane] ? job.lane : '';
+  const id = String(job?.id || '');
+  if (!lane || !id) throw new Error('后台任务没有编号');
+  const row = {
+    id,
+    lane,
+    title: String(job.title || '').replace(/\s+/g, ' ').trim().slice(0, 80) || BACKGROUND_LANES[lane],
+    state: 'accepted',
+    note: '已受理',
+  };
+  return [row, ...(Array.isArray(jobs) ? jobs : []).filter((item) => item && item.id !== id)].slice(0, 6);
+}
+
+export function patchBackground(jobs, id, patch) {
+  return (Array.isArray(jobs) ? jobs : []).map((item) => {
+    if (!item || item.id !== id) return item;
+    const next = { ...item, ...patch, id: item.id, lane: item.lane };
+    if (typeof next.note === 'string') next.note = next.note.replace(/\s+/g, ' ').trim().slice(0, 80);
+    return next;
+  });
+}
+
+export function backgroundRows(jobs) {
+  return (Array.isArray(jobs) ? jobs : []).filter((item) => item && item.id).map((item) => (
+    `${BACKGROUND_LANES[item.lane] || '后台'}「${item.title}」${backgroundState(item.state)}。${item.note || ''}`
+  ));
+}
+
+export function takeLate(queue, ready) {
+  const items = (Array.isArray(queue) ? queue : []).filter((item) => item && String(item.text || '').trim());
+  if (!ready || !items.length) return { queue: items, item: null };
+  return { queue: items.slice(1), item: items[0] };
+}
+
+export function lateResultInstructions(text) {
+  const body = String(text || '').replace(/\s+/g, ' ').trim().slice(0, 400);
+  if (!body) throw new Error('后台结果是空的');
+  return `下面是后台慢任务刚送到的结果。用一两句口语直接告诉用户。不要调用工具，不要说还在等。结果：${body}`;
 }
 
 export const MONITOR_RULES = `你是主动提醒监视器，只判断这一小段新的声音和画面。

@@ -723,6 +723,10 @@ a.featured-card:active,a.cat-card:active { transform:scale(.992); }
 .lab-image img{width:100%;height:100%;object-fit:cover}.lab-image img.zoomed{transform:scale(2)}
 [data-lab-demo] select,[data-lab-demo] textarea{width:100%;min-width:0;font:inherit;padding:12px;border:1px solid #cdd2d4;border-radius:8px;background:white}
 .session-stage video{display:block;width:100%;max-height:420px;object-fit:contain;background:#1c1f1e;border-radius:12px;margin-bottom:12px}
+.background-lane{margin-top:14px}
+.background-lane h2{font-size:15px;margin:0 0 4px}
+.background-lane ol{margin:8px 0 0;padding-left:18px;font-size:13px;line-height:1.6}
+.background-lane li{margin:4px 0}
 .device-face{font-family:var(--mono);white-space:pre-wrap;background:#1c1f1e;color:#f4f7f2;padding:16px;border-radius:12px;line-height:1.45;overflow:auto}
 .device-state{font-size:16px;font-weight:650;min-height:1.4em}
 .session-stage textarea{width:100%;min-width:0;margin-top:8px;font:inherit;padding:12px;border:1px solid var(--line);border-radius:8px;background:white}
