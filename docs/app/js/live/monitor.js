@@ -153,6 +153,11 @@ export function isSilentMonitor(text) {
   return !clean || /\bremain_silent\b/i.test(clean);
 }
 
+export function spokenWhileMuted(queue, muted) {
+  const waiting = (Array.isArray(queue) ? queue : []).filter((item) => item && Array.isArray(item.audio) && item.audio.length);
+  return muted ? [] : waiting;
+}
+
 export function nextSpokenAlert(queue, busy) {
   const waiting = (Array.isArray(queue) ? queue : []).filter((item) => item && Array.isArray(item.audio) && item.audio.length);
   if (!waiting.length || busy) return { waiting, audio: null };

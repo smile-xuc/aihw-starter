@@ -48,6 +48,13 @@ export function translationSession({ language = 'en', textOnly = false, phrases 
   return { output_modalities: textOnly ? ['text'] : ['text', 'audio'], translation };
 }
 
+export const MUTE_HEARTBEAT_MS = 30000;
+
+export function silenceFrame(rate, seconds = 1) {
+  const samples = Math.max(0, Math.round(Number(rate) * Number(seconds)));
+  return new Uint8Array(Number.isFinite(samples) ? samples * 2 : 0);
+}
+
 export function pcmBase64(bytes) {
   if (!(bytes instanceof Uint8Array) || bytes.byteLength < 2 || bytes.byteLength % 2) throw new Error('音频分片无效');
   return toBase64(new Uint8Array(bytes));
