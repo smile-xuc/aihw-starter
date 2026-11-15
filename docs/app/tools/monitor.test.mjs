@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, cancelProactive, isSilentMonitor, listProactive, monitorTask, narrateTask, nextSpokenAlert, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, taskPrompt, timerRequest } from '../js/live/monitor.js';
+import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, cancelProactive, isSilentMonitor, listProactive, monitorTask, narrateTask, nextSpokenAlert, openMonitor, pushMonitorAudio, searchMessages, speakReminder, spokenWhileMuted, takeMonitorAudio, taskPrompt, timerRequest } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -182,4 +182,11 @@ test('cancel stops one named task, or every task only when asked', () => {
   assert.equal(taskPrompt([]), '');
   assert.equal(cancelProactive(tasks, { all: true }).ids.length, tasks.length);
   assert.deepEqual(tasks.map((item) => item.id), ['m', 't']);
+});
+
+test('speaker mute drops queued alerts instead of replaying them', () => {
+  const queued = [{ audio: [new Uint8Array([1, 2])] }, { audio: [] }];
+  assert.equal(spokenWhileMuted(queued, true).length, 0);
+  assert.equal(spokenWhileMuted(queued, false).length, 1);
+  assert.equal(queued.length, 2);
 });

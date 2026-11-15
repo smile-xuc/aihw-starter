@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, splitPcm, translationSession } from '../js/live/realtime-omni.js';
+import { MUTE_HEARTBEAT_MS, connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, silenceFrame, splitPcm, translationSession } from '../js/live/realtime-omni.js';
 
 const stack = {
   fields: [
@@ -81,4 +81,13 @@ test('ready handshake sends session.update and later errors stay redacted', asyn
   handle.send('response.create');
   assert.equal(socket.sent.at(-1).type, 'response.create');
   handle.close();
+});
+
+test('mic mute keeps the socket alive with one silent second', () => {
+  assert.equal(MUTE_HEARTBEAT_MS, 30000);
+  const frame = silenceFrame(16000, 1);
+  assert.equal(frame.byteLength, 32000);
+  assert.equal(frame.some((byte) => byte !== 0), false);
+  const encoded = pcmBase64(frame);
+  assert.equal(decodeBase64(encoded).byteLength, 32000);
 });

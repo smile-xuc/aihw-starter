@@ -3,10 +3,10 @@ import { chat, postJson, toBase64 } from '../live/client.js';
 import { microphone } from '../live/microphone.js';
 import { SAMPLE_RATE } from '../live/pcm.js';
 import { BIO_TOOL, EMBED_MODEL, OBSERVE_EVERY_MS, RETRIEVE_TOOL, UPDATER_PROMPT, activeLibrary, applyBio, applyMemoryPatch, bioReceipt, cleanObservation, clearLibrary, createLibrary, datedEntries, dialogueEntries, dialogueLines, envCorpus, finishDialogue, formatUpdaterInput, isEmptyPatch, localDate, memoryLabel as libraryStatus, mergeVectorHits, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn, renameLibrary, renderProfile, renderRecent, replaceActive, retrieveMemory, sessionFacts, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, normalizeVector } from '../live/memory-libraries.js';
-import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, cancelProactive, isSilentMonitor, listProactive, monitorTask, narrateTask, nextSpokenAlert, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, taskPrompt, timerRequest, toolArguments } from '../live/monitor.js';
+import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, cancelProactive, isSilentMonitor, listProactive, monitorTask, narrateTask, nextSpokenAlert, openMonitor, pushMonitorAudio, searchMessages, speakReminder, spokenWhileMuted, takeMonitorAudio, taskPrompt, timerRequest, toolArguments } from '../live/monitor.js';
 import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
 import { functionCalls } from '../live/product-session.js';
-import { connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, splitPcm } from '../live/realtime-omni.js';
+import { MUTE_HEARTBEAT_MS, connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, silenceFrame, splitPcm } from '../live/realtime-omni.js';
 import { browserSupport } from '../live/index.js';
 import {
   SUMMARY_MODEL, SYSTEM_PROMPT, buildUserContent, clipSummary, encodeWav, instructionsWithMemory, isSessionReturn, nextMemory, nextTextHistory, requestMessages, safeAudioUrl, spokenText, summaryMessages, withRetrieved,
@@ -76,9 +76,11 @@ function createSpeaker() {
   const ctx = new Ctx();
   let next = 0;
   const sources = new Set();
+  let muted = false;
   return {
     resume() { return ctx.resume(); },
     playing() { return sources.size > 0 && next > ctx.currentTime + 0.05; },
+    setMuted(on) { muted = Boolean(on); if (muted) this.interrupt(); },
     interrupt() {
       for (const source of sources) {
         try { source.stop(); } catch { /* 已经播完 */ }
@@ -87,6 +89,7 @@ function createSpeaker() {
       next = ctx.currentTime;
     },
     push(bytes, rate) {
+      if (muted) return;
       const even = bytes.byteLength - (bytes.byteLength % 2);
       if (even < 2 || !rate) return;
       const view = new DataView(bytes.buffer, bytes.byteOffset, even);
@@ -151,7 +154,7 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。通话中可以麦克风静音或播报静音。麦克风静音后声音不再送进通话和监视，大约每 30 秒送一秒静音来保持连接。播报静音会立刻停掉正在说的话，还没播的提醒不再补播。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
       <label class="field">记忆库<select data-library></select></label>
       <div class="btn-row">
         <button type="button" class="secondary-action" data-library-new>新建记忆库</button>
@@ -164,6 +167,8 @@ export function renderSession(view, reg) {
       <div class="btn-row">
         <button type="button" class="primary-action" data-live>开始实时通话</button>
         <button type="button" class="secondary-action" data-stop-task hidden>停止监视</button>
+        <button type="button" class="secondary-action" data-mute-mic hidden aria-pressed="false">麦克风静音</button>
+        <button type="button" class="secondary-action" data-mute-speaker hidden aria-pressed="false">播报静音</button>
         <button type="button" class="secondary-action" data-talk>按住说话</button>
         <button type="button" class="secondary-action" data-send>只发这一帧</button>
         <button type="button" class="secondary-action" data-stop hidden>停止</button>
@@ -227,6 +232,9 @@ export function renderSession(view, reg) {
   const spokenAlerts = [];
   let drainingAlerts = false;
   let userTurn = false;
+  let inputMuted = false;
+  let outputMuted = false;
+  let muteHeartbeat = null;
   let embedAbort = null;
   let vectorAbort = null;
   let vectorJob = 0;
@@ -375,12 +383,32 @@ export function renderSession(view, reg) {
   bioAtStart = bio.slice();
   memoryAtStart = JSON.stringify(memory);
   showMemory();
+  function clearMuteHeartbeat() {
+    if (muteHeartbeat) clearInterval(muteHeartbeat);
+    muteHeartbeat = null;
+  }
+  function startMuteHeartbeat() {
+    clearMuteHeartbeat();
+    muteHeartbeat = setInterval(() => {
+      if (!inputMuted || !call || !callReady || !liveSpec) return;
+      try { call.send('input_audio_buffer.append', { audio: pcmBase64(silenceFrame(liveSpec.IN_RATE, 1)) }); }
+      catch { /* 静音心跳只保持连接，失败不结束通话 */ }
+    }, MUTE_HEARTBEAT_MS);
+  }
   const setLiveLabel = (on) => {
     liveButton.textContent = on ? '结束实时通话' : '开始实时通话';
     liveButton.setAttribute('aria-pressed', on ? 'true' : 'false');
     const talkButton = page.querySelector('[data-talk]');
     if (talkButton) talkButton.disabled = on;
     for (const button of page.querySelectorAll('[data-capture]')) button.disabled = on;
+    inputMuted = false;
+    outputMuted = false;
+    clearMuteHeartbeat();
+    playback?.setMuted(false);
+    const micMute = page.querySelector('[data-mute-mic]');
+    const speakerMute = page.querySelector('[data-mute-speaker]');
+    if (micMute) { micMute.hidden = !on; micMute.textContent = '麦克风静音'; micMute.setAttribute('aria-pressed', 'false'); }
+    if (speakerMute) { speakerMute.hidden = !on; speakerMute.textContent = '播报静音'; speakerMute.setAttribute('aria-pressed', 'false'); }
     lockLibrary(on);
   };
   const setBusy = (on) => {
@@ -640,6 +668,7 @@ export function renderSession(view, reg) {
       return;
     }
     if (event.type === 'response.audio.delta' && event.delta) {
+      if (outputMuted) return;
       try { playback?.push(decodeBase64(event.delta), liveSpec?.OUT_RATE); }
       catch (error) { say(error.message); }
       return;
@@ -994,8 +1023,9 @@ export function renderSession(view, reg) {
   }
   function enqueueAlert(chunks, mine) {
     const audio = (Array.isArray(chunks) ? chunks : []).filter((chunk) => chunk && chunk.byteLength >= 2);
-    if (!audio.length || mine !== callGeneration) return;
+    if (!audio.length || mine !== callGeneration || outputMuted) return;
     spokenAlerts.push({ audio, mine });
+    spokenAlerts.splice(0, spokenAlerts.length, ...spokenWhileMuted(spokenAlerts, outputMuted));
     void drainAlerts();
   }
   async function drainAlerts() {
@@ -1004,6 +1034,7 @@ export function renderSession(view, reg) {
     try {
       while (active && spokenAlerts.length) {
         const head = spokenAlerts[0];
+        if (outputMuted) { spokenAlerts.splice(0, spokenAlerts.length, ...spokenWhileMuted(spokenAlerts, true)); continue; }
         if (!head || head.mine !== callGeneration || !playback) { spokenAlerts.shift(); continue; }
         const step = nextSpokenAlert(spokenAlerts, Boolean(playback.playing() || userTurn));
         if (!step.audio) {
@@ -1012,10 +1043,10 @@ export function renderSession(view, reg) {
         }
         spokenAlerts.splice(0, spokenAlerts.length, ...step.waiting);
         for (const chunk of step.audio) {
-          if (head.mine !== callGeneration || !playback || userTurn) break;
+          if (head.mine !== callGeneration || !playback || userTurn || outputMuted) break;
           playback.push(chunk, liveSpec.OUT_RATE);
         }
-        while (playback?.playing() && head.mine === callGeneration && active && !userTurn) {
+        while (playback?.playing() && head.mine === callGeneration && active && !userTurn && !outputMuted) {
           await new Promise((resolve) => setTimeout(resolve, 200));
         }
       }
@@ -1119,8 +1150,10 @@ export function renderSession(view, reg) {
           const bytes = new Uint8Array(buffer);
           for (const piece of splitPcm(bytes, liveSpec.CHUNK_BYTES)) {
             if (piece.byteLength < 2 || piece.byteLength % 2) continue;
-            call.send('input_audio_buffer.append', { audio: pcmBase64(piece) });
-            if (captureMonitorAudio) monitorAudio = pushMonitorAudio(monitorAudio, piece, liveSpec.IN_RATE);
+            if (!inputMuted) {
+              call.send('input_audio_buffer.append', { audio: pcmBase64(piece) });
+              if (captureMonitorAudio) monitorAudio = pushMonitorAudio(monitorAudio, piece, liveSpec.IN_RATE);
+            }
             if (captureMode === 'live' && audioPackets % liveSpec.FRAME_EVERY === 0) pushFrame();
             audioPackets += 1;
           }
@@ -1431,6 +1464,24 @@ export function renderSession(view, reg) {
       stopTask(task.id);
       say(`已停止${label}。`);
     }
+    const micMute = event.target.closest('[data-mute-mic]');
+    if (micMute && !micMute.hidden) {
+      inputMuted = !inputMuted;
+      micMute.setAttribute('aria-pressed', inputMuted ? 'true' : 'false');
+      micMute.textContent = inputMuted ? '取消麦克风静音' : '麦克风静音';
+      if (inputMuted) startMuteHeartbeat();
+      else clearMuteHeartbeat();
+      say(inputMuted ? '麦克风已静音。声音不再送出，画面仍在。' : '麦克风已打开。');
+    }
+    const speakerMute = event.target.closest('[data-mute-speaker]');
+    if (speakerMute && !speakerMute.hidden) {
+      outputMuted = !outputMuted;
+      speakerMute.setAttribute('aria-pressed', outputMuted ? 'true' : 'false');
+      speakerMute.textContent = outputMuted ? '取消播报静音' : '播报静音';
+      playback?.setMuted(outputMuted);
+      if (outputMuted) spokenAlerts.splice(0, spokenAlerts.length, ...spokenWhileMuted(spokenAlerts, true));
+      say(outputMuted ? '播报已静音。正在说的话已停下，还没播的提醒不再补播。' : '播报已打开。');
+    }
   });
   const talk = page.querySelector('[data-talk]');
   talk.addEventListener('pointerdown', async (event) => {
@@ -1468,6 +1519,7 @@ export function renderSession(view, reg) {
     stopObserver();
     clearTimers();
     monitorStop?.();
+    clearMuteHeartbeat();
     callGeneration += 1;
     abort?.abort();
     call?.close();
