@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { SUMMARY_MODEL, buildUserContent, clipSummary, encodeWav, instructionsWithMemory, isSessionReturn, nextMemory, nextTextHistory, requestMessages, safeAudioUrl, spokenText, summaryMessages } from '../js/live/session-turn.js';
+import { SUMMARY_MODEL, buildUserContent, clipSummary, encodeWav, instructionsWithMemory, isSessionReturn, nextMemory, nextTextHistory, requestMessages, safeAudioUrl, spokenText, summaryMessages, withRetrieved } from '../js/live/session-turn.js';
 
 test('session return accepts only the exact page', () => {
   assert.equal(isSessionReturn('#/session'), true);
@@ -64,6 +64,10 @@ test('memory keeps recent text and leaves instructions unchanged when empty', ()
   assert.match(instructionsWithMemory('你好', [], '', ['用户喜欢喝茶']), /0\. 用户喜欢喝茶/);
   assert.match(instructionsWithMemory('你好', [], '', [], '- 偏好：喝茶', '- [进行中] 赶项目'), /偏好：喝茶/);
   assert.match(instructionsWithMemory('你好', [], '', [], '- 偏好：喝茶', '- [进行中] 赶项目'), /赶项目/);
+  assert.equal(withRetrieved('你好', '  '), '你好');
+  assert.match(withRetrieved('你好', '昨天在喝水'), /最近一次检索结果/);
+  assert.match(withRetrieved('你好', '昨天在喝水'), /昨天在喝水/);
+  assert.equal(withRetrieved('你好', `${'喝'.repeat(700)}`).endsWith('喝'.repeat(600)), true);
   assert.equal(clipSummary(`  ${'很'.repeat(700)}  `).length, 600);
   const messages = summaryMessages('旧摘要', ['看到杯子 → 这是杯子']);
   assert.equal(messages[0].role, 'system');
