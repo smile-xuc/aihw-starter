@@ -70,6 +70,7 @@ export const NARRATE_TOOL = {
 export const NARRATE_RULES = `你在连续解说这一小段新的声音和画面。
 只说刚出现的、值得一提的变化。
 没有明显变化时，只输出 remain_silent。
+如果任务里写了用户原话，句子长短和语气以那句原话为准。
 不要编造，不要重复没有变化的内容。`;
 
 export function narrateTask(focus) {
@@ -77,22 +78,31 @@ export function narrateTask(focus) {
   return text ? `解说重点：${text}` : '解说刚发生的变化。';
 }
 
+export function narrationBrief(source) {
+  const text = String(source || '').replace(/\s+/g, ' ').trim().slice(0, 200);
+  if (!text) return '';
+  return `按用户原话的详略来讲：${text}`;
+}
+
 export const CONTINUOUS_GAP_MS = 12000;
 
 export const CONTINUOUS_RULES = `你在后台持续报告这一小段画面，并参考这两秒的声音。
 每一轮都用一两句中文说出当前能看到的内容。
+如果任务里写了用户原话，句子长短和语气以那句原话为准。
 不要输出 remain_silent。
 内容没变时说得更短，不要逐字重复上一轮。
 不要编造，也不要识别人的身份。`;
 
 export const CONTINUOUS_VISION_RULES = `你在后台持续报告这一小段画面。
 每一轮都用一两句中文说出当前能看到的内容。
+如果任务里写了用户原话，句子长短和语气以那句原话为准。
 不要输出 remain_silent。
 内容没变时说得更短，不要逐字重复上一轮。
 不要编造，也不要识别人的身份。这一轮没有声音。`;
 
 export const CONTINUOUS_AUDIO_RULES = `你在后台持续报告这两秒的声音。
 每一轮都用一两句中文说出当前能听到的内容。
+如果任务里写了用户原话，句子长短和语气以那句原话为准。
 不要输出 remain_silent。
 内容没变时说得更短，不要逐字重复上一轮。
 不要编造，也不要识别人的身份。这一轮没有画面。`;
@@ -100,11 +110,13 @@ export const CONTINUOUS_AUDIO_RULES = `你在后台持续报告这两秒的声�
 export const NARRATE_VISION_RULES = `你在连续解说这一小段新的画面。
 只说刚出现的、值得一提的变化。
 没有明显变化时，只输出 remain_silent。
+如果任务里写了用户原话，句子长短和语气以那句原话为准。
 不要编造，不要重复没有变化的内容。这一轮没有声音。`;
 
 export const NARRATE_AUDIO_RULES = `你在连续解说这两秒的新声音。
 只说刚出现的、值得一提的变化。
 没有明显变化时，只输出 remain_silent。
+如果任务里写了用户原话，句子长短和语气以那句原话为准。
 不要编造，不要重复没有变化的内容。这一轮没有画面。`;
 
 export function narrationIsContinuous(focus) {
