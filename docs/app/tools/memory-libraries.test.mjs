@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, RETRIEVE_TOOL,
-  activeLibrary, applyBio, applyMemoryPatch, bioResult, cleanObservation, clearLibrary, createLibrary, datedEntries, emptyLtm, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordObservation, redactOperations, rememberTurn,
+  activeLibrary, applyBio, applyMemoryPatch, bioResult, cleanObservation, clearLibrary, createLibrary, datedEntries, emptyDialogue, emptyLtm, finishDialogue, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn,
   renameLibrary, renderProfile, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, switchLibrary, vectorMatches, vectorsFromEmbedding, writeStore,
 } from '../js/live/memory-libraries.js';
 
@@ -197,4 +197,48 @@ test('time range reweights dated dialogue and still keeps outside hits', () => {
   assert.match(memoryLabel(saved), /带时间的对话/);
   const cleared = clearLibrary(saved, 'default');
   assert.equal(activeLibrary(cleared).turns.length, 0);
+});
+
+test('dialogue is cut into segments and older segments stay searchable', () => {
+  const started = 1_700_000_000;
+  assert.equal(recordExchange(emptyDialogue(), '密钥 sk-notarealkey12345678', '不要记', started).tail.length, 0);
+  let state = emptyDialogue();
+  for (let i = 0; i < 4; i += 1) state = recordExchange(state, `第${i}句在讨论日程`, '收到', started + i);
+  assert.equal(state.segments.length, 0);
+  state = recordExchange(state, '第五句才切开', '收到', started + 4);
+  assert.equal(state.segments[0].reason, 'max_turns');
+  assert.equal(state.tail.length, 1);
+  assert.match(state.segments[0].text, /第0句/);
+  assert.doesNotMatch(state.segments[0].text, /第五句/);
+  let quiet = recordExchange(emptyDialogue(), '只有一句', '好', started);
+  quiet = recordExchange(quiet, '一分钟后还没切开', '好', started + 120);
+  assert.equal(quiet.segments.length, 0);
+  let paused = recordExchange(emptyDialogue(), '第一句在开会', '好的', started);
+  paused = recordExchange(paused, '第二句还在开会', '继续', started + 10);
+  paused = recordExchange(paused, '停了一分钟', '嗯', started + 70);
+  assert.equal(paused.segments[0].reason, 'silence_gap');
+  assert.equal(paused.tail.length, 1);
+  let bulky = recordExchange(emptyDialogue(), '长'.repeat(600), '答'.repeat(600), started);
+  bulky = recordExchange(bulky, '下一句因为字数切开', '好', started + 1);
+  assert.equal(bulky.segments[0].reason, 'max_chars');
+  let archived = emptyDialogue();
+  for (let i = 0; i < 81; i += 1) archived = finishDialogue(recordExchange(archived, `片段${i}里有独特词`, '收到', started + i));
+  assert.equal(archived.segments.length, 80);
+  assert.doesNotMatch(archived.segments[0].text, /片段0里/);
+  assert.match(archived.segments.at(-1).text, /片段80里/);
+  const old = Math.floor(new Date('2026-11-05T08:00:00+08:00').getTime() / 1000);
+  const recent = Math.floor(new Date('2026-11-14T08:00:00+08:00').getTime() / 1000);
+  let dialogue = finishDialogue(recordExchange(emptyDialogue(), '上周做了海洋馆的讲解', '记下了', old));
+  dialogue = finishDialogue(recordExchange(dialogue, '昨天在整理船票', '好', recent));
+  const library = { bio: [], notes: [], summary: '', turns: [], dialogue };
+  const ranked = rankWithTime(retrieveMemory(library, { query: '海洋馆 船票', source: 'dialogue' }), [], datedEntries(library, 'dialogue'), [2, 0], new Date('2026-11-15T08:00:00+08:00'));
+  assert.match(ranked.split('\n')[0], /船票/);
+  assert.match(ranked, /海洋馆/);
+  const box = storage();
+  const saved = writeStore(box, replaceActive(readStore(box).store, { ...activeLibrary(readStore(box).store), dialogue }));
+  assert.match(activeLibrary(readStore(box).store).dialogue.segments.at(-1).text, /船票/);
+  assert.match(memoryLabel(saved), /对话片段 2 段/);
+  const cleared = clearLibrary(saved, 'default');
+  assert.equal(activeLibrary(cleared).dialogue.segments.length, 0);
+  assert.equal(finishDialogue(dialogue).tail.length, 0);
 });
