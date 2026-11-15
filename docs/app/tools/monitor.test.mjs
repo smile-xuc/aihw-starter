@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cancelProactive, fastAck, fastStatus, isSilentMonitor, lateResultInstructions, listProactive, monitorTask, narrationIsContinuous, narrationPlan, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, pushMonitorAudio, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cancelProactive, fastAck, fastStatus, isSilentMonitor, lateResultInstructions, listProactive, monitorTask, narrationIsContinuous, narrationPlan, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -260,4 +260,11 @@ test('continuous screen reports and body alerts are accepted before the result e
   assert.match(MONITOR_TOOL.function.description, /咳嗽/);
   assert.match(NARRATE_TOOL.function.description, /持续报告/);
   assert.match(SEARCH_TOOL.function.description, /回执里没有答案/);
+  const tasks = retainTasks(
+    [{ id: 'n', kind: 'narration', title: '屏幕' }, { id: 't', kind: 'timer', title: '喝水' }],
+    { id: 'm', kind: 'monitor', title: '咳嗽' },
+  );
+  assert.deepEqual(tasks.map((item) => item.id), ['n', 't', 'm']);
+  const replaced = retainTasks(tasks, { id: 'n2', kind: 'narration', title: '新的屏幕' });
+  assert.deepEqual(replaced.map((item) => item.id), ['t', 'm', 'n2']);
 });
