@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, isSilentMonitor, monitorTask, narrateTask, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, timerRequest } from '../js/live/monitor.js';
+import { MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, isSilentMonitor, monitorTask, narrateTask, nextSpokenAlert, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, timerRequest } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -135,4 +135,16 @@ test('narration uses its own rules and only speaks about the focus', async () =>
   const created = FakeSocket.latest.sent.find((item) => item.type === 'response.create');
   assert.equal(created.response.instructions, '解说重点：报错');
   monitor.close();
+});
+
+test('spoken alerts wait out the current utterance and then play in order', () => {
+  const first = new Uint8Array([1, 2]);
+  const second = new Uint8Array([3, 4]);
+  const held = nextSpokenAlert([{ audio: [first] }, { audio: [second] }, { audio: [] }], true);
+  assert.equal(held.audio, null);
+  assert.equal(held.waiting.length, 2);
+  const ready = nextSpokenAlert(held.waiting, false);
+  assert.equal(ready.audio[0], first);
+  assert.equal(ready.waiting[0].audio[0], second);
+  assert.equal(nextSpokenAlert([], false).audio, null);
 });
