@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cancelProactive, fastAck, fastStatus, isSilentMonitor, lateResultInstructions, listProactive, monitorTask, narrationIsContinuous, narrationPlan, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, isSilentMonitor, lateResultInstructions, listProactive, monitorPlan, monitorTask, narrationIsContinuous, narrationPlan, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -205,7 +205,9 @@ test('update changes one active task and refuses a different kind', () => {
   assert.equal(wrong.patch, null);
   assert.match(wrong.receipt, /监视不能改成解说/);
   const repeat = updateProactive(tasks, { target_title: '出现报错', repeat: false });
-  assert.match(repeat.receipt, /不能改成只提醒一次/);
+  assert.equal(repeat.patch.repeat, false);
+  assert.match(repeat.receipt, /只提醒一次/);
+  assert.match(updateProactive(tasks, { target_title: '出现报错', repeat: 'once' }).receipt, /必须是布尔值/);
   const timer = updateProactive(tasks, { target_title: '喝水', duration_sec: 90, reminder_text: '站起来' });
   assert.equal(timer.patch.seconds, 90);
   assert.equal(timer.patch.reminder, '站起来');
@@ -267,4 +269,38 @@ test('continuous screen reports and body alerts are accepted before the result e
   assert.deepEqual(tasks.map((item) => item.id), ['n', 't', 'm']);
   const replaced = retainTasks(tasks, { id: 'n2', kind: 'narration', title: '新的屏幕' });
   assert.deepEqual(replaced.map((item) => item.id), ['t', 'm', 'n2']);
+});
+
+test('a one-time cough alert stops after it speaks, and an ongoing watch waits out the same occurrence', () => {
+  assert.equal(monitorPlan({ condition: '咳嗽了提醒我一次' }).repeat, false);
+  assert.equal(monitorPlan({ condition: '从现在开始关注身体', repeat: true }).repeat, true);
+  assert.equal(monitorPlan({ condition: '从现在开始关注', repeat: false }).repeat, false);
+  assert.equal(monitorPlan({ condition: '出现报错' }).repeat, true);
+  assert.match(cadenceNote(false), /只提醒一次/);
+  assert.match(cadenceNote(true), /同一次里不重复说/);
+  assert.match(MONITOR_TOOL.function.description, /一次/);
+  assert.match(listProactive([{ id: 'm', kind: 'monitor', title: '咳嗽', repeat: false }]), /只提醒一次/);
+  const onceSilent = cadenceStep({ kind: 'monitor', silent: true, once: true, armed: true });
+  assert.equal(onceSilent.speak, false);
+  assert.equal(onceSilent.stop, false);
+  const onceHit = cadenceStep({ kind: 'monitor', silent: false, once: true, armed: onceSilent.armed });
+  assert.equal(onceHit.speak, true);
+  assert.equal(onceHit.stop, true);
+  assert.match(onceHit.note, /已经提醒过一次/);
+  const first = cadenceStep({ kind: 'monitor', silent: false, once: false, armed: true });
+  assert.equal(first.speak, true);
+  assert.equal(first.stop, false);
+  const same = cadenceStep({ kind: 'monitor', silent: false, once: false, armed: first.armed });
+  assert.equal(same.speak, false);
+  assert.match(same.note, /不重复提醒/);
+  const gap = cadenceStep({ kind: 'monitor', silent: true, once: false, armed: same.armed });
+  assert.equal(gap.armed, true);
+  const again = cadenceStep({ kind: 'monitor', silent: false, once: false, armed: gap.armed });
+  assert.equal(again.speak, true);
+  const narrate = cadenceStep({ kind: 'narration', silent: false, once: false, armed: false });
+  assert.equal(narrate.speak, true);
+  assert.equal(narrate.stop, false);
+  const narrateQuiet = cadenceStep({ kind: 'narration', silent: true, once: false, armed: true });
+  assert.equal(narrateQuiet.speak, false);
+  assert.match(narrateQuiet.note, /没有要补充的/);
 });

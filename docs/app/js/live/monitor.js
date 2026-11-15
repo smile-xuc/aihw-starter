@@ -38,10 +38,13 @@ export const MONITOR_TOOL = {
   type: 'function',
   function: {
     name: 'create_proactive_monitor',
-    description: '把以后才发生的提醒交给后台。用户说关注身体、咳嗽了提醒、出现报错再提醒，或听到某种声音再提醒时调用。condition 写清听到或看到什么才开口。回执不表示条件已经发生。调用后只用一句话告诉用户会在发生时提醒。',
+    description: '把以后才发生的提醒交给后台。用户说关注身体、咳嗽了提醒、出现报错再提醒，或听到某种声音再提醒时调用。condition 写清听到或看到什么才开口。repeat 为 false 表示只提醒一次，说过就停；只有用户说一直盯着、从现在开始关注或持续监督时才设为 true。true 时同一次发生不重复开口，等这次过去再提醒。回执不表示条件已经发生。调用后只用一句话告诉用户会在发生时提醒。',
     parameters: {
       type: 'object',
-      properties: { condition: { type: 'string', description: '要盯的条件，例如出现报错时提醒。' } },
+      properties: {
+        condition: { type: 'string', description: '要盯的条件，例如听到咳嗽时提醒。' },
+        repeat: { type: 'boolean', description: 'false 只提醒一次。true 只在用户明确要一直盯着时使用。' },
+      },
       required: ['condition'],
     },
   },
@@ -250,6 +253,45 @@ export function monitorTask(condition) {
   return `只判断这个条件：${text}`;
 }
 
+export function monitorPlan(args) {
+  const raw = args && typeof args === 'object' ? args : {};
+  const condition = monitorTask(raw.condition).replace(/^只判断这个条件：/, '');
+  let repeat;
+  if (raw.repeat === true || raw.repeat === false) repeat = raw.repeat;
+  else {
+    const once = /一次|一下/.test(condition);
+    const ongoing = /一直|持续|从现在开始|继续盯|继续关注/.test(condition);
+    repeat = once && !ongoing ? false : true;
+  }
+  return { condition, repeat };
+}
+
+export function cadenceNote(repeat) {
+  return repeat
+    ? '会一直听，同一次里不重复说，等这次过去才能再提醒。'
+    : '这次只提醒一次，说过就停。';
+}
+
+export function cadenceStep({ kind, silent, once, armed }) {
+  const narration = kind === 'narration';
+  if (silent) {
+    return {
+      armed: narration ? Boolean(armed) : true,
+      speak: false,
+      stop: false,
+      note: narration ? '刚看过，没有要补充的' : '刚看过，条件没发生',
+    };
+  }
+  if (!narration && !armed && !once) {
+    return { armed: false, speak: false, stop: false, note: '还在同一次里，先不重复提醒' };
+  }
+  if (!narration && once) {
+    return { armed: false, speak: true, stop: true, note: '已经提醒过一次' };
+  }
+  if (!narration) return { armed: false, speak: true, stop: false, note: '' };
+  return { armed: Boolean(armed), speak: true, stop: false, note: '' };
+}
+
 export function isSilentMonitor(text) {
   const clean = String(text || '').replace(/\s+/g, ' ').trim();
   return !clean || /\bremain_silent\b/i.test(clean);
@@ -367,7 +409,10 @@ export function retainTasks(tasks, next) {
 }
 
 function taskLines(tasks) {
-  return proactiveTasks(tasks).map((task) => `- ${kindLabel(task.kind)}「${task.title.trim()}」`);
+  return proactiveTasks(tasks).map((task) => {
+    const once = task.kind === 'monitor' && task.repeat === false ? '（只提醒一次）' : '';
+    return `- ${kindLabel(task.kind)}「${task.title.trim()}」${once}`;
+  });
 }
 
 export function listProactive(tasks) {
@@ -450,8 +495,8 @@ export function updateProactive(tasks, args) {
   }
   if (task.kind !== 'timer' && task.kind !== 'narration') {
     if (present(['narration_focus', 'narration_style', 'reminder_text', 'duration_sec']).length) return fail('监视不能改成解说或到点提醒。');
-    if (args.repeat !== undefined) return fail('这里的监视会一直进行，直到你停下，不能改成只提醒一次。');
     if (args.modalities !== undefined) return fail('监视一直同时看画面和听这两秒的声音，不能单独改。');
+    if (args.repeat !== undefined && args.repeat !== true && args.repeat !== false) return fail('repeat 必须是布尔值，没有改。');
   }
   const patch = {};
   if (typeof args.title === 'string') {
@@ -471,6 +516,9 @@ export function updateProactive(tasks, args) {
       const next = clipPiece(args.trigger_response, 200);
       if (!next) return fail('提醒说法是空的，没有改。');
       if (next !== String(task.response || '').trim()) patch.response = next;
+    }
+    if (args.repeat === true || args.repeat === false) {
+      if ((task.repeat !== false) !== args.repeat) patch.repeat = args.repeat;
     }
   }
   if (task.kind === 'narration') {
@@ -506,6 +554,8 @@ export function updateProactive(tasks, args) {
   if (patch.style) bits.push(`风格「${patch.style}」`);
   if (patch.reminder) bits.push(`内容「${patch.reminder}」`);
   if (patch.seconds) bits.push(`从现在起 ${patch.seconds} 秒`);
+  if (patch.repeat === false) bits.push('改成只提醒一次');
+  if (patch.repeat === true) bits.push('改成会一直听');
   return { id: task.id, patch, receipt: `已改${kindLabel(task.kind)}：${bits.join('，')}。下一轮按新的来。` };
 }
 
