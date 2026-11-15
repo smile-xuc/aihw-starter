@@ -64,6 +64,11 @@ test('memory keeps recent text and leaves instructions unchanged when empty', ()
   assert.match(instructionsWithMemory('你好', [], '', ['用户喜欢喝茶']), /0\. 用户喜欢喝茶/);
   assert.match(instructionsWithMemory('你好', [], '', [], '- 偏好：喝茶', '- [进行中] 赶项目'), /偏好：喝茶/);
   assert.match(instructionsWithMemory('你好', [], '', [], '- 偏好：喝茶', '- [进行中] 赶项目'), /赶项目/);
+  const facts = Array.from({ length: 130 }, (_, index) => `事实${index}`);
+  const prompt = instructionsWithMemory('你好', [], '', facts);
+  assert.match(prompt, /0\. 事实0/);
+  assert.match(prompt, /127\. 事实127/);
+  assert.doesNotMatch(prompt, /事实128/);
   assert.equal(withRetrieved('你好', '  '), '你好');
   assert.match(withRetrieved('你好', '昨天在喝水'), /最近一次检索结果/);
   assert.match(withRetrieved('你好', '昨天在喝水'), /昨天在喝水/);

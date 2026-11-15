@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, RETRIEVE_TOOL,
-  activeLibrary, applyBio, applyMemoryPatch, bioResult, cleanObservation, clearLibrary, cleanStm, createLibrary, datedEntries, emptyDialogue, emptyLtm, finishDialogue, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, mergeVectorHits, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn,
+  BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, MAX_BIO, RETRIEVE_TOOL,
+  activeLibrary, applyBio, applyMemoryPatch, bioReceipt, bioResult, cleanObservation, clearLibrary, cleanStm, createLibrary, datedEntries, emptyDialogue, emptyLtm, finishDialogue, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, mergeVectorHits, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn,
   renameLibrary, renderProfile, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore,
 } from '../js/live/memory-libraries.js';
 
@@ -65,17 +65,48 @@ test('bio edits keep numbered facts and retrieval stays on this library', () => 
     update: [{ index: 0, content: '用户喜欢喝绿茶' }],
     delete: [1],
   }, (value) => String(value || '').replace(/sk-[A-Za-z0-9]+/g, ''));
-  const bio = applyBio(library, ops);
-  assert.deepEqual(bio, ['用户喜欢喝绿茶', '用户每周三开会']);
-  assert.match(bioResult(bio), /0\. 用户喜欢喝绿茶/);
-  const found = retrieveMemory({ ...library, bio }, { query: '绿茶 开会', source: 'dialogue' });
+  const applied = applyBio(library, ops);
+  assert.deepEqual(applied.entries, ['用户喜欢喝绿茶', '用户每周三开会']);
+  assert.equal(applied.result.added, 1);
+  assert.equal(applied.result.updated, 1);
+  assert.equal(applied.result.deleted, 1);
+  assert.match(bioResult(applied.entries), /0\. 用户喜欢喝绿茶/);
+  assert.match(bioReceipt(applied), /已更新长期事实/);
+  const source = ['A', 'B', 'C'];
+  const ordered = applyBio({ bio: source }, { update: [{ index: 1, content: 'new B' }], delete: [0, 2, 0], add: ['D'] });
+  assert.deepEqual(ordered.entries, ['new B', 'D']);
+  assert.equal(ordered.result.deleted, 2);
+  assert.deepEqual(source, ['A', 'B', 'C']);
+  const partial = applyBio({ bio: ['A'] }, {
+    update: [{ index: true, content: 'bad' }, { index: 0.5, content: 'bad' }, { index: -1, content: 'bad' }, { index: 0, content: 'new' }],
+    delete: [10],
+    add: [false, '', 'new'],
+  });
+  assert.deepEqual(partial.entries, ['new']);
+  assert.equal(partial.result.updated, 1);
+  assert.equal(partial.result.skipped, 7);
+  const crowded = applyBio({ bio: ['A', 'B'] }, { delete: [0], add: ['C', 'D'] }, { maxEntries: 2, maxEntryChars: 200 });
+  assert.deepEqual(crowded.entries, ['B', 'C']);
+  assert.equal(crowded.result.added, 1);
+  assert.equal(crowded.result.skipped, 1);
+  const packed = Array.from({ length: MAX_BIO }, (_, index) => `事实${index}`);
+  const overflow = applyBio({ bio: packed }, { add: ['再加一条新的事实'] });
+  assert.equal(overflow.entries.length, MAX_BIO);
+  assert.equal(overflow.entries[0], '事实0');
+  assert.equal(overflow.result.added, 0);
+  assert.match(bioReceipt(overflow), /不会被挤掉/);
+  const flowers = applyBio({ bio: [] }, { add: [' one\n two ', '🌻🌻🌻🌻'] }, { maxEntries: 8, maxEntryChars: 3 });
+  assert.deepEqual(flowers.entries, ['one', '🌻🌻🌻']);
+  assert.equal(applyBio({ bio: flowers.entries }, { update: [{ index: 0, content: 'one' }] }).result.changed, false);
+  assert.equal(applyBio({ bio: flowers.entries }, null).result.malformed, true);
+  const found = retrieveMemory({ ...library, bio: applied.entries }, { query: '绿茶 开会', source: 'dialogue' });
   assert.match(found, /绿茶/);
   assert.match(found, /开会/);
   assert.match(retrieveMemory(library, { query: '杯子', source: 'dialogue' }), /杯子/);
   assert.equal(retrieveMemory(library, { query: '窗外的树', source: 'env' }), '这套记忆库还没有视觉观察。');
   assert.equal(retrieveMemory(library, { query: '没有的词', source: 'dialogue' }), '没有找到相关记忆。');
   assert.throws(() => retrieveMemory(library, { query: '  ', source: 'dialogue' }), /检索词是空的/);
-  const saved = writeStore(storage({ [LIBRARIES_KEY]: 'null' }), { activeId: 'default', libraries: [{ ...library, bio }] });
+  const saved = writeStore(storage({ [LIBRARIES_KEY]: 'null' }), { activeId: 'default', libraries: [{ ...library, bio: applied.entries }] });
   assert.equal(activeLibrary(saved).bio[0], '用户喜欢喝绿茶');
 });
 

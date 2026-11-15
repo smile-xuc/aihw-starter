@@ -8,8 +8,8 @@ export const LEGACY_MEMORY_KEY = 'aihw.session.memory';
 export const LEGACY_SUMMARY_KEY = 'aihw.session.summary';
 export const DEFAULT_LIBRARY_ID = 'default';
 export const MAX_LIBRARIES = 8;
-export const MAX_BIO = 24;
-export const MAX_BIO_CHARS = 160;
+export const MAX_BIO = 128;
+export const MAX_BIO_CHARS = 200;
 export const MAX_NAME_CHARS = 40;
 export const EMBED_MODEL = 'text-embedding-v4';
 export const MIN_SIMILARITY = 0.4;
@@ -161,7 +161,7 @@ export const BIO_TOOL = {
   type: 'function',
   function: {
     name: 'omnibio',
-    description: '记下关于用户本人、以后还会用到的事实，例如姓名、偏好、习惯和尚未发生的安排。每条用第三人称写成完整的一句。不要记录已经结束的一次性事件、临时情绪，或与用户无关的他人信息。记忆里已有的不要重复。先调用，再回答。',
+    description: '记下关于用户本人、以后还会用到的事实，例如姓名、偏好、习惯和尚未发生的安排。每条用第三人称写成完整的一句。用 update 或 delete 按当前列表编号修改或删除。不要记录已经结束的一次性事件、临时情绪，或与用户无关的他人信息。记忆里已有的不要重复。名单最多 128 条，满了就不要再加，也不要删掉更早的事实来腾位置。先调用，再回答。',
     parameters: {
       type: 'object',
       properties: {
@@ -213,7 +213,9 @@ export const RETRIEVE_TOOL = {
 };
 
 function cleanText(value, limit) {
-  const text = String(value || '').replace(/\s+/g, ' ').trim().slice(0, limit);
+  const collapsed = String(value || '').replace(/\s+/gu, ' ').trim();
+  if (!collapsed || SECRET_RE.test(collapsed)) return '';
+  const text = [...collapsed].slice(0, limit).join('').trim();
   if (!text || SECRET_RE.test(text)) return '';
   return text;
 }
@@ -374,30 +376,66 @@ export function redactOperations(operations, redact) {
   };
 }
 
-export function applyBio(library, operations) {
-  const current = library.bio.slice();
-  const ops = operations && typeof operations === 'object' ? operations : {};
-  const deleted = new Set((Array.isArray(ops.delete) ? ops.delete : []).map(Number).filter((index) => Number.isInteger(index) && index >= 0 && index < current.length));
-  let next = current.slice();
-  for (const item of Array.isArray(ops.update) ? ops.update : []) {
-    const index = Number(item?.index);
-    const content = cleanFact(item?.content);
-    if (!Number.isInteger(index) || index < 0 || index >= next.length || !content || deleted.has(index)) continue;
-    next[index] = content;
+export function applyBio(library, operations, limits = {}) {
+  const maxEntries = Number.isInteger(limits.maxEntries) ? limits.maxEntries : MAX_BIO;
+  const maxChars = Number.isInteger(limits.maxEntryChars) ? limits.maxEntryChars : MAX_BIO_CHARS;
+  const working = Array.isArray(library?.bio) ? library.bio.slice() : [];
+  const result = {
+    added: 0, updated: 0, deleted: 0, skipped: 0, nAfter: working.length, malformed: false, changed: false, succeeded: false,
+  };
+  if (!operations || typeof operations !== 'object' || Array.isArray(operations)) {
+    result.malformed = true;
+    return { entries: working, result };
   }
-  next = next.filter((_, index) => !deleted.has(index));
-  for (const item of Array.isArray(ops.add) ? ops.add : []) {
-    const content = cleanFact(item);
-    if (content) next.push(content);
+  const { update: updates, delete: deletes, add: adds } = operations;
+  if (![updates, deletes, adds].some((value) => Array.isArray(value) && value.length)) {
+    return { entries: working, result };
   }
-  const seen = new Set();
-  const unique = [];
-  for (const line of next) {
-    if (seen.has(line)) continue;
-    seen.add(line);
-    unique.push(line);
+  const validIndex = (value) => typeof value === 'number' && Number.isInteger(value) && value >= 0 && value < working.length;
+  const entry = (value) => (typeof value === 'string' ? cleanText(value, maxChars) : '');
+  const skip = () => { result.skipped += 1; };
+  let next = working.slice();
+  if (Array.isArray(updates)) {
+    for (const item of updates) {
+      if (!item || typeof item !== 'object' || !validIndex(item.index)) { skip(); continue; }
+      const content = entry(item.content);
+      if (!content || next[item.index] === content) { skip(); continue; }
+      next[item.index] = content;
+      result.updated += 1;
+    }
   }
-  return unique.slice(-MAX_BIO);
+  if (Array.isArray(deletes)) {
+    const doomed = new Set();
+    for (const value of deletes) {
+      if (!validIndex(value)) { skip(); continue; }
+      doomed.add(value);
+    }
+    next = next.filter((_, index) => !doomed.has(index));
+    result.deleted = doomed.size;
+  }
+  if (Array.isArray(adds)) {
+    for (const value of adds) {
+      const content = entry(value);
+      if (!content || next.includes(content)) { skip(); continue; }
+      if (next.length >= maxEntries) { skip(); continue; }
+      next.push(content);
+      result.added += 1;
+    }
+  }
+  result.nAfter = next.length;
+  result.changed = result.added + result.updated + result.deleted > 0;
+  result.succeeded = result.changed;
+  return { entries: next, result };
+}
+
+export function bioReceipt(applied) {
+  const entries = Array.isArray(applied?.entries) ? applied.entries : [];
+  const result = applied?.result && typeof applied.result === 'object' ? applied.result : {};
+  const list = bioResult(entries);
+  const crowded = entries.length >= MAX_BIO && result.skipped > 0;
+  const room = crowded ? `这套记忆库最多 ${MAX_BIO} 条，多出来的没有写上，已有的不会被挤掉。` : '';
+  if (!result.succeeded) return room ? `长期事实没有变化。${room}\n${list}` : '长期事实没有变化。';
+  return `已更新长期事实。新增 ${result.added}，修改 ${result.updated}，删除 ${result.deleted}。${room}\n${list}`;
 }
 
 export function bioResult(lines) {
