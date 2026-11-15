@@ -177,7 +177,7 @@ export function fastStatus(kind, title) {
   throw new Error('后台回执类型无效');
 }
 
-const BACKGROUND_LANES = { search: '查询', look: '看图', narration: '解说', monitor: '监视', timer: '提醒' };
+const BACKGROUND_LANES = { search: '查询', look: '看图', narration: '解说', monitor: '监视', timer: '提醒', delegate: '编码' };
 
 function backgroundState(state) {
   if (state === 'running') return '进行中';
