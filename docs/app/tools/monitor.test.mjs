@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, cancelProactive, isSilentMonitor, listProactive, monitorTask, narrateTask, nextSpokenAlert, openMonitor, pushMonitorAudio, searchMessages, speakReminder, spokenWhileMuted, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cancelProactive, fastAck, fastStatus, isSilentMonitor, lateResultInstructions, listProactive, monitorTask, narrationIsContinuous, narrationPlan, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, pushMonitorAudio, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -226,4 +226,38 @@ test('an updated monitor focus is sent on the next round', async () => {
   assert.equal(creates[0].response.instructions, '只判断这个条件：出现报错时提醒');
   assert.equal(creates[1].response.instructions, '只判断这个条件：只看红字');
   monitor.close();
+});
+
+test('continuous screen reports and body alerts are accepted before the result exists', () => {
+  assert.equal(narrationIsContinuous('从现在开始持续的报告我手机屏幕里的内容'), true);
+  assert.equal(narrationIsContinuous('手机屏幕里的内容'), true);
+  assert.equal(narrationIsContinuous('画面上的变化'), false);
+  const screen = narrationPlan('手机屏幕里的内容');
+  assert.equal(screen.continuous, true);
+  assert.equal(screen.gapMs, CONTINUOUS_GAP_MS);
+  assert.equal(screen.rules, CONTINUOUS_RULES);
+  assert.match(screen.rules, /不要输出 remain_silent/);
+  assert.equal(narrationPlan('画面上的变化').rules, NARRATE_RULES);
+  assert.equal(narrationPlan('画面上的变化').gapMs, 0);
+  assert.match(fastAck('narration'), /已交给后台持续报告/);
+  assert.match(fastAck('monitor'), /不要说已经听到或看到了/);
+  assert.match(fastAck('search'), /这一轮不要回答问题/);
+  assert.match(fastStatus('narration', '手机屏幕里的内容'), /后台已受理：持续报告/);
+  assert.match(fastStatus('monitor', '咳嗽了就提醒'), /监视「咳嗽了就提醒」/);
+  assert.match(sourceHint('camera', '手机屏幕里的内容'), /点「屏幕」共享/);
+  assert.equal(sourceHint('screen', '手机屏幕里的内容'), '');
+  assert.equal(sourceHint('camera', '咳嗽了就提醒'), '');
+  const jobs = openBackground([], { id: 'n1', lane: 'narration', title: '手机屏幕里的内容' });
+  const running = patchBackground(jobs, 'n1', { state: 'running', note: '正在看这一路画面' });
+  assert.match(backgroundRows(running)[0], /解说「手机屏幕里的内容」进行中。正在看这一路画面/);
+  assert.equal(patchBackground(running, 'missing', { state: 'failed' }).length, 1);
+  const waiting = [{ text: '屏幕上是备忘录' }];
+  assert.equal(takeLate(waiting, false).item, null);
+  assert.equal(takeLate(waiting, true).item.text, '屏幕上是备忘录');
+  assert.equal(waiting.length, 1);
+  assert.match(lateResultInstructions('屏幕上是备忘录'), /不要调用工具/);
+  assert.throws(() => lateResultInstructions('  '), /后台结果是空的/);
+  assert.match(MONITOR_TOOL.function.description, /咳嗽/);
+  assert.match(NARRATE_TOOL.function.description, /持续报告/);
+  assert.match(SEARCH_TOOL.function.description, /回执里没有答案/);
 });

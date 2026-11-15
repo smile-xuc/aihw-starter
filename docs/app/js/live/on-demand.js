@@ -8,7 +8,7 @@ export const LOOK_TOOL = {
   type: 'function',
   function: {
     name: 'analyze_view',
-    description: '看用户当前打开的摄像头或屏幕的一张画面。只有用户问到画面内容时才调用。',
+    description: '把当前画面交给后台看一眼。回执里没有画面内容。只有用户问到这一帧里有什么时才调用。调用后只用一句话告诉用户你在看，不要在这一轮描述画面。',
     parameters: {
       type: 'object',
       properties: { query: { type: 'string', description: '要看的问题。留空则概述画面。' } },
@@ -19,11 +19,12 @@ export const LOOK_TOOL = {
 export const VISUAL_INSTRUCTIONS = '你只分析这一张画面。用简短中文回答问题。看不清就说看不清，不要编造画面里没有的文字、人物或物体。';
 
 export const DEMAND_INSTRUCTIONS = `你是看说体验里的语音助手。你不能持续看到画面。
-用户问到当前摄像头或屏幕里有什么时，调用 analyze_view，等结果再回答。不要编造没看到的内容。
-需要事实或最新信息时调用 web_search，并用口语说明依据。
-用户要求盯着画面或听某种声音、出现情况就提醒时，调用 create_proactive_monitor。没有调用成功就不要说已经在监视。
+用户问到当前摄像头或屏幕里有什么时，调用 analyze_view。回执里没有画面，这一轮只说你在看，不要描述画面，结果稍后另说。
+需要事实或最新信息时调用 web_search。回执里没有答案，这一轮只说你去查了，结果稍后另说。
+用户说从现在开始关注身体、咳嗽了提醒，或盯着以后才发生的声音和画面时，调用 create_proactive_monitor。回执不表示条件已经发生，这一轮不要说已经听到或看到。
 用户明确说了多久以后提醒时，调用 create_proactive_timer。没有调用成功就不要说已经设好。
-用户要求连续解说画面或声音的变化时，调用 create_live_narration。没有明显变化就不要主动开口。
+用户说持续报告屏幕或画面内容，或解说变化时，调用 create_live_narration，把要报告的内容写进 narration_focus。回执里没有画面，这一轮不要描述画面。
+前台要一直能接话。后台结果没到时，不要停下来等，也不要编造结果。
 用户明确要求停下某一项监视、解说或到点提醒时，调用 cancel_proactive_task。停下说话、换话题或纠正回答都不算取消。没有调用成功就不要说已经停下。
 用户明确要求修改某一项正在进行的监视、解说或到点提醒时，调用 update_proactive_task。不能把一种任务改成另一种。没有调用成功就不要说已经改了。
 用户说出会在以后多次用到的个人事实时，调用 omnibio 记下。改掉或取消已有事实时，按提示里的编号 update 或 delete。已经记下的不要重复。名单满了就不要再加，不要删掉更早的事实来腾位置。

@@ -3,7 +3,7 @@ import { chat, postJson, toBase64 } from '../live/client.js';
 import { microphone } from '../live/microphone.js';
 import { SAMPLE_RATE } from '../live/pcm.js';
 import { BIO_TOOL, EMBED_MODEL, OBSERVE_EVERY_MS, RETRIEVE_TOOL, UPDATER_PROMPT, activeLibrary, applyBio, applyMemoryPatch, bioReceipt, cleanObservation, clearLibrary, createLibrary, datedEntries, dialogueEntries, dialogueLines, envCorpus, finishDialogue, formatUpdaterInput, isEmptyPatch, localDate, memoryLabel as libraryStatus, mergeVectorHits, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn, renameLibrary, renderProfile, renderRecent, replaceActive, retrieveMemory, sessionFacts, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, normalizeVector } from '../live/memory-libraries.js';
-import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, cancelProactive, isSilentMonitor, listProactive, monitorTask, narrateTask, nextSpokenAlert, openMonitor, pushMonitorAudio, searchMessages, speakReminder, spokenWhileMuted, takeMonitorAudio, taskPrompt, timerRequest, toolArguments, updateProactive } from '../live/monitor.js';
+import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cancelProactive, fastAck, fastStatus, isSilentMonitor, lateResultInstructions, listProactive, monitorTask, narrationPlan, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, pushMonitorAudio, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, toolArguments, updateProactive } from '../live/monitor.js';
 import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
 import { functionCalls } from '../live/product-session.js';
 import { MUTE_HEARTBEAT_MS, OMNI_38_VOICES, chooseVoice, connectRealtime, decodeBase64, pcmBase64, readVoice, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, silenceFrame, splitPcm, writeVoice } from '../live/realtime-omni.js';
@@ -24,10 +24,11 @@ const LIVE_INSTRUCTIONS = `你是看说体验里的语音助手，能看到用�
 用户可以随时插话。`;
 const LIVE_TOOL_INSTRUCTIONS = `你是看说体验里的语音助手，能看到用户打开的摄像头或屏幕，大约每秒一帧。
 用口语化中文回答，每次两三句话，先给结论。画面和问题有关时结合画面回答。
-需要事实或最新信息时调用 web_search，并用口语说明依据。
-用户要求盯着画面或听某种声音、出现情况就提醒时，调用 create_proactive_monitor。没有调用成功就不要说已经在监视。
+需要事实或最新信息时调用 web_search。回执里没有答案，这一轮只说你去查了，结果稍后另说。
+用户说从现在开始关注身体、咳嗽了提醒，或盯着以后才发生的声音和画面时，调用 create_proactive_monitor。回执不表示条件已经发生，这一轮不要说已经听到或看到。
 用户明确说了多久以后提醒时，调用 create_proactive_timer。没有调用成功就不要说已经设好。
-用户要求连续解说画面或声音的变化时，调用 create_live_narration。没有明显变化就不要主动开口。
+用户说持续报告屏幕或画面内容，或解说变化时，调用 create_live_narration，把要报告的内容写进 narration_focus。回执里没有画面，这一轮不要描述画面。持续报告由后台按自己的节奏开口。
+前台要一直能接话。后台结果没到时，不要停下来等，也不要编造结果。
 用户明确要求停下某一项监视、解说或到点提醒时，调用 cancel_proactive_task。停下说话、换话题或纠正回答都不算取消。没有调用成功就不要说已经停下。
 用户明确要求修改某一项正在进行的监视、解说或到点提醒时，调用 update_proactive_task。不能把一种任务改成另一种。没有调用成功就不要说已经改了。
 用户说出会在以后多次用到的个人事实时，调用 omnibio 记下。改掉或取消已有事实时，按提示里的编号 update 或 delete。已经记下的不要重复。名单满了就不要再加，不要删掉更早的事实来腾位置。
@@ -139,8 +140,8 @@ export function renderSession(view, reg) {
     <header class="app-top"><a class="back" href="#/">← 体验中心</a></header>
     <section class="intro" data-live-session>
       <p class="eyebrow">百炼 Key · 实时看说</p>
-      <h1>对着当前画面说话。</h1>
-      <p>打开摄像头或屏幕，接通后直接对着画面说话。说完稍停就会回答，插话会停下当前回答。费用记在你的百炼账号上。</p>
+      <h1>前台接着聊，后台慢慢做。</h1>
+      <p>打开摄像头，或点「屏幕」共享手机画面。接通后直接说话。说「从现在开始持续报告我手机屏幕里的内容」，前台先答应，后台过一会儿再讲屏幕上有什么。说「从现在开始关注我的身体，咳嗽了提醒我」，没咳嗽就不出声。费用记在你的百炼账号上。</p>
     </section>
     ${saved?.values?.DASHSCOPE_API_KEY ? html`<p class="inline-ok">已读取本机百炼 Key。发送前请再看一眼画面。</p>` : html`<div class="mode-banner"><div><strong>还没有百炼 Key</strong><p>看说和下面的网页真跑都要用你自己的 Key。保存后回到这里，不会自动调用模型。</p><a href="${SETUP}">去填写 Key</a></div></div>`}
     <section class="panel session-stage">
@@ -155,7 +156,7 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。通话中可以麦克风静音或播报静音。麦克风静音后声音不再送进通话和监视，大约每 30 秒送一秒静音来保持连接。播报静音会立刻停掉正在说的话，还没播的提醒不再补播。音色默认 Tina，可换成 qwen3.8 支持的预设。这一通已经接通时，主对话仍用接通时的音色；监视、到点提醒和下一次通话用新的。复刻音色仍在 Mac 上。可以说「把条件改成只看红字」，正在进行的这一项会按新的来，不用先取消。改提醒时间会从现在重新计。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。通话中可以麦克风静音或播报静音。麦克风静音后声音不再送进通话和监视，大约每 30 秒送一秒静音来保持连接。播报静音会立刻停掉正在说的话，还没播的提醒不再补播。音色默认 Tina，可换成 qwen3.8 支持的预设。这一通已经接通时，主对话仍用接通时的音色；监视、到点提醒和下一次通话用新的。复刻音色仍在 Mac 上。可以说「把条件改成只看红字」，正在进行的这一项会按新的来，不用先取消。改提醒时间会从现在重新计。可以说「持续报告我手机屏幕里的内容」，或「关注我的身体，咳嗽了就提醒」。前台先接住，后台再看再查，结果稍后才说。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
       <label class="field">音色<select data-voice></select></label>
       <label class="field">记忆库<select data-library></select></label>
       <div class="btn-row">
@@ -175,13 +176,18 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-send>只发这一帧</button>
         <button type="button" class="secondary-action" data-stop hidden>停止</button>
       </div>
+      <div class="background-lane" data-background>
+        <h2>后台</h2>
+        <p class="small">前台先接住这句话。查询、看图、持续报告和条件提醒在后台做，结果稍后才说。</p>
+        <ol data-background-list></ol>
+      </div>
       <audio data-player controls hidden></audio>
     </section>
     <section class="panel"><h2>这一轮对话</h2><ol data-log></ol></section>
     <section class="panel">
       <h2>还能用 Key 直接跑的玩法</h2>
       <div class="link-list">${runnable.map((item) => html`<a href="${item.href}">${item.label}</a>`)}</div>
-      <p class="small">上面这些都能用同一把 Key 在浏览器里跑。可以说「盯着画面，出现报错就提醒我」「听到警报就提醒我」「一分钟后提醒我喝水」或「解说画面上的变化」或「记住我喜欢喝茶」。记忆库在通话前切换。后台委托要在 Mac 上用 <a href="https://github.com/QwenLM/Qwen-Live-Harness" rel="noopener">Qwen-Live-Harness</a>。</p>
+      <p class="small">上面这些都能用同一把 Key 在浏览器里跑。可以说「持续报告我手机屏幕里的内容」「关注我的身体，咳嗽了就提醒」「一分钟后提醒我喝水」或「记住我喜欢喝茶」。前台先接住，结果稍后才说。记忆库在通话前切换。编码委托要在 Mac 上用 <a href="https://github.com/QwenLM/Qwen-Live-Harness" rel="noopener">Qwen-Live-Harness</a>。</p>
     </section>`);
 
   const video = page.querySelector('[data-preview]');
@@ -257,6 +263,11 @@ export function renderSession(view, reg) {
   let activeWatchId = null;
   let tasks = [];
   let adjacentId = null;
+  let background = [];
+  let lateQueue = [];
+  let pumpingLate = false;
+  let foregroundBusy = false;
+  let lateResponse = false;
   const timers = new Map();
   const spokenAlerts = [];
   let drainingAlerts = false;
@@ -549,6 +560,7 @@ export function renderSession(view, reg) {
     monitorStop?.();
     resetTasks();
     clearSpokenAlerts();
+    clearBackground();
     embedAbort?.abort();
     retrieved = '';
     sentInstructions = '';
@@ -654,6 +666,7 @@ export function renderSession(view, reg) {
       retrieved = '';
       sentInstructions = '';
       clearSpokenAlerts();
+      clearBackground();
       call = null;
       callReady = false;
       pendingCommit = false;
@@ -711,9 +724,20 @@ export function renderSession(view, reg) {
       return;
     }
     if (event.type === 'response.done') {
+      if (lateResponse) {
+        lateResponse = false;
+        foregroundBusy = false;
+        remember('', assistantText);
+        assistantText = '';
+        assistantLine = null;
+        void drainAlerts();
+        void pumpLate();
+        return;
+      }
       const calls = functionCalls(event, 2, toolRounds);
       if (calls.length && call) {
         toolRounds += 1;
+        foregroundBusy = true;
         const item = calls[0];
         if (item.name === 'analyze_view') void answerLook(item, mine, lookGeneration);
         else if (item.name === 'web_search') void answerSearch(item, mine);
@@ -737,99 +761,218 @@ export function renderSession(view, reg) {
       assistantText = '';
       assistantLine = null;
       userTurn = false;
+      foregroundBusy = false;
       const failed = event.response?.status && event.response.status !== 'completed';
       say(failed ? `这一轮没有完成（${event.response.status}）。可以继续说话。` : '可以继续说话。');
       void drainAlerts();
+      void pumpLate();
     }
   }
 
-  async function answerLook(item, mine, generation) {
-    let args = {};
-    try { args = JSON.parse(item.arguments || '{}'); } catch { args = {}; }
-    const question = visualQuestion(args.query, lastHeard);
-    const jpeg = liveSpec ? captureJpeg(video, liveSpec.MAX_FRAME_BYTES) : null;
-    let output = '没有打开摄像头或屏幕，看不到画面。';
-    if (jpeg) {
-      say('正在另开一次看图…');
-      try {
-        output = await analyzeFrame({
-          url: realtimeSocketUrl(reg.stacks.get('bailian'), liveValues, liveSpec.REALTIME_MODEL),
-          secret,
-          jpeg,
-          question,
-          voice: currentVoice(),
-          inputRate: liveSpec.IN_RATE,
-          outputRate: liveSpec.OUT_RATE,
-          asrModel: liveSpec.ASR_MODEL,
-        }) || '看图没有返回文字。';
-      } catch (error) {
-        output = `看图失败：${error.message}`;
-      }
+  function showBackground() {
+    const list = page.querySelector('[data-background-list]');
+    if (!list) return;
+    const rows = backgroundRows(background);
+    list.replaceChildren();
+    if (!rows.length) {
+      const item = document.createElement('li');
+      item.textContent = '还没有后台任务。可以说「持续报告我手机屏幕里的内容」，或「关注我的身体，咳嗽了就提醒」。';
+      list.append(item);
+      return;
     }
-    if (!active || mine !== callGeneration || generation !== lookGeneration || !call) return;
+    for (const text of rows) {
+      const item = document.createElement('li');
+      item.textContent = text;
+      list.append(item);
+    }
+  }
+  function noteJob(id, patch) {
+    if (!id) return;
+    background = patchBackground(background, id, patch);
+    showBackground();
+  }
+  function clearBackground() {
+    background = [];
+    lateQueue = [];
+    foregroundBusy = false;
+    lateResponse = false;
+    showBackground();
+  }
+  showBackground();
+
+  async function answerLook(item, mine, generation) {
+    const jpeg = liveSpec ? captureJpeg(video, liveSpec.MAX_FRAME_BYTES) : null;
+    const question = visualQuestion(toolArguments(item.arguments).query, lastHeard);
+    const accepted = Boolean(jpeg);
+    const output = accepted ? fastAck('look') : '没有打开摄像头或屏幕，看不到画面。';
+    if (!active || mine !== callGeneration || !call) return;
+    const id = `look-${mine}-${Date.now()}`;
+    if (accepted) {
+      background = openBackground(background, { id, lane: 'look', title: question });
+      showBackground();
+    }
+    try { replyTool(item, output, accepted ? fastStatus('look') : output); }
+    catch (error) { say(error.message); return; }
+    if (!accepted) return;
+    noteJob(id, { state: 'running', note: '正在看这一帧' });
+    let result;
+    try {
+      result = await analyzeFrame({
+        url: realtimeSocketUrl(reg.stacks.get('bailian'), liveValues, liveSpec.REALTIME_MODEL),
+        secret,
+        jpeg,
+        question,
+        voice: currentVoice(),
+        inputRate: liveSpec.IN_RATE,
+        outputRate: liveSpec.OUT_RATE,
+        asrModel: liveSpec.ASR_MODEL,
+      }) || '看图没有返回文字。';
+    } catch (error) {
+      result = `看图失败：${error.message}`;
+    }
+    if (!active || mine !== callGeneration || generation !== lookGeneration) {
+      noteJob(id, { state: 'delivered', note: '你又说话了，这次不送了' });
+      return;
+    }
+    noteJob(id, { state: result.startsWith('看图失败') ? 'failed' : 'delivered', note: result });
+    queueLate(result, mine);
+  }
+
+  function replyTool(item, output, display = output) {
+    const shown = redactSecret(display, secret);
     const line = document.createElement('li');
-    line.textContent = redactSecret(`画面：${output}`, secret);
+    line.textContent = shown;
     log.append(line);
+    foregroundBusy = true;
     try {
       call.send('conversation.item.create', { item: { type: 'function_call_output', call_id: item.call_id, output: redactSecret(output, secret) } });
       call.send('response.create');
     } catch (error) {
-      say(error.message);
+      foregroundBusy = false;
+      throw error;
     }
   }
 
-  function replyTool(item, output) {
-    const text = redactSecret(output, secret);
+  function queueLate(text, mine) {
+    const clean = redactSecret(String(text || ''), secret).replace(/\s+/g, ' ').trim();
+    if (!clean) return;
     const line = document.createElement('li');
-    line.textContent = text;
+    line.textContent = `后台送到：${clean}`;
     log.append(line);
-    call.send('conversation.item.create', { item: { type: 'function_call_output', call_id: item.call_id, output: text } });
-    call.send('response.create');
+    lateQueue.push({ text: clean, mine });
+    void pumpLate();
+  }
+  async function pumpLate() {
+    if (pumpingLate) return;
+    pumpingLate = true;
+    try {
+      while (active && lateQueue.length) {
+        const ready = Boolean(call && callReady && !userTurn && !playback?.playing() && !foregroundBusy);
+        const step = takeLate(lateQueue, ready);
+        if (!step.item) {
+          await new Promise((resolve) => setTimeout(resolve, 200));
+          continue;
+        }
+        lateQueue = step.queue;
+        if (step.item.mine !== callGeneration || !call) continue;
+        try {
+          foregroundBusy = true;
+          lateResponse = true;
+          call.send('response.create', { response: { instructions: lateResultInstructions(step.item.text) } });
+        } catch (error) {
+          foregroundBusy = false;
+          lateResponse = false;
+          say(error.message);
+        }
+      }
+    } finally {
+      pumpingLate = false;
+      if (active && lateQueue.length) void pumpLate();
+    }
   }
 
   async function answerSearch(item, mine) {
+    let query = '';
     let output;
     try {
-      const messages = searchMessages(toolArguments(item.arguments).query);
-      say('正在联网搜索…');
-      const turn = await chat({ stack: reg.stacks.get('bailian'), values: liveValues }, {
-        model: liveSpec.OMNI_MODEL,
-        messages,
-        enable_search: true,
-        enable_thinking: false,
-      }, { allowNetworkFallback: false });
-      output = redactSecret(turn.text, secret).replace(/\s+/g, ' ').trim() || '没有查到结果。';
-    } catch (error) {
-      output = `搜索失败：${error.message}`;
-    }
-    if (!active || mine !== callGeneration || !call) return;
-    try { replyTool(item, output); } catch (error) { say(error.message); }
-  }
-
-  async function answerMonitor(item, mine) {
-    let output;
-    let condition = '';
-    try {
-      condition = monitorTask(toolArguments(item.arguments).condition).replace(/^只判断这个条件：/, '');
-      output = liveSpec && captureJpeg(video, liveSpec.MAX_FRAME_BYTES)
-        ? '已开始听这两秒的声音并看画面。没有发生时不会出声。这会另开一条实时连接，费用另计。'
-        : '没有打开摄像头或屏幕，无法监视。';
+      query = searchMessages(toolArguments(item.arguments).query)[1].content;
+      output = fastAck('search');
     } catch (error) {
       output = error.message;
     }
     if (!active || mine !== callGeneration || !call) return;
-    try { replyTool(item, output); } catch (error) { say(error.message); return; }
-    if (output.startsWith('已开始')) void runMonitor(condition, mine);
+    const id = `search-${mine}-${Date.now()}`;
+    if (query) {
+      background = openBackground(background, { id, lane: 'search', title: query });
+      showBackground();
+    }
+    try { replyTool(item, output, query ? fastStatus('search', query) : output); }
+    catch (error) { say(error.message); return; }
+    if (!query) return;
+    noteJob(id, { state: 'running', note: '正在查' });
+    let result;
+    try {
+      const turn = await chat({ stack: reg.stacks.get('bailian'), values: liveValues }, {
+        model: liveSpec.OMNI_MODEL,
+        messages: searchMessages(query),
+        enable_search: true,
+        enable_thinking: false,
+      }, { allowNetworkFallback: false });
+      result = redactSecret(turn.text, secret).replace(/\s+/g, ' ').trim() || '没有查到结果。';
+    } catch (error) {
+      result = `搜索失败：${error.message}`;
+    }
+    if (!active || mine !== callGeneration) {
+      noteJob(id, { state: 'delivered', note: '通话已结束' });
+      return;
+    }
+    noteJob(id, { state: result.startsWith('搜索失败') ? 'failed' : 'delivered', note: result });
+    queueLate(result, mine);
+  }
+
+  async function answerMonitor(item, mine) {
+    let output;
+    let display = '';
+    let condition = '';
+    try {
+      condition = monitorTask(toolArguments(item.arguments).condition).replace(/^只判断这个条件：/, '');
+      if (!(liveSpec && captureJpeg(video, liveSpec.MAX_FRAME_BYTES))) output = '没有打开摄像头或屏幕，无法监视。';
+      else {
+        output = [fastAck('monitor'), sourceHint(videoSource, condition)].filter(Boolean).join('');
+        display = [fastStatus('monitor', condition), sourceHint(videoSource, condition)].filter(Boolean).join('');
+      }
+    } catch (error) {
+      output = error.message;
+    }
+    if (!active || mine !== callGeneration || !call) return;
+    const id = `monitor-${mine}-${Date.now()}`;
+    if (output.startsWith('已交给')) {
+      background = openBackground(background, { id, lane: 'monitor', title: condition });
+      showBackground();
+    }
+    try { replyTool(item, output, display || output); } catch (error) { say(error.message); return; }
+    if (output.startsWith('已交给')) void runMonitor(condition, mine, { jobId: id });
   }
 
   async function answerNarrate(item, mine) {
-    const task = narrateTask(toolArguments(item.arguments).narration_focus);
-    const output = liveSpec && captureJpeg(video, liveSpec.MAX_FRAME_BYTES)
-      ? '已开始连续解说。没有明显变化时不会出声。同一时间只有一条监视或解说，费用另计。'
+    const focus = toolArguments(item.arguments).narration_focus;
+    const plan = narrationPlan(focus);
+    const hint = sourceHint(videoSource, focus);
+    const ready = Boolean(liveSpec && captureJpeg(video, liveSpec.MAX_FRAME_BYTES));
+    const output = ready
+      ? [fastAck(plan.continuous ? 'narration' : 'narrationChange'), hint].filter(Boolean).join('')
       : '没有打开摄像头或屏幕，无法解说。';
+    const display = ready
+      ? [fastStatus(plan.continuous ? 'narration' : 'narrationChange', focus), hint].filter(Boolean).join('')
+      : output;
     if (!active || mine !== callGeneration || !call) return;
-    try { replyTool(item, output); } catch (error) { say(error.message); return; }
-    if (output.startsWith('已开始')) void runMonitor(task, mine, { rules: NARRATE_RULES, task, label: '解说' });
+    const id = `narration-${mine}-${Date.now()}`;
+    if (ready) {
+      background = openBackground(background, { id, lane: 'narration', title: plan.task });
+      showBackground();
+    }
+    try { replyTool(item, output, display); } catch (error) { say(error.message); return; }
+    if (ready) void runMonitor(plan.task, mine, { rules: plan.rules, task: plan.task, label: '解说', gapMs: plan.gapMs, jobId: id });
   }
 
   async function answerBio(item, mine) {
@@ -1189,24 +1332,48 @@ export function renderSession(view, reg) {
       await monitor.ready;
       monitorAudio = { parts: [], total: 0 };
       captureMonitorAudio = true;
+      noteJob(extra.jobId, { state: 'running', note: extra.label === '解说' ? '正在看这一路画面' : '条件没发生时不出声' });
       const oneSecond = liveSpec.IN_RATE * 2;
+      let endNote = '';
+      let endState = 'delivered';
       while (!stopped && mine === callGeneration && active) {
         const mark = monitorAudio.total;
         const first = captureJpeg(video, liveSpec.MAX_FRAME_BYTES);
         await waitForAudio(mark + oneSecond, 1200);
-        if (stopped || mine !== callGeneration || !active) return;
+        if (stopped || mine !== callGeneration || !active) break;
         const second = captureJpeg(video, liveSpec.MAX_FRAME_BYTES);
         await waitForAudio(mark + oneSecond * 2, 1300);
-        if (!first || !second) { say('主动提醒停了：画面中断。'); return; }
+        if (!first || !second) {
+          endNote = '画面中断';
+          endState = 'failed';
+          say('主动提醒停了：画面中断。');
+          break;
+        }
         const result = await monitor.round([first, second], takeMonitorAudio(monitorAudio, liveSpec.IN_RATE));
-        if (stopped || mine !== callGeneration || !active || isSilentMonitor(result.text)) continue;
-        const line = document.createElement('li');
-        line.textContent = redactSecret(`${extra.label || '提醒'}：${result.text}`, secret);
-        log.append(line);
-        enqueueAlert(result.audio, mine);
+        if (stopped || mine !== callGeneration || !active) break;
+        if (isSilentMonitor(result.text)) {
+          noteJob(extra.jobId, { state: 'running', note: extra.label === '解说' ? '刚看过，没有要补充的' : '刚看过，条件没发生' });
+        } else {
+          noteJob(extra.jobId, { state: 'running', note: result.text });
+          const line = document.createElement('li');
+          line.textContent = redactSecret(`${extra.label || '提醒'}：${result.text}`, secret);
+          log.append(line);
+          enqueueAlert(result.audio, mine);
+        }
+        if (extra.gapMs) {
+          const deadline = Date.now() + extra.gapMs;
+          while (!stopped && mine === callGeneration && active && Date.now() < deadline) {
+            await new Promise((resolve) => setTimeout(resolve, 200));
+          }
+        }
       }
+      if (extra.jobId) noteJob(extra.jobId, { state: endState, note: endNote || '已停下' });
     } catch (error) {
-      if (!stopped && mine === callGeneration && active && error.message !== '主动提醒已停止') say(`主动提醒停了：${error.message}`);
+      const ended = stopped || error.message === '主动提醒已停止';
+      if (!ended && mine === callGeneration && active) {
+        say(`主动提醒停了：${error.message}`);
+        noteJob(extra.jobId, { state: 'failed', note: error.message });
+      } else noteJob(extra.jobId, { state: 'delivered', note: '已停下' });
     } finally {
       captureMonitorAudio = false;
       monitor?.close();
@@ -1331,7 +1498,7 @@ export function renderSession(view, reg) {
       say('实时通话已接通，正在打开麦克风…');
       await openLiveMic(mine);
       if (mine !== callGeneration || !active) return;
-      say(demand ? '对着麦克风说话即可。问到画面时才会另看一眼。' : '对着画面说话即可。说完稍停就会回答，插话会停下当前回答。');
+      say(demand ? '对着麦克风说话即可。问到画面时会交给后台看，结果稍后才说。' : '对着画面说话即可。也可以说持续报告屏幕，或咳嗽了提醒我。前台先接住，结果稍后才说。');
       if (store.visual) startObserver(mine);
     } catch (error) {
       stopObserver();
