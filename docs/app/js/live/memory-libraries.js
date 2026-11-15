@@ -649,8 +649,17 @@ export function rankWithTime(keywordText, vectorHits, dated, timeRange, now = ne
 export const LTM_FIELDS = ['name', 'occupation_or_role', 'preferences', 'routines', 'interests', 'long_term_goals', 'relationships', 'appearance'];
 export const MAX_LTM_ITEMS = 8;
 export const MAX_LTM_CHARS = 80;
-export const MAX_STM = 12;
+export const MAX_STM = 40;
 export const MAX_STM_CHARS = 160;
+export const STM_GRACE_DAYS = 2;
+export const STM_MAX_AGE_DAYS = 90;
+export const STM_UPCOMING_WEIGHT = 1.5;
+export const STM_ONGOING_WEIGHT = 1;
+export const STM_RECENCY_LAMBDA = 0.05;
+export const STM_URGENT_BOOST = 1.5;
+export const STM_URGENT_DAYS = 3;
+export const STM_PROMPT_ITEMS = 20;
+export const STM_PROMPT_CHARS = 1200;
 const LTM_LABELS = {
   name: '姓名',
   occupation_or_role: '长期角色',
@@ -685,6 +694,32 @@ function clipMemoryText(value, max) {
 export function localDate(date = new Date()) {
   const part = (value) => String(value).padStart(2, '0');
   return `${date.getFullYear()}-${part(date.getMonth() + 1)}-${part(date.getDate())}`;
+}
+
+function parseDay(day) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/u.exec(String(day || ''));
+  if (!match) return null;
+  return { year: Number(match[1]), month: Number(match[2]), day: Number(match[3]) };
+}
+
+function shiftDate(day, delta) {
+  const parsed = parseDay(day);
+  if (!parsed) return '';
+  const date = new Date(parsed.year, parsed.month - 1, parsed.day);
+  date.setDate(date.getDate() + delta);
+  return localDate(date);
+}
+
+function dayStamp(day) {
+  const parsed = parseDay(day);
+  if (!parsed) return 0;
+  return Math.floor(new Date(parsed.year, parsed.month - 1, parsed.day, 12).getTime() / 1000);
+}
+
+function localStamp(epoch) {
+  const date = new Date(epoch * 1000);
+  const part = (value) => String(value).padStart(2, '0');
+  return `${localDate(date)} ${part(date.getHours())}:${part(date.getMinutes())}`;
 }
 
 export function normalizeDate(value) {
@@ -731,9 +766,12 @@ export function cleanStm(raw, today = '', seq = 0) {
     if (!content || !status || !number || seen.has(number)) continue;
     const event_date = normalizeDate(item.event_date);
     const expires = normalizeDate(item.expires);
+    const created_ts = Number.isFinite(item.created_ts) && item.created_ts > 0 ? Math.floor(item.created_ts) : 0;
     if (expires && today && expires < today) continue;
+    if (!expires && status === 'upcoming' && event_date && today && event_date < shiftDate(today, -STM_GRACE_DAYS)) continue;
+    if (created_ts && today && created_ts < dayStamp(today) - STM_MAX_AGE_DAYS * 86400) continue;
     seen.add(number);
-    items.push({ id: `stm_${number}`, content, status, event_date, expires });
+    items.push({ id: `stm_${number}`, content, status, event_date, expires, created_ts });
   }
   const stm = items.slice(-MAX_STM);
   const stmSeq = stm.reduce((max, item) => Math.max(max, stmNumber(item.id)), Number.isInteger(seq) && seq > 0 ? seq : 0);
@@ -753,8 +791,38 @@ export function renderProfile(ltm) {
   }).join('\n');
 }
 
-export function renderRecent(stm, today = localDate()) {
-  return cleanStm(stm, today).stm.map((item) => `- [${item.status === 'upcoming' ? '即将发生' : '进行中'}] ${item.content}`).join('\n');
+export function scoreStm(item, today, now = new Date()) {
+  const created = item?.created_ts > 0 ? item.created_ts : Math.floor(now.getTime() / 1000);
+  const days = Math.max(0, (now.getTime() / 1000 - created) / 86400);
+  let score = (item?.status === 'upcoming' ? STM_UPCOMING_WEIGHT : STM_ONGOING_WEIGHT) * Math.exp(-STM_RECENCY_LAMBDA * days);
+  if (item?.status === 'upcoming' && item.event_date && today) {
+    const ahead = Math.round((dayStamp(item.event_date) - dayStamp(today)) / 86400);
+    if (ahead >= 0 && ahead <= STM_URGENT_DAYS) score *= STM_URGENT_BOOST;
+  }
+  return score;
+}
+
+export function selectRecent(stm, today = localDate(), now = new Date()) {
+  const ranked = cleanStm(stm, today).stm
+    .map((item) => ({ item, score: scoreStm(item, today, now) }))
+    .sort((left, right) => right.score - left.score || left.item.id.localeCompare(right.item.id));
+  const selected = [];
+  let used = 0;
+  for (const { item } of ranked) {
+    if (selected.length >= STM_PROMPT_ITEMS) break;
+    const cost = [...item.content].length;
+    if (selected.length && used + cost > STM_PROMPT_CHARS) continue;
+    used += cost;
+    selected.push(item);
+  }
+  return selected.sort((left, right) => Number(left.status !== 'ongoing') - Number(right.status !== 'ongoing') || (left.created_ts - right.created_ts) || left.id.localeCompare(right.id));
+}
+
+export function renderRecent(stm, today = localDate(), now = new Date()) {
+  return selectRecent(stm, today, now).map((item) => {
+    const when = item.created_ts ? `[记于 ${localStamp(item.created_ts)}] ` : '';
+    return `- [${item.status === 'upcoming' ? '即将发生' : '进行中'}] ${when}${item.content}`;
+  }).join('\n');
 }
 
 export function profileLines(ltm) {
@@ -832,7 +900,8 @@ function patchEntries(raw) {
   return input.filter((item) => typeof item === 'string').map((item) => item.trim()).filter(Boolean);
 }
 
-export function applyMemoryPatch(library, patch, today) {
+export function applyMemoryPatch(library, patch, today, now = new Date()) {
+  const createdAt = Math.floor(now.getTime() / 1000);
   const ltm = cleanLtm(library?.ltm);
   let { stm, stmSeq } = cleanStm(library?.stm, today, Number(library?.stmSeq) || 0);
   const report = { ltmSet: 0, ltmAdded: 0, ltmRemoved: 0, stmAdded: 0, stmUpdated: 0, stmRemoved: 0, rejected: 0 };
@@ -918,7 +987,7 @@ export function applyMemoryPatch(library, patch, today) {
         continue;
       }
       stmSeq += 1;
-      stm.push({ id: `stm_${stmSeq}`, content, status, event_date, expires });
+      stm.push({ id: `stm_${stmSeq}`, content, status, event_date, expires, created_ts: createdAt });
       report.stmAdded += 1;
     }
   }
