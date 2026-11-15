@@ -38,11 +38,12 @@ export const MONITOR_TOOL = {
   type: 'function',
   function: {
     name: 'create_proactive_monitor',
-    description: '把以后才发生的提醒交给后台。用户说关注身体、咳嗽了提醒、出现报错再提醒，或听到某种声音再提醒时调用。condition 写清听到或看到什么才开口。repeat 为 false 表示只提醒一次，说过就停；只有用户说一直盯着、从现在开始关注或持续监督时才设为 true。true 时同一次发生不重复开口，等这次过去再提醒。报告屏幕、画面时 modalities 只写 vision；咳嗽、身体或声音只写 audio；又要看又要听才两项都写。回执不表示条件已经发生。调用后只用一句话告诉用户会在发生时提醒。',
+    description: '把以后才发生的提醒交给后台。用户说关注身体、咳嗽了提醒、出现报错再提醒，或听到某种声音再提醒时调用。condition 只写听到或看到什么。用户说咳嗽了就提醒我喝水时，condition 写听到咳嗽，trigger_response 写该喝水了。repeat 为 false 表示只提醒一次，说过就停；只有用户说一直盯着、从现在开始关注或持续监督时才设为 true。true 时同一次发生不重复开口，等这次过去再提醒。报告屏幕、画面时 modalities 只写 vision；咳嗽、身体或声音只写 audio；又要看又要听才两项都写。回执不表示条件已经发生。调用后只用一句话告诉用户会在发生时提醒，不要把提醒原文说成已经发生。',
     parameters: {
       type: 'object',
       properties: {
-        condition: { type: 'string', description: '要盯的条件，例如听到咳嗽时提醒。' },
+        condition: { type: 'string', description: '要盯的条件，例如听到咳嗽。不要把提醒原文写在这里。' },
+        trigger_response: { type: 'string', description: '条件发生时要对用户说的那句话，例如该喝水了。' },
         repeat: { type: 'boolean', description: 'false 只提醒一次。true 只在用户明确要一直盯着时使用。' },
         modalities: { type: 'array', items: { type: 'string', enum: ['vision', 'audio'] }, description: 'vision 只看画面。audio 只听声音。两项都写才又看又听。报告屏幕用 vision，咳嗽或身体用 audio。' },
       },
@@ -344,6 +345,28 @@ export function monitorTask(condition) {
   return `只判断这个条件：${text}`;
 }
 
+export function reminderText(condition, explicit) {
+  const given = String(explicit ?? '').replace(/\s+/g, ' ').trim().slice(0, 200);
+  if (given && !/^(一次|一下)$/.test(given)) return given;
+  const raw = String(condition || '').replace(/\s+/g, ' ').trim();
+  const match = /(?:就提醒我|提醒我)([^，。！？]{1,40})/.exec(raw);
+  if (!match) return '';
+  const piece = match[1].replace(/^(一次|一下)/, '').replace(/(一次|一下)$/, '').trim();
+  if (!piece || /^(一次|一下)$/.test(piece)) return '';
+  return piece.slice(0, 120);
+}
+
+export function monitorFocus(condition, response) {
+  const base = monitorTask(condition);
+  const reminder = reminderText(condition, response);
+  return reminder ? `${base}\n条件发生时只说这句提醒：${reminder}` : base;
+}
+
+export function reminderNote(response) {
+  const reminder = reminderText('', response);
+  return reminder ? `发生时会说「${reminder}」。` : '';
+}
+
 export function monitorPlan(args) {
   const raw = args && typeof args === 'object' ? args : {};
   const condition = monitorTask(raw.condition).replace(/^只判断这个条件：/, '');
@@ -355,7 +378,8 @@ export function monitorPlan(args) {
     repeat = once && !ongoing ? false : true;
   }
   const modalities = raw.modalities === undefined ? inferModalities(condition) : perceptionModalities(raw.modalities);
-  return { condition, repeat, modalities };
+  const response = reminderText(condition, raw.trigger_response);
+  return { condition, repeat, modalities, response };
 }
 
 export function cadenceNote(repeat) {
@@ -516,7 +540,8 @@ function taskLines(tasks) {
   return proactiveTasks(tasks).map((task) => {
     const once = task.kind === 'monitor' && task.repeat === false ? '（只提醒一次）' : '';
     const channel = task.kind === 'timer' ? '' : modalityMark(task.modalities);
-    return `- ${kindLabel(task.kind)}「${task.title.trim()}」${once}${channel}`;
+    const reminder = task.kind === 'monitor' && task.response ? `（提醒：${task.response}）` : '';
+    return `- ${kindLabel(task.kind)}「${task.title.trim()}」${once}${channel}${reminder}`;
   });
 }
 

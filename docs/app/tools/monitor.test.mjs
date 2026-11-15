@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, listProactive, modalityNote, monitorPlan, monitorTask, narrationIsContinuous, narrationPlan, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, listProactive, modalityNote, monitorFocus, monitorPlan, monitorTask, narrationIsContinuous, reminderNote, reminderText, narrationPlan, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -273,6 +273,26 @@ test('continuous screen reports and body alerts are accepted before the result e
   assert.deepEqual(tasks.map((item) => item.id), ['n', 't', 'm']);
   const replaced = retainTasks(tasks, { id: 'n2', kind: 'narration', title: '新的屏幕' });
   assert.deepEqual(replaced.map((item) => item.id), ['t', 'm', 'n2']);
+});
+
+test('a cough reminder speaks the requested sentence instead of only reporting the cough', () => {
+  const explicit = monitorPlan({ condition: '听到咳嗽', trigger_response: '该喝水了' });
+  assert.equal(explicit.response, '该喝水了');
+  assert.equal(monitorPlan({ condition: '咳嗽了就提醒我喝水' }).response, '喝水');
+  assert.equal(monitorPlan({ condition: '咳嗽了提醒我一次' }).response, '');
+  assert.equal(monitorPlan({ condition: '从现在开始关注我的身体' }).response, '');
+  assert.equal(reminderText('听到咳嗽', '一次'), '');
+  assert.match(monitorFocus('听到咳嗽', '该喝水了'), /条件发生时只说这句提醒：该喝水了/);
+  assert.match(reminderNote('该喝水了'), /发生时会说「该喝水了」/);
+  assert.equal(reminderNote(''), '');
+  assert.match(MONITOR_TOOL.function.parameters.properties.trigger_response.description, /该喝水了/);
+  assert.match(listProactive([{ id: 'm', kind: 'monitor', title: '听到咳嗽', response: '该喝水了', modalities: ['audio'] }]), /提醒：该喝水了/);
+  const said = updateProactive(
+    [{ id: 'm', kind: 'monitor', title: '听到咳嗽', condition: '听到咳嗽', modalities: ['audio'] }],
+    { target_title: '听到咳嗽', trigger_response: '该喝水了' },
+  );
+  assert.equal(said.patch.response, '该喝水了');
+  assert.match(said.receipt, /说法「该喝水了」/);
 });
 
 test('a one-time cough alert stops after it speaks, and an ongoing watch waits out the same occurrence', () => {
