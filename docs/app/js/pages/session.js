@@ -2,7 +2,7 @@ import { liveConstants } from '../data.js';
 import { chat, postJson, toBase64 } from '../live/client.js';
 import { microphone } from '../live/microphone.js';
 import { SAMPLE_RATE } from '../live/pcm.js';
-import { BIO_TOOL, EMBED_MODEL, OBSERVE_EVERY_MS, RETRIEVE_TOOL, UPDATER_PROMPT, activeLibrary, applyBio, applyMemoryPatch, bioResult, cleanObservation, clearLibrary, createLibrary, envCorpus, formatUpdaterInput, hybridRetrieval, isEmptyPatch, localDate, memoryCorpus, memoryLabel as libraryStatus, observerPrompt, parsePatch, readStore, recordObservation, redactOperations, renameLibrary, renderProfile, renderRecent, replaceActive, retrieveMemory, switchLibrary, vectorMatches, vectorsFromEmbedding, writeStore } from '../live/memory-libraries.js';
+import { BIO_TOOL, EMBED_MODEL, OBSERVE_EVERY_MS, RETRIEVE_TOOL, UPDATER_PROMPT, activeLibrary, applyBio, applyMemoryPatch, bioResult, cleanObservation, clearLibrary, createLibrary, datedEntries, dialogueLines, envCorpus, formatUpdaterInput, isEmptyPatch, localDate, memoryLabel as libraryStatus, observerPrompt, parsePatch, rankWithTime, readStore, recordObservation, redactOperations, rememberTurn, renameLibrary, renderProfile, renderRecent, replaceActive, retrieveMemory, switchLibrary, vectorMatches, vectorsFromEmbedding, writeStore } from '../live/memory-libraries.js';
 import { MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, isSilentMonitor, monitorTask, narrateTask, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, timerRequest, toolArguments } from '../live/monitor.js';
 import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
 import { functionCalls } from '../live/product-session.js';
@@ -29,7 +29,7 @@ const LIVE_TOOL_INSTRUCTIONS = `你是看说体验里的语音助手，能看到
 用户明确说了多久以后提醒时，调用 create_proactive_timer。没有调用成功就不要说已经设好。
 用户要求连续解说画面或声音的变化时，调用 create_live_narration。没有明显变化就不要主动开口。
 用户说出会在以后多次用到的个人事实时，调用 omnibio 记下。已经记下的不要重复。
-用户问起更早的对话、而当前记忆里没有时，调用 omniretrieve，source 用 dialogue。问起以前看到的环境时，source 用 env。
+用户问起更早的对话、而当前记忆里没有时，调用 omniretrieve，source 用 dialogue。问起以前看到的环境时，source 用 env。用户提到昨天、上周这类时间时，把时间放进 time_range，例如昨天用 [2, 0]，上周用 [14, 1]，不要写进 query。
 不识别画面中人的身份；看不清就直说，不要编造。
 用户可以随时插话。`;
 const SESSION_TOOLS = [SEARCH_TOOL, MONITOR_TOOL, TIMER_TOOL, NARRATE_TOOL, BIO_TOOL, RETRIEVE_TOOL];
@@ -150,7 +150,7 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
       <label class="field">记忆库<select data-library></select></label>
       <div class="btn-row">
         <button type="button" class="secondary-action" data-library-new>新建记忆库</button>
@@ -301,7 +301,7 @@ export function renderSession(view, reg) {
       const text = cleanObservation(redactSecret(turn.text, secret));
       if (!text) { say('这一帧没有记下：模型没有给出可用的一句。'); return; }
       const library = activeLibrary(store);
-      library.env = recordObservation(library, text);
+      library.env = recordObservation(library, text, Date.now() / 1000);
       saveActive();
       showMemory();
       const line = document.createElement('li');
@@ -317,7 +317,12 @@ export function renderSession(view, reg) {
     for (const button of page.querySelectorAll('[data-library-new],[data-library-rename],[data-forget]')) button.disabled = on;
   }
   function remember(heard, answer) {
+    const before = JSON.stringify(memory);
     memory = nextMemory(memory, redactSecret(heard, secret), redactSecret(answer, secret));
+    if (JSON.stringify(memory) !== before && memory.at(-1)) {
+      const library = activeLibrary(store);
+      library.turns = rememberTurn(library.turns, memory.at(-1), Date.now() / 1000);
+    }
     saveActive();
     showMemory();
   }
@@ -687,7 +692,7 @@ export function renderSession(view, reg) {
       const request = toolArguments(item.arguments);
       const library = activeLibrary(store);
       const keyword = retrieveMemory(library, request);
-      const corpus = request.source === 'env' ? envCorpus(library) : memoryCorpus(library);
+      const corpus = request.source === 'env' ? envCorpus(library) : dialogueLines(library);
       const query = redactSecret(String(request.query || ''), secret).replace(/\s+/g, ' ').trim();
       let hits = [];
       let note = '';
@@ -699,7 +704,7 @@ export function renderSession(view, reg) {
           note = '向量检索没有完成，这次只按关键词查找。';
         }
       }
-      output = [note, hybridRetrieval(keyword, hits)].filter(Boolean).join('\n');
+      output = [note, rankWithTime(keyword, hits, datedEntries(library, request.source), request.time_range)].filter(Boolean).join('\n');
     } catch (error) { output = error.message; }
     if (!active || mine !== callGeneration || !call) return;
     try { replyTool(item, output); } catch (error) { say(error.message); }

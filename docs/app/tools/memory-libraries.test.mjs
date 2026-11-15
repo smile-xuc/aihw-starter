@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, RETRIEVE_TOOL,
-  activeLibrary, applyBio, applyMemoryPatch, bioResult, cleanObservation, clearLibrary, createLibrary, emptyLtm, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, normalizeDate, normalizeVector, observerPrompt, parsePatch, readStore, recordObservation, redactOperations,
-  renameLibrary, renderProfile, renderRecent, replaceActive, retrieveMemory, switchLibrary, vectorMatches, vectorsFromEmbedding, writeStore,
+  activeLibrary, applyBio, applyMemoryPatch, bioResult, cleanObservation, clearLibrary, createLibrary, datedEntries, emptyLtm, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordObservation, redactOperations, rememberTurn,
+  renameLibrary, renderProfile, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, switchLibrary, vectorMatches, vectorsFromEmbedding, writeStore,
 } from '../js/live/memory-libraries.js';
 
 function storage(initial = {}) {
@@ -108,12 +108,12 @@ test('visual observations stay in the active library and out of dialogue search'
   assert.equal(recordObservation({ env: [] }, '用户的钥匙是 sk-abcdefghijklmn。').length, 0);
   assert.match(observerPrompt('screen'), /屏幕截图/);
   assert.doesNotMatch(observerPrompt('camera'), /屏幕截图/);
-  let lines = recordObservation({ env: [] }, `好的，${sentence}`);
-  lines = recordObservation({ env: lines }, sentence);
-  assert.deepEqual(lines, [sentence]);
+  let lines = recordObservation({ env: [] }, `好的，${sentence}`, 100);
+  lines = recordObservation({ env: lines }, sentence, 200);
+  assert.deepEqual(lines, [{ content: sentence, at: 200 }]);
   for (let i = 0; i < 25; i += 1) lines = recordObservation({ env: lines }, `用户看到编号${i}的白色杯子放在桌上。`);
   assert.equal(lines.length, 20);
-  assert.match(lines.at(-1), /编号24/);
+  assert.match(lines.at(-1).content, /编号24/);
   const library = { bio: ['用户喜欢喝茶'], notes: ['看到杯子'], summary: '', env: [sentence] };
   assert.match(retrieveMemory(library, { query: '厨房', source: 'env' }), /厨房/);
   assert.equal(retrieveMemory(library, { query: '厨房', source: 'dialogue' }), '没有找到相关记忆。');
@@ -123,7 +123,8 @@ test('visual observations stay in the active library and out of dialogue search'
   store = replaceActive(store, { ...activeLibrary(store), env: [sentence] });
   store = writeStore(box, store);
   assert.equal(readStore(box).store.visual, true);
-  assert.equal(activeLibrary(readStore(box).store).env[0], sentence);
+  assert.equal(activeLibrary(readStore(box).store).env[0].content, sentence);
+  assert.equal(activeLibrary(readStore(box).store).env[0].at, 0);
   store = createLibrary(store, '工作', 'work');
   assert.equal(store.visual, true);
   assert.equal(activeLibrary(store).env.length, 0);
@@ -172,4 +173,28 @@ test('hangup patch updates the durable profile and upcoming items', () => {
   assert.equal(activeLibrary(cleared).stm.length, 0);
   assert.match(renderProfile(next.ltm), /姓名：海铂/);
   assert.match(renderRecent(next.stm, '2026-11-15'), /即将发生/);
+});
+
+test('time range reweights dated dialogue and still keeps outside hits', () => {
+  const now = new Date('2026-11-15T08:00:00+08:00');
+  const recent = Math.floor(now.getTime() / 1000) - 86400;
+  const old = Math.floor(now.getTime() / 1000) - 10 * 86400;
+  assert.equal(rememberTurn([], '密钥 sk-notarealkey12345678', recent).length, 0);
+  let turns = rememberTurn([], '上周做了项目评审。', old);
+  turns = rememberTurn(turns, '昨天在喝水。', recent);
+  for (let i = 0; i < 45; i += 1) turns = rememberTurn(turns, `第${i}句补充对话内容。`, recent);
+  assert.equal(turns.length, 40);
+  const library = { bio: [], notes: [], summary: '', turns: [turns[0], { text: '昨天在喝水。', at: recent }, { text: '上周做了项目评审。', at: old }] };
+  const keyword = retrieveMemory(library, { query: '项目 喝水', source: 'dialogue' });
+  const ranked = rankWithTime(keyword, [], datedEntries(library, 'dialogue'), [2, 0], now);
+  assert.equal(ranked.split('\n')[0], '昨天在喝水。');
+  assert.match(ranked, /项目评审/);
+  const swapped = resolveTimeRange([1, 14], now);
+  assert.ok(swapped.from < swapped.to);
+  const box = storage();
+  const saved = writeStore(box, replaceActive(readStore(box).store, { ...activeLibrary(readStore(box).store), turns: library.turns }));
+  assert.equal(activeLibrary(readStore(box).store).turns.at(-1).text, '上周做了项目评审。');
+  assert.match(memoryLabel(saved), /带时间的对话/);
+  const cleared = clearLibrary(saved, 'default');
+  assert.equal(activeLibrary(cleared).turns.length, 0);
 });
