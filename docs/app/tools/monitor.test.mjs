@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, isSilentMonitor, lateResultInstructions, listProactive, monitorPlan, monitorTask, narrationIsContinuous, narrationPlan, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, listProactive, modalityNote, monitorPlan, monitorTask, narrationIsContinuous, narrationPlan, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -237,10 +237,14 @@ test('continuous screen reports and body alerts are accepted before the result e
   const screen = narrationPlan('手机屏幕里的内容');
   assert.equal(screen.continuous, true);
   assert.equal(screen.gapMs, CONTINUOUS_GAP_MS);
-  assert.equal(screen.rules, CONTINUOUS_RULES);
+  assert.deepEqual(screen.modalities, ['vision']);
   assert.match(screen.rules, /不要输出 remain_silent/);
-  assert.equal(narrationPlan('画面上的变化').rules, NARRATE_RULES);
+  assert.match(screen.rules, /没有声音/);
+  assert.equal(narrationPlan('持续报告声音和画面').rules, CONTINUOUS_RULES);
+  assert.deepEqual(narrationPlan('持续报告声音和画面').modalities, ['vision', 'audio']);
+  assert.match(narrationPlan('画面上的变化').rules, /没有声音/);
   assert.equal(narrationPlan('画面上的变化').gapMs, 0);
+  assert.equal(narrationPlan('声音和画面').rules, NARRATE_RULES);
   assert.match(fastAck('narration'), /已交给后台持续报告/);
   assert.match(fastAck('monitor'), /不要说已经听到或看到了/);
   assert.match(fastAck('search'), /这一轮不要回答问题/);
@@ -303,4 +307,50 @@ test('a one-time cough alert stops after it speaks, and an ongoing watch waits o
   const narrateQuiet = cadenceStep({ kind: 'narration', silent: true, once: false, armed: true });
   assert.equal(narrateQuiet.speak, false);
   assert.match(narrateQuiet.note, /没有要补充的/);
+});
+
+test('screen reports look without the microphone, and a cough watch listens without frames', async () => {
+  assert.deepEqual(inferModalities('从现在开始持续的报告我手机屏幕里的内容'), ['vision']);
+  assert.deepEqual(inferModalities('从现在开始关注我的身体'), ['audio']);
+  assert.deepEqual(inferModalities('咳嗽了提醒我一次'), ['audio']);
+  assert.deepEqual(inferModalities('出现报错'), ['vision', 'audio']);
+  assert.deepEqual(monitorPlan({ condition: '手机屏幕', modalities: ['audio'] }).modalities, ['audio']);
+  assert.deepEqual(perceptionModalities(['视频', '声音']), ['vision', 'audio']);
+  assert.throws(() => perceptionModalities(['text']), /只能用 vision 或 audio/);
+  assert.match(modalityNote(['vision']), /只看画面/);
+  assert.match(modalityNote(['audio']), /只听声音/);
+  assert.equal(modalityNote(['vision', 'audio']), '');
+  const cough = monitorPlan({ condition: '咳嗽了提醒我一次' });
+  assert.equal(cough.repeat, false);
+  assert.deepEqual(cough.modalities, ['audio']);
+  const listen = openMonitor({ ...common, video: false, condition: '咳嗽', rules: perceptionRules({ kind: 'monitor', continuous: false, modalities: ['audio'] }) });
+  open(FakeSocket.latest);
+  await listen.ready;
+  const listenSession = FakeSocket.latest.sent.find((item) => item.type === 'session.update').session;
+  assert.equal(listenSession.video, undefined);
+  assert.match(listenSession.instructions, /没有画面/);
+  const heard = [new Uint8Array(32000), new Uint8Array(32000)];
+  heard[0][0] = 4;
+  await listen.round(null, heard, { vision: false, audio: true });
+  assert.equal(FakeSocket.latest.sent.filter((item) => item.type === 'input_image_buffer.append').length, 0);
+  assert.equal(decodeBase64(FakeSocket.latest.sent.find((item) => item.type === 'input_audio_buffer.append').audio)[0], 4);
+  listen.close();
+  const screen = openMonitor({ ...common, condition: '手机屏幕', rules: narrationPlan('手机屏幕里的内容').rules });
+  open(FakeSocket.latest);
+  await screen.ready;
+  await screen.round(frames, heard, { vision: true, audio: false });
+  assert.equal(FakeSocket.latest.sent.filter((item) => item.type === 'input_image_buffer.append').length, 2);
+  assert.equal(decodeBase64(FakeSocket.latest.sent.find((item) => item.type === 'input_audio_buffer.append').audio)[0], 0);
+  screen.close();
+  const tasks = [{ id: 'm', kind: 'monitor', title: '咳嗽', modalities: ['audio'] }];
+  const widened = updateProactive(tasks, { target_title: '咳嗽', modalities: ['vision', 'audio'] });
+  assert.deepEqual(widened.patch.modalities, ['vision', 'audio']);
+  assert.match(widened.receipt, /又看又听/);
+  const narration = updateProactive([{ id: 'n', kind: 'narration', title: '屏幕', focus: '屏幕', modalities: ['vision'] }], { target_title: '屏幕', modalities: ['audio'] });
+  assert.deepEqual(narration.patch.modalities, ['audio']);
+  assert.match(narration.receipt, /只听声音/);
+  assert.match(updateProactive(tasks, { target_title: '咳嗽', modalities: ['text'] }).receipt, /没有改/);
+  assert.match(updateProactive([{ id: 't', kind: 'timer', title: '喝水' }], { target_title: '喝水', modalities: ['audio'] }).receipt, /到点提醒不能改/);
+  assert.match(listProactive([{ id: 'm', kind: 'monitor', title: '咳嗽', repeat: false, modalities: ['audio'] }]), /只听声音/);
+  assert.match(listProactive([{ id: 'n', kind: 'narration', title: '屏幕', modalities: ['vision'] }]), /只看画面/);
 });

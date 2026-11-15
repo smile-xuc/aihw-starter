@@ -38,12 +38,13 @@ export const MONITOR_TOOL = {
   type: 'function',
   function: {
     name: 'create_proactive_monitor',
-    description: '把以后才发生的提醒交给后台。用户说关注身体、咳嗽了提醒、出现报错再提醒，或听到某种声音再提醒时调用。condition 写清听到或看到什么才开口。repeat 为 false 表示只提醒一次，说过就停；只有用户说一直盯着、从现在开始关注或持续监督时才设为 true。true 时同一次发生不重复开口，等这次过去再提醒。回执不表示条件已经发生。调用后只用一句话告诉用户会在发生时提醒。',
+    description: '把以后才发生的提醒交给后台。用户说关注身体、咳嗽了提醒、出现报错再提醒，或听到某种声音再提醒时调用。condition 写清听到或看到什么才开口。repeat 为 false 表示只提醒一次，说过就停；只有用户说一直盯着、从现在开始关注或持续监督时才设为 true。true 时同一次发生不重复开口，等这次过去再提醒。报告屏幕、画面时 modalities 只写 vision；咳嗽、身体或声音只写 audio；又要看又要听才两项都写。回执不表示条件已经发生。调用后只用一句话告诉用户会在发生时提醒。',
     parameters: {
       type: 'object',
       properties: {
         condition: { type: 'string', description: '要盯的条件，例如听到咳嗽时提醒。' },
         repeat: { type: 'boolean', description: 'false 只提醒一次。true 只在用户明确要一直盯着时使用。' },
+        modalities: { type: 'array', items: { type: 'string', enum: ['vision', 'audio'] }, description: 'vision 只看画面。audio 只听声音。两项都写才又看又听。报告屏幕用 vision，咳嗽或身体用 audio。' },
       },
       required: ['condition'],
     },
@@ -54,10 +55,13 @@ export const NARRATE_TOOL = {
   type: 'function',
   function: {
     name: 'create_live_narration',
-    description: '把持续报告或变化解说交给后台。用户说持续报告手机屏幕、画面内容，或只解说变化时调用，narration_focus 写上要报告的内容。回执里没有画面。调用后只用一句话告诉用户已经开始，不要在这一轮描述画面。',
+    description: '把持续报告或变化解说交给后台。用户说持续报告手机屏幕、画面内容，或只解说变化时调用，narration_focus 写上要报告的内容。报告屏幕、画面时 modalities 只写 vision；只听声音时只写 audio；又要看又要听才两项都写。回执里没有画面。调用后只用一句话告诉用户已经开始，不要在这一轮描述画面。',
     parameters: {
       type: 'object',
-      properties: { narration_focus: { type: 'string', description: '解说时重点看什么。留空则概述刚发生的变化。' } },
+      properties: {
+        narration_focus: { type: 'string', description: '解说时重点看什么。留空则概述刚发生的变化。' },
+        modalities: { type: 'array', items: { type: 'string', enum: ['vision', 'audio'] }, description: 'vision 只看画面。audio 只听声音。报告屏幕用 vision。' },
+      },
     },
   },
 };
@@ -80,6 +84,28 @@ export const CONTINUOUS_RULES = `你在后台持续报告这一小段画面，�
 内容没变时说得更短，不要逐字重复上一轮。
 不要编造，也不要识别人的身份。`;
 
+export const CONTINUOUS_VISION_RULES = `你在后台持续报告这一小段画面。
+每一轮都用一两句中文说出当前能看到的内容。
+不要输出 remain_silent。
+内容没变时说得更短，不要逐字重复上一轮。
+不要编造，也不要识别人的身份。这一轮没有声音。`;
+
+export const CONTINUOUS_AUDIO_RULES = `你在后台持续报告这两秒的声音。
+每一轮都用一两句中文说出当前能听到的内容。
+不要输出 remain_silent。
+内容没变时说得更短，不要逐字重复上一轮。
+不要编造，也不要识别人的身份。这一轮没有画面。`;
+
+export const NARRATE_VISION_RULES = `你在连续解说这一小段新的画面。
+只说刚出现的、值得一提的变化。
+没有明显变化时，只输出 remain_silent。
+不要编造，不要重复没有变化的内容。这一轮没有声音。`;
+
+export const NARRATE_AUDIO_RULES = `你在连续解说这两秒的新声音。
+只说刚出现的、值得一提的变化。
+没有明显变化时，只输出 remain_silent。
+不要编造，不要重复没有变化的内容。这一轮没有画面。`;
+
 export function narrationIsContinuous(focus) {
   const text = String(focus || '').replace(/\s+/g, ' ').trim();
   if (!text) return false;
@@ -87,14 +113,41 @@ export function narrationIsContinuous(focus) {
   return /持续|一直|不断|不停|实时报告|屏幕里|屏幕内容|画面内容|手机屏幕/.test(text);
 }
 
-export function narrationPlan(focus) {
-  const continuous = narrationIsContinuous(focus);
-  return {
-    continuous,
-    task: narrateTask(focus),
-    rules: continuous ? CONTINUOUS_RULES : NARRATE_RULES,
-    gapMs: continuous ? CONTINUOUS_GAP_MS : 0,
-  };
+const MODALITY_ALIASES = new Map([
+  ['vision', 'vision'], ['video', 'vision'], ['camera', 'vision'], ['image', 'vision'], ['visual', 'vision'],
+  ['摄像头', 'vision'], ['视频', 'vision'], ['图像', 'vision'], ['视觉', 'vision'], ['画面', 'vision'], ['屏幕', 'vision'],
+  ['audio', 'audio'], ['microphone', 'audio'], ['mic', 'audio'], ['sound', 'audio'], ['voice', 'audio'], ['auditory', 'audio'],
+  ['麦克风', 'audio'], ['声音', 'audio'], ['音频', 'audio'], ['语音', 'audio'],
+]);
+
+export function perceptionModalities(value) {
+  if (!Array.isArray(value) || value.length === 0) throw new Error('modalities 不能是空的。');
+  const result = [];
+  for (const raw of value) {
+    if (typeof raw !== 'string') throw new Error('modalities 里只能是文字。');
+    const key = raw.trim().toLowerCase().replace(/[\s_-]+/gu, ' ');
+    const normalized = MODALITY_ALIASES.get(key);
+    if (!normalized) throw new Error(`不认识的模态：${raw}。只能用 vision 或 audio。`);
+    if (!result.includes(normalized)) result.push(normalized);
+  }
+  return result;
+}
+
+export function inferModalities(text) {
+  const raw = String(text || '');
+  const vision = /屏幕|画面|摄像头|视频|图像|看见|看到|看着|红字|视觉/.test(raw);
+  const audio = /咳嗽|声音|麦克风|音频|语音|听见|听到|听着|身体/.test(raw);
+  if (vision && !audio) return ['vision'];
+  if (audio && !vision) return ['audio'];
+  return ['vision', 'audio'];
+}
+
+export function modalityNote(modalities) {
+  const vision = modalities?.includes('vision');
+  const audio = modalities?.includes('audio');
+  if (vision && !audio) return '这一项只看画面，不听声音。';
+  if (audio && !vision) return '这一项只听声音，不看画面。';
+  return '';
 }
 
 export function sourceHint(source, text) {
@@ -177,6 +230,44 @@ export function lateResultInstructions(text) {
 export const MONITOR_RULES = `你是主动提醒监视器，只判断这一小段新的声音和画面。
 条件没有发生时，只输出 remain_silent。
 条件发生时，用一句中文说明听到或看到了什么。不要编造，也不要提醒条件以外的事。`;
+
+export const MONITOR_VISION_RULES = `你是主动提醒监视器，只判断这一小段新的画面。
+条件没有发生时，只输出 remain_silent。
+条件发生时，用一句中文说明看到了什么。不要编造，也不要提醒条件以外的事。这一轮没有声音。`;
+
+export const MONITOR_AUDIO_RULES = `你是主动提醒监视器，只判断这两秒的新声音。
+条件没有发生时，只输出 remain_silent。
+条件发生时，用一句中文说明听到了什么。不要编造，也不要提醒条件以外的事。这一轮没有画面。`;
+
+export function perceptionRules({ kind, continuous, modalities }) {
+  const vision = modalities?.includes('vision');
+  const audio = modalities?.includes('audio');
+  if (kind === 'narration' && continuous) {
+    if (vision && !audio) return CONTINUOUS_VISION_RULES;
+    if (audio && !vision) return CONTINUOUS_AUDIO_RULES;
+    return CONTINUOUS_RULES;
+  }
+  if (kind === 'narration') {
+    if (vision && !audio) return NARRATE_VISION_RULES;
+    if (audio && !vision) return NARRATE_AUDIO_RULES;
+    return NARRATE_RULES;
+  }
+  if (vision && !audio) return MONITOR_VISION_RULES;
+  if (audio && !vision) return MONITOR_AUDIO_RULES;
+  return MONITOR_RULES;
+}
+
+export function narrationPlan(focus, modalitiesRaw) {
+  const continuous = narrationIsContinuous(focus);
+  const modalities = modalitiesRaw === undefined ? inferModalities(focus) : perceptionModalities(modalitiesRaw);
+  return {
+    continuous,
+    modalities,
+    task: narrateTask(focus),
+    rules: perceptionRules({ kind: 'narration', continuous, modalities }),
+    gapMs: continuous ? CONTINUOUS_GAP_MS : 0,
+  };
+}
 
 export const SPEAK_RULES = '你只朗读给出的那句话，不要改写，不要加称呼或解释。';
 
@@ -263,7 +354,8 @@ export function monitorPlan(args) {
     const ongoing = /一直|持续|从现在开始|继续盯|继续关注/.test(condition);
     repeat = once && !ongoing ? false : true;
   }
-  return { condition, repeat };
+  const modalities = raw.modalities === undefined ? inferModalities(condition) : perceptionModalities(raw.modalities);
+  return { condition, repeat, modalities };
 }
 
 export function cadenceNote(repeat) {
@@ -408,10 +500,23 @@ export function retainTasks(tasks, next) {
   return [...kept, next];
 }
 
+function modalityMark(modalities) {
+  const vision = modalities?.includes('vision');
+  const audio = modalities?.includes('audio');
+  if (vision && !audio) return '（只看画面）';
+  if (audio && !vision) return '（只听声音）';
+  return '';
+}
+
+function sameModalities(left, right) {
+  return [...left].sort().join(',') === [...right].sort().join(',');
+}
+
 function taskLines(tasks) {
   return proactiveTasks(tasks).map((task) => {
     const once = task.kind === 'monitor' && task.repeat === false ? '（只提醒一次）' : '';
-    return `- ${kindLabel(task.kind)}「${task.title.trim()}」${once}`;
+    const channel = task.kind === 'timer' ? '' : modalityMark(task.modalities);
+    return `- ${kindLabel(task.kind)}「${task.title.trim()}」${once}${channel}`;
   });
 }
 
@@ -490,12 +595,16 @@ export function updateProactive(tasks, args) {
   if (task.kind === 'timer' && present(['condition', 'trigger_response', 'narration_focus', 'narration_style', 'repeat', 'modalities']).length) {
     return fail('到点提醒不能改监视或解说的内容。');
   }
-  if (task.kind === 'narration' && present(['condition', 'trigger_response', 'repeat', 'reminder_text', 'duration_sec', 'modalities']).length) {
+  if (task.kind === 'narration' && present(['condition', 'trigger_response', 'repeat', 'reminder_text', 'duration_sec']).length) {
     return fail('解说不能改成监视或到点提醒。');
+  }
+  let nextModalities = null;
+  if (args.modalities !== undefined && task.kind !== 'timer') {
+    try { nextModalities = perceptionModalities(args.modalities); }
+    catch (error) { return fail(`${error.message}没有改。`); }
   }
   if (task.kind !== 'timer' && task.kind !== 'narration') {
     if (present(['narration_focus', 'narration_style', 'reminder_text', 'duration_sec']).length) return fail('监视不能改成解说或到点提醒。');
-    if (args.modalities !== undefined) return fail('监视一直同时看画面和听这两秒的声音，不能单独改。');
     if (args.repeat !== undefined && args.repeat !== true && args.repeat !== false) return fail('repeat 必须是布尔值，没有改。');
   }
   const patch = {};
@@ -520,6 +629,10 @@ export function updateProactive(tasks, args) {
     if (args.repeat === true || args.repeat === false) {
       if ((task.repeat !== false) !== args.repeat) patch.repeat = args.repeat;
     }
+  }
+  if (nextModalities && (task.kind === 'monitor' || task.kind == null || task.kind === 'narration')) {
+    const current = Array.isArray(task.modalities) && task.modalities.length ? task.modalities : ['vision', 'audio'];
+    if (!sameModalities(current, nextModalities)) patch.modalities = nextModalities;
   }
   if (task.kind === 'narration') {
     if (typeof args.narration_focus === 'string') {
@@ -556,6 +669,9 @@ export function updateProactive(tasks, args) {
   if (patch.seconds) bits.push(`从现在起 ${patch.seconds} 秒`);
   if (patch.repeat === false) bits.push('改成只提醒一次');
   if (patch.repeat === true) bits.push('改成会一直听');
+  if (patch.modalities?.includes('vision') && patch.modalities?.includes('audio')) bits.push('改成又看又听');
+  else if (patch.modalities?.includes('vision')) bits.push('改成只看画面');
+  else if (patch.modalities?.includes('audio')) bits.push('改成只听声音');
   return { id: task.id, patch, receipt: `已改${kindLabel(task.kind)}：${bits.join('，')}。下一轮按新的来。` };
 }
 
@@ -585,7 +701,7 @@ export function openMonitor(options) {
       outputRate: options.outputRate,
       asrModel: options.asrModel,
       turnDetection: null,
-      video: true,
+      video: options.video !== false,
     }),
     onEvent(event) {
       if (event.type === 'error') settle(new Error(event.message || '主动提醒失败'));
@@ -617,24 +733,27 @@ export function openMonitor(options) {
       focus = text;
       announce = true;
     },
-    round(frames, audioClips = null) {
+    round(frames, audioClips = null, channel = null) {
       if (pending) return Promise.reject(new Error('上一次监视还没结束'));
-      if (!Array.isArray(frames) || frames.length < 2 || !(frames[0] instanceof Uint8Array) || !(frames[1] instanceof Uint8Array)) {
+      const vision = !channel || channel.vision !== false;
+      const listen = !channel || channel.audio !== false;
+      if (vision && (!Array.isArray(frames) || frames.length < 2 || !(frames[0] instanceof Uint8Array) || !(frames[1] instanceof Uint8Array))) {
         return Promise.reject(new Error('监视画面不足'));
       }
       const size = options.inputRate * 2;
-      const heard = Array.isArray(audioClips) && audioClips.length >= 2
+      const heard = listen && Array.isArray(audioClips) && audioClips.length >= 2
         && audioClips[0] instanceof Uint8Array && audioClips[0].byteLength === size
         && audioClips[1] instanceof Uint8Array && audioClips[1].byteLength === size
         ? [pcmBase64(audioClips[0]), pcmBase64(audioClips[1])]
         : null;
-      const silence = heard ? null : pcmBase64(silencePcm(options.inputRate, 1));
+      const silence = pcmBase64(silencePcm(options.inputRate, 1));
       const run = new Promise((resolve, reject) => { pending = { resolve, reject }; });
+      const sendAudio = (index) => handle.send('input_audio_buffer.append', { audio: heard ? heard[index] : silence });
       try {
-        handle.send('input_audio_buffer.append', { audio: heard ? heard[0] : silence });
-        handle.send('input_image_buffer.append', { image: toBase64(frames[0]) });
-        handle.send('input_audio_buffer.append', { audio: heard ? heard[1] : silence });
-        handle.send('input_image_buffer.append', { image: toBase64(frames[1]) });
+        sendAudio(0);
+        if (vision) handle.send('input_image_buffer.append', { image: toBase64(frames[0]) });
+        sendAudio(1);
+        if (vision) handle.send('input_image_buffer.append', { image: toBase64(frames[1]) });
         handle.send('input_audio_buffer.commit');
       } catch (error) {
         pending = null;
