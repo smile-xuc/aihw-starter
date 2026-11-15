@@ -109,7 +109,7 @@ export function instructionsWithMemory(base, notes, summary = '', bio = [], prof
   const facts = (Array.isArray(bio) ? bio : [])
     .map((line) => String(line || '').replace(/\s+/g, ' ').trim())
     .filter(Boolean)
-    .slice(-24);
+    .slice(0, 128);
   const brief = clipSummary(summary);
   const portrait = String(profile || '').trim();
   const coming = String(upcoming || '').trim();
