@@ -2,7 +2,7 @@ import { liveConstants } from '../data.js';
 import { chat, postJson, toBase64 } from '../live/client.js';
 import { microphone } from '../live/microphone.js';
 import { SAMPLE_RATE } from '../live/pcm.js';
-import { BIO_TOOL, EMBED_MODEL, OBSERVE_EVERY_MS, RETRIEVE_TOOL, UPDATER_PROMPT, activeLibrary, applyBio, applyMemoryPatch, bioResult, cleanObservation, clearLibrary, createLibrary, datedEntries, dialogueLines, envCorpus, finishDialogue, formatUpdaterInput, isEmptyPatch, localDate, memoryLabel as libraryStatus, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn, renameLibrary, renderProfile, renderRecent, replaceActive, retrieveMemory, switchLibrary, vectorMatches, vectorsFromEmbedding, writeStore } from '../live/memory-libraries.js';
+import { BIO_TOOL, EMBED_MODEL, OBSERVE_EVERY_MS, RETRIEVE_TOOL, UPDATER_PROMPT, activeLibrary, applyBio, applyMemoryPatch, bioResult, cleanObservation, clearLibrary, createLibrary, datedEntries, dialogueEntries, dialogueLines, envCorpus, finishDialogue, formatUpdaterInput, isEmptyPatch, localDate, memoryLabel as libraryStatus, mergeVectorHits, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn, renameLibrary, renderProfile, renderRecent, replaceActive, retrieveMemory, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, normalizeVector } from '../live/memory-libraries.js';
 import { MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, isSilentMonitor, monitorTask, narrateTask, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, timerRequest, toolArguments } from '../live/monitor.js';
 import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
 import { functionCalls } from '../live/product-session.js';
@@ -150,7 +150,7 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段按关键词和时间找回。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
       <label class="field">记忆库<select data-library></select></label>
       <div class="btn-row">
         <button type="button" class="secondary-action" data-library-new>新建记忆库</button>
@@ -219,6 +219,10 @@ export function renderSession(view, reg) {
   let lookGeneration = 0;
   let monitorStop = null;
   let embedAbort = null;
+  let vectorAbort = null;
+  let vectorJob = 0;
+  let vectorNotice = false;
+  let vectorDbPromise = null;
   let observeTimer = null;
   let observeGeneration = 0;
   let observeAbort = null;
@@ -326,16 +330,23 @@ export function renderSession(view, reg) {
     memory = nextMemory(memory, safeHeard, safeAnswer);
     const library = activeLibrary(store);
     const at = Date.now() / 1000;
+    const beforeSegments = cleanDialogueCount(library);
     if (JSON.stringify(memory) !== before && memory.at(-1)) library.turns = rememberTurn(library.turns, memory.at(-1), at);
     library.dialogue = recordExchange(library.dialogue, safeHeard, safeAnswer, at);
     saveActive();
     showMemory();
     refreshLiveMemory();
+    if (cleanDialogueCount(library) > beforeSegments) scheduleSegmentVectors(library.id);
+  }
+  function cleanDialogueCount(library) {
+    return Array.isArray(library?.dialogue?.segments) ? library.dialogue.segments.length : 0;
   }
   function archiveDialogue() {
     const library = activeLibrary(store);
+    const beforeSegments = cleanDialogueCount(library);
     library.dialogue = finishDialogue(library.dialogue);
     saveActive();
+    if (cleanDialogueCount(library) > beforeSegments) scheduleSegmentVectors(library.id);
   }
   function livePrompt(tools) {
     const library = activeLibrary(store);
@@ -698,12 +709,109 @@ export function renderSession(view, reg) {
     try { replyTool(item, output); } catch (error) { say(error.message); }
   }
 
-  async function embedMemory(texts) {
+  function openVectorDb() {
+    if (typeof indexedDB !== 'object' || !indexedDB) return Promise.reject(new Error('没有本地向量库'));
+    if (!vectorDbPromise) {
+      vectorDbPromise = new Promise((resolve, reject) => {
+        const request = indexedDB.open('aihw-segment-vectors', 1);
+        request.onupgradeneeded = () => {
+          if (!request.result.objectStoreNames.contains('vectors')) request.result.createObjectStore('vectors');
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error || new Error('向量库没有打开'));
+      });
+      vectorDbPromise.catch(() => { vectorDbPromise = null; });
+    }
+    return vectorDbPromise;
+  }
+  function vectorKey(libraryId, text) {
+    return `${libraryId}\u0000${text}`;
+  }
+  async function readSegmentVectors(libraryId, texts) {
+    const found = new Map();
+    const unique = [...new Set(texts.filter(Boolean))];
+    if (!unique.length) return found;
+    try {
+      const db = await openVectorDb();
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction('vectors', 'readonly');
+        const store = tx.objectStore('vectors');
+        for (const text of unique) {
+          const request = store.get(vectorKey(libraryId, text));
+          request.onsuccess = () => {
+            const vector = normalizeVector(request.result);
+            if (vector) found.set(text, vector);
+          };
+        }
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    } catch { /* 读不到向量时退回当场计算或关键词 */ }
+    return found;
+  }
+  async function writeSegmentVectors(libraryId, pairs) {
+    const rows = pairs.filter((pair) => pair[0] && normalizeVector(pair[1]));
+    if (!rows.length) return;
+    const db = await openVectorDb();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction('vectors', 'readwrite');
+      const store = tx.objectStore('vectors');
+      for (const [text, vector] of rows) store.put(vector, vectorKey(libraryId, text));
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+  async function dropSegmentVectors(libraryId) {
+    const db = await openVectorDb();
+    const prefix = `${libraryId}\u0000`;
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction('vectors', 'readwrite');
+      const request = tx.objectStore('vectors').openCursor();
+      request.onsuccess = () => {
+        const cursor = request.result;
+        if (!cursor) return;
+        if (String(cursor.key).startsWith(prefix)) cursor.delete();
+        cursor.continue();
+      };
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+  function scheduleSegmentVectors(libraryId) {
+    const job = ++vectorJob;
+    void fillSegmentVectors(libraryId, job);
+  }
+  async function fillSegmentVectors(libraryId, job) {
+    if (job !== vectorJob || !liveValues?.DASHSCOPE_API_KEY) return;
+    const library = store.libraries.find((item) => item.id === libraryId);
+    if (!library) return;
+    const texts = [...new Set(dialogueEntries(library).map((item) => item.text))];
+    const cached = await readSegmentVectors(libraryId, texts);
+    if (job !== vectorJob) return;
+    const { missing } = vectorsForTexts(texts, cached);
+    const batch = missing.slice(0, 10);
+    if (!batch.length) return;
+    if (!vectorNotice && log) {
+      vectorNotice = true;
+      const line = document.createElement('li');
+      line.textContent = '正在为对话片段计算向量，另计费，只留在这台浏览器。';
+      log.append(line);
+    }
+    vectorAbort?.abort();
+    vectorAbort = new AbortController();
+    try {
+      const signal = AbortSignal.any([vectorAbort.signal, AbortSignal.timeout(20000)]);
+      const vectors = await embedTexts(batch, signal);
+      if (job !== vectorJob) return;
+      await writeSegmentVectors(libraryId, batch.map((text, index) => [text, vectors[index]]));
+    } catch {
+      return;
+    }
+    if (job === vectorJob && missing.length > batch.length) void fillSegmentVectors(libraryId, job);
+  }
+  async function embedTexts(texts, signal) {
     const stack = reg.stacks.get('bailian');
     if (!stack || !liveValues?.DASHSCOPE_API_KEY) throw new Error('没有百炼 Key');
-    embedAbort?.abort();
-    embedAbort = new AbortController();
-    const signal = AbortSignal.any([embedAbort.signal, AbortSignal.timeout(8000)]);
     const vectors = [];
     for (let start = 0; start < texts.length; start += 10) {
       const batch = texts.slice(start, start + 10);
@@ -717,6 +825,13 @@ export function renderSession(view, reg) {
     }
     return vectors;
   }
+  async function embedMemory(texts) {
+    embedAbort?.abort();
+    vectorAbort?.abort();
+    embedAbort = new AbortController();
+    const signal = AbortSignal.any([embedAbort.signal, AbortSignal.timeout(8000)]);
+    return embedTexts(texts, signal);
+  }
 
   async function answerRetrieve(item, mine) {
     let output;
@@ -725,13 +840,26 @@ export function renderSession(view, reg) {
       const library = activeLibrary(store);
       const keyword = retrieveMemory(library, request);
       const corpus = request.source === 'env' ? envCorpus(library) : dialogueLines(library);
+      const archive = request.source === 'dialogue' ? dialogueEntries(library) : [];
       const query = redactSecret(String(request.query || ''), secret).replace(/\s+/g, ' ').trim();
       let hits = [];
       let note = '';
-      if (corpus.length && query) {
+      if ((corpus.length || archive.length) && query) {
         try {
-          const vectors = await embedMemory([query, ...corpus]);
-          hits = vectorMatches(corpus, vectors[0], vectors.slice(1));
+          const cached = archive.length ? await readSegmentVectors(library.id, archive.map((item) => item.text)) : new Map();
+          const separated = vectorsForTexts(archive.map((item) => item.text), cached);
+          const fresh = separated.missing.filter((text) => !corpus.includes(text)).slice(0, 9);
+          const vectors = await embedMemory([query, ...corpus, ...fresh]);
+          const learned = fresh.map((text, index) => [text, vectors[1 + corpus.length + index]]);
+          for (const [text, vector] of learned) separated.ready.set(text, vector);
+          if (learned.length) {
+            try { await writeSegmentVectors(library.id, learned); }
+            catch { /* 这次回答仍使用刚算好的向量 */ }
+          }
+          const lineHits = vectorMatches(corpus, vectors[0], vectors.slice(1, 1 + corpus.length));
+          const archiveHits = vectorMatches(archive.map((item) => item.text), vectors[0], archive.map((item) => separated.ready.get(item.text) || null));
+          hits = mergeVectorHits([lineHits, archiveHits]);
+          if (separated.missing.length > fresh.length) scheduleSegmentVectors(library.id);
         } catch (error) {
           note = '向量检索没有完成，这次只按关键词查找。';
         }
@@ -1136,6 +1264,9 @@ export function renderSession(view, reg) {
       if (call || busy) return;
       try { store = writeStore(localStorage, clearLibrary(store, store.activeId)); }
       catch (error) { say(error.message); return; }
+      vectorJob += 1;
+      vectorAbort?.abort();
+      void dropSegmentVectors(store.activeId).catch(() => {});
       syncMemory();
       memoryAtStart = JSON.stringify(memory);
       showMemory();
@@ -1184,6 +1315,9 @@ export function renderSession(view, reg) {
 
   return { cleanup() {
     active = false;
+    archiveDialogue();
+    vectorJob += 1;
+    vectorAbort?.abort();
     stopObserver();
     clearTimers();
     callGeneration += 1;

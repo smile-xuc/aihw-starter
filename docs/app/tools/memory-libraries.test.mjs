@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, RETRIEVE_TOOL,
-  activeLibrary, applyBio, applyMemoryPatch, bioResult, cleanObservation, clearLibrary, createLibrary, datedEntries, emptyDialogue, emptyLtm, finishDialogue, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn,
-  renameLibrary, renderProfile, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, switchLibrary, vectorMatches, vectorsFromEmbedding, writeStore,
+  activeLibrary, applyBio, applyMemoryPatch, bioResult, cleanObservation, clearLibrary, createLibrary, datedEntries, emptyDialogue, emptyLtm, finishDialogue, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, mergeVectorHits, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn,
+  renameLibrary, renderProfile, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore,
 } from '../js/live/memory-libraries.js';
 
 function storage(initial = {}) {
@@ -241,4 +241,20 @@ test('dialogue is cut into segments and older segments stay searchable', () => {
   const cleared = clearLibrary(saved, 'default');
   assert.equal(activeLibrary(cleared).dialogue.segments.length, 0);
   assert.equal(finishDialogue(dialogue).tail.length, 0);
+});
+
+test('cached segment vectors outrank a keyword miss', () => {
+  const query = normalizeVector([1, 0, 0]);
+  const near = normalizeVector([0.96, 0.28, 0]);
+  const far = normalizeVector([0, 1, 0]);
+  const texts = ['海洋馆讲解', '整理船票'];
+  const separated = vectorsForTexts(texts, new Map([[texts[0], near], [texts[1], far]]), query.length);
+  assert.deepEqual(separated.missing, []);
+  const wrongSize = vectorsForTexts(['甲', '乙'], new Map([['甲', near]]), 4);
+  assert.deepEqual(wrongSize.missing, ['甲', '乙']);
+  const hits = vectorMatches(texts, query, texts.map((text) => separated.ready.get(text)));
+  const merged = mergeVectorHits([[{ text: '整理船票', similarity: 0.1 }], hits]);
+  assert.equal(merged[0].text, '海洋馆讲解');
+  const ranked = rankWithTime('没有找到相关记忆。', merged, texts.map((text) => ({ text, at: 1 })), null);
+  assert.match(ranked.split('\n')[0], /海洋馆/);
 });
