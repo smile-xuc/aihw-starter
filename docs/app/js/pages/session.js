@@ -3,7 +3,7 @@ import { chat, postJson, toBase64 } from '../live/client.js';
 import { microphone } from '../live/microphone.js';
 import { SAMPLE_RATE } from '../live/pcm.js';
 import { BIO_TOOL, EMBED_MODEL, OBSERVE_EVERY_MS, RETRIEVE_TOOL, UPDATER_PROMPT, activeLibrary, applyBio, applyMemoryPatch, bioReceipt, cleanObservation, clearLibrary, createLibrary, datedEntries, dialogueEntries, dialogueLines, envCorpus, finishDialogue, formatUpdaterInput, isEmptyPatch, localDate, memoryLabel as libraryStatus, mergeVectorHits, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn, renameLibrary, renderProfile, renderRecent, replaceActive, retrieveMemory, sessionFacts, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, normalizeVector } from '../live/memory-libraries.js';
-import { MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, isSilentMonitor, monitorTask, narrateTask, nextSpokenAlert, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, timerRequest, toolArguments } from '../live/monitor.js';
+import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, cancelProactive, isSilentMonitor, listProactive, monitorTask, narrateTask, nextSpokenAlert, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, taskPrompt, timerRequest, toolArguments } from '../live/monitor.js';
 import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
 import { functionCalls } from '../live/product-session.js';
 import { connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, splitPcm } from '../live/realtime-omni.js';
@@ -28,11 +28,12 @@ const LIVE_TOOL_INSTRUCTIONS = `你是看说体验里的语音助手，能看到
 用户要求盯着画面或听某种声音、出现情况就提醒时，调用 create_proactive_monitor。没有调用成功就不要说已经在监视。
 用户明确说了多久以后提醒时，调用 create_proactive_timer。没有调用成功就不要说已经设好。
 用户要求连续解说画面或声音的变化时，调用 create_live_narration。没有明显变化就不要主动开口。
+用户明确要求停下某一项监视、解说或到点提醒时，调用 cancel_proactive_task。停下说话、换话题或纠正回答都不算取消。没有调用成功就不要说已经停下。
 用户说出会在以后多次用到的个人事实时，调用 omnibio 记下。改掉或取消已有事实时，按提示里的编号 update 或 delete。已经记下的不要重复。名单满了就不要再加，不要删掉更早的事实来腾位置。
 用户问起更早的对话、而当前记忆里没有时，调用 omniretrieve，source 用 dialogue。问起以前看到的环境时，source 用 env。用户提到昨天、上周这类时间时，把时间放进 time_range，例如昨天用 [2, 0]，上周用 [14, 1]，不要写进 query。
 不识别画面中人的身份；看不清就直说，不要编造。
 用户可以随时插话。`;
-const SESSION_TOOLS = [SEARCH_TOOL, MONITOR_TOOL, TIMER_TOOL, NARRATE_TOOL, BIO_TOOL, RETRIEVE_TOOL];
+const SESSION_TOOLS = [SEARCH_TOOL, MONITOR_TOOL, TIMER_TOOL, NARRATE_TOOL, CANCEL_TOOL, LIST_TOOL, BIO_TOOL, RETRIEVE_TOOL];
 
 function frameDataUrl(video) {
   const width = video.videoWidth;
@@ -150,7 +151,7 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说共用一条连接，送上这两秒的麦克风和画面。条件没发生、或画面没有明显变化时不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
       <label class="field">记忆库<select data-library></select></label>
       <div class="btn-row">
         <button type="button" class="secondary-action" data-library-new>新建记忆库</button>
@@ -162,6 +163,7 @@ export function renderSession(view, reg) {
       <label class="field">补充问题，可留空<textarea data-question rows="3" maxlength="500" placeholder="实时通话直接说话；文字只用于「只发这一帧」"></textarea></label>
       <div class="btn-row">
         <button type="button" class="primary-action" data-live>开始实时通话</button>
+        <button type="button" class="secondary-action" data-stop-task hidden>停止监视</button>
         <button type="button" class="secondary-action" data-talk>按住说话</button>
         <button type="button" class="secondary-action" data-send>只发这一帧</button>
         <button type="button" class="secondary-action" data-stop hidden>停止</button>
@@ -219,6 +221,9 @@ export function renderSession(view, reg) {
   let toolRounds = 0;
   let lookGeneration = 0;
   let monitorStop = null;
+  let tasks = [];
+  let adjacentId = null;
+  const timers = new Map();
   const spokenAlerts = [];
   let drainingAlerts = false;
   let userTurn = false;
@@ -233,7 +238,6 @@ export function renderSession(view, reg) {
   let videoSource = 'camera';
   let monitorAudio = { parts: [], total: 0 };
   let captureMonitorAudio = false;
-  const timers = new Set();
   const memoryLabel = page.querySelector('[data-memory]');
   const librarySelect = page.querySelector('[data-library]');
 
@@ -356,7 +360,7 @@ export function renderSession(view, reg) {
     const library = activeLibrary(store);
     const demand = captureMode === 'demand';
     const base = demand ? DEMAND_INSTRUCTIONS : (tools ? LIVE_TOOL_INSTRUCTIONS : LIVE_INSTRUCTIONS);
-    return withRetrieved(instructionsWithMemory(base, memory, summary, bio, renderProfile(library.ltm), renderRecent(library.stm, localDate())), retrieved);
+    return withRetrieved(instructionsWithMemory(base, memory, summary, bio, renderProfile(library.ltm), renderRecent(library.stm, localDate())), retrieved) + taskPrompt(tasks);
   }
   function refreshLiveMemory() {
     if (!call || !callReady) return;
@@ -430,8 +434,53 @@ export function renderSession(view, reg) {
   }
 
   function clearTimers() {
-    for (const id of timers) clearTimeout(id);
+    for (const item of timers.values()) clearTimeout(item.handle);
     timers.clear();
+  }
+
+  function showTaskButton() {
+    const task = tasks.find((item) => item.kind === 'monitor' || item.kind === 'narration');
+    const button = page.querySelector('[data-stop-task]');
+    if (!button) return;
+    button.hidden = !task;
+    if (task) button.textContent = task.kind === 'narration' ? '停止解说' : '停止监视';
+  }
+
+  function rememberTask(task) {
+    if (task.kind !== 'timer') tasks = tasks.filter((item) => item.kind === 'timer');
+    tasks = tasks.filter((item) => item.id !== task.id);
+    tasks.push(task);
+    adjacentId = task.id;
+    showTaskButton();
+    refreshLiveMemory();
+  }
+
+  function dropTask(id) {
+    const before = tasks.length;
+    tasks = tasks.filter((item) => item.id !== id);
+    if (adjacentId === id) adjacentId = null;
+    if (tasks.length === before) return;
+    showTaskButton();
+    refreshLiveMemory();
+  }
+
+  function stopTask(id) {
+    const timer = timers.get(id);
+    if (timer) {
+      clearTimeout(timer.handle);
+      timers.delete(id);
+      dropTask(id);
+      return;
+    }
+    if (!tasks.some((item) => item.id === id && item.kind !== 'timer')) return;
+    monitorStop?.();
+    dropTask(id);
+  }
+
+  function resetTasks() {
+    tasks = [];
+    adjacentId = null;
+    showTaskButton();
   }
 
   function endCall(message) {
@@ -439,6 +488,7 @@ export function renderSession(view, reg) {
     clearTimers();
     stopObserver();
     monitorStop?.();
+    resetTasks();
     clearSpokenAlerts();
     embedAbort?.abort();
     retrieved = '';
@@ -537,7 +587,10 @@ export function renderSession(view, reg) {
     if (event.type === 'error') { say(event.message); return; }
     if (event.type === 'socket.close') {
       archiveDialogue();
+      clearTimers();
       stopObserver();
+      monitorStop?.();
+      resetTasks();
       embedAbort?.abort();
       retrieved = '';
       sentInstructions = '';
@@ -556,6 +609,7 @@ export function renderSession(view, reg) {
     if (event.type === 'input_audio_buffer.speech_started') {
       toolRounds = 0;
       lookGeneration += 1;
+      adjacentId = null;
       userTurn = true;
       if (playback?.playing()) {
         playback.interrupt();
@@ -606,6 +660,8 @@ export function renderSession(view, reg) {
         else if (item.name === 'create_proactive_monitor') void answerMonitor(item, mine);
         else if (item.name === 'create_proactive_timer') void answerTimer(item, mine);
         else if (item.name === 'create_live_narration') void answerNarrate(item, mine);
+        else if (item.name === 'cancel_proactive_task') void answerCancel(item, mine);
+        else if (item.name === 'list_proactive_tasks') void answerList(item, mine);
         else if (item.name === 'omnibio') void answerBio(item, mine);
         else if (item.name === 'omniretrieve') void answerRetrieve(item, mine);
         else {
@@ -909,8 +965,27 @@ export function renderSession(view, reg) {
     if (!active || mine !== callGeneration || !call) return;
     try { replyTool(item, output); } catch (error) { say(error.message); return; }
     if (!plan) return;
-    const id = setTimeout(() => { timers.delete(id); void fireTimer(plan.text, mine); }, plan.seconds * 1000);
-    timers.add(id);
+    const taskId = `timer-${mine}-${Date.now()}`;
+    const handle = setTimeout(() => {
+      timers.delete(taskId);
+      dropTask(taskId);
+      void fireTimer(plan.text, mine);
+    }, plan.seconds * 1000);
+    timers.set(taskId, { handle });
+    rememberTask({ id: taskId, kind: 'timer', title: plan.text });
+  }
+
+  function answerCancel(item, mine) {
+    const decision = cancelProactive(tasks, toolArguments(item.arguments), adjacentId);
+    for (const id of decision.ids) stopTask(id);
+    if (!active || mine !== callGeneration || !call) return;
+    try { replyTool(item, decision.receipt); } catch (error) { say(error.message); }
+  }
+
+  function answerList(item, mine) {
+    const output = listProactive(tasks);
+    if (!active || mine !== callGeneration || !call) return;
+    try { replyTool(item, output); } catch (error) { say(error.message); }
   }
 
   function clearSpokenAlerts() {
@@ -975,10 +1050,14 @@ export function renderSession(view, reg) {
 
   async function runMonitor(condition, mine, extra = {}) {
     monitorStop?.();
+    const id = `watch-${mine}-${Date.now()}`;
+    const kind = extra.label === '解说' ? 'narration' : 'monitor';
+    const title = String(extra.task || condition || '').replace(/\s+/g, ' ').trim().slice(0, 200) || (kind === 'narration' ? '解说' : '监视');
     let stopped = false;
     let monitor = null;
     const stop = () => { stopped = true; monitor?.close(); };
     monitorStop = stop;
+    rememberTask({ id, kind, title });
     try {
       monitor = openMonitor({
         url: realtimeSocketUrl(reg.stacks.get('bailian'), liveValues, liveSpec.REALTIME_MODEL),
@@ -1016,6 +1095,7 @@ export function renderSession(view, reg) {
       captureMonitorAudio = false;
       monitor?.close();
       if (monitorStop === stop) monitorStop = null;
+      dropTask(id);
     }
   }
 
@@ -1343,6 +1423,14 @@ export function renderSession(view, reg) {
     if (event.target.closest('[data-library-new]')) void addLibrary();
     if (event.target.closest('[data-library-rename]')) void renameCurrentLibrary();
     if (event.target.closest('[data-stop]')) abort?.abort();
+    const taskButton = event.target.closest('[data-stop-task]');
+    if (taskButton && !taskButton.hidden) {
+      const task = tasks.find((item) => item.kind === 'monitor' || item.kind === 'narration');
+      if (!task) return;
+      const label = task.kind === 'narration' ? '解说' : '监视';
+      stopTask(task.id);
+      say(`已停止${label}。`);
+    }
   });
   const talk = page.querySelector('[data-talk]');
   talk.addEventListener('pointerdown', async (event) => {
@@ -1379,6 +1467,7 @@ export function renderSession(view, reg) {
     vectorAbort?.abort();
     stopObserver();
     clearTimers();
+    monitorStop?.();
     callGeneration += 1;
     abort?.abort();
     call?.close();

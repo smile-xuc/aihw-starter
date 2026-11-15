@@ -196,6 +196,90 @@ export function toolArguments(raw) {
   try { return JSON.parse(raw || '{}'); } catch { return {}; }
 }
 
+export const CANCEL_TOOL = {
+  type: 'function',
+  function: {
+    name: 'cancel_proactive_task',
+    description: '只在用户明确要求停下某一项监视、解说或到点提醒时调用。用标题精确匹配，或用一段能唯一对上的文字。只有用户明确说全部停下时，才把 all 设为 true。停下说话、换话题或纠正回答都不算取消。没有刚创建的任务时不要传空参数。工具回执确认之前，不要说已经停下。',
+    parameters: {
+      type: 'object',
+      properties: {
+        target_title: { type: 'string', description: '要停下的任务标题，必须和现有任务完全一致。' },
+        target_title_contains: { type: 'string', description: '标题里能唯一对上的一段文字。' },
+        all: { type: 'boolean', description: '只有用户明确要求停下全部主动任务时才为 true。' },
+      },
+    },
+  },
+};
+
+export const LIST_TOOL = {
+  type: 'function',
+  function: {
+    name: 'list_proactive_tasks',
+    description: '回答现在有哪些主动任务之前先调用。只读取，不改变任务。',
+    parameters: { type: 'object', properties: {} },
+  },
+};
+
+function kindLabel(kind) {
+  if (kind === 'narration') return '解说';
+  if (kind === 'timer') return '到点提醒';
+  return '监视';
+}
+
+export function proactiveTasks(tasks) {
+  return (Array.isArray(tasks) ? tasks : []).filter((task) => task && task.id && typeof task.title === 'string' && task.title.trim());
+}
+
+function taskLines(tasks) {
+  return proactiveTasks(tasks).map((task) => `- ${kindLabel(task.kind)}「${task.title.trim()}」`);
+}
+
+export function listProactive(tasks) {
+  const lines = taskLines(tasks);
+  return lines.length ? `现在有这些主动任务：\n${lines.join('\n')}` : '现在没有主动任务。';
+}
+
+export function taskPrompt(tasks) {
+  const lines = taskLines(tasks);
+  if (!lines.length) return '';
+  return `\n当前主动任务：\n${lines.join('\n')}\n用户明确要求停下其中一项时，调用 cancel_proactive_task。停下说话、换话题或纠正回答都不算取消。`;
+}
+
+export function cancelProactive(tasks, args, adjacentId) {
+  const active = proactiveTasks(tasks);
+  if (!args || typeof args !== 'object' || Array.isArray(args)) return { ids: [], receipt: '参数不是对象，没有停下任何任务。' };
+  const keys = Object.keys(args);
+  if (keys.some((key) => key !== 'target_title' && key !== 'target_title_contains' && key !== 'all')) {
+    return { ids: [], receipt: '有不能识别的参数，没有停下任何任务。' };
+  }
+  const title = typeof args.target_title === 'string' ? args.target_title.trim() : '';
+  const contains = typeof args.target_title_contains === 'string' ? args.target_title_contains.trim() : '';
+  if (args.all !== undefined && args.all !== true && args.all !== false) return { ids: [], receipt: 'all 必须是布尔值，没有停下任何任务。' };
+  const all = args.all === true;
+  if (all && (title || contains)) return { ids: [], receipt: '全部停下不能再指定标题，没有停下任何任务。' };
+  if (title && contains) return { ids: [], receipt: '一次只能用一种标题，没有停下任何任务。' };
+  const done = (chosen) => ({
+    ids: chosen.map((task) => task.id),
+    receipt: `已停下：${chosen.map((task) => `${kindLabel(task.kind)}「${task.title.trim()}」`).join('、')}。`,
+  });
+  if (!all && !title && !contains) {
+    if (keys.length) return { ids: [], receipt: '没有指定任务。要停刚创建的那一项，参数必须是空的。' };
+    const adjacent = active.find((task) => task.id === adjacentId);
+    if (!adjacent) return { ids: [], receipt: '没有刚创建的任务。请说明要停哪一个。' };
+    return done([adjacent]);
+  }
+  if (all) return active.length ? done(active) : { ids: [], receipt: '现在没有主动任务。' };
+  const needle = (title || contains).toLocaleLowerCase();
+  const matches = active.filter((task) => {
+    const name = task.title.trim().toLocaleLowerCase();
+    return title ? name === needle : name.includes(needle);
+  });
+  if (!matches.length) return { ids: [], receipt: '没有对上的主动任务。' };
+  if (matches.length > 1) return { ids: [], receipt: '对上了不止一项。请用完整标题。' };
+  return done(matches);
+}
+
 export function openMonitor(options) {
   const connect = options.connect || connectRealtime;
   const task = options.task || monitorTask(options.condition);

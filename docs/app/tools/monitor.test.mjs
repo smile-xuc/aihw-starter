@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, isSilentMonitor, monitorTask, narrateTask, nextSpokenAlert, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, timerRequest } from '../js/live/monitor.js';
+import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, cancelProactive, isSilentMonitor, listProactive, monitorTask, narrateTask, nextSpokenAlert, openMonitor, pushMonitorAudio, searchMessages, speakReminder, takeMonitorAudio, taskPrompt, timerRequest } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -147,4 +147,39 @@ test('spoken alerts wait out the current utterance and then play in order', () =
   assert.equal(ready.audio[0], first);
   assert.equal(ready.waiting[0].audio[0], second);
   assert.equal(nextSpokenAlert([], false).audio, null);
+});
+
+test('cancel stops one named task, or every task only when asked', () => {
+  const tasks = [
+    { id: 'm', kind: 'monitor', title: '出现报错' },
+    { id: 't', kind: 'timer', title: '喝水' },
+  ];
+  assert.equal(CANCEL_TOOL.function.name, 'cancel_proactive_task');
+  assert.equal(LIST_TOOL.function.name, 'list_proactive_tasks');
+  const one = cancelProactive(tasks, { target_title: '出现报错' });
+  assert.deepEqual(one.ids, ['m']);
+  assert.match(one.receipt, /已停下：监视「出现报错」/);
+  const partial = cancelProactive(tasks, { target_title_contains: '喝' });
+  assert.deepEqual(partial.ids, ['t']);
+  const all = cancelProactive(tasks, { all: true });
+  assert.deepEqual(all.ids, ['m', 't']);
+  const mixed = cancelProactive(tasks, { all: true, target_title: '喝水' });
+  assert.deepEqual(mixed.ids, []);
+  assert.match(mixed.receipt, /没有停下/);
+  const ambiguous = cancelProactive([
+    { id: 'a', kind: 'timer', title: '喝水' },
+    { id: 'b', kind: 'timer', title: '喝水提醒' },
+  ], { target_title_contains: '喝水' });
+  assert.deepEqual(ambiguous.ids, []);
+  assert.match(ambiguous.receipt, /不止一项/);
+  const adjacent = cancelProactive(tasks, {}, 't');
+  assert.deepEqual(adjacent.ids, ['t']);
+  const missing = cancelProactive(tasks, {});
+  assert.match(missing.receipt, /没有刚创建的任务/);
+  assert.equal(listProactive([]), '现在没有主动任务。');
+  assert.match(listProactive(tasks), /监视「出现报错」/);
+  assert.match(taskPrompt(tasks), /cancel_proactive_task/);
+  assert.equal(taskPrompt([]), '');
+  assert.equal(cancelProactive(tasks, { all: true }).ids.length, tasks.length);
+  assert.deepEqual(tasks.map((item) => item.id), ['m', 't']);
 });
