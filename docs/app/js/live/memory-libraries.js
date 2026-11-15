@@ -193,12 +193,19 @@ export const RETRIEVE_TOOL = {
   type: 'function',
   function: {
     name: 'omniretrieve',
-    description: '在当前记忆库里查找更早的对话、长期事实或视觉观察。会用向量相似度和关键词一起找。当前提示里已经有的内容不要再查。问以前看到的环境时 source 用 env。先调用，再回答。',
+    description: '在当前记忆库里查找更早的对话、长期事实或视觉观察。会用向量相似度和关键词一起找。当前提示里已经有的内容不要再查。问以前看到的环境时 source 用 env。用户提到昨天、上周这类时间时再填 time_range，时间不要写进 query。时间只调整排序，不会丢掉窗口外的结果。先调用，再回答。',
     parameters: {
       type: 'object',
       properties: {
-        query: { type: 'string', description: '2 到 5 个关键词，用空格分开。' },
+        query: { type: 'string', description: '2 到 5 个关键词，用空格分开。时间不要写在这里。' },
         source: { type: 'string', enum: ['dialogue', 'env'], description: 'dialogue 是对话和长期事实。env 是打开视觉记忆后记下的画面。' },
+        time_range: {
+          type: 'array',
+          items: { type: 'number' },
+          minItems: 2,
+          maxItems: 2,
+          description: '可选。用户提到时间才填，格式是 [更早的天数, 更近的天数]。昨天用 [2, 0]，上周用 [14, 1]。',
+        },
       },
       required: ['query', 'source'],
     },
@@ -224,7 +231,7 @@ function cleanNote(value) {
 }
 
 export function emptyLibrary(id, name) {
-  return { id, name, bio: [], notes: [], summary: '', env: [], ltm: emptyLtm(), stm: [], stmSeq: 0 };
+  return { id, name, bio: [], notes: [], summary: '', env: [], turns: [], ltm: emptyLtm(), stm: [], stmSeq: 0 };
 }
 
 export function emptyStore() {
@@ -245,10 +252,11 @@ function asLibrary(raw) {
   if (!name) return null;
   const bio = (Array.isArray(raw.bio) ? raw.bio : []).map(cleanFact).filter(Boolean).slice(-MAX_BIO);
   const notes = (Array.isArray(raw.notes) ? raw.notes : []).map(cleanNote).filter(Boolean).slice(-MAX_MEMORY_NOTES);
-  const env = (Array.isArray(raw.env) ? raw.env : []).map((line) => cleanObservation(line)).filter(Boolean).slice(-MAX_ENV);
+  const env = envItems({ env: raw.env });
+  const turns = cleanTurns(raw.turns);
   const ltm = cleanLtm(raw.ltm);
   const timed = cleanStm(raw.stm, localDate(), Number(raw.stmSeq) || 0);
-  return { id: raw.id, name, bio, notes, summary: clipSummary(raw.summary), env, ltm, stm: timed.stm, stmSeq: timed.stmSeq };
+  return { id: raw.id, name, bio, notes, summary: clipSummary(raw.summary), env, turns, ltm, stm: timed.stm, stmSeq: timed.stmSeq };
 }
 
 export function normalizeStore(raw) {
@@ -307,12 +315,14 @@ export function memoryLabel(store) {
   const seen = Array.isArray(library.env) ? library.env.length : 0;
   const facts = ltmCount(library.ltm);
   const soon = cleanStm(library.stm, localDate()).stm.length;
-  if (!library.bio.length && !library.notes.length && !library.summary && !seen && !facts && !soon) return `${count}记忆库「${library.name}」还没有记住对话。`;
+  const archived = cleanTurns(library.turns).length;
+  if (!library.bio.length && !library.notes.length && !library.summary && !seen && !facts && !soon && !archived) return `${count}记忆库「${library.name}」还没有记住对话。`;
   const older = library.summary ? '，并保留一段更早的摘要' : '';
   const visual = seen ? `，视觉观察 ${seen} 条` : '';
   const stable = facts ? `，长期资料 ${facts} 条` : '';
   const coming = soon ? `，近期事项 ${soon} 条` : '';
-  return `${count}记忆库「${library.name}」有长期事实 ${library.bio.length} 条，最近 ${library.notes.length} 句对话${older}${visual}${stable}${coming}。`;
+  const history = archived ? `，带时间的对话 ${archived} 条` : '';
+  return `${count}记忆库「${library.name}」有长期事实 ${library.bio.length} 条，最近 ${library.notes.length} 句对话${older}${visual}${stable}${coming}${history}。`;
 }
 
 export function createLibrary(store, name, id) {
@@ -342,7 +352,7 @@ export function clearLibrary(store, id) {
   if (!store.libraries.some((item) => item.id === id)) throw new Error('没有这个记忆库');
   return {
     ...store,
-    libraries: store.libraries.map((item) => (item.id === id ? { ...item, bio: [], notes: [], summary: '', env: [], ltm: emptyLtm(), stm: [], stmSeq: 0 } : item)),
+    libraries: store.libraries.map((item) => (item.id === id ? { ...item, bio: [], notes: [], summary: '', env: [], turns: [], ltm: emptyLtm(), stm: [], stmSeq: 0 } : item)),
   };
 }
 
@@ -403,14 +413,103 @@ export function memoryCorpus(library, today = localDate()) {
   return visibleLines([library?.bio, library?.summary, library?.notes, profileLines(library?.ltm), stmLines(library?.stm, today)]);
 }
 
-export function envCorpus(library) {
-  return visibleLines(library?.env);
+export function envItems(library) {
+  const items = [];
+  const seen = new Set();
+  for (const raw of Array.isArray(library?.env) ? library.env : []) {
+    const content = cleanObservation(typeof raw === 'string' ? raw : raw?.content);
+    if (!content || seen.has(content)) continue;
+    const at = raw && typeof raw === 'object' && Number.isFinite(raw.at) && raw.at > 0 ? Math.floor(raw.at) : 0;
+    seen.add(content);
+    items.push({ content, at });
+  }
+  return items.slice(-MAX_ENV);
 }
 
-export function recordObservation(library, text) {
+export function envCorpus(library) {
+  return envItems(library).map((item) => item.content);
+}
+
+export function recordObservation(library, text, at = 0) {
   const content = cleanObservation(text);
-  if (!content) return envCorpus(library);
-  return [...envCorpus(library).filter((line) => line !== content), content].slice(-MAX_ENV);
+  const items = envItems(library).filter((item) => item.content !== content);
+  if (!content) return items;
+  const stamp = Number.isFinite(at) && at > 0 ? Math.floor(at) : 0;
+  return [...items, { content, at: stamp }].slice(-MAX_ENV);
+}
+
+export const MAX_TURNS = 40;
+export const TIME_RANGE_BOOST = 2;
+export const TIME_EDGE_DAYS = 2;
+
+export function cleanTurns(raw) {
+  const turns = [];
+  for (const item of Array.isArray(raw) ? raw : []) {
+    const text = cleanNote(typeof item === 'string' ? item : item?.text);
+    if (!text) continue;
+    const at = item && typeof item === 'object' && Number.isFinite(item.at) && item.at > 0 ? Math.floor(item.at) : 0;
+    turns.push({ text, at });
+  }
+  return turns.slice(-MAX_TURNS);
+}
+
+export function rememberTurn(turns, text, at) {
+  const line = cleanNote(text);
+  const kept = cleanTurns(turns);
+  if (!line) return kept;
+  const stamp = Number.isFinite(at) && at > 0 ? Math.floor(at) : 0;
+  return [...kept, { text: line, at: stamp }].slice(-MAX_TURNS);
+}
+
+export function dialogueLines(library, today = localDate()) {
+  const lines = memoryCorpus(library, today);
+  for (const turn of cleanTurns(library?.turns)) {
+    if (!lines.includes(turn.text)) lines.push(turn.text);
+  }
+  return lines;
+}
+
+export function datedEntries(library, source, today = localDate()) {
+  if (source === 'env') return envItems(library).map((item) => ({ text: item.content, at: item.at }));
+  const dated = new Map();
+  for (const text of memoryCorpus(library, today)) dated.set(text, 0);
+  for (const turn of cleanTurns(library?.turns)) dated.set(turn.text, turn.at || dated.get(turn.text) || 0);
+  return [...dated.entries()].map(([text, at]) => ({ text, at }));
+}
+
+export function resolveTimeRange(timeRange, now = new Date()) {
+  if (!Array.isArray(timeRange) || timeRange.length !== 2 || timeRange.some((value) => typeof value !== 'number' || !Number.isFinite(value))) return null;
+  const older = Math.max(timeRange[0], timeRange[1]);
+  const newer = Math.min(timeRange[0], timeRange[1]);
+  const origin = Math.floor(now.getTime() / 1000);
+  return { from: origin - older * 86400, to: origin - newer * 86400 };
+}
+
+export function timeWeight(at, window) {
+  if (!window) return 1;
+  const stamp = Number(at) || 0;
+  if (stamp >= window.from && stamp <= window.to) return TIME_RANGE_BOOST;
+  const edge = TIME_EDGE_DAYS * 86400;
+  if (edge > 0 && stamp >= window.from - edge && stamp <= window.to + edge) return 1 + (TIME_RANGE_BOOST - 1) / 2;
+  return 1;
+}
+
+export function rankWithTime(keywordText, vectorHits, dated, timeRange, now = new Date()) {
+  const untouched = keywordText === '没有找到相关记忆。' || keywordText === '这套记忆库还没有视觉观察。';
+  const keyword = untouched ? [] : String(keywordText || '').split('\n').map((line) => line.trim()).filter(Boolean);
+  const vector = (Array.isArray(vectorHits) ? vectorHits : []).map((item) => String(item?.text || '').trim()).filter(Boolean);
+  const scores = new Map();
+  const add = (lines) => lines.forEach((text, rank) => scores.set(text, (scores.get(text) || 0) + 1 / (61 + rank)));
+  add(keyword);
+  add(vector);
+  const window = resolveTimeRange(timeRange, now);
+  const when = new Map((Array.isArray(dated) ? dated : []).map((item) => [item.text, item.at]));
+  const ranked = [...scores.entries()]
+    .map(([text, score]) => [text, score * timeWeight(when.get(text) || 0, window)])
+    .sort((a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0])))
+    .slice(0, RETRIEVE_LIMIT);
+  if (!ranked.length) return keywordText === '这套记忆库还没有视觉观察。' ? keywordText : '没有找到相关记忆。';
+  return ranked.map(([text]) => text).join('\n');
 }
 
 export const LTM_FIELDS = ['name', 'occupation_or_role', 'preferences', 'routines', 'interests', 'long_term_goals', 'relationships', 'appearance'];
@@ -759,5 +858,5 @@ export function retrieveMemory(library, request) {
   if (source !== 'env' && source !== 'dialogue') throw new Error('只能检索对话或视觉观察');
   const words = queryWords(request);
   if (source === 'env' && !envCorpus(library).length) return '这套记忆库还没有视觉观察。';
-  return keywordLines(source === 'env' ? envCorpus(library) : memoryCorpus(library), words);
+  return keywordLines(source === 'env' ? envCorpus(library) : dialogueLines(library), words);
 }
