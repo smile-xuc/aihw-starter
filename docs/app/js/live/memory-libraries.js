@@ -231,7 +231,7 @@ function cleanNote(value) {
 }
 
 export function emptyLibrary(id, name) {
-  return { id, name, bio: [], notes: [], summary: '', env: [], turns: [], ltm: emptyLtm(), stm: [], stmSeq: 0 };
+  return { id, name, bio: [], notes: [], summary: '', env: [], turns: [], dialogue: emptyDialogue(), ltm: emptyLtm(), stm: [], stmSeq: 0 };
 }
 
 export function emptyStore() {
@@ -256,7 +256,7 @@ function asLibrary(raw) {
   const turns = cleanTurns(raw.turns);
   const ltm = cleanLtm(raw.ltm);
   const timed = cleanStm(raw.stm, localDate(), Number(raw.stmSeq) || 0);
-  return { id: raw.id, name, bio, notes, summary: clipSummary(raw.summary), env, turns, ltm, stm: timed.stm, stmSeq: timed.stmSeq };
+  return { id: raw.id, name, bio, notes, summary: clipSummary(raw.summary), env, turns, dialogue: cleanDialogue(raw.dialogue), ltm, stm: timed.stm, stmSeq: timed.stmSeq };
 }
 
 export function normalizeStore(raw) {
@@ -316,13 +316,15 @@ export function memoryLabel(store) {
   const facts = ltmCount(library.ltm);
   const soon = cleanStm(library.stm, localDate()).stm.length;
   const archived = cleanTurns(library.turns).length;
-  if (!library.bio.length && !library.notes.length && !library.summary && !seen && !facts && !soon && !archived) return `${count}记忆库「${library.name}」还没有记住对话。`;
+  const pieces = cleanDialogue(library.dialogue).segments.length;
+  if (!library.bio.length && !library.notes.length && !library.summary && !seen && !facts && !soon && !archived && !pieces) return `${count}记忆库「${library.name}」还没有记住对话。`;
   const older = library.summary ? '，并保留一段更早的摘要' : '';
   const visual = seen ? `，视觉观察 ${seen} 条` : '';
   const stable = facts ? `，长期资料 ${facts} 条` : '';
   const coming = soon ? `，近期事项 ${soon} 条` : '';
   const history = archived ? `，带时间的对话 ${archived} 条` : '';
-  return `${count}记忆库「${library.name}」有长期事实 ${library.bio.length} 条，最近 ${library.notes.length} 句对话${older}${visual}${stable}${coming}${history}。`;
+  const grouped = pieces ? `，对话片段 ${pieces} 段` : '';
+  return `${count}记忆库「${library.name}」有长期事实 ${library.bio.length} 条，最近 ${library.notes.length} 句对话${older}${visual}${stable}${coming}${history}${grouped}。`;
 }
 
 export function createLibrary(store, name, id) {
@@ -352,7 +354,7 @@ export function clearLibrary(store, id) {
   if (!store.libraries.some((item) => item.id === id)) throw new Error('没有这个记忆库');
   return {
     ...store,
-    libraries: store.libraries.map((item) => (item.id === id ? { ...item, bio: [], notes: [], summary: '', env: [], turns: [], ltm: emptyLtm(), stm: [], stmSeq: 0 } : item)),
+    libraries: store.libraries.map((item) => (item.id === id ? { ...item, bio: [], notes: [], summary: '', env: [], turns: [], dialogue: emptyDialogue(), ltm: emptyLtm(), stm: [], stmSeq: 0 } : item)),
   };
 }
 
@@ -474,7 +476,107 @@ export function datedEntries(library, source, today = localDate()) {
   const dated = new Map();
   for (const text of memoryCorpus(library, today)) dated.set(text, 0);
   for (const turn of cleanTurns(library?.turns)) dated.set(turn.text, turn.at || dated.get(turn.text) || 0);
+  for (const item of dialogueEntries(library)) dated.set(item.text, item.at || dated.get(item.text) || 0);
   return [...dated.entries()].map(([text, at]) => ({ text, at }));
+}
+
+export const SEGMENT_MAX_TURNS = 4;
+export const SEGMENT_GAP_TURNS = 2;
+export const SEGMENT_MAX_CHARS = 1000;
+export const SEGMENT_SILENCE_SEC = 60;
+export const MAX_SEGMENTS = 80;
+export const MAX_UTTERANCE_CHARS = 800;
+
+export function emptyDialogue() {
+  return { nextIdx: 0, tail: [], segments: [] };
+}
+
+function clipUtterance(value) {
+  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  if (!text || SECRET_RE.test(text)) return '';
+  const chars = [...text];
+  return chars.length > MAX_UTTERANCE_CHARS ? chars.slice(0, MAX_UTTERANCE_CHARS).join('') : text;
+}
+
+function utteranceChars(turns) {
+  return turns.reduce((total, turn) => total + [...turn.user].length + [...turn.assistant].length, 0);
+}
+
+function segmentText(turns) {
+  const text = turns.flatMap((turn) => [
+    turn.user ? `User：${turn.user}` : '',
+    turn.assistant ? `Assistant：${turn.assistant}` : '',
+  ]).filter(Boolean).join(' ');
+  const chars = [...text];
+  return chars.length > 600 ? chars.slice(0, 600).join('') : text;
+}
+
+function cutReason(tail, incoming) {
+  if (!tail.length) return '';
+  if (tail.length >= SEGMENT_MAX_TURNS) return 'max_turns';
+  if (utteranceChars(tail) >= SEGMENT_MAX_CHARS) return 'max_chars';
+  const previous = tail[tail.length - 1];
+  if (SEGMENT_SILENCE_SEC > 0 && tail.length >= SEGMENT_GAP_TURNS && incoming.userAt - (previous.assistantAt || previous.userAt) >= SEGMENT_SILENCE_SEC) return 'silence_gap';
+  return '';
+}
+
+function keepSegments(segments, turns, reason) {
+  const text = segmentText(turns);
+  if (!text) return segments;
+  const start = turns[0].userAt || 0;
+  const last = turns[turns.length - 1];
+  return [...segments, { start, end: last.assistantAt || last.userAt || start, reason, text }].slice(-MAX_SEGMENTS);
+}
+
+export function cleanDialogue(raw) {
+  const source = raw && typeof raw === 'object' ? raw : {};
+  const tail = [];
+  for (const item of Array.isArray(source.tail) ? source.tail : []) {
+    const user = clipUtterance(item?.user);
+    if (!user) continue;
+    const assistant = clipUtterance(item?.assistant);
+    const userAt = Number.isFinite(item?.userAt) && item.userAt > 0 ? Math.floor(item.userAt) : 0;
+    tail.push({ user, assistant, userAt, assistantAt: Number.isFinite(item?.assistantAt) && item.assistantAt > 0 ? Math.floor(item.assistantAt) : userAt });
+  }
+  const segments = [];
+  for (const item of Array.isArray(source.segments) ? source.segments : []) {
+    const text = String(item?.text || '').replace(/\s+/g, ' ').trim();
+    if (!text || SECRET_RE.test(text)) continue;
+    const chars = [...text];
+    const start = Number.isFinite(item?.start) && item.start > 0 ? Math.floor(item.start) : 0;
+    const end = Number.isFinite(item?.end) && item.end > 0 ? Math.floor(item.end) : start;
+    const reason = ['max_turns', 'max_chars', 'silence_gap', 'session_end'].includes(item?.reason) ? item.reason : 'session_end';
+    segments.push({ start, end, reason, text: chars.length > 600 ? chars.slice(0, 600).join('') : text });
+  }
+  const nextIdx = Number.isInteger(source.nextIdx) && source.nextIdx > 0 ? source.nextIdx : tail.length;
+  return { nextIdx, tail: tail.slice(-SEGMENT_MAX_TURNS), segments: segments.slice(-MAX_SEGMENTS) };
+}
+
+export function recordExchange(dialogue, user, assistant, at) {
+  const state = cleanDialogue(dialogue);
+  const heard = clipUtterance(user);
+  if (!heard) return state;
+  const userAt = Number.isFinite(at) && at > 0 ? Math.floor(at) : Math.floor(Date.now() / 1000);
+  const turn = { user: heard, assistant: clipUtterance(assistant), userAt, assistantAt: userAt };
+  const reason = cutReason(state.tail, turn);
+  return {
+    nextIdx: state.nextIdx + 1,
+    tail: reason ? [turn] : [...state.tail, turn],
+    segments: reason ? keepSegments(state.segments, state.tail, reason) : state.segments,
+  };
+}
+
+export function finishDialogue(dialogue) {
+  const state = cleanDialogue(dialogue);
+  if (!state.tail.length) return state;
+  return { ...state, tail: [], segments: keepSegments(state.segments, state.tail, 'session_end') };
+}
+
+export function dialogueEntries(library) {
+  const dialogue = cleanDialogue(library?.dialogue);
+  const entries = dialogue.segments.map((item) => ({ text: item.text, at: item.start || 0 }));
+  if (dialogue.tail.length) entries.push({ text: segmentText(dialogue.tail), at: dialogue.tail[0].userAt || 0 });
+  return entries.filter((item) => item.text);
 }
 
 export function resolveTimeRange(timeRange, now = new Date()) {
@@ -858,5 +960,11 @@ export function retrieveMemory(library, request) {
   if (source !== 'env' && source !== 'dialogue') throw new Error('只能检索对话或视觉观察');
   const words = queryWords(request);
   if (source === 'env' && !envCorpus(library).length) return '这套记忆库还没有视觉观察。';
-  return keywordLines(source === 'env' ? envCorpus(library) : dialogueLines(library), words);
+  const dialogue = source === 'env' ? envCorpus(library) : dialogueLines(library);
+  if (source === 'env') return keywordLines(dialogue, words);
+  const lines = dialogue.slice();
+  for (const item of dialogueEntries(library)) {
+    if (!lines.includes(item.text)) lines.push(item.text);
+  }
+  return keywordLines(lines, words);
 }
