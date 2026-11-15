@@ -4,6 +4,33 @@
 
 import { matchingRoots, toBase64 } from './client.js';
 
+// qwen3.8-omni-flash-realtime 预设音色。来源：Qwen-Live-Harness voice-catalog，对应官方 Omni 音色表。
+export const VOICE_STORAGE_KEY = 'aihw.session.voice';
+export const DEFAULT_VOICE = 'Tina';
+export const OMNI_38_VOICES = Object.freeze([
+  'Tina', 'Cindy', 'Liora Mira', 'Raymond', 'Zane', 'Katerina', 'Ryan', 'Mia', 'Cici', 'Theo Calm',
+  'Serena', 'Maia', 'Evan', 'Qiao', 'Momo', 'Wil', 'Angel', 'Li Cassian', 'Joyner', 'Gold',
+  'Jennifer', 'Aiden', 'Mione', 'Sunny', 'Dylan', 'Eric', 'Peter', 'Joseph Chen', 'Marcus', 'Li',
+  'Rocky', 'Kiki', 'Sohee', 'Eliška', 'Alek', 'Arda', 'Dolce', 'Lenn', 'Ono Anna', 'Sonrisa',
+  'Bodega', 'Andre', 'Radio Gol', 'Rizky', 'Roya', 'Hana', 'Jakub', 'Griet', 'Marina', 'Siiri',
+  'Ingrid', 'Sigga', 'Bea', 'Chloe', 'Emilien', 'longanlingxin',
+]);
+
+export function chooseVoice(requested, presets = OMNI_38_VOICES) {
+  return presets.includes(requested) ? requested : DEFAULT_VOICE;
+}
+
+export function readVoice(storage) {
+  try { return chooseVoice(storage?.getItem(VOICE_STORAGE_KEY)); }
+  catch { return DEFAULT_VOICE; }
+}
+
+export function writeVoice(storage, voice) {
+  const chosen = chooseVoice(voice);
+  storage.setItem(VOICE_STORAGE_KEY, chosen);
+  return chosen;
+}
+
 export function redactSecret(text, secret) {
   let out = String(text ?? '');
   if (typeof secret === 'string' && secret.length > 4) out = out.split(secret).join('[已隐藏]');
