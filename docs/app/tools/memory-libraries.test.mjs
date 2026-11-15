@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, RETRIEVE_TOOL,
-  activeLibrary, applyBio, applyMemoryPatch, bioResult, cleanObservation, clearLibrary, createLibrary, datedEntries, emptyDialogue, emptyLtm, finishDialogue, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, mergeVectorHits, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn,
-  renameLibrary, renderProfile, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore,
+  activeLibrary, applyBio, applyMemoryPatch, bioResult, cleanObservation, clearLibrary, cleanStm, createLibrary, datedEntries, emptyDialogue, emptyLtm, finishDialogue, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, mergeVectorHits, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn,
+  renameLibrary, renderProfile, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore,
 } from '../js/live/memory-libraries.js';
 
 function storage(initial = {}) {
@@ -257,4 +257,30 @@ test('cached segment vectors outrank a keyword miss', () => {
   assert.equal(merged[0].text, '海洋馆讲解');
   const ranked = rankWithTime('没有找到相关记忆。', merged, texts.map((text) => ({ text, at: 1 })), null);
   assert.match(ranked.split('\n')[0], /海洋馆/);
+});
+
+test('stale upcoming items leave the prompt and urgent ones stay', () => {
+  const today = '2026-11-15';
+  const noon = new Date(2026, 10, 15, 12, 0, 0);
+  const stamp = Math.floor(noon.getTime() / 1000);
+  const kept = cleanStm([
+    { id: 'stm_1', content: '已经过了宽限的发布会', status: 'upcoming', event_date: '2026-11-10', created_ts: stamp },
+    { id: 'stm_2', content: '昨天的讨论还在宽限里', status: 'upcoming', event_date: '2026-11-14', created_ts: stamp },
+    { id: 'stm_3', content: '九十天前的进行事项', status: 'ongoing', created_ts: stamp - 91 * 86400 },
+  ], today);
+  assert.deepEqual(kept.stm.map((item) => item.id), ['stm_2']);
+  const stamped = applyMemoryPatch({ stm: [], stmSeq: 0 }, {
+    stm_patch: { add: [{ content: '正在写方案', status: 'ongoing' }] },
+  }, today, noon);
+  assert.equal(stamped.stm[0].created_ts, stamp);
+  const rows = [];
+  for (let index = 0; index < 8; index += 1) {
+    rows.push({ id: `stm_${index + 1}`, content: '事'.repeat(150), status: 'ongoing', created_ts: stamp - (40 - index) * 86400 });
+  }
+  rows.push({ id: 'stm_9', content: '明天要交稿', status: 'upcoming', event_date: '2026-11-16', created_ts: stamp });
+  const shown = selectRecent(rows, today, noon);
+  assert.equal(shown.some((item) => item.id === 'stm_1'), false);
+  assert.equal(shown.some((item) => item.content === '明天要交稿'), true);
+  assert.match(renderRecent(rows, today, noon), /记于 2026-11-15 12:00/);
+  assert.match(renderRecent(rows, today, noon), /即将发生/);
 });
