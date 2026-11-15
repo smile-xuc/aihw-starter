@@ -360,6 +360,12 @@ export function proactiveTasks(tasks) {
   return (Array.isArray(tasks) ? tasks : []).filter((task) => task && task.id && typeof task.title === 'string' && task.title.trim());
 }
 
+export function retainTasks(tasks, next) {
+  if (!next || !next.id || (next.kind !== 'timer' && next.kind !== 'monitor' && next.kind !== 'narration')) throw new Error('主动任务无效');
+  const kept = proactiveTasks(tasks).filter((task) => task.id !== next.id && (task.kind === 'timer' || next.kind === 'timer' || task.kind !== next.kind));
+  return [...kept, next];
+}
+
 function taskLines(tasks) {
   return proactiveTasks(tasks).map((task) => `- ${kindLabel(task.kind)}「${task.title.trim()}」`);
 }
