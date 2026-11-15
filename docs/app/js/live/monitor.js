@@ -38,7 +38,7 @@ export const MONITOR_TOOL = {
   type: 'function',
   function: {
     name: 'create_proactive_monitor',
-    description: '把以后才发生的提醒交给后台。用户说关注身体、咳嗽了提醒、出现报错再提醒，或听到某种声音再提醒时调用。condition 只写听到或看到什么。用户说咳嗽了就提醒我喝水时，condition 写听到咳嗽，trigger_response 写该喝水了。repeat 为 false 表示只提醒一次，说过就停；只有用户说一直盯着、从现在开始关注或持续监督时才设为 true。true 时同一次发生不重复开口，等这次过去再提醒。报告屏幕、画面时 modalities 只写 vision；咳嗽、身体或声音只写 audio；又要看又要听才两项都写。回执不表示条件已经发生。调用后只用一句话告诉用户会在发生时提醒，不要把提醒原文说成已经发生。',
+    description: '把以后才发生的提醒交给后台。用户说关注身体、咳嗽了提醒、出现报错再提醒，或听到某种声音再提醒时调用。condition 只写听到或看到什么。用户说咳嗽了就提醒我喝水时，condition 写听到咳嗽，trigger_response 写该喝水了。repeat 为 false 表示只提醒一次，说过就停；只有用户说一直盯着、从现在开始关注或持续监督时才设为 true。true 时同一次发生不重复开口，等这次过去再提醒。报告屏幕、画面时 modalities 只写 vision；咳嗽、身体或声音只写 audio；又要看又要听才两项都写。回执不表示条件已经发生。已经在听的另一项监视不要取消。这个页面同时最多两项监视，满了就说明先停掉一项。调用后只用一句话告诉用户会在发生时提醒，不要把提醒原文说成已经发生。',
     parameters: {
       type: 'object',
       properties: {
@@ -518,9 +518,26 @@ export function proactiveTasks(tasks) {
   return (Array.isArray(tasks) ? tasks : []).filter((task) => task && task.id && typeof task.title === 'string' && task.title.trim());
 }
 
+export const MAX_MONITORS = 2;
+
+export function monitorRoom(tasks, title) {
+  const needle = String(title || '').trim().toLocaleLowerCase();
+  const monitors = proactiveTasks(tasks).filter((task) => task.kind === 'monitor');
+  if (needle && monitors.some((task) => task.title.trim().toLocaleLowerCase() === needle)) return { ok: true, replace: true };
+  if (monitors.length >= MAX_MONITORS) return { ok: false, replace: false };
+  return { ok: true, replace: false };
+}
+
 export function retainTasks(tasks, next) {
   if (!next || !next.id || (next.kind !== 'timer' && next.kind !== 'monitor' && next.kind !== 'narration')) throw new Error('主动任务无效');
-  const kept = proactiveTasks(tasks).filter((task) => task.id !== next.id && (task.kind === 'timer' || next.kind === 'timer' || task.kind !== next.kind));
+  const needle = String(next.title || '').trim().toLocaleLowerCase();
+  const kept = proactiveTasks(tasks).filter((task) => {
+    if (task.id === next.id) return false;
+    if (next.kind === 'timer' || task.kind === 'timer') return true;
+    if (next.kind === 'narration') return task.kind !== 'narration';
+    if (next.kind === 'monitor' && task.kind === 'monitor') return task.title.trim().toLocaleLowerCase() !== needle;
+    return true;
+  });
   return [...kept, next];
 }
 
