@@ -579,6 +579,38 @@ export function dialogueEntries(library) {
   return entries.filter((item) => item.text);
 }
 
+export function vectorsForTexts(texts, stored, dimension = 0) {
+  const ready = new Map();
+  const missing = [];
+  const seen = new Set();
+  const saved = stored instanceof Map ? stored : new Map();
+  for (const text of Array.isArray(texts) ? texts : []) {
+    if (!text || seen.has(text)) continue;
+    seen.add(text);
+    const vector = normalizeVector(saved.get(text));
+    if (vector && (!dimension || vector.length === dimension)) ready.set(text, vector);
+    else missing.push(text);
+  }
+  return { ready, missing };
+}
+
+export function mergeVectorHits(groups, limit = RETRIEVE_LIMIT) {
+  const best = new Map();
+  for (const group of Array.isArray(groups) ? groups : []) {
+    for (const hit of Array.isArray(group) ? group : []) {
+      const text = String(hit?.text || '').trim();
+      const similarity = Number(hit?.similarity);
+      if (!text || !Number.isFinite(similarity)) continue;
+      const previous = best.get(text);
+      if (previous === undefined || similarity > previous) best.set(text, similarity);
+    }
+  }
+  return [...best.entries()]
+    .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
+    .slice(0, limit)
+    .map(([text, similarity]) => ({ text, similarity }));
+}
+
 export function resolveTimeRange(timeRange, now = new Date()) {
   if (!Array.isArray(timeRange) || timeRange.length !== 2 || timeRange.some((value) => typeof value !== 'number' || !Number.isFinite(value))) return null;
   const older = Math.max(timeRange[0], timeRange[1]);
