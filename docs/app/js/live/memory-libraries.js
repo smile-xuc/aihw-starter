@@ -10,6 +10,7 @@ export const DEFAULT_LIBRARY_ID = 'default';
 export const MAX_LIBRARIES = 8;
 export const MAX_BIO = 128;
 export const MAX_BIO_CHARS = 200;
+export const MAX_WM_ENTRIES = 64;
 export const MAX_NAME_CHARS = 40;
 export const EMBED_MODEL = 'text-embedding-v4';
 export const MIN_SIMILARITY = 0.4;
@@ -909,7 +910,25 @@ export function isEmptyPatch(patch) {
   return !(isRecord(stm) && ['add', 'update', 'remove'].some((key) => Array.isArray(stm[key]) && stm[key].length > 0));
 }
 
-export function formatUpdaterInput({ ltm, stm, notes, today }) {
+function updaterLines(list, limit, fromEnd) {
+  const lines = (Array.isArray(list) ? list : [])
+    .map((line) => String(line || '').replace(/\s+/gu, ' ').trim())
+    .filter((line) => line && !SECRET_RE.test(line));
+  return fromEnd ? lines.slice(-limit) : lines.slice(0, limit);
+}
+
+export function sessionFacts(before, after, limit = MAX_WM_ENTRIES) {
+  const prior = new Set(updaterLines(before, Number.MAX_SAFE_INTEGER, false));
+  const next = [];
+  for (const line of updaterLines(after, Number.MAX_SAFE_INTEGER, false)) {
+    if (prior.has(line) || next.includes(line)) continue;
+    next.push(line);
+    if (next.length >= limit) break;
+  }
+  return next;
+}
+
+export function formatUpdaterInput({ ltm, stm, notes, facts, today }) {
   const clean = cleanLtm(ltm);
   const profile = { name: clean.name || null };
   for (const field of LTM_FIELDS) {
@@ -923,7 +942,8 @@ export function formatUpdaterInput({ ltm, stm, notes, today }) {
     ...(item.event_date ? { event_date: item.event_date } : {}),
     ...(item.expires ? { expires: item.expires } : {}),
   }));
-  const entries = (Array.isArray(notes) ? notes : []).map((line) => String(line || '').trim()).filter((line) => line && !SECRET_RE.test(line)).slice(-MAX_MEMORY_NOTES);
+  const recorded = updaterLines(facts, MAX_WM_ENTRIES, false);
+  const entries = recorded.length ? recorded : updaterLines(notes, MAX_MEMORY_NOTES, true);
   return [
     `## 当前日期\n${today}`,
     hasLtm ? `## 当前 LTM（长期记忆）\n\`\`\`json\n${JSON.stringify(profile, null, 2)}\n\`\`\`` : '## 当前 LTM（长期记忆）\n（空，用户是全新用户）',

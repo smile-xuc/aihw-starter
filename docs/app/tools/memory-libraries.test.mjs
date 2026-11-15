@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, MAX_BIO, RETRIEVE_TOOL,
   activeLibrary, applyBio, applyMemoryPatch, bioReceipt, bioResult, cleanObservation, clearLibrary, cleanStm, createLibrary, datedEntries, emptyDialogue, emptyLtm, finishDialogue, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, mergeVectorHits, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn,
-  renameLibrary, renderProfile, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore,
+  renameLibrary, renderProfile, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, sessionFacts, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore,
 } from '../js/live/memory-libraries.js';
 
 function storage(initial = {}) {
@@ -190,6 +190,28 @@ test('hangup patch updates the durable profile and upcoming items', () => {
   assert.match(input, /2026-11-15/);
   assert.match(input, /海铂/);
   assert.match(input, /stm_1/);
+  assert.match(input, /记住了/);
+  const withFacts = formatUpdaterInput({
+    ltm: next.ltm,
+    stm: next.stm,
+    notes: ['用户说喜欢喝茶 → 记住了'],
+    facts: ['用户喜欢喝绿茶', 'sk-notarealkey12345678'],
+    today: '2026-11-15',
+  });
+  assert.match(withFacts, /用户喜欢喝绿茶/);
+  assert.doesNotMatch(withFacts, /记住了/);
+  assert.doesNotMatch(withFacts, /sk-/);
+  const many = Array.from({ length: 70 }, (_, index) => `事实${index}`);
+  const capped = formatUpdaterInput({ facts: many, notes: ['不要出现'], today: '2026-11-15' });
+  assert.match(capped, /事实0/);
+  assert.match(capped, /事实63/);
+  assert.doesNotMatch(capped, /事实64/);
+  assert.doesNotMatch(capped, /不要出现/);
+  assert.deepEqual(sessionFacts(['用户喜欢喝茶'], ['用户喜欢喝茶', '用户每周三开会']), ['用户每周三开会']);
+  const added = sessionFacts(['旧事实'], ['旧事实', ...many]);
+  assert.equal(added.length, 64);
+  assert.equal(added[0], '事实0');
+  assert.equal(added.at(-1), '事实63');
   const library = { bio: [], notes: [], summary: '', ltm: next.ltm, stm: next.stm };
   assert.match(retrieveMemory(library, { query: '海铂', source: 'dialogue' }), /海铂/);
   assert.match(retrieveMemory(library, { query: '上海', source: 'dialogue' }), /上海/);
