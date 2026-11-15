@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { MUTE_HEARTBEAT_MS, connectRealtime, decodeBase64, pcmBase64, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, silenceFrame, splitPcm, translationSession } from '../js/live/realtime-omni.js';
+import { MUTE_HEARTBEAT_MS, OMNI_38_VOICES, chooseVoice, connectRealtime, decodeBase64, pcmBase64, readVoice, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, silenceFrame, splitPcm, translationSession, writeVoice } from '../js/live/realtime-omni.js';
 
 const stack = {
   fields: [
@@ -90,4 +90,17 @@ test('mic mute keeps the socket alive with one silent second', () => {
   assert.equal(frame.some((byte) => byte !== 0), false);
   const encoded = pcmBase64(frame);
   assert.equal(decodeBase64(encoded).byteLength, 32000);
+});
+
+test('qwen3.8 voice stays on a supported preset', () => {
+  assert.equal(OMNI_38_VOICES.includes('Tina'), true);
+  assert.equal(OMNI_38_VOICES.includes('Liora Mira'), true);
+  assert.equal(chooseVoice('Ryan'), 'Ryan');
+  assert.equal(chooseVoice('Chelsie'), 'Tina');
+  assert.equal(chooseVoice(''), 'Tina');
+  const memory = { value: null, getItem() { return this.value; }, setItem(_key, value) { this.value = value; } };
+  assert.equal(writeVoice(memory, 'Mia'), 'Mia');
+  assert.equal(readVoice(memory), 'Mia');
+  assert.equal(writeVoice(memory, 'Cherry'), 'Tina');
+  assert.equal(readVoice(memory), 'Tina');
 });
