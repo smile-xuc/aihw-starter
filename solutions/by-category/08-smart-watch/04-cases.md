@@ -40,6 +40,7 @@
 | **Ultrahuman Ring PRO** | 钛合金智能指环 | AI 助手 Jade 对话解读数据；指环规格写 on-chip machine learning；Jade 模型与运行位置未公开 | 现价 $479.00 USD（查证 2026-10-14） | 官方购买页写看数据不收订阅费 |
 | **Google Fitbit Edge** | 超薄腕带健身追踪器 | Google Health Coach（商店页写 built with Gemini，含于 Health Premium）；Health Guardian | 博客 / 商店 From $179.99 USD（查证 2026-10-22） | Health Premium From $9.99/月；购机含 3 个月 |
 | **Suunto Race 3S** | 46 mm 钛金属表圈运动手表 | Suunto AI Coach：在 App 里用自然语言问训练 / 恢复 / 睡眠 / 路线，可生成训练课 / 计划 / 路线后同步到表；模型未公开，推理位置官方未写 | 美国现价 $599.00 USD（查证 2026-11-13）；是否即首发价待核实 | 2026-12-31 前激活送 3 个月，不用绑卡，到期自动结束、不自动续订；之后订阅价待核实 |
+| **Garmin Connect+** | Garmin Connect App 订阅（不绑定单一表款） | Active Intelligence，根据健康和活动数据全天推送个性化洞察和建议；官方新闻稿写 "powered by AI"，当时为 beta（"currently releasing in beta"）；支持的功能因表款而异；模型名和推理位置未公开 | 见订阅列（新闻稿 2025-03-27） | 免费试用 30 天，之后 $6.99/月或 $69.99/年（[新闻稿（2025-03-27）](https://www.garmin.com/en-US/newsroom/press-release/wearables-health/elevate-your-health-and-fitness-goals-with-garmin-connect/)）；原有免费功能保持免费。官方 Connect+ 产品页在 2026-11-17 查证返回 404，现价与是否已脱离 beta 待核实 |
 
 ## 三、关键案例速览
 
@@ -147,6 +148,13 @@
 - **公开数据**：现价 $599.00 USD，是否即首发价待核实。2026-12-31 前激活送 3 个月，不用绑卡，到期自动结束、不自动续订；之后订阅价待核实。未见公开销量
 - **另见**：[Suunto Race 3S 商业产品卡][watch]
 
+### 案例：Garmin Connect+（Garmin）— App 订阅里的 AI 解读
+
+- **公开信息源**：[Garmin 新闻稿（2025-03-27）](https://www.garmin.com/en-US/newsroom/press-release/wearables-health/elevate-your-health-and-fitness-goals-with-garmin-connect/)（查证 2026-11-17）
+- **形态**：不绑定某一款表，而是 Garmin Connect App 的付费订阅 Garmin Connect+ 中的功能；新闻稿写支持的功能因设备而异
+- **技术路线**：Active Intelligence，按健康和活动数据全天推送个性化洞察和建议。官方原话 "powered by AI"；新闻稿写该 AI 当时仍在 beta（"currently releasing in beta"）。模型名和推理位置未公开
+- **公开数据**：价格按新闻稿：免费试用 30 天，之后 $6.99/月或 $69.99/年；原有免费功能保持免费。官方 Connect+ 产品页 2026-11-17 返回 404，现价与是否已脱离 beta 待核实
+
 ## 四、待补充清单（欢迎 PR）
 
 - [x] Amazfit Balance 2（Zepp Flow / Zepp Coach）
@@ -156,7 +164,7 @@
 - [x] Ultrahuman Ring PRO（Jade）
 - [x] Google Fitbit Edge（Google Health Coach / Gemini）
 - [x] Suunto Race 3S（Suunto AI Coach）
-- [ ] Garmin 公开 AI 解读 SKU
+- [x] Garmin Connect+ Active Intelligence（App 订阅，非单一表款）
 - [ ] 国内医疗级手表注册案例（仅公开）
 
 ---

@@ -310,7 +310,7 @@
 - [x] TicNote Watch（腕上 AI 录音和纪要）
 - [x] Google Fitbit Edge（Google Health Coach / Gemini）
 - [x] Suunto Race 3S（Suunto AI Coach）
-- [ ] Garmin 公开 AI 解读 SKU
+- [x] Garmin Connect+ Active Intelligence（App 订阅，非单一表款）
 - [ ] 医疗级注册手表公开案例
 
 ## 贡献指引
