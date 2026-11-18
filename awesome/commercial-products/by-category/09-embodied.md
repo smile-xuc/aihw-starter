@@ -141,7 +141,7 @@
 ### 远征 A2（智元 / AgiBot）
 
 - **上市状态**：在售（官方产品页、官方中文页，查证 2026-09-30）
-- **官网/渠道**：<https://www.agibot.com/products/A2>；中文介绍 <https://www.agibot.com.cn/article/188/detail/107.html>
+- **官网/渠道**：<https://www.agibot.com.cn/products/A2> 中文产品页（查证 2026-11-18）
 - **形态**：全尺寸交互服务人形。英文页规格：身高 169 cm、体重 69 kg、电池 700 Wh、续航 2 h、可换电、主动自由度 40+。中文页写灵巧手 19 个自由度
 - **定价**：
   - 首发价：A2 青春版开售价 ¥168,000 CNY（2025-08-18）· [界面新闻](https://m.jiemian.com/article/13195641.html)。旗舰版待核实
@@ -149,7 +149,7 @@
   - MSRP：待核实
 - **目标市场**：导览、迎宾、讲解等交互服务。中文页写应用场景包括工业、商业、家庭
 - **AI 能力**：
-  - AI 功能：大模型全双工实时对话，结合 RAG 建企业知识库做营销、业务咨询和导览讲解；多模态模型做声源定位、人脸识别和嘈杂环境唇读；ActionGPT 按语音指令和意图生成拟人动作；HIMUS 3D-SLAM + VectorFlux 规划控制做 L4 级自主移动，结合开放集语义信息智能避障。实现方式：大语言模型 + RAG + 多模态模型，支持端侧部署，没有写模型名（[远征 A2 英文产品页](https://www.agibot.com/products/A2)，查证 2026-10-02）
+  - AI 功能：大模型全双工实时对话，结合 RAG 建企业知识库做营销、业务咨询和导览讲解；多模态模型做声源定位、人脸识别和嘈杂环境唇读；ActionGPT 按语音指令和意图生成拟人动作；HIMUS 3D-SLAM + VectorFlux 规划控制做 L4 级自主移动，结合开放集语义信息智能避障。实现方式：大语言模型 + RAG + 多模态模型，支持端侧部署，没有写模型名（原引自英文产品页，查证 2026-10-02；该页 2026-11-18 已失效，本句不以今日中文产品页为据）
   - 英文页原文 "Powered by large language models … full-duplex conversation, and edge deployment"，并写结合 RAG 做企业知识库
 - **大模型方案**：英文页写 large language models 与 RAG，未写具体模型名。官网未公开具体基座模型（非千问默认绑定）
 - **公开数据**：A2 单款销量未见。中文页写 2024-08-18 发布、2024-12-16 量产，并写远征系列累计出货约 1,000 台（系列口径）
@@ -157,7 +157,7 @@
 - **商业模式**：硬件交付；官方商城在线销售青春版，旗舰版为「联系购买」。旗舰版价格待核实
 - **另见**：[公开案例](../../../solutions/by-category/09-embodied/04-cases.md)
 
-> 来源：[远征 A2 英文产品页](https://www.agibot.com/products/A2) · [官方中文介绍](https://www.agibot.com.cn/article/188/detail/107.html)（均查证 2026-09-30） · [界面新闻（2025-08-18）](https://m.jiemian.com/article/13195641.html)
+> 来源：[远征 A2 中文产品页](https://www.agibot.com.cn/products/A2)（查证 2026-11-18） · [界面新闻（2025-08-18）](https://m.jiemian.com/article/13195641.html)
 
 ---
 

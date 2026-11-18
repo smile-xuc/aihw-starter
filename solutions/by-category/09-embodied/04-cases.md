@@ -107,7 +107,7 @@
 
 ### 案例：远征 A2（智元 / AgiBot）— 交互服务人形
 
-- **公开信息源**：[英文产品页](https://www.agibot.com/products/A2) · [官方中文介绍](https://www.agibot.com.cn/article/188/detail/107.html)（查证 2026-09-30） · [界面新闻（2025-08-18）](https://m.jiemian.com/article/13195641.html)
+- **公开信息源**：[远征 A2 中文产品页](https://www.agibot.com.cn/products/A2)（查证 2026-11-18） · [界面新闻（2025-08-18）](https://m.jiemian.com/article/13195641.html)
 - **形态**：全尺寸人形。英文页：身高 169 cm、体重 69 kg、电池 700 Wh、续航 2 h、主动自由度 40+。中文页：灵巧手 19 个自由度；2024-08-18 发布，2024-12-16 量产
 - **技术路线**：英文页写 large language models、全双工对话、端侧部署，并结合 RAG 做企业知识库。具体模型名未公开
 - **亮点**：对话方案和知识库都写在英文产品页
@@ -141,7 +141,7 @@
 
 ## 五、待补充清单（欢迎 PR）
 
-- [x] 国内工业四足巡检公开标案：宇树 B2-W-pro 成交单价 ¥450,000 CNY（中国政府采购网成交公告，2026-06-26）· [成交公告](http://www.ccgp.gov.cn/cggg/dfgg/cjgg/202606/t20260626_26820485.htm)
+- [x] 国内工业四足巡检公开标案：宇树 B2-W-pro 成交单价 ¥450,000 CNY（中国政府采购网成交公告，2026-06-26）· [成交公告](https://www.ccgp.gov.cn/cggg/dfgg/cjgg/202606/t20260626_26820485.htm)
 - [ ] Figure / Apptronik 等海外人形试点公开合同细节
 - [ ] 开源臂 + 千问实机抓取复现报告
 

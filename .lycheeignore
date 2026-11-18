@@ -48,3 +48,6 @@
 ^https://www\.iyiou\.com/news/202610231144269$
 # 用户批准（2026-11-12，经 Designer 转达）：Oakley Meta 页面拦截检查器返回 403，不是死链；精确 URL，不排除整个 oakley.com 域名。
 ^https://www\.oakley\.com/en-us/l/oakley-meta$
+
+# 用户批准（2026-11-18，经 Bruce 转达）：宇树 B2-W-pro 成交公告。CI（GitHub Actions IP）对该 URL 固定 403；精确 https URL，不排除整个 ccgp.gov.cn 域名。
+^https://www\.ccgp\.gov\.cn/cggg/dfgg/cjgg/202606/t20260626_26820485\.htm$
