@@ -126,6 +126,32 @@ export function functionCalls(event, limit = 2, used = 0) {
   return output.filter((item) => item?.type === 'function_call' && item.call_id).slice(0, limit - used);
 }
 
+export function responseFunctionCalls(event, used = 0, roundLimit = 2) {
+  if (!Number.isInteger(used) || used < 0 || !Number.isInteger(roundLimit) || roundLimit < 1 || used >= roundLimit) return [];
+  const output = event?.response?.output || [];
+  return output.filter((item) => item && item.type === 'function_call' && typeof item.call_id === 'string' && item.call_id);
+}
+
+export function openToolRound(callIds) {
+  const ids = Array.isArray(callIds) ? callIds.filter((id) => typeof id === 'string' && id) : [];
+  if (!ids.length) throw new Error('工具回合无效');
+  const pending = new Map();
+  for (const id of ids) pending.set(id, (pending.get(id) || 0) + 1);
+  let spoken = false;
+  return {
+    waiting(callId) { return (pending.get(callId) || 0) > 0; },
+    finish(callId) {
+      const count = pending.get(callId) || 0;
+      if (spoken || count < 1) return 'closed';
+      if (count === 1) pending.delete(callId);
+      else pending.set(callId, count - 1);
+      if ([...pending.values()].some((left) => left > 0)) return 'hold';
+      spoken = true;
+      return 'speak';
+    },
+  };
+}
+
 export function instructionsWithPetMemory(base, memory, slot, recall = 10) {
   const items = Array.isArray(memory?.memories) ? memory.memories.slice(-recall) : [];
   if (!items.length && !memory?.follow_up) return base;
