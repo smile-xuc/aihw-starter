@@ -9,7 +9,7 @@ export const SEARCH_TOOL = {
   type: 'function',
   function: {
     name: 'web_search',
-    description: '把公开信息交给后台查询。回执里没有答案。只有用户问到事实、新闻或你不确定的近况时才调用。同一轮里已经在查的问题不要再调用。调用后只用一句话告诉用户你去查了，不要在这一轮回答问题。',
+    description: '把公开信息交给后台查询。回执里没有答案。只有用户问到事实、新闻或你不确定的近况时才调用。同一轮里已经在查的问题不要再调用。调用后只用一句话告诉用户你去查了，不要在这一轮回答问题。稍后的结果只有明确写了已经联网，才可以说查过网上；不能确认时不要说已经查过，也不要编造链接。',
     parameters: {
       type: 'object',
       properties: { query: { type: 'string', description: '要查的问题。' } },
@@ -234,10 +234,54 @@ export function takeLate(queue, ready) {
   return { queue: items.slice(1), item: items[0] };
 }
 
-export function lateResultInstructions(text) {
+export function lateResultInstructions(text, status) {
   const body = String(text || '').replace(/\s+/g, ' ').trim().slice(0, 400);
   if (!body) throw new Error('后台结果是空的');
+  if (status === 'performed') return `下面是后台刚联网查到的结果。用一两句口语直接告诉用户。不要编造链接，也不要补充来源里没有的网址。不要调用工具，不要说还在等。结果：${body}`;
+  if (status === 'unknown') return `下面是后台的回答，但不能确认这次有没有真的联网。不要说已经查过网上，也不要编造链接。不要调用工具，不要说还在等。结果：${body}`;
+  if (status === 'not_performed') return `这次没有完成联网。用一句话告诉用户没查成，不要把内容说成网上的结果。不要调用工具。结果：${body}`;
   return `下面是后台慢任务刚送到的结果。用一两句口语直接告诉用户。不要调用工具，不要说还在等。结果：${body}`;
+}
+
+export function searchResponsesBody(model, query) {
+  const messages = searchMessages(query);
+  if (!/^[A-Za-z0-9._-]+$/.test(String(model || ''))) throw new Error('搜索模型不可用');
+  return {
+    model,
+    instructions: messages[0].content,
+    input: messages[1].content,
+    tools: [{ type: 'web_search' }],
+  };
+}
+
+function searchCount(value) {
+  const count = Number(value);
+  return Number.isFinite(count) && count > 0 ? count : 0;
+}
+
+export function readSearchResponse(body) {
+  const output = Array.isArray(body?.output) ? body.output : [];
+  let text = '';
+  let performed = false;
+  let failedCall = false;
+  for (const item of output) {
+    if (!item || typeof item !== 'object') continue;
+    if (item.type === 'web_search_call') {
+      const status = String(item.status || '');
+      if (status === 'failed' || status === 'incomplete') failedCall = true;
+      else performed = true;
+    }
+    if (item.type === 'message' && !text) {
+      if (typeof item.content === 'string') text = item.content;
+      else if (Array.isArray(item.content)) text = item.content.map((part) => (typeof part?.text === 'string' ? part.text : '')).join('');
+    }
+  }
+  if (typeof body?.output_text === 'string' && body.output_text.trim()) text = body.output_text;
+  if (searchCount(body?.tool_usage?.web_search?.num_requests) || searchCount(body?.usage?.x_tools?.web_search)) performed = true;
+  let status = 'unknown';
+  if (performed) status = 'performed';
+  else if (failedCall) status = 'not_performed';
+  return { text: String(text || '').replace(/\s+/g, ' ').trim().slice(0, 400), status };
 }
 
 export const MONITOR_RULES = `你是主动提醒监视器，只判断这一小段新的声音和画面。
@@ -440,7 +484,7 @@ export function searchMessages(query) {
   const text = String(query || '').replace(/\s+/g, ' ').trim().slice(0, 300);
   if (!text) throw new Error('搜索内容是空的');
   return [
-    { role: 'system', content: '只根据联网结果用简短中文回答。没有结果就说没查到，不要编造来源。' },
+    { role: 'system', content: '只根据检索到的内容用简短中文回答。没有检索就说没查到，不要编造链接。' },
     { role: 'user', content: text },
   ];
 }

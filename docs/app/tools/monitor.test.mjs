@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, listProactive, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, reminderNote, reminderText, narrationPlan, searchInFlight, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, listProactive, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -276,7 +276,20 @@ test('continuous screen reports and body alerts are accepted before the result e
   assert.equal(takeLate(waiting, true).item.text, '屏幕上是备忘录');
   assert.equal(waiting.length, 1);
   assert.match(lateResultInstructions('屏幕上是备忘录'), /不要调用工具/);
+  assert.match(lateResultInstructions('明天有雨', 'performed'), /刚联网查到/);
+  assert.match(lateResultInstructions('明天有雨', 'unknown'), /不要说已经查过网上/);
+  assert.match(lateResultInstructions('没有查到结果。', 'not_performed'), /没有完成联网/);
   assert.throws(() => lateResultInstructions('  '), /后台结果是空的/);
+  const request = searchResponsesBody('qwen3.8-omni-flash', '今天天气');
+  assert.deepEqual(request.tools, [{ type: 'web_search' }]);
+  assert.equal(request.input, '今天天气');
+  assert.equal(readSearchResponse({
+    output_text: '明天有雨',
+    output: [{ type: 'web_search_call', status: 'completed' }, { type: 'message', content: [{ text: '明天有雨' }] }],
+  }).status, 'performed');
+  assert.equal(readSearchResponse({ output_text: '也许会下雨' }).status, 'unknown');
+  assert.equal(readSearchResponse({ output: [{ type: 'web_search_call', status: 'failed' }] }).status, 'not_performed');
+  assert.equal(readSearchResponse({ usage: { x_tools: { web_search: 1 } }, output_text: '有记录' }).status, 'performed');
   assert.match(MONITOR_TOOL.function.description, /咳嗽/);
   assert.match(NARRATE_TOOL.function.description, /持续报告/);
   assert.match(SEARCH_TOOL.function.description, /回执里没有答案/);
