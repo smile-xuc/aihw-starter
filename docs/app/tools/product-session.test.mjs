@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import {
   appendCaption, applyTool, formatDiaryPrompt, functionCalls, instructionsWithPetMemory, liveProduct, liveProductFor, liveReturn,
+  openToolRound, responseFunctionCalls,
   mergeMemories, parseDiary, petFace, phraseMap, renderDiary,
 } from '../js/live/product-session.js';
 
@@ -45,6 +46,18 @@ test('tools and diary stay local and bounded', () => {
   ] } }, 2, 1);
   assert.equal(calls.length, 1);
   assert.equal(calls[0].call_id, 'a');
+  const batch = responseFunctionCalls({ response: { output: [
+    { type: 'function_call', call_id: 'narrate', name: 'create_live_narration' },
+    { type: 'function_call', call_id: 'watch', name: 'create_proactive_monitor' },
+    { type: 'function_call', name: 'missing' },
+  ] } }, 0);
+  assert.deepEqual(batch.map((item) => item.call_id), ['narrate', 'watch']);
+  assert.equal(responseFunctionCalls({ response: { output: batch } }, 2).length, 0);
+  const round = openToolRound(['narrate', 'watch']);
+  assert.equal(round.finish('narrate'), 'hold');
+  assert.equal(round.waiting('watch'), true);
+  assert.equal(round.finish('watch'), 'speak');
+  assert.equal(round.finish('watch'), 'closed');
   const first = appendCaption({}, { item_id: 'a', delta: 'Hello' });
   const second = appendCaption(first, { item_id: 'b', delta: '你好' });
   assert.equal(second.a, 'Hello');

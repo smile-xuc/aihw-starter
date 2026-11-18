@@ -6,7 +6,7 @@ import { BIO_TOOL, EMBED_MODEL, OBSERVE_EVERY_MS, RETRIEVE_TOOL, UPDATER_PROMPT,
 import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, isSilentMonitor, lateResultInstructions, listProactive, modalityNote, monitorFocus, monitorPlan, duplicateNote, monitorRoom, narrationBrief, narrationPlan, reminderNote, reminderText, searchInFlight, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, toolArguments, updateProactive } from '../live/monitor.js';
 import { BACKEND_TOOLS, isBackendTool, noBackendReceipt, noBackendTitle } from '../live/no-backend.js';
 import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
-import { functionCalls } from '../live/product-session.js';
+import { openToolRound, responseFunctionCalls } from '../live/product-session.js';
 import { MUTE_HEARTBEAT_MS, OMNI_38_VOICES, chooseVoice, connectRealtime, decodeBase64, pcmBase64, readVoice, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, silenceFrame, splitPcm, writeVoice } from '../live/realtime-omni.js';
 import { browserSupport } from '../live/index.js';
 import {
@@ -29,7 +29,7 @@ const LIVE_TOOL_INSTRUCTIONS = `你是看说体验里的语音助手，能看到
 用户说从现在开始关注身体、咳嗽了提醒，或盯着以后才发生的声音和画面时，调用 create_proactive_monitor。说「提醒我一次」时 repeat 设为 false；说「从现在开始关注」或「一直盯着」时 repeat 设为 true。用户说咳嗽了就提醒我喝水时，condition 写听到咳嗽，trigger_response 写该喝水了。报告屏幕、画面时 modalities 只写 ["vision"]；咳嗽、身体或声音只写 ["audio"]；又要看又要听才两项都写。回执不表示条件已经发生，这一轮不要说已经听到或看到，也不要把提醒原文说成已经发生。
 用户明确说了多久以后提醒时，调用 create_proactive_timer。没有调用成功就不要说已经设好。
 用户说持续报告屏幕或画面内容，或解说变化时，调用 create_live_narration，把要报告的内容写进 narration_focus。报告屏幕、画面时 modalities 只写 ["vision"]；只听声音时只写 ["audio"]。回执里没有画面，这一轮不要描述画面。持续报告由后台按自己的节奏开口。这一轮听到的原话会交给后台，句子长短和语气按原话来。narration_focus 只写要看或要听的内容。
-持续报告和身体提醒可以同时进行。两项监视也可以同时留着，后说的一项不要取消前一项，除非用户明确要求停下。这个页面同时最多两项监视，满了就告诉用户先停掉一项。
+持续报告和身体提醒可以同时进行。同一句话里两项都要时，把 create_live_narration 和 create_proactive_monitor 都调用，不要只做一个。两项监视也可以同时留着，后说的一项不要取消前一项，除非用户明确要求停下。这个页面同时最多两项监视，满了就告诉用户先停掉一项。
 用户要求改代码、跑命令、操作网页，或交给编码助手时，调用 handoff，task 写用户原话。回执是 no_backend。这一轮只说明这个页面没有编码后台，不要说已经开始或已经做完。
 前台要一直能接话。后台结果没到时，不要停下来等，也不要编造结果。
 用户明确要求停下某一项监视、解说或到点提醒时，调用 cancel_proactive_task。停下说话、换话题或纠正回答都不算取消。没有调用成功就不要说已经停下。
@@ -144,7 +144,7 @@ export function renderSession(view, reg) {
     <section class="intro" data-live-session>
       <p class="eyebrow">百炼 Key · 实时看说</p>
       <h1>前台接着聊，后台慢慢做。</h1>
-      <p>打开摄像头，或点「屏幕」共享手机画面。接通后直接说话。说「从现在开始持续报告我手机屏幕里的内容」，前台先答应，后台过一会儿再讲屏幕上有什么，这一项只看画面。说「从现在开始关注我的身体」，会一直听，同一次里不重复说，这一项只听声音。说「咳嗽了提醒我一次」，说过就停。这两项可以同时开。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。费用记在你的百炼账号上。</p>
+      <p>打开摄像头，或点「屏幕」共享手机画面。接通后直接说话。说「从现在开始持续报告我手机屏幕里的内容」，前台先答应，后台过一会儿再讲屏幕上有什么，这一项只看画面。说「从现在开始关注我的身体」，会一直听，同一次里不重复说，这一项只听声音。说「咳嗽了提醒我一次」，说过就停。这两项可以同时开。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。费用记在你的百炼账号上。</p>
     </section>
     ${saved?.values?.DASHSCOPE_API_KEY ? html`<p class="inline-ok">已读取本机百炼 Key。发送前请再看一眼画面。</p>` : html`<div class="mode-banner"><div><strong>还没有百炼 Key</strong><p>看说和下面的网页真跑都要用你自己的 Key。保存后回到这里，不会自动调用模型。</p><a href="${SETUP}">去填写 Key</a></div></div>`}
     <section class="panel session-stage">
@@ -159,7 +159,7 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说各走一条后台连接，可以同时进行。后说的一项不会把另一项停掉。说「咳嗽了提醒我一次」，提醒过就停。说「从现在开始关注」，会一直听，同一次里不重复说。报告屏幕时只看画面，不把麦克风送进这一项。咳嗽和身体提醒只听声音，不送画面。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。咳嗽没发生就不出声。只解说变化时，没有明显变化也不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。通话中可以麦克风静音或播报静音。麦克风静音后声音不再送进通话和监视，大约每 30 秒送一秒静音来保持连接。播报静音会立刻停掉正在说的话，还没播的提醒不再补播。音色默认 Tina，可换成 qwen3.8 支持的预设。这一通已经接通时，主对话仍用接通时的音色；监视、到点提醒和下一次通话用新的。复刻音色仍在 Mac 上。可以说「把条件改成只看红字」，正在进行的这一项会按新的来，不用先取消。改提醒时间会从现在重新计。可以说「持续报告我手机屏幕里的内容」，或「关注我的身体，咳嗽了就提醒」。前台先接住，后台再看再查，结果稍后才说。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，单次最长 3 分钟。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说各走一条后台连接，可以同时进行。后说的一项不会把另一项停掉。说「咳嗽了提醒我一次」，提醒过就停。说「从现在开始关注」，会一直听，同一次里不重复说。报告屏幕时只看画面，不把麦克风送进这一项。咳嗽和身体提醒只听声音，不送画面。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。咳嗽没发生就不出声。只解说变化时，没有明显变化也不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。通话中可以麦克风静音或播报静音。麦克风静音后声音不再送进通话和监视，大约每 30 秒送一秒静音来保持连接。播报静音会立刻停掉正在说的话，还没播的提醒不再补播。音色默认 Tina，可换成 qwen3.8 支持的预设。这一通已经接通时，主对话仍用接通时的音色；监视、到点提醒和下一次通话用新的。复刻音色仍在 Mac 上。可以说「把条件改成只看红字」，正在进行的这一项会按新的来，不用先取消。改提醒时间会从现在重新计。可以说「持续报告我手机屏幕里的内容」，或「关注我的身体，咳嗽了就提醒」。前台先接住，后台再看再查，结果稍后才说。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
       <label class="field">音色<select data-voice></select></label>
       <label class="field">记忆库<select data-library></select></label>
       <div class="btn-row">
@@ -261,6 +261,7 @@ export function renderSession(view, reg) {
   let lastHeard = '';
   let turnHeard = '';
   let toolRounds = 0;
+  let toolRound = null;
   let lookGeneration = 0;
   const watches = new Map();
   let tasks = [];
@@ -760,28 +761,12 @@ export function renderSession(view, reg) {
         void pumpLate();
         return;
       }
-      const calls = functionCalls(event, 2, toolRounds);
+      const calls = responseFunctionCalls(event, toolRounds);
       if (calls.length && call) {
         toolRounds += 1;
         foregroundBusy = true;
-        const item = calls[0];
-        if (item.name === 'analyze_view') void answerLook(item, mine, lookGeneration);
-        else if (item.name === 'web_search') void answerSearch(item, mine);
-        else if (item.name === 'create_proactive_monitor') void answerMonitor(item, mine);
-        else if (item.name === 'create_proactive_timer') void answerTimer(item, mine);
-        else if (item.name === 'create_live_narration') void answerNarrate(item, mine);
-        else if (item.name === 'update_proactive_task') void answerUpdate(item, mine);
-        else if (item.name === 'cancel_proactive_task') void answerCancel(item, mine);
-        else if (item.name === 'list_proactive_tasks') void answerList(item, mine);
-        else if (item.name === 'omnibio') void answerBio(item, mine);
-        else if (item.name === 'omniretrieve') void answerRetrieve(item, mine);
-        else if (isBackendTool(item.name)) void answerNoBackend(item, mine);
-        else {
-          try {
-            call.send('conversation.item.create', { item: { type: 'function_call_output', call_id: item.call_id, output: '没有这个工具' } });
-            call.send('response.create');
-          } catch (error) { say(error.message); }
-        }
+        toolRound = openToolRound(calls.map((item) => item.call_id));
+        for (const item of calls) void runToolCall(item, mine);
         return;
       }
       remember('', assistantText);
@@ -879,6 +864,13 @@ export function renderSession(view, reg) {
     catch (error) { say(error.message); }
   }
 
+  function speakToolRound() {
+    try { call.send('response.create'); }
+    catch (error) {
+      foregroundBusy = false;
+      say(error.message);
+    }
+  }
   function replyTool(item, output, display = output) {
     const shown = redactSecret(display, secret);
     const line = document.createElement('li');
@@ -887,11 +879,42 @@ export function renderSession(view, reg) {
     foregroundBusy = true;
     try {
       call.send('conversation.item.create', { item: { type: 'function_call_output', call_id: item.call_id, output: redactSecret(output, secret) } });
-      call.send('response.create');
     } catch (error) {
       foregroundBusy = false;
       throw error;
     }
+    const step = toolRound ? toolRound.finish(item.call_id) : 'speak';
+    if (step === 'speak') speakToolRound();
+  }
+  function startTool(item, mine) {
+    if (item.name === 'analyze_view') return answerLook(item, mine, lookGeneration);
+    if (item.name === 'web_search') return answerSearch(item, mine);
+    if (item.name === 'create_proactive_monitor') return answerMonitor(item, mine);
+    if (item.name === 'create_proactive_timer') return answerTimer(item, mine);
+    if (item.name === 'create_live_narration') return answerNarrate(item, mine);
+    if (item.name === 'update_proactive_task') return answerUpdate(item, mine);
+    if (item.name === 'cancel_proactive_task') return answerCancel(item, mine);
+    if (item.name === 'list_proactive_tasks') return answerList(item, mine);
+    if (item.name === 'omnibio') return answerBio(item, mine);
+    if (item.name === 'omniretrieve') return answerRetrieve(item, mine);
+    if (isBackendTool(item.name)) return answerNoBackend(item, mine);
+    replyTool(item, '没有这个工具');
+  }
+  async function runToolCall(item, mine) {
+    try {
+      await startTool(item, mine);
+    } catch (error) {
+      if (toolRound?.waiting(item.call_id) && active && mine === callGeneration && call) {
+        try { replyTool(item, error.message); return; }
+        catch (sendError) { say(sendError.message); }
+      }
+    }
+    if (!toolRound?.waiting(item.call_id)) return;
+    if (active && mine === callGeneration && call) {
+      try { replyTool(item, '这项没有完成。'); return; }
+      catch (error) { say(error.message); }
+    }
+    if (toolRound.finish(item.call_id) === 'speak' && active && call) speakToolRound();
   }
 
   function queueLate(text, mine) {
