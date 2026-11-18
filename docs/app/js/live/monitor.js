@@ -9,7 +9,7 @@ export const SEARCH_TOOL = {
   type: 'function',
   function: {
     name: 'web_search',
-    description: '把公开信息交给后台查询。回执里没有答案。只有用户问到事实、新闻或你不确定的近况时才调用。调用后只用一句话告诉用户你去查了，不要在这一轮回答问题。',
+    description: '把公开信息交给后台查询。回执里没有答案。只有用户问到事实、新闻或你不确定的近况时才调用。同一轮里已经在查的问题不要再调用。调用后只用一句话告诉用户你去查了，不要在这一轮回答问题。',
     parameters: {
       type: 'object',
       properties: { query: { type: 'string', description: '要查的问题。' } },
@@ -443,6 +443,28 @@ export function searchMessages(query) {
     { role: 'system', content: '只根据联网结果用简短中文回答。没有结果就说没查到，不要编造来源。' },
     { role: 'user', content: text },
   ];
+}
+
+export function takeClaim(claims, kind, title) {
+  const clean = String(title || '').replace(/\s+/g, ' ').trim().toLocaleLowerCase();
+  if (!clean || !(claims instanceof Set)) return false;
+  const key = `${kind}|${clean}`;
+  if (claims.has(key)) return false;
+  claims.add(key);
+  return true;
+}
+
+export function searchInFlight(jobs, query) {
+  const needle = String(query || '').replace(/\s+/g, ' ').trim().toLocaleLowerCase().slice(0, 80);
+  if (!needle) return false;
+  return (Array.isArray(jobs) ? jobs : []).some((item) => item && item.lane === 'search' && (item.state === 'accepted' || item.state === 'running') && String(item.title || '').replace(/\s+/g, ' ').trim().toLocaleLowerCase().slice(0, 80) === needle);
+}
+
+export function duplicateNote(kind) {
+  if (kind === 'search') return '这句已经在查。回执里没有答案。不要再查一次，也不要现在回答。';
+  if (kind === 'timer') return '这句提醒已经设上了。不要再设一次。';
+  if (kind === 'narration') return '这项解说已经开始。不要再开一条。';
+  return '这项监视已经在听。不要再开一条。';
 }
 
 export function pushMonitorAudio(state, chunk, sampleRate = 16000) {
