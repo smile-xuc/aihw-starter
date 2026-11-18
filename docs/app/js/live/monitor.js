@@ -196,6 +196,7 @@ function backgroundState(state) {
   if (state === 'running') return '进行中';
   if (state === 'delivered') return '刚送到';
   if (state === 'failed') return '没完成';
+  if (state === 'cancelled') return '已停下';
   return '已受理';
 }
 
@@ -226,6 +227,17 @@ export function backgroundRows(jobs) {
   return (Array.isArray(jobs) ? jobs : []).filter((item) => item && item.id).map((item) => (
     `${BACKGROUND_LANES[item.lane] || '后台'}「${item.title}」${backgroundState(item.state)}。${item.note || ''}`
   ));
+}
+
+export function stopLookup(jobs, id) {
+  const row = (Array.isArray(jobs) ? jobs : []).find((item) => item && item.id === id);
+  if (!row || (row.lane !== 'search' && row.lane !== 'look')) throw new Error('这项不能停');
+  if (row.state !== 'accepted' && row.state !== 'running' && row.state !== 'delivered') throw new Error('这项已经结束');
+  return patchBackground(jobs, id, { state: 'cancelled', note: '已停下，结果不说了' });
+}
+
+export function dropLate(queue, id) {
+  return (Array.isArray(queue) ? queue : []).filter((item) => item && item.id !== id);
 }
 
 export function takeLate(queue, ready) {

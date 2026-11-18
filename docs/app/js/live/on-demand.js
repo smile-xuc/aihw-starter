@@ -46,12 +46,13 @@ export function visualQuestion(query, heard) {
 }
 
 export function canRetryVisual(error) {
+  if (error?.name === 'AbortError') return false;
   const message = String(error?.message || '');
   if (/Key|鉴权|地域|业务空间|不安全|拒绝/.test(message)) return false;
   return /超时|连接|网络|临时/.test(message);
 }
 
-async function lookOnce({ connect, url, secret, jpeg, question, voice, inputRate, outputRate, asrModel, timeoutMs, WebSocketImpl }) {
+async function lookOnce({ connect, url, secret, jpeg, question, voice, inputRate, outputRate, asrModel, timeoutMs, WebSocketImpl, signal }) {
   if (!(jpeg instanceof Uint8Array) || jpeg.byteLength < 3) throw new Error('没有可看的画面');
   const image = toBase64(jpeg);
   const silence = pcmBase64(silencePcm(inputRate, 1));
@@ -68,12 +69,16 @@ async function lookOnce({ connect, url, secret, jpeg, question, voice, inputRate
     else resolve(value);
   };
   const timer = setTimeout(() => finish(new Error('看画面超时')), timeoutMs);
+  const onAbort = () => finish(new DOMException('已停下', 'AbortError'));
+  signal?.addEventListener('abort', onAbort, { once: true });
+  if (signal?.aborted) onAbort();
   let handle;
   try {
   handle = connect({
     url,
     secret,
     timeoutMs,
+    signal,
     WebSocketImpl,
     session: sessionConfig({
       instructions: VISUAL_INSTRUCTIONS,
@@ -103,6 +108,7 @@ async function lookOnce({ connect, url, secret, jpeg, question, voice, inputRate
     return await finished;
   } finally {
     clearTimeout(timer);
+    signal?.removeEventListener('abort', onAbort);
     handle?.close();
   }
 }

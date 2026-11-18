@@ -3,7 +3,7 @@ import { ApiError, chat, postJson, toBase64 } from '../live/client.js';
 import { microphone } from '../live/microphone.js';
 import { SAMPLE_RATE, SESSION_CALL_SECONDS } from '../live/pcm.js';
 import { BIO_TOOL, EMBED_MODEL, OBSERVE_EVERY_MS, RETRIEVE_TOOL, UPDATER_PROMPT, activeLibrary, applyBio, applyMemoryPatch, bioReceipt, cleanObservation, clearLibrary, createLibrary, datedEntries, dialogueEntries, dialogueLines, envCorpus, finishDialogue, formatUpdaterInput, isEmptyPatch, localDate, memoryLabel as libraryStatus, mergeVectorHits, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn, renameLibrary, renderProfile, renderRecent, replaceActive, retrieveMemory, sessionFacts, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, normalizeVector } from '../live/memory-libraries.js';
-import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, isSilentMonitor, lateResultInstructions, listProactive, modalityNote, monitorFocus, monitorPlan, duplicateNote, monitorRoom, narrationBrief, narrationPlan, readSearchResponse, reminderNote, reminderText, searchInFlight, searchResponsesBody, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, toolArguments, updateProactive } from '../live/monitor.js';
+import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, isSilentMonitor, lateResultInstructions, listProactive, modalityNote, monitorFocus, monitorPlan, duplicateNote, monitorRoom, narrationBrief, narrationPlan, readSearchResponse, reminderNote, reminderText, searchInFlight, searchResponsesBody, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, dropLate, stopLookup, takeLate, takeMonitorAudio, taskPrompt, timerRequest, toolArguments, updateProactive } from '../live/monitor.js';
 import { BACKEND_TOOLS, isBackendTool, noBackendReceipt, noBackendTitle } from '../live/no-backend.js';
 import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
 import { openToolRound, responseFunctionCalls } from '../live/product-session.js';
@@ -144,7 +144,7 @@ export function renderSession(view, reg) {
     <section class="intro" data-live-session>
       <p class="eyebrow">百炼 Key · 实时看说</p>
       <h1>前台接着聊，后台慢慢做。</h1>
-      <p>打开摄像头，或点「屏幕」共享手机画面。接通后直接说话。说「从现在开始持续报告我手机屏幕里的内容」，前台先答应，后台过一会儿再讲屏幕上有什么，这一项只看画面。说「从现在开始关注我的身体」，会一直听，同一次里不重复说，这一项只听声音。说「咳嗽了提醒我一次」，说过就停。这两项可以同时开。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。问到事实时，只有确认这次联网了，才会说查过网上。这一通最长 30 分钟，到点会结束通话，持续报告和监视也停下。费用记在你的百炼账号上。</p>
+      <p>打开摄像头，或点「屏幕」共享手机画面。接通后直接说话。说「从现在开始持续报告我手机屏幕里的内容」，前台先答应，后台过一会儿再讲屏幕上有什么，这一项只看画面。说「从现在开始关注我的身体」，会一直听，同一次里不重复说，这一项只听声音。说「咳嗽了提醒我一次」，说过就停。这两项可以同时开。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。问到事实时，只有确认这次联网了，才会说查过网上。这一通最长 30 分钟，到点会结束通话，持续报告和监视也停下。正在查或正在看的一项可以停下，停下后结果不再说出来。已经发出的请求仍会计费。播报静音时，还没说的查询和看图也不再补播。费用记在你的百炼账号上。</p>
     </section>
     ${saved?.values?.DASHSCOPE_API_KEY ? html`<p class="inline-ok">已读取本机百炼 Key。发送前请再看一眼画面。</p>` : html`<div class="mode-banner"><div><strong>还没有百炼 Key</strong><p>看说和下面的网页真跑都要用你自己的 Key。保存后回到这里，不会自动调用模型。</p><a href="${SETUP}">去填写 Key</a></div></div>`}
     <section class="panel session-stage">
@@ -159,7 +159,7 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，这一通最长 30 分钟，到点会结束通话，持续报告和监视也停下。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说各走一条后台连接，可以同时进行。后说的一项不会把另一项停掉。说「咳嗽了提醒我一次」，提醒过就停。说「从现在开始关注」，会一直听，同一次里不重复说。报告屏幕时只看画面，不把麦克风送进这一项。咳嗽和身体提醒只听声音，不送画面。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。问到事实时，只有确认这次联网了，才会说查过网上。咳嗽没发生就不出声。只解说变化时，没有明显变化也不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。通话中可以麦克风静音或播报静音。麦克风静音后声音不再送进通话和监视，大约每 30 秒送一秒静音来保持连接。播报静音会立刻停掉正在说的话，还没播的提醒不再补播。音色默认 Tina，可换成 qwen3.8 支持的预设。这一通已经接通时，主对话仍用接通时的音色；监视、到点提醒和下一次通话用新的。复刻音色仍在 Mac 上。可以说「把条件改成只看红字」，正在进行的这一项会按新的来，不用先取消。改提醒时间会从现在重新计。可以说「持续报告我手机屏幕里的内容」，或「关注我的身体，咳嗽了就提醒」。前台先接住，后台再看再查，结果稍后才说。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，这一通最长 30 分钟，到点会结束通话，持续报告和监视也停下。正在查或正在看的一项可以停下，停下后结果不再说出来。已经发出的请求仍会计费。播报静音时，还没说的查询和看图也不再补播。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说各走一条后台连接，可以同时进行。后说的一项不会把另一项停掉。说「咳嗽了提醒我一次」，提醒过就停。说「从现在开始关注」，会一直听，同一次里不重复说。报告屏幕时只看画面，不把麦克风送进这一项。咳嗽和身体提醒只听声音，不送画面。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。问到事实时，只有确认这次联网了，才会说查过网上。咳嗽没发生就不出声。只解说变化时，没有明显变化也不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。通话中可以麦克风静音或播报静音。麦克风静音后声音不再送进通话和监视，大约每 30 秒送一秒静音来保持连接。播报静音会立刻停掉正在说的话，还没播的提醒不再补播。音色默认 Tina，可换成 qwen3.8 支持的预设。这一通已经接通时，主对话仍用接通时的音色；监视、到点提醒和下一次通话用新的。复刻音色仍在 Mac 上。可以说「把条件改成只看红字」，正在进行的这一项会按新的来，不用先取消。改提醒时间会从现在重新计。可以说「持续报告我手机屏幕里的内容」，或「关注我的身体，咳嗽了就提醒」。前台先接住，后台再看再查，结果稍后才说。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
       <label class="field">音色<select data-voice></select></label>
       <label class="field">记忆库<select data-library></select></label>
       <div class="btn-row">
@@ -181,7 +181,7 @@ export function renderSession(view, reg) {
       </div>
       <div class="background-lane" data-background>
         <h2>后台</h2>
-        <p class="small">前台先接住这句话。持续报告和咳嗽提醒可以同时开，两项监视也可以同时留着，结果稍后才说。</p>
+        <p class="small">前台先接住这句话。持续报告和咳嗽提醒可以同时开，两项监视也可以同时留着，结果稍后才说。正在查或正在看时，可以点「停止这项」。</p>
         <ol data-background-list></ol>
       </div>
       <audio data-player controls hidden></audio>
@@ -268,6 +268,8 @@ export function renderSession(view, reg) {
   let adjacentId = null;
   let background = [];
   let lateQueue = [];
+  let speakingLateId = '';
+  const lookupStops = new Map();
   const workClaims = new Set();
   let pumpingLate = false;
   let foregroundBusy = false;
@@ -753,6 +755,7 @@ export function renderSession(view, reg) {
     if (event.type === 'response.done') {
       if (lateResponse) {
         lateResponse = false;
+        speakingLateId = '';
         foregroundBusy = false;
         remember('', assistantText);
         assistantText = '';
@@ -792,9 +795,18 @@ export function renderSession(view, reg) {
       list.append(item);
       return;
     }
-    for (const text of rows) {
+    for (const job of background.filter((item) => item && item.id)) {
       const item = document.createElement('li');
-      item.textContent = text;
+      item.textContent = backgroundRows([job])[0];
+      const waiting = lateQueue.some((entry) => entry.id === job.id) || speakingLateId === job.id;
+      if ((job.lane === 'search' || job.lane === 'look') && (job.state === 'accepted' || job.state === 'running' || waiting)) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'secondary-action';
+        button.dataset.stopLookup = job.id;
+        button.textContent = '停止这项';
+        item.append(button);
+      }
       list.append(item);
     }
   }
@@ -804,11 +816,31 @@ export function renderSession(view, reg) {
     showBackground();
   }
   function clearBackground() {
+    for (const stop of lookupStops.values()) stop.abort();
+    lookupStops.clear();
     background = [];
     lateQueue = [];
+    speakingLateId = '';
     foregroundBusy = false;
     lateResponse = false;
     showBackground();
+  }
+  function stopLookupJob(id) {
+    let next;
+    try { next = stopLookup(background, id); }
+    catch (error) { say(error.message); return; }
+    background = next;
+    lookupStops.get(id)?.abort();
+    lookupStops.delete(id);
+    lateQueue = dropLate(lateQueue, id);
+    if (speakingLateId === id && call) {
+      try { call.send('response.cancel'); } catch { /* 当前没有可打断的回答 */ }
+      speakingLateId = '';
+      foregroundBusy = false;
+      lateResponse = false;
+    }
+    showBackground();
+    say('这项已停下，结果不再说出来。已经发出的请求仍会计费。');
   }
   showBackground();
 
@@ -827,6 +859,8 @@ export function renderSession(view, reg) {
     catch (error) { say(error.message); return; }
     if (!accepted) return;
     noteJob(id, { state: 'running', note: '正在看这一帧' });
+    const stop = new AbortController();
+    lookupStops.set(id, stop);
     let result;
     try {
       result = await analyzeFrame({
@@ -838,16 +872,21 @@ export function renderSession(view, reg) {
         inputRate: liveSpec.IN_RATE,
         outputRate: liveSpec.OUT_RATE,
         asrModel: liveSpec.ASR_MODEL,
+        signal: stop.signal,
       }) || '看图没有返回文字。';
     } catch (error) {
+      if (stop.signal.aborted) return;
       result = `看图失败：${error.message}`;
+    } finally {
+      lookupStops.delete(id);
     }
+    if (stop.signal.aborted) return;
     if (!active || mine !== callGeneration || generation !== lookGeneration) {
       noteJob(id, { state: 'delivered', note: '你又说话了，这次不送了' });
       return;
     }
     noteJob(id, { state: result.startsWith('看图失败') ? 'failed' : 'delivered', note: result });
-    queueLate(result, mine);
+    queueLate(result, mine, '', id);
   }
 
   function answerNoBackend(item, mine) {
@@ -917,13 +956,13 @@ export function renderSession(view, reg) {
     if (toolRound.finish(item.call_id) === 'speak' && active && call) speakToolRound();
   }
 
-  function queueLate(text, mine, status = '') {
+  function queueLate(text, mine, status = '', id = '') {
     const clean = redactSecret(String(text || ''), secret).replace(/\s+/g, ' ').trim();
     if (!clean) return;
     const line = document.createElement('li');
     line.textContent = `后台送到：${clean}`;
     log.append(line);
-    lateQueue.push({ text: clean, mine, status });
+    lateQueue.push({ text: clean, mine, status, id });
     void pumpLate();
   }
   async function pumpLate() {
@@ -939,13 +978,16 @@ export function renderSession(view, reg) {
         }
         lateQueue = step.queue;
         if (step.item.mine !== callGeneration || !call) continue;
+        if (outputMuted) continue;
         try {
           foregroundBusy = true;
           lateResponse = true;
+          speakingLateId = step.item.id || '';
           call.send('response.create', { response: { instructions: lateResultInstructions(step.item.text, step.item.status) } });
         } catch (error) {
           foregroundBusy = false;
           lateResponse = false;
+          speakingLateId = '';
           say(error.message);
         }
       }
@@ -975,37 +1017,43 @@ export function renderSession(view, reg) {
     catch (error) { say(error.message); return; }
     if (!started) return;
     noteJob(id, { state: 'running', note: '正在查' });
+    const stop = new AbortController();
+    lookupStops.set(id, stop);
     let result = '没有查到结果。';
     let status = 'unknown';
     try {
       const cred = { stack: reg.stacks.get('bailian'), values: liveValues };
       let body;
       try {
-        body = await postJson(cred, 'compatible', '/responses', searchResponsesBody(liveSpec.OMNI_MODEL, query), { allowNetworkFallback: false });
+        body = await postJson(cred, 'compatible', '/responses', searchResponsesBody(liveSpec.OMNI_MODEL, query), { signal: stop.signal, allowNetworkFallback: false });
       } catch (error) {
-        if (!(error instanceof ApiError) || error.status !== 404) throw error;
+        if (stop.signal.aborted || !(error instanceof ApiError) || error.status !== 404) throw error;
         const turn = await chat(cred, {
           model: liveSpec.OMNI_MODEL,
           messages: searchMessages(query),
           enable_search: true,
           search_options: { search_strategy: 'agent' },
           enable_thinking: false,
-        }, { allowNetworkFallback: false });
+        }, { signal: stop.signal, allowNetworkFallback: false });
         body = { output_text: turn.text };
       }
       const parsed = readSearchResponse(body);
       result = redactSecret(parsed.text, secret).replace(/\s+/g, ' ').trim() || '没有查到结果。';
       status = parsed.status;
     } catch (error) {
+      if (stop.signal.aborted) return;
       result = `搜索失败：${error.message}`;
       status = 'not_performed';
+    } finally {
+      lookupStops.delete(id);
     }
+    if (stop.signal.aborted) return;
     if (!active || mine !== callGeneration) {
       noteJob(id, { state: 'delivered', note: '通话已结束' });
       return;
     }
     noteJob(id, { state: status === 'not_performed' ? 'failed' : 'delivered', note: result });
-    queueLate(result, mine, status);
+    queueLate(result, mine, status, id);
   }
 
   async function answerMonitor(item, mine) {
@@ -1900,6 +1948,8 @@ export function renderSession(view, reg) {
     }
     if (event.target.closest('[data-library-new]')) void addLibrary();
     if (event.target.closest('[data-library-rename]')) void renameCurrentLibrary();
+    const lookupButton = event.target.closest('[data-stop-lookup]');
+    if (lookupButton) { stopLookupJob(lookupButton.dataset.stopLookup); return; }
     if (event.target.closest('[data-stop]')) abort?.abort();
     const taskButton = event.target.closest('[data-stop-task]');
     if (taskButton && !taskButton.hidden) {
@@ -1925,8 +1975,17 @@ export function renderSession(view, reg) {
       speakerMute.setAttribute('aria-pressed', outputMuted ? 'true' : 'false');
       speakerMute.textContent = outputMuted ? '取消播报静音' : '播报静音';
       playback?.setMuted(outputMuted);
-      if (outputMuted) spokenAlerts.splice(0, spokenAlerts.length, ...spokenWhileMuted(spokenAlerts, true));
-      say(outputMuted ? '播报已静音。正在说的话已停下，还没播的提醒不再补播。' : '播报已打开。');
+      if (outputMuted) {
+        spokenAlerts.splice(0, spokenAlerts.length, ...spokenWhileMuted(spokenAlerts, true));
+        lateQueue = [];
+        if (speakingLateId && call) {
+          try { call.send('response.cancel'); } catch { /* 当前没有可打断的回答 */ }
+          speakingLateId = '';
+          foregroundBusy = false;
+          lateResponse = false;
+        }
+      }
+      say(outputMuted ? '播报已静音。正在说的话已停下，还没播的提醒、查询和看图不再补播。' : '播报已打开。');
     }
   });
   const talk = page.querySelector('[data-talk]');
