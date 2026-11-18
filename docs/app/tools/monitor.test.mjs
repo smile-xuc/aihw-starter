@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, listProactive, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, narrationBrief, narrationIsContinuous, reminderNote, reminderText, narrationPlan, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, listProactive, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, reminderNote, reminderText, narrationPlan, searchInFlight, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -249,6 +249,16 @@ test('continuous screen reports and body alerts are accepted before the result e
   assert.match(narrationBrief('  持续报告屏幕，每次只说一句很短的话  '), /按用户原话的详略来讲：持续报告屏幕，每次只说一句很短的话/);
   assert.ok(narrationBrief('字'.repeat(300)).length <= '按用户原话的详略来讲：'.length + 200);
   assert.match(narrationPlan('手机屏幕里的内容').rules, /用户原话/);
+  const claims = new Set();
+  assert.equal(takeClaim(claims, 'monitor', '听到咳嗽'), true);
+  assert.equal(takeClaim(claims, 'monitor', ' 听到咳嗽 '), false);
+  assert.equal(takeClaim(claims, 'monitor', '有人叫我名字'), true);
+  assert.equal(takeClaim(claims, 'search', ''), false);
+  assert.equal(searchInFlight([{ id: 's', lane: 'search', title: '今天天气', state: 'running' }], ' 今天天气 '), true);
+  assert.equal(searchInFlight([{ id: 's', lane: 'search', title: '今天天气', state: 'delivered' }], '今天天气'), false);
+  assert.match(duplicateNote('search'), /不要再查一次/);
+  assert.match(duplicateNote('monitor'), /不要再开一条/);
+  assert.match(duplicateNote('timer'), /不要再设一次/);
   assert.match(fastAck('narration'), /已交给后台持续报告/);
   assert.match(fastAck('monitor'), /不要说已经听到或看到了/);
   assert.match(fastAck('search'), /这一轮不要回答问题/);
