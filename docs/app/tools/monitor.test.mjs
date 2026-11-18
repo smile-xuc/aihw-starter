@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, listProactive, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, listProactive, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -270,6 +270,13 @@ test('continuous screen reports and body alerts are accepted before the result e
   const jobs = openBackground([], { id: 'n1', lane: 'narration', title: '手机屏幕里的内容' });
   const running = patchBackground(jobs, 'n1', { state: 'running', note: '正在看这一路画面' });
   assert.match(backgroundRows(running)[0], /解说「手机屏幕里的内容」进行中。正在看这一路画面/);
+  const search = openBackground([], { id: 's1', lane: 'search', title: '今天天气' });
+  const stopped = stopLookup(patchBackground(search, 's1', { state: 'running', note: '正在查' }), 's1');
+  assert.match(backgroundRows(stopped)[0], /查询「今天天气」已停下。已停下，结果不说了/);
+  assert.deepEqual(dropLate([{ id: 's1', text: '晴' }, { id: 's2', text: '杯子' }], 's1'), [{ id: 's2', text: '杯子' }]);
+  assert.match(backgroundRows(stopLookup(patchBackground(search, 's1', { state: 'delivered', note: '晴' }), 's1'))[0], /已停下/);
+  assert.throws(() => stopLookup(stopped, 's1'), /这项已经结束/);
+  assert.throws(() => stopLookup(running, 'n1'), /这项不能停/);
   assert.equal(patchBackground(running, 'missing', { state: 'failed' }).length, 1);
   const waiting = [{ text: '屏幕上是备忘录' }];
   assert.equal(takeLate(waiting, false).item, null);

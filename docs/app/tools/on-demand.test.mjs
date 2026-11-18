@@ -49,6 +49,7 @@ test('on-demand question and silence stay bounded', () => {
   assert.equal(LOOK_TOOL.function.name, 'analyze_view');
   assert.equal(canRetryVisual(new Error('看画面超时')), true);
   assert.equal(canRetryVisual(new Error('请核对 Key、地域')), false);
+  assert.equal(canRetryVisual(new DOMException('已停下', 'AbortError')), false);
 });
 
 test('on-demand sends one still twice and asks after commit', async () => {
