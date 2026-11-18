@@ -1,6 +1,7 @@
-import { SAMPLE_RATE, MAX_SECONDS } from './pcm.js';
+import { SAMPLE_RATE, MAX_SECONDS, captureLimitBytes } from './pcm.js';
 
-export async function microphone({ onPCM, onDuration, onLimit, onError, signal }) {
+export async function microphone({ onPCM, onDuration, onLimit, onError, signal, maxSeconds = MAX_SECONDS }) {
+  const limit = captureLimitBytes(maxSeconds);
   if (!navigator.mediaDevices?.getUserMedia || !globalThis.AudioWorkletNode || !isSecureContext) throw Error('此浏览器不支持安全的麦克风录音；请使用 HTTPS 页面和支持 AudioWorklet 的浏览器');
   let stream, context, node, input, muted, ended = false, paused = true, count = 0, queue = [], bytes = 0;
   const flush = () => { if (!bytes) return; const out = new Uint8Array(bytes); let offset = 0; for (const b of queue) { out.set(b, offset); offset += b.length; } queue = []; bytes = 0; onPCM(out.buffer); };
@@ -28,9 +29,9 @@ export async function microphone({ onPCM, onDuration, onLimit, onError, signal }
     node.port.onmessage = ({ data }) => {
       if (data.type === 'flushed') { acknowledge?.(); return; }
       if (data.type !== 'pcm' || ended || paused) return;
-      const allowed = Math.min(data.buffer.byteLength, MAX_SECONDS * SAMPLE_RATE * 2 - count);
+      const allowed = Math.min(data.buffer.byteLength, limit - count);
       if (allowed > 0) { queue.push(new Uint8Array(data.buffer, 0, allowed)); bytes += allowed; count += allowed; if (bytes >= 3200) flush(); onDuration(count / (SAMPLE_RATE * 2)); }
-      if (count >= MAX_SECONDS * SAMPLE_RATE * 2) { paused = true; flush(); onLimit(); }
+      if (count >= limit) { paused = true; flush(); onLimit(); }
     };
     return {
       resume() { if (ended) return; paused = false; stream.getAudioTracks().forEach(t => { t.enabled = true; }); node.port.postMessage({ type: 'pause', paused: false }); },

@@ -1,5 +1,13 @@
 export const SAMPLE_RATE = 16000;
 export const MAX_SECONDS = 180;
+export const SESSION_CALL_SECONDS = 30 * 60;
+
+export function captureLimitBytes(maxSeconds = MAX_SECONDS, sampleRate = SAMPLE_RATE) {
+  const seconds = Number(maxSeconds);
+  if (!Number.isInteger(seconds) || seconds < 1 || seconds > 3600) throw new Error('录音上限无效');
+  if (!Number.isInteger(sampleRate) || sampleRate < 8000) throw new Error('采样率无效');
+  return seconds * sampleRate * 2;
+}
 
 // Keep phase across render quanta. Averaging avoids dropping input samples at
 // non-integer ratios such as 44.1 kHz -> 16 kHz.

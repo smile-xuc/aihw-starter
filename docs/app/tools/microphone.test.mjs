@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {microphone} from '../js/live/microphone.js';
+import {MAX_SECONDS, SAMPLE_RATE, SESSION_CALL_SECONDS, captureLimitBytes} from '../js/live/pcm.js';
 
 function media(t,getUserMedia,AudioContext) {
   for(const [name,value] of Object.entries({navigator:{mediaDevices:{getUserMedia}},isSecureContext:true,AudioWorkletNode:class{},AudioContext})){
@@ -10,6 +11,14 @@ function media(t,getUserMedia,AudioContext) {
   }
 }
 const options=signal=>({signal,onPCM(){assert.fail('canceled microphone emitted PCM');},onDuration(){},onLimit(){},onError(){}});
+test('session calls last thirty minutes and other captures stay at three', () => {
+  assert.equal(MAX_SECONDS, 180);
+  assert.equal(SESSION_CALL_SECONDS, 1800);
+  assert.equal(captureLimitBytes(), MAX_SECONDS * SAMPLE_RATE * 2);
+  assert.equal(captureLimitBytes(SESSION_CALL_SECONDS), SESSION_CALL_SECONDS * SAMPLE_RATE * 2);
+  assert.throws(() => captureLimitBytes(0), /录音上限无效/);
+  assert.throws(() => captureLimitBytes(3601), /录音上限无效/);
+});
 function stream(){const track={stopped:false,stop(){this.stopped=true;},addEventListener(){}};return {track,getTracks:()=>[track],getAudioTracks:()=>[track]};}
 test('pre-aborted microphone never requests permission',async t=>{
   media(t,()=>assert.fail('requested permission after abort'));
