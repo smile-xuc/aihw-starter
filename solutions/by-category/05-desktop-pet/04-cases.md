@@ -35,6 +35,7 @@
 | **Vector 2.0** | Digital Dream Labs | 履带桌面机器人 | 云端 NLP（自研栈为主） | 语音指令 + 触摸 + 悬崖检测 + 自主探索 | 现价 [US$249.99](https://anki.bot/products/vector-robot) 起（官方店，查证 2026-09-30）；订阅价待核实；首发价待核实 |
 | **Eilik** | Energize Lab | 桌面情感机器人 | 本地规则为主（无 LLM 亦可成立） | 触摸 + 表情 + 多机互动 | 现价 [US$139.99](https://store.energizelab.com/products/eilik)（划线价 US$149.99，查证 2026-09-30） |
 | **小智 AI** | 开源社区 | ESP32 + 屏 + 舵机 | 千问 / DeepSeek / ChatGPT 等可选 | 语音 + 表情屏 + 舵机 | BOM 约数十元级 |
+| **Loona Deskmate** | KEYi Tech / 可以科技（品牌 Loona） | 桌面 3 自由度云台工位伴侣 | 模型名未公开 | 表情 / 注意力在 iPhone 本地，任务指令上云 | 现价 $254.00 USD（[官网产品页](https://keyirobot.com/products/deskmate)，查证 2026-11-18；页顶有 Black Friday 横幅，为当日页上标价；首发价 / MSRP 待核实） |
 
 ### 形态路线图
 
@@ -90,6 +91,16 @@
 - **亮点**：固件 + 服务端 + 社区活跃，支持多家大模型路由
 - **可借鉴点**：ESP32-S3 + 云端大模型是桌宠 MVP 的低成本验证路径；量产仍需自建动作表、安全策略与云端成本管控
 
+### 案例：Loona Deskmate（KEYi Tech / 可以科技）— 桌面工位伴侣
+
+- **公开信息源**：[Deskmate 英文产品页](https://keyirobot.com/products/deskmate) · [Deskmate 中文站](https://www.loonaai.cn/products/deskmate/) · [CES 发布博客](https://keyirobot.com/blogs/news/loona-deskmate-launches-at-ces-2026-an-emotion-aware-embodied-ai-workmate)（查证 2026-11-18）
+- **形态**：桌面 3 自由度云台工位伴侣（偏航 / 俯仰 / 翻滚；规格表作 3-DoF (Yaw / Pitch / Roll)，无刷伺服）。尺寸 113×106×113 mm，重 880 g。须搭配 iPhone 12+（桌面文案另写 with MagSafe）。与同厂 Loona Petbot Premium 分 SKU：后者是室内轮式家庭 petbot
+- **技术路线**：整理日历 / 邮箱、起草跟进、标会议冲突、会前会后准备。中文站原文「你的表情与注意力状态完全在你的 iPhone 本地处理，从不上传；只有你明确下达的任务指令才会发送到云端。」英文产品页："Your facial expressions and attention patterns are processed entirely on your iPhone — never uploaded. Only your explicit task commands go to the cloud." 规格表本地处理为 Perception / Voice / Screen Sync（感知 / 语音 / 屏幕同步），数据策略 Local-First / No Behavioral Data Sold（本地优先，不出售行为数据）。模型名官方未公开
+- **亮点**：产品页写从第一天起可不订阅使用（"Loona Deskmate works from day one — no subscription required."），另有 Free / Plus / Pro 月度积分套餐
+- **公开数据**：现价 $254.00 USD（官网产品页 JSON-LD Offer price=254.0，三色均为 $254.00，查证 2026-11-18；页顶有 "Black Friday starts early — unlock extra savings"，为当日页上标价；划线 $299.00 未标明 MSRP）· [Deskmate 产品页](https://keyirobot.com/products/deskmate)。首发价待核实。MSRP 待核实。未见官方公开销量。中文站有「立即购买」，无标价
+- **可借鉴点**：同厂按形态分工，桌面云台工位伴侣与室内轮式 petbot 分卡；表情与注意力在 iPhone 本地处理，任务指令才上云
+- **另见**：[Loona Deskmate 商业产品卡][pet]
+
 ---
 
 ## 四、开源替代（快速验证）
@@ -106,7 +117,7 @@
 
 ## 五、待补充清单（欢迎 PR）
 
-- [ ] 国内工位桌宠 / 潮玩品牌公开 SKU（须附官网或媒体链接）
+- [x] 国内工位桌宠 / 潮玩品牌公开 SKU（须附官网或媒体链接；Deskmate）
 - [ ] 企业定制工位伴侣案例（仅公开可查）
 - [ ] 带屏毛绒（IP 向）量产案例
 
@@ -117,7 +128,7 @@
 [pet]: ../../../awesome/commercial-products/by-category/05-desktop-pet.md
 
 **版本**：千问大模型方案
-**更新日期**：2026-09
+**更新日期**：2026-11
 
 <!-- FOOTER:START -->
 
