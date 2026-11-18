@@ -3,7 +3,7 @@ import { ApiError, chat, postJson, toBase64 } from '../live/client.js';
 import { microphone } from '../live/microphone.js';
 import { SAMPLE_RATE, SESSION_CALL_SECONDS } from '../live/pcm.js';
 import { BIO_TOOL, EMBED_MODEL, OBSERVE_EVERY_MS, RETRIEVE_TOOL, UPDATER_PROMPT, activeLibrary, applyBio, applyMemoryPatch, bioReceipt, cleanObservation, clearLibrary, createLibrary, datedEntries, dialogueEntries, dialogueLines, envCorpus, finishDialogue, formatUpdaterInput, isEmptyPatch, localDate, memoryLabel as libraryStatus, mergeVectorHits, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn, renameLibrary, renderProfile, renderRecent, replaceActive, retrieveMemory, sessionFacts, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, normalizeVector } from '../live/memory-libraries.js';
-import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, isSilentMonitor, lateResultInstructions, listProactive, modalityNote, monitorFocus, monitorPlan, duplicateNote, monitorRoom, narrationBrief, narrationPlan, readSearchResponse, reminderNote, reminderText, searchInFlight, searchResponsesBody, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, dropLate, stopLookup, takeLate, takeMonitorAudio, taskPrompt, timerRequest, toolArguments, updateProactive } from '../live/monitor.js';
+import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, isSilentMonitor, lateSpeechText, listProactive, modalityNote, monitorFocus, monitorPlan, duplicateNote, monitorRoom, narrationBrief, narrationPlan, readSearchResponse, reminderNote, reminderText, searchInFlight, searchResponsesBody, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, dropLate, stopLookup, takeLate, takeMonitorAudio, taskPrompt, timerRequest, toolArguments, updateProactive } from '../live/monitor.js';
 import { BACKEND_TOOLS, isBackendTool, noBackendReceipt, noBackendTitle } from '../live/no-backend.js';
 import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
 import { openToolRound, responseFunctionCalls } from '../live/product-session.js';
@@ -144,7 +144,7 @@ export function renderSession(view, reg) {
     <section class="intro" data-live-session>
       <p class="eyebrow">百炼 Key · 实时看说</p>
       <h1>前台接着聊，后台慢慢做。</h1>
-      <p>打开摄像头，或点「屏幕」共享手机画面。接通后直接说话。说「从现在开始持续报告我手机屏幕里的内容」，前台先答应，后台过一会儿再讲屏幕上有什么，这一项只看画面。说「从现在开始关注我的身体」，会一直听，同一次里不重复说，这一项只听声音。说「咳嗽了提醒我一次」，说过就停。这两项可以同时开。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。问到事实时，只有确认这次联网了，才会说查过网上。这一通最长 30 分钟，到点会结束通话，持续报告和监视也停下。正在查或正在看的一项可以停下，停下后结果不再说出来。已经发出的请求仍会计费。播报静音时，还没说的查询和看图也不再补播。费用记在你的百炼账号上。</p>
+      <p>打开摄像头，或点「屏幕」共享手机画面。接通后直接说话。说「从现在开始持续报告我手机屏幕里的内容」，前台先答应，后台过一会儿再讲屏幕上有什么，这一项只看画面。说「从现在开始关注我的身体」，会一直听，同一次里不重复说，这一项只听声音。说「咳嗽了提醒我一次」，说过就停。这两项可以同时开。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。问到事实时，只有确认这次联网了，才会说查过网上。这一通最长 30 分钟，到点会结束通话，持续报告和监视也停下。正在查或正在看的一项可以停下，停下后结果不再说出来。已经发出的请求仍会计费。查询和看图的结果由单独的播报说出，不再占用主对话。播报静音时，还没说的查询和看图也不再补播。费用记在你的百炼账号上。</p>
     </section>
     ${saved?.values?.DASHSCOPE_API_KEY ? html`<p class="inline-ok">已读取本机百炼 Key。发送前请再看一眼画面。</p>` : html`<div class="mode-banner"><div><strong>还没有百炼 Key</strong><p>看说和下面的网页真跑都要用你自己的 Key。保存后回到这里，不会自动调用模型。</p><a href="${SETUP}">去填写 Key</a></div></div>`}
     <section class="panel session-stage">
@@ -159,7 +159,7 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，这一通最长 30 分钟，到点会结束通话，持续报告和监视也停下。正在查或正在看的一项可以停下，停下后结果不再说出来。已经发出的请求仍会计费。播报静音时，还没说的查询和看图也不再补播。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说各走一条后台连接，可以同时进行。后说的一项不会把另一项停掉。说「咳嗽了提醒我一次」，提醒过就停。说「从现在开始关注」，会一直听，同一次里不重复说。报告屏幕时只看画面，不把麦克风送进这一项。咳嗽和身体提醒只听声音，不送画面。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。问到事实时，只有确认这次联网了，才会说查过网上。咳嗽没发生就不出声。只解说变化时，没有明显变化也不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。通话中可以麦克风静音或播报静音。麦克风静音后声音不再送进通话和监视，大约每 30 秒送一秒静音来保持连接。播报静音会立刻停掉正在说的话，还没播的提醒不再补播。音色默认 Tina，可换成 qwen3.8 支持的预设。这一通已经接通时，主对话仍用接通时的音色；监视、到点提醒和下一次通话用新的。复刻音色仍在 Mac 上。可以说「把条件改成只看红字」，正在进行的这一项会按新的来，不用先取消。改提醒时间会从现在重新计。可以说「持续报告我手机屏幕里的内容」，或「关注我的身体，咳嗽了就提醒」。前台先接住，后台再看再查，结果稍后才说。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，这一通最长 30 分钟，到点会结束通话，持续报告和监视也停下。正在查或正在看的一项可以停下，停下后结果不再说出来。已经发出的请求仍会计费。查询和看图的结果由单独的播报说出，不再占用主对话。播报静音时，还没说的查询和看图也不再补播。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说各走一条后台连接，可以同时进行。后说的一项不会把另一项停掉。说「咳嗽了提醒我一次」，提醒过就停。说「从现在开始关注」，会一直听，同一次里不重复说。报告屏幕时只看画面，不把麦克风送进这一项。咳嗽和身体提醒只听声音，不送画面。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。问到事实时，只有确认这次联网了，才会说查过网上。咳嗽没发生就不出声。只解说变化时，没有明显变化也不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。通话中可以麦克风静音或播报静音。麦克风静音后声音不再送进通话和监视，大约每 30 秒送一秒静音来保持连接。播报静音会立刻停掉正在说的话，还没播的提醒不再补播。音色默认 Tina，可换成 qwen3.8 支持的预设。这一通已经接通时，主对话仍用接通时的音色；监视、到点提醒和下一次通话用新的。复刻音色仍在 Mac 上。可以说「把条件改成只看红字」，正在进行的这一项会按新的来，不用先取消。改提醒时间会从现在重新计。可以说「持续报告我手机屏幕里的内容」，或「关注我的身体，咳嗽了就提醒」。前台先接住，后台再看再查，结果稍后才说。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
       <label class="field">音色<select data-voice></select></label>
       <label class="field">记忆库<select data-library></select></label>
       <div class="btn-row">
@@ -181,7 +181,7 @@ export function renderSession(view, reg) {
       </div>
       <div class="background-lane" data-background>
         <h2>后台</h2>
-        <p class="small">前台先接住这句话。持续报告和咳嗽提醒可以同时开，两项监视也可以同时留着，结果稍后才说。正在查或正在看时，可以点「停止这项」。</p>
+        <p class="small">前台先接住这句话。持续报告和咳嗽提醒可以同时开，两项监视也可以同时留着，结果稍后才说。查询和看图由单独的播报说出。正在查或正在看时，可以点「停止这项」。</p>
         <ol data-background-list></ol>
       </div>
       <audio data-player controls hidden></audio>
@@ -269,6 +269,7 @@ export function renderSession(view, reg) {
   let background = [];
   let lateQueue = [];
   let speakingLateId = '';
+  let playingAlertId = '';
   const lookupStops = new Map();
   const workClaims = new Set();
   let pumpingLate = false;
@@ -798,7 +799,7 @@ export function renderSession(view, reg) {
     for (const job of background.filter((item) => item && item.id)) {
       const item = document.createElement('li');
       item.textContent = backgroundRows([job])[0];
-      const waiting = lateQueue.some((entry) => entry.id === job.id) || speakingLateId === job.id;
+      const waiting = lateQueue.some((entry) => entry.id === job.id) || speakingLateId === job.id || playingAlertId === job.id || spokenAlerts.some((entry) => entry.id === job.id);
       if ((job.lane === 'search' || job.lane === 'look') && (job.state === 'accepted' || job.state === 'running' || waiting)) {
         const button = document.createElement('button');
         button.type = 'button';
@@ -833,11 +834,11 @@ export function renderSession(view, reg) {
     lookupStops.get(id)?.abort();
     lookupStops.delete(id);
     lateQueue = dropLate(lateQueue, id);
-    if (speakingLateId === id && call) {
-      try { call.send('response.cancel'); } catch { /* 当前没有可打断的回答 */ }
+    spokenAlerts.splice(0, spokenAlerts.length, ...spokenAlerts.filter((item) => item.id !== id));
+    if (playingAlertId === id) playback?.interrupt();
+    if (speakingLateId === id || playingAlertId === id) {
       speakingLateId = '';
-      foregroundBusy = false;
-      lateResponse = false;
+      playingAlertId = '';
     }
     showBackground();
     say('这项已停下，结果不再说出来。已经发出的请求仍会计费。');
@@ -977,18 +978,34 @@ export function renderSession(view, reg) {
           continue;
         }
         lateQueue = step.queue;
-        if (step.item.mine !== callGeneration || !call) continue;
+        if (step.item.mine !== callGeneration || !call || !liveSpec || !liveValues) continue;
         if (outputMuted) continue;
+        const id = step.item.id || '';
+        const speech = new AbortController();
+        if (id) lookupStops.set(id, speech);
+        speakingLateId = id;
+        showBackground();
         try {
-          foregroundBusy = true;
-          lateResponse = true;
-          speakingLateId = step.item.id || '';
-          call.send('response.create', { response: { instructions: lateResultInstructions(step.item.text, step.item.status) } });
+          const spoken = await speakReminder({
+            url: realtimeSocketUrl(reg.stacks.get('bailian'), liveValues, liveSpec.REALTIME_MODEL),
+            secret,
+            text: lateSpeechText(step.item.text, step.item.status),
+            limit: 200,
+            voice: currentVoice(),
+            inputRate: liveSpec.IN_RATE,
+            outputRate: liveSpec.OUT_RATE,
+            asrModel: liveSpec.ASR_MODEL,
+            signal: speech.signal,
+          });
+          if (speech.signal.aborted || !active || step.item.mine !== callGeneration || outputMuted) continue;
+          enqueueAlert(spoken.audio, step.item.mine, id);
         } catch (error) {
-          foregroundBusy = false;
-          lateResponse = false;
-          speakingLateId = '';
-          say(error.message);
+          if (speech.signal.aborted) continue;
+          say(`结果到了，但没有读出来：${error.message}`);
+        } finally {
+          if (lookupStops.get(id) === speech) lookupStops.delete(id);
+          if (speakingLateId === id) speakingLateId = '';
+          showBackground();
         }
       }
     } finally {
@@ -1416,10 +1433,10 @@ export function renderSession(view, reg) {
     spokenAlerts.length = 0;
     userTurn = false;
   }
-  function enqueueAlert(chunks, mine) {
+  function enqueueAlert(chunks, mine, id = '') {
     const audio = (Array.isArray(chunks) ? chunks : []).filter((chunk) => chunk && chunk.byteLength >= 2);
     if (!audio.length || mine !== callGeneration || outputMuted) return;
-    spokenAlerts.push({ audio, mine });
+    spokenAlerts.push({ audio, mine, id });
     spokenAlerts.splice(0, spokenAlerts.length, ...spokenWhileMuted(spokenAlerts, outputMuted));
     void drainAlerts();
   }
@@ -1437,13 +1454,15 @@ export function renderSession(view, reg) {
           continue;
         }
         spokenAlerts.splice(0, spokenAlerts.length, ...step.waiting);
+        playingAlertId = head.id || '';
         for (const chunk of step.audio) {
-          if (head.mine !== callGeneration || !playback || userTurn || outputMuted) break;
+          if ((head.id && playingAlertId !== head.id) || head.mine !== callGeneration || !playback || userTurn || outputMuted) break;
           playback.push(chunk, liveSpec.OUT_RATE);
         }
-        while (playback?.playing() && head.mine === callGeneration && active && !userTurn && !outputMuted) {
+        while (playback?.playing() && playingAlertId === (head.id || '') && head.mine === callGeneration && active && !userTurn && !outputMuted) {
           await new Promise((resolve) => setTimeout(resolve, 200));
         }
+        if (playingAlertId === (head.id || '')) playingAlertId = '';
       }
     } finally {
       drainingAlerts = false;

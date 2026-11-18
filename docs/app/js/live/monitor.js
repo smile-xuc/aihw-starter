@@ -246,6 +246,14 @@ export function takeLate(queue, ready) {
   return { queue: items.slice(1), item: items[0] };
 }
 
+export function lateSpeechText(text, status) {
+  const body = String(text || '').replace(/\s+/g, ' ').trim().slice(0, 180);
+  if (!body) throw new Error('后台结果是空的');
+  if (status === 'performed') return `查到了。${body}`.slice(0, 200);
+  if (status === 'not_performed') return `没查成。${body}`.slice(0, 200);
+  return body.slice(0, 200);
+}
+
 export function lateResultInstructions(text, status) {
   const body = String(text || '').replace(/\s+/g, ' ').trim().slice(0, 400);
   if (!body) throw new Error('后台结果是空的');
@@ -354,8 +362,11 @@ export function timerRequest(raw) {
 
 export async function speakReminder(options) {
   const connect = options.connect || connectRealtime;
-  const sentence = String(options.text || '').replace(/\s+/g, ' ').trim().slice(0, 120);
+  const limit = Number(options.limit || 120);
+  if (!Number.isInteger(limit) || limit < 1 || limit > 200) throw new Error('朗读长度无效');
+  const sentence = String(options.text || '').replace(/\s+/g, ' ').trim().slice(0, limit);
   if (!sentence) throw new Error('提醒内容是空的');
+  if (options.signal?.aborted) throw new DOMException('已停下', 'AbortError');
   let audio = [];
   let settled = false;
   let resolve;
@@ -369,12 +380,15 @@ export async function speakReminder(options) {
     else resolve(value);
   };
   const timer = setTimeout(() => finish(new Error('朗读超时')), options.timeoutMs || 25000);
+  const onAbort = () => finish(new DOMException('已停下', 'AbortError'));
+  options.signal?.addEventListener('abort', onAbort, { once: true });
   let handle;
   try {
     handle = connect({
       url: options.url,
       secret: options.secret,
       timeoutMs: options.timeoutMs || 25000,
+      signal: options.signal,
       WebSocketImpl: options.WebSocketImpl,
       session: sessionConfig({
         instructions: SPEAK_RULES,
@@ -403,6 +417,7 @@ export async function speakReminder(options) {
     return await finished;
   } finally {
     clearTimeout(timer);
+    options.signal?.removeEventListener('abort', onAbort);
     handle?.close();
   }
 }
