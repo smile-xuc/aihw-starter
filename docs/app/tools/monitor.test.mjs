@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, listProactive, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateSpeechText, listProactive, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -282,6 +282,12 @@ test('continuous screen reports and body alerts are accepted before the result e
   assert.equal(takeLate(waiting, false).item, null);
   assert.equal(takeLate(waiting, true).item.text, '屏幕上是备忘录');
   assert.equal(waiting.length, 1);
+  assert.equal(lateSpeechText('屏幕上是备忘录'), '屏幕上是备忘录');
+  assert.equal(lateSpeechText('明天有雨', 'performed'), '查到了。明天有雨');
+  assert.equal(lateSpeechText('明天有雨', 'unknown'), '明天有雨');
+  assert.equal(lateSpeechText('没有查到结果。', 'not_performed'), '没查成。没有查到结果。');
+  assert.equal(lateSpeechText('查过网上', 'unknown').includes('查到了'), false);
+  assert.throws(() => lateSpeechText('  '), /后台结果是空的/);
   assert.match(lateResultInstructions('屏幕上是备忘录'), /不要调用工具/);
   assert.match(lateResultInstructions('明天有雨', 'performed'), /刚联网查到/);
   assert.match(lateResultInstructions('明天有雨', 'unknown'), /不要说已经查过网上/);
@@ -413,4 +419,8 @@ test('screen reports look without the microphone, and a cough watch listens with
   assert.match(updateProactive([{ id: 't', kind: 'timer', title: '喝水' }], { target_title: '喝水', modalities: ['audio'] }).receipt, /到点提醒不能改/);
   assert.match(listProactive([{ id: 'm', kind: 'monitor', title: '咳嗽', repeat: false, modalities: ['audio'] }]), /只听声音/);
   assert.match(listProactive([{ id: 'n', kind: 'narration', title: '屏幕', modalities: ['vision'] }]), /只看画面/);
+});
+
+test('an aborted reminder is not spoken', async () => {
+  await assert.rejects(speakReminder({ ...common, text: '该喝水了', signal: AbortSignal.abort() }), { name: 'AbortError' });
 });
