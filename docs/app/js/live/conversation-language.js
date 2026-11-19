@@ -39,3 +39,14 @@ export function replyLanguageLine(language) {
   if (language !== 'en') return '';
   return '\n这一通改用英文回答。查询、看图和提醒的播报也用英文。不要改回中文，除非用户明确要求。';
 }
+
+const CHINESE_REPLY_WITH_CONCLUSION = '用口语化中文回答，每次两三句话，先给结论。';
+const CHINESE_REPLY = '用口语化中文回答，每次两三句话。';
+
+export function applyReplyLanguage(instructions, language) {
+  const text = String(instructions || '');
+  if (language !== 'en') return text;
+  return text
+    .split(CHINESE_REPLY_WITH_CONCLUSION).join('Answer in spoken English, in two or three sentences, and lead with the conclusion.')
+    .split(CHINESE_REPLY).join('Answer in spoken English, in two or three sentences.');
+}

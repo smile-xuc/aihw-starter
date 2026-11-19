@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { observeConversationLanguage, replyLanguageLine, resolveConversationLanguage } from '../js/live/conversation-language.js';
+import { observeConversationLanguage, applyReplyLanguage, replyLanguageLine, resolveConversationLanguage } from '../js/live/conversation-language.js';
 
 test('conversation language follows a real request and ignores short replies', () => {
   assert.equal(resolveConversationLanguage({}), 'zh-CN');
@@ -24,4 +24,19 @@ test('conversation language follows a real request and ignores short replies', (
   assert.equal(state.current, undefined);
   state = observeConversationLanguage({}, '用英文翻译这段话');
   assert.equal(state.preference, undefined);
+});
+
+test('an English reply removes the Chinese answer instruction', () => {
+  const live = '用口语化中文回答，每次两三句话，先给结论。画面和问题有关时结合画面回答。';
+  const demand = '用口语化中文回答，每次两三句话。不识别画面中人的身份。';
+  assert.equal(applyReplyLanguage(live, 'zh-CN'), live);
+  assert.equal(applyReplyLanguage(live), live);
+  const english = applyReplyLanguage(live, 'en');
+  assert.equal(english.includes('用口语化中文回答'), false);
+  assert.match(english, /Answer in spoken English, in two or three sentences, and lead with the conclusion/);
+  assert.match(english, /结合画面回答/);
+  const demandEnglish = applyReplyLanguage(demand, 'en');
+  assert.equal(demandEnglish.includes('用口语化中文回答'), false);
+  assert.match(demandEnglish, /Answer in spoken English, in two or three sentences\./);
+  assert.match(demandEnglish, /不识别画面中人的身份/);
 });
