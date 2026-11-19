@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, MAX_BIO, RETRIEVE_TOOL,
   activeLibrary, applyBio, applyMemoryPatch, bioReceipt, bioResult, cleanObservation, clearLibrary, cleanStm, createLibrary, datedEntries, emptyDialogue, emptyLtm, finishDialogue, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, mergeVectorHits, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn,
-  renameLibrary, renderProfile, fitProfile, LTM_PROMPT_ITEMS, LTM_PROMPT_CHARS, LTM_PROMPT_ORDER, LTM_TRIM_ORDER, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, sessionFacts, shouldConsolidateLibrary, librarySwitchNote, spaceEnvHits, presentRetrieval, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, nextObserveDelay, OBSERVE_EVERY_MS, OBSERVE_RETRY_MS, OBSERVE_TIMEOUT_MS, OBSERVER_TEMPERATURE, OBSERVER_MAX_TOKENS, memorySampling, UPDATER_TIMEOUT_MS, UPDATER_TEMPERATURE, UPDATER_MAX_TOKENS, updaterFinishPlan, updaterTimeoutPlan,
+  renameLibrary, renderProfile, fitProfile, LTM_PROMPT_ITEMS, LTM_PROMPT_CHARS, LTM_PROMPT_ORDER, LTM_TRIM_ORDER, MAX_LTM_ITEMS, MAX_LTM_CHARS, MAX_NAME_CHARS, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, sessionFacts, shouldConsolidateLibrary, librarySwitchNote, spaceEnvHits, presentRetrieval, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, nextObserveDelay, OBSERVE_EVERY_MS, OBSERVE_RETRY_MS, OBSERVE_TIMEOUT_MS, OBSERVER_TEMPERATURE, OBSERVER_MAX_TOKENS, memorySampling, UPDATER_TIMEOUT_MS, UPDATER_TEMPERATURE, UPDATER_MAX_TOKENS, updaterFinishPlan, updaterTimeoutPlan,
 } from '../js/live/memory-libraries.js';
 
 function storage(initial = {}) {
@@ -373,6 +373,21 @@ test('a long profile keeps six facts per field and drops relationships before th
   assert.match(fitted.text, /长期角色：工程师/);
   assert.equal(fitted.text.includes('relationships7'), false);
   assert.equal([...fitted.text].length <= 800, true);
+  assert.equal(MAX_LTM_ITEMS, LTM_PROMPT_ITEMS);
+  assert.equal(MAX_LTM_CHARS, LTM_PROMPT_CHARS);
+  const saved = applyMemoryPatch({ ltm: emptyLtm(), stm: [], stmSeq: 0 }, {
+    ltm_patch: { add: { preferences: ['喜'.repeat(200)] } },
+  }, '2026-11-15');
+  assert.equal([...saved.ltm.preferences[0]].length, 200);
+  const cut = applyMemoryPatch({ ltm: emptyLtm(), stm: [], stmSeq: 0 }, {
+    ltm_patch: { add: { preferences: ['字'.repeat(900)] }, set: { name: '名'.repeat(50) } },
+  }, '2026-11-15');
+  assert.equal([...cut.ltm.preferences[0]].length, MAX_LTM_CHARS);
+  assert.equal([...cut.ltm.name].length, MAX_NAME_CHARS);
+  const many = applyMemoryPatch({ ltm: emptyLtm(), stm: [], stmSeq: 0 }, {
+    ltm_patch: { add: { preferences: ['一', '二', '三', '四', '五', '六', '七'] } },
+  }, '2026-11-15');
+  assert.deepEqual(many.ltm.preferences, ['二', '三', '四', '五', '六', '七']);
 });
 
 test('the call profile follows name, role, goals, routines, appearance, preferences, interests, relationships', () => {
