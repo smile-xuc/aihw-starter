@@ -566,6 +566,30 @@ test('a long watch rebuilds and a missing round does not end it', () => {
   assert.match(third.note, /超时/);
   assert.equal(monitorAfterRound({ rounds: 4, failures: 0, error: new Error('请核对 Key、地域') }).action, 'stop');
   assert.equal(monitorAfterRound({ rounds: 4, failures: 0, error: new DOMException('已停下', 'AbortError') }).action, 'stop');
+  assert.equal(monitorAfterRound({ rounds: 4, failures: 0, error: new Error('后台连接断了') }).action, 'rebuild');
+  assert.equal(monitorAfterRound({ rounds: 4, failures: 0, error: new Error('额度不够时这一通马上结束') }).action, 'stop');
+});
+
+test('a dropped watch socket ends the open round so the watch can reconnect', async () => {
+  class DropSocket {
+    constructor() { this.readyState = 1; this.sent = []; DropSocket.latest = this; }
+    send(data) { this.sent.push(JSON.parse(data)); }
+    close() { this.readyState = 3; }
+  }
+  const monitor = openMonitor({ ...common, WebSocketImpl: DropSocket });
+  DropSocket.latest.onmessage({ data: JSON.stringify({ type: 'session.created' }) });
+  DropSocket.latest.onmessage({ data: JSON.stringify({ type: 'session.updated' }) });
+  await monitor.ready;
+  const pending = monitor.round(frames, null, { vision: true, audio: false });
+  DropSocket.latest.onclose({ code: 1006, reason: '' });
+  await assert.rejects(pending, (error) => error.message === '后台连接断了' && error.message !== '主动提醒已停止');
+  const quotaWatch = openMonitor({ ...common, WebSocketImpl: DropSocket });
+  DropSocket.latest.onmessage({ data: JSON.stringify({ type: 'session.created' }) });
+  DropSocket.latest.onmessage({ data: JSON.stringify({ type: 'session.updated' }) });
+  await quotaWatch.ready;
+  const blocked = quotaWatch.round(frames, null, { vision: true, audio: false });
+  DropSocket.latest.onclose({ code: 1007, reason: 'Allocated quota exceeded, please increase your quota limit.' });
+  await assert.rejects(blocked, (error) => /额度不够/.test(error.message));
 });
 
 test('an aborted reminder is not spoken', async () => {
