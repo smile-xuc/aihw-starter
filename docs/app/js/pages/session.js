@@ -1,6 +1,6 @@
 import { liveConstants } from '../data.js';
 import { ApiError, chat, postJson, toBase64 } from '../live/client.js';
-import { microphone } from '../live/microphone.js';
+import { cameraCaptureConstraints, inputDevices, microphone } from '../live/microphone.js';
 import { SAMPLE_RATE, SESSION_CALL_SECONDS } from '../live/pcm.js';
 import { BIO_TOOL, EMBED_MODEL, OBSERVE_EVERY_MS, RETRIEVE_TOOL, UPDATER_PROMPT, activeLibrary, applyBio, applyMemoryPatch, bioReceipt, cleanObservation, clearLibrary, createLibrary, datedEntries, dialogueEntries, dialogueLines, envCorpus, finishDialogue, formatUpdaterInput, isEmptyPatch, localDate, memoryLabel as libraryStatus, mergeVectorHits, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn, renameLibrary, renderProfile, renderRecent, replaceActive, retrieveMemory, sessionFacts, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, normalizeVector } from '../live/memory-libraries.js';
 import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, isSilentMonitor, forgetLateResult, lateResultPrompt, lateSpeechText, listProactive, markLateResult, rememberLateResult, modalityNote, monitorFocus, monitorPlan, duplicateNote, monitorRoom, narrationBrief, narrationPlan, readSearchResponse, reminderNote, reminderText, searchInFlight, searchResponsesBody, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, dropLate, stopLookup, takeLate, takeMonitorAudio, taskPrompt, timerRequest, toolArguments, updateProactive } from '../live/monitor.js';
@@ -144,7 +144,7 @@ export function renderSession(view, reg) {
     <section class="intro" data-live-session>
       <p class="eyebrow">百炼 Key · 实时看说</p>
       <h1>前台接着聊，后台慢慢做。</h1>
-      <p>打开摄像头，或点「屏幕」共享手机画面。接通后直接说话。说「从现在开始持续报告我手机屏幕里的内容」，前台先答应，后台过一会儿再讲屏幕上有什么，这一项只看画面。说「从现在开始关注我的身体」，会一直听，同一次里不重复说，这一项只听声音。说「咳嗽了提醒我一次」，说过就停。这两项可以同时开。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。问到事实时，只有确认这次联网了，才会说查过网上。这一通最长 30 分钟，到点会结束通话，持续报告和监视也停下。正在查或正在看的一项可以停下，停下后结果不再说出来。已经发出的请求仍会计费。查询和看图的结果由单独的播报说出，不再占用主对话。查到或看到的结果会留给这一通对话，之后追问可以直接用。持续报告和咳嗽提醒说过的话也会留下。播报静音时，还没说的查询和看图也不再补播。你一开口，正在读的查询或看图会停住，不再补播。持续报告和咳嗽提醒会等你说完再讲。还没读完的结果留在这一通。你问到这件事会直接说。费用记在你的百炼账号上。</p>
+      <p>打开摄像头，或点「屏幕」共享手机画面。接通后直接说话。说「从现在开始持续报告我手机屏幕里的内容」，前台先答应，后台过一会儿再讲屏幕上有什么，这一项只看画面。说「从现在开始关注我的身体」，会一直听，同一次里不重复说，这一项只听声音。说「咳嗽了提醒我一次」，说过就停。这两项可以同时开。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。问到事实时，只有确认这次联网了，才会说查过网上。这一通最长 30 分钟，到点会结束通话，持续报告和监视也停下。正在查或正在看的一项可以停下，停下后结果不再说出来。已经发出的请求仍会计费。查询和看图的结果由单独的播报说出，不再占用主对话。查到或看到的结果会留给这一通对话，之后追问可以直接用。持续报告和咳嗽提醒说过的话也会留下。播报静音时，还没说的查询和看图也不再补播。你一开口，正在读的查询或看图会停住，不再补播。持续报告和咳嗽提醒会等你说完再讲。还没读完的结果留在这一通。你问到这件事会直接说。麦克风和摄像头可以换成这台设备上的其他输入，通话中更换会接着这一通。费用记在你的百炼账号上。</p>
     </section>
     ${saved?.values?.DASHSCOPE_API_KEY ? html`<p class="inline-ok">已读取本机百炼 Key。发送前请再看一眼画面。</p>` : html`<div class="mode-banner"><div><strong>还没有百炼 Key</strong><p>看说和下面的网页真跑都要用你自己的 Key。保存后回到这里，不会自动调用模型。</p><a href="${SETUP}">去填写 Key</a></div></div>`}
     <section class="panel session-stage">
@@ -158,8 +158,10 @@ export function renderSession(view, reg) {
         <button type="button" class="secondary-action" data-capture="live" aria-pressed="true">实时画面</button>
         <button type="button" class="secondary-action" data-capture="demand" aria-pressed="false">按需看一眼</button>
       </div>
+      <label class="field">麦克风<select data-mic><option value="">系统默认</option></select></label>
+      <label class="field">摄像头<select data-camera><option value="">系统默认</option></select></label>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，这一通最长 30 分钟，到点会结束通话，持续报告和监视也停下。正在查或正在看的一项可以停下，停下后结果不再说出来。已经发出的请求仍会计费。查询和看图的结果由单独的播报说出，不再占用主对话。查到或看到的结果会留给这一通对话，之后追问可以直接用。持续报告和咳嗽提醒说过的话也会留下。播报静音时，还没说的查询和看图也不再补播。你一开口，正在读的查询或看图会停住，不再补播。持续报告和咳嗽提醒会等你说完再讲。还没读完的结果留在这一通。你问到这件事会直接说。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说各走一条后台连接，可以同时进行。后说的一项不会把另一项停掉。说「咳嗽了提醒我一次」，提醒过就停。说「从现在开始关注」，会一直听，同一次里不重复说。报告屏幕时只看画面，不把麦克风送进这一项。咳嗽和身体提醒只听声音，不送画面。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。问到事实时，只有确认这次联网了，才会说查过网上。咳嗽没发生就不出声。只解说变化时，没有明显变化也不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。通话中可以麦克风静音或播报静音。麦克风静音后声音不再送进通话和监视，大约每 30 秒送一秒静音来保持连接。播报静音会立刻停掉正在说的话，还没播的提醒不再补播。音色默认 Tina，可换成 qwen3.8 支持的预设。这一通已经接通时，主对话仍用接通时的音色；监视、到点提醒和下一次通话用新的。复刻音色仍在 Mac 上。可以说「把条件改成只看红字」，正在进行的这一项会按新的来，不用先取消。改提醒时间会从现在重新计。可以说「持续报告我手机屏幕里的内容」，或「关注我的身体，咳嗽了就提醒」。前台先接住，后台再看再查，结果稍后才说。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，这一通最长 30 分钟，到点会结束通话，持续报告和监视也停下。正在查或正在看的一项可以停下，停下后结果不再说出来。已经发出的请求仍会计费。查询和看图的结果由单独的播报说出，不再占用主对话。查到或看到的结果会留给这一通对话，之后追问可以直接用。持续报告和咳嗽提醒说过的话也会留下。播报静音时，还没说的查询和看图也不再补播。你一开口，正在读的查询或看图会停住，不再补播。持续报告和咳嗽提醒会等你说完再讲。还没读完的结果留在这一通。你问到这件事会直接说。麦克风和摄像头可以换成这台设备上的其他输入，通话中更换会接着这一通。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说各走一条后台连接，可以同时进行。后说的一项不会把另一项停掉。说「咳嗽了提醒我一次」，提醒过就停。说「从现在开始关注」，会一直听，同一次里不重复说。报告屏幕时只看画面，不把麦克风送进这一项。咳嗽和身体提醒只听声音，不送画面。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。问到事实时，只有确认这次联网了，才会说查过网上。咳嗽没发生就不出声。只解说变化时，没有明显变化也不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。通话中可以麦克风静音或播报静音。麦克风静音后声音不再送进通话和监视，大约每 30 秒送一秒静音来保持连接。播报静音会立刻停掉正在说的话，还没播的提醒不再补播。音色默认 Tina，可换成 qwen3.8 支持的预设。这一通已经接通时，主对话仍用接通时的音色；监视、到点提醒和下一次通话用新的。复刻音色仍在 Mac 上。可以说「把条件改成只看红字」，正在进行的这一项会按新的来，不用先取消。改提醒时间会从现在重新计。可以说「持续报告我手机屏幕里的内容」，或「关注我的身体，咳嗽了就提醒」。前台先接住，后台再看再查，结果稍后才说。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
       <label class="field">音色<select data-voice></select></label>
       <label class="field">记忆库<select data-library></select></label>
       <div class="btn-row">
@@ -181,7 +183,7 @@ export function renderSession(view, reg) {
       </div>
       <div class="background-lane" data-background>
         <h2>后台</h2>
-        <p class="small">前台先接住这句话。持续报告和咳嗽提醒可以同时开，两项监视也可以同时留着，结果稍后才说。查询和看图由单独的播报说出。正在查或正在看时，可以点「停止这项」。你一开口，正在读的查询或看图会停住。持续报告和咳嗽提醒会等你说完再讲。还没读完的结果留在这一通。你问到这件事会直接说。</p>
+        <p class="small">前台先接住这句话。持续报告和咳嗽提醒可以同时开，两项监视也可以同时留着，结果稍后才说。查询和看图由单独的播报说出。正在查或正在看时，可以点「停止这项」。你一开口，正在读的查询或看图会停住。持续报告和咳嗽提醒会等你说完再讲。还没读完的结果留在这一通。你问到这件事会直接说。麦克风和摄像头可以换成这台设备上的其他输入，通话中更换会接着这一通。</p>
         <ol data-background-list></ol>
       </div>
       <audio data-player controls hidden></audio>
@@ -229,6 +231,10 @@ export function renderSession(view, reg) {
   let history = [];
   let chunks = [];
   let recorder = null;
+  let micGeneration = 0;
+  let callOpenedAt = 0;
+  let fillingDevices = false;
+  let deviceChoice = { mic: '', camera: '' };
   let stopping = false;
   let wantStop = false;
   let busy = false;
@@ -469,13 +475,60 @@ export function renderSession(view, reg) {
     lockLibrary(on || Boolean(call));
   };
 
+  function readDeviceChoice() {
+    try {
+      const parsed = JSON.parse(sessionStorage.getItem('aihw.session.devices') || '{}');
+      return { mic: String(parsed?.mic || ''), camera: String(parsed?.camera || '') };
+    } catch { return { mic: '', camera: '' }; }
+  }
+  function writeDeviceChoice() {
+    try { sessionStorage.setItem('aihw.session.devices', JSON.stringify(deviceChoice)); }
+    catch { /* 设备选择只留在这一页，写不进也不影响通话 */ }
+  }
+  function fillDeviceSelect(select, devices, selected) {
+    if (!select) return '';
+    fillingDevices = true;
+    select.replaceChildren();
+    const fallback = document.createElement('option');
+    fallback.value = '';
+    fallback.textContent = '系统默认';
+    select.append(fallback);
+    for (const device of devices) {
+      const option = document.createElement('option');
+      option.value = device.id;
+      option.textContent = device.label;
+      select.append(option);
+    }
+    const next = devices.some((device) => device.id === selected) ? selected : '';
+    select.value = next;
+    fillingDevices = false;
+    return next;
+  }
+  async function refreshDevices() {
+    if (!navigator.mediaDevices?.enumerateDevices) return;
+    let list = [];
+    try { list = await navigator.mediaDevices.enumerateDevices(); }
+    catch { return; }
+    if (!active) return;
+    const found = inputDevices(list);
+    const mic = fillDeviceSelect(page.querySelector('[data-mic]'), found.microphones, deviceChoice.mic);
+    const camera = fillDeviceSelect(page.querySelector('[data-camera]'), found.cameras, deviceChoice.camera);
+    const micChanged = mic !== deviceChoice.mic;
+    const cameraChanged = camera !== deviceChoice.camera;
+    deviceChoice = { mic, camera };
+    writeDeviceChoice();
+    if (micChanged && call && callReady) void openLiveMic(callGeneration).catch((error) => { if (active) say(error.message); });
+    if (cameraChanged && videoSource === 'camera' && stream) void openSource('camera');
+  }
+  function onDevicesChanged() { void refreshDevices(); }
+
   async function openSource(kind) {
     if (busy) return;
     stream?.getTracks().forEach((track) => track.stop());
     try {
       const media = kind === 'screen'
         ? await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false })
-        : await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+        : await navigator.mediaDevices.getUserMedia(cameraCaptureConstraints(deviceChoice.camera));
       if (!active) { media.getTracks().forEach((track) => track.stop()); return; }
       stream = media;
       videoSource = kind === 'screen' ? 'screen' : 'camera';
@@ -485,6 +538,7 @@ export function renderSession(view, reg) {
         if (stream === media) { stream = null; video.removeAttribute('src'); video.srcObject = null; say('画面已关闭'); }
       });
       say(kind === 'screen' ? '正在共享屏幕。实时通话会持续发送这一路画面。' : '摄像头已打开。实时通话会持续发送这一路画面。');
+      void refreshDevices();
     } catch (error) {
       say(error.name === 'NotAllowedError' ? '没有获得画面权限。允许后重新打开。' : `打不开画面：${error.message}`);
     }
@@ -593,6 +647,8 @@ export function renderSession(view, reg) {
     retrieved = '';
     sentInstructions = '';
     callGeneration += 1;
+    micGeneration += 1;
+    callOpenedAt = 0;
     const handle = call;
     call = null;
     callReady = false;
@@ -1703,9 +1759,21 @@ export function renderSession(view, reg) {
   }
 
   async function openLiveMic(mine) {
+    const generation = ++micGeneration;
     const meter = page.querySelector('[data-meter]');
+    const elapsed = callOpenedAt ? Math.floor((Date.now() - callOpenedAt) / 1000) : 0;
+    const remain = SESSION_CALL_SECONDS - Math.max(0, elapsed);
+    if (remain < 1) {
+      if (mine === callGeneration && active) endCall('已到 30 分钟上限，实时通话结束。持续报告和监视也停下。');
+      return;
+    }
+    const previous = recorder;
+    recorder = null;
+    if (previous) await previous.discard();
+    if (generation !== micGeneration || mine !== callGeneration || !active) return;
     const handle = await microphone({
-      maxSeconds: SESSION_CALL_SECONDS,
+      maxSeconds: remain,
+      deviceId: deviceChoice.mic,
       onPCM: (buffer) => {
         if (mine !== callGeneration || !call || !callReady) return;
         try {
@@ -1724,15 +1792,19 @@ export function renderSession(view, reg) {
           endCall('实时连接已不可用');
         }
       },
-      onDuration: (seconds) => {
-        if (meter && mine === callGeneration) meter.textContent = `已通话 ${Math.floor(seconds)} 秒，上限 ${SESSION_CALL_SECONDS} 秒。实时语音按百炼账单计费。`;
+      onDuration: () => {
+        if (!meter || mine !== callGeneration || !callOpenedAt) return;
+        const seconds = Math.min(SESSION_CALL_SECONDS, Math.floor((Date.now() - callOpenedAt) / 1000));
+        meter.textContent = `已通话 ${seconds} 秒，上限 ${SESSION_CALL_SECONDS} 秒。实时语音按百炼账单计费。`;
       },
       onLimit: () => endCall('已到 30 分钟上限，实时通话结束。持续报告和监视也停下。'),
       onError: (error) => say(error.message),
     });
-    if (mine !== callGeneration || !active) { await handle.discard(); return; }
+    if (generation !== micGeneration || mine !== callGeneration || !active) { await handle.discard(); return; }
+    if (!callOpenedAt) callOpenedAt = Date.now();
     recorder = handle;
     handle.resume();
+    void refreshDevices();
   }
 
   async function startCall() {
@@ -2057,6 +2129,23 @@ export function renderSession(view, reg) {
       say(outputMuted ? '播报已静音。正在说的话已停下，还没播的提醒、查询和看图不再补播。' : '播报已打开。');
     }
   });
+  deviceChoice = readDeviceChoice();
+  const micSelect = page.querySelector('[data-mic]');
+  const cameraSelect = page.querySelector('[data-camera]');
+  micSelect?.addEventListener('change', () => {
+    if (fillingDevices) return;
+    deviceChoice = { ...deviceChoice, mic: micSelect.value };
+    writeDeviceChoice();
+    if (call && callReady) void openLiveMic(callGeneration).catch((error) => { if (active) say(error.message); });
+  });
+  cameraSelect?.addEventListener('change', () => {
+    if (fillingDevices) return;
+    deviceChoice = { ...deviceChoice, camera: cameraSelect.value };
+    writeDeviceChoice();
+    if (videoSource === 'camera' && stream) void openSource('camera');
+  });
+  navigator.mediaDevices?.addEventListener?.('devicechange', onDevicesChanged);
+  void refreshDevices();
   const talk = page.querySelector('[data-talk]');
   talk.addEventListener('pointerdown', async (event) => {
     if (busy || recorder || event.button !== 0 || call) return;
@@ -2068,6 +2157,7 @@ export function renderSession(view, reg) {
     try {
       talk.setPointerCapture(event.pointerId);
       const handle = await microphone({
+        deviceId: deviceChoice.mic,
         onPCM: (buffer) => { chunks.push(new Uint8Array(buffer)); },
         onDuration: (seconds) => { say(`正在听 ${seconds.toFixed(1)} 秒`); if (seconds >= 20) void finishTalk(true); },
         onLimit: () => { void finishTalk(true); },
@@ -2095,6 +2185,9 @@ export function renderSession(view, reg) {
     stopAllWatches();
     clearMuteHeartbeat();
     callGeneration += 1;
+    micGeneration += 1;
+    callOpenedAt = 0;
+    navigator.mediaDevices?.removeEventListener?.('devicechange', onDevicesChanged);
     abort?.abort();
     call?.close();
     call = null;
