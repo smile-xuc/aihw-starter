@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, MAX_BIO, RETRIEVE_TOOL,
   activeLibrary, applyBio, applyMemoryPatch, bioReceipt, bioResult, cleanObservation, clearLibrary, cleanStm, createLibrary, datedEntries, emptyDialogue, emptyLtm, finishDialogue, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, mergeVectorHits, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn,
-  renameLibrary, renderProfile, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, sessionFacts, shouldConsolidateLibrary, librarySwitchNote, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore,
+  renameLibrary, renderProfile, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, sessionFacts, shouldConsolidateLibrary, librarySwitchNote, spaceEnvHits, presentRetrieval, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore,
 } from '../js/live/memory-libraries.js';
 
 function storage(initial = {}) {
@@ -48,6 +48,16 @@ test('libraries can be created, switched, renamed and cleared without touching t
   assert.match(librarySwitchNote('家', true), /这一通接下来用这套/);
   assert.match(librarySwitchNote('家', true), /挂断时整理/);
   assert.equal(librarySwitchNote('家', false), '当前记忆库是「家」。');
+  const dated = [
+    { text: '桌上有杯子', at: 1000 },
+    { text: '桌上仍有杯子', at: 1200 },
+    { text: '窗外开始下雨', at: 1600 },
+  ];
+  assert.deepEqual(spaceEnvHits(dated.map((item) => item.text), dated), ['桌上有杯子', '窗外开始下雨']);
+  assert.deepEqual(spaceEnvHits(['近处', '正好十分钟'], [{ text: '近处', at: 100 }, { text: '正好十分钟', at: 700 }]), ['近处', '正好十分钟']);
+  const presented = presentRetrieval('桌上有杯子\n桌上仍有杯子\n窗外开始下雨', [], dated, null, 'env');
+  assert.equal(presented, '桌上有杯子\n窗外开始下雨');
+  assert.equal(presentRetrieval('没有找到相关记忆。', [], dated, null, 'dialogue'), '没有找到相关记忆。');
   let full = store;
   for (let i = 0; i < 6; i += 1) full = createLibrary(full, `库${i}`, `lib${i}`);
   assert.throws(() => createLibrary(full, '再来一个', 'extra'), /最多 8/);
