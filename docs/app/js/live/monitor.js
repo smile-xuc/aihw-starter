@@ -531,6 +531,12 @@ export function nextSpokenAlert(queue, busy) {
   return { waiting: waiting.slice(1), audio: waiting[0].audio };
 }
 
+export function bargeAlerts(waiting, current) {
+  const queue = (Array.isArray(waiting) ? waiting : []).filter((item) => item && Array.isArray(item.audio) && item.audio.length);
+  if (!current || current.id || !Array.isArray(current.audio) || !current.audio.length) return queue;
+  return [{ audio: current.audio, mine: current.mine, id: '' }, ...queue];
+}
+
 export function searchMessages(query) {
   const text = String(query || '').replace(/\s+/g, ' ').trim().slice(0, 300);
   if (!text) throw new Error('搜索内容是空的');
