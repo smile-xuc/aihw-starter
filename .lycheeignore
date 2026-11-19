@@ -51,3 +51,9 @@
 
 # 用户批准（2026-11-18，经 Bruce 转达）：宇树 B2-W-pro 成交公告。CI（GitHub Actions IP）对该 URL 固定 403；精确 https URL，不排除整个 ccgp.gov.cn 域名。
 ^https://www\.ccgp\.gov\.cn/cggg/dfgg/cjgg/202606/t20260626_26820485\.htm$
+
+# 用户批准（2026-11-19，经 Bruce 转达）：下列 PR Newswire 新闻稿 CI 报 403，本网 2026-11-19 为 200 且标题正确；精确 URL，不排除整个 prnewswire.com / prnewswire.co.uk 域名。正文引用保留。
+^https://www\.prnewswire\.com/news-releases/switchbot-officially-launches-kata-friends-ai-pets-that-truly-grow-with-you-302768006\.html$
+^https://www\.prnewswire\.com/news-releases/unitree-robotics-introduces-g1-humanoid-agent-ai-avatar-302146198\.html$
+^https://www\.prnewswire\.com/news-releases/introducing-unitree-go2---quadruped-robot-of-embodied-ai-301879381\.html$
+^https://www\.prnewswire\.co\.uk/news-releases/ubtech-humanoid-robot-walker-s2-begins-mass-production-and-delivery-with-orders-exceeding-800-million-yuan-302616978\.html$
