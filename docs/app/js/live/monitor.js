@@ -328,6 +328,9 @@ export function readSearchResponse(body) {
   let failedCall = false;
   for (const item of output) {
     if (!item || typeof item !== 'object') continue;
+    if (item.type === 'function_call' || item.type === 'function_call_output' || String(item.type || '').startsWith('mcp_')) {
+      return { text: '查询结果里有工具调用，这次不算查到。', status: 'not_performed' };
+    }
     if (item.type === 'web_search_call') {
       const status = String(item.status || '');
       if (status === 'failed' || status === 'incomplete') failedCall = true;
@@ -582,12 +585,27 @@ export function bargeAlerts(waiting, current) {
 }
 
 export function searchMessages(query) {
-  const text = String(query || '').replace(/\s+/g, ' ').trim().slice(0, 300);
-  if (!text) throw new Error('搜索内容是空的');
+  const plan = searchQueryPlan({ query: typeof query === 'string' ? query : '' });
+  if (plan.action !== 'search') throw new Error(plan.note);
   return [
     { role: 'system', content: '只根据检索到的内容用简短中文回答。没有检索就说没查到，不要编造链接。' },
-    { role: 'user', content: text },
+    { role: 'user', content: plan.query },
   ];
+}
+
+export const SEARCH_QUERY_MAX = 4096;
+
+export function searchQueryPlan(args) {
+  const reject = (note) => ({ action: 'reject', note });
+  if (!args || typeof args !== 'object' || Array.isArray(args) || Object.keys(args).some((key) => key !== 'query')) {
+    return reject('这个问题还带了别的参数，这次不查。没有发出请求。');
+  }
+  if (typeof args.query !== 'string') return reject('搜索内容是空的。没有发出请求。');
+  const query = args.query.trim();
+  if (!query) return reject('搜索内容是空的。没有发出请求。');
+  if (query.length > SEARCH_QUERY_MAX) return reject('问题超过 4096 字，这次不查。没有发出请求。');
+  if (/\p{Cc}/u.test(query.replace(/[\n\r\t]/gu, ''))) return reject('问题里有不能查的字符，这次不查。没有发出请求。');
+  return { action: 'search', query };
 }
 
 export function takeClaim(claims, kind, title) {

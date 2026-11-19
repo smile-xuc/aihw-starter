@@ -70,8 +70,22 @@ export function silencePcm(sampleRate = 16000, seconds = 1) {
   return new Uint8Array(rate * span * 2);
 }
 
+export const VISUAL_QUERY_MAX = 4096;
+
+export function visualQueryPlan(args, heard) {
+  const reject = { action: 'reject', note: '这个问题不能看。没有抓画面。' };
+  if (!args || typeof args !== 'object' || Array.isArray(args) || Object.keys(args).some((key) => key !== 'query')) return reject;
+  if (args.query !== undefined) {
+    if (typeof args.query !== 'string' || !args.query.trim() || args.query.length > VISUAL_QUERY_MAX) return reject;
+    return { action: 'look', question: args.query.trim() };
+  }
+  const fallback = String(heard || '').trim().slice(0, VISUAL_QUERY_MAX);
+  return { action: 'look', question: fallback || '概述这张画面里看得到的内容。' };
+}
+
 export function visualQuestion(query, heard) {
-  const text = String(query || heard || '').replace(/\s+/g, ' ').trim().slice(0, 200);
+  if (typeof query === 'string' && query.length > VISUAL_QUERY_MAX) throw new Error('这个问题不能看。没有抓画面。');
+  const text = String(query || heard || '').replace(/\s+/g, ' ').trim().slice(0, VISUAL_QUERY_MAX);
   return text || '概述这张画面里看得到的内容。';
 }
 
@@ -169,6 +183,14 @@ async function lookOnce({ connect, url, secret, jpeg, question, voice, inputRate
         try { handle.send('response.create', { response: { instructions: question } }); }
         catch (error) { finish(error); }
       }
+      const itemType = event.item?.type;
+      if (
+        String(event.type || '').startsWith('response.function_call_arguments.')
+        || ((event.type === 'response.output_item.added' || event.type === 'response.output_item.done') && (itemType === 'function_call' || itemType === 'function_call_output' || String(itemType || '').startsWith('mcp_')))
+      ) {
+        finish(new Error('看画面时出现了工具调用，这次没看清'));
+        return;
+      }
       if (event.type === 'response.done') {
         const response = event.response;
         const repeated = visualRepeatError(response?.error) || visualRepeatError(response?.status_details?.error);
@@ -178,6 +200,10 @@ async function lookOnce({ connect, url, secret, jpeg, question, voice, inputRate
           error.type = 'server_error';
           error.status = 500;
           finish(error);
+          return;
+        }
+        if (Array.isArray(response?.output) && response.output.some((item) => item?.type === 'function_call' || item?.type === 'function_call_output' || String(item?.type || '').startsWith('mcp_'))) {
+          finish(new Error('看画面时出现了工具调用，这次没看清'));
           return;
         }
         if (response?.status && response.status !== 'completed') {
