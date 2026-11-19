@@ -8,6 +8,7 @@ class FakeSocket {
   static failCommit = false;
   static repeat = false;
   static tool = false;
+  static mode = '';
   static sockets = [];
   constructor(url) { this.url = url; this.readyState = 1; this.sent = []; FakeSocket.latest = this; FakeSocket.sockets.push(this); }
   send(data) {
@@ -21,6 +22,23 @@ class FakeSocket {
     }
     if (message.type === 'response.create') {
       queueMicrotask(() => {
+        if (FakeSocket.mode === 'huge') {
+          this.onmessage?.({ data: JSON.stringify({ type: 'response.text.delta', delta: '雨'.repeat(16001), output_index: 0, content_index: 0 }) });
+          this.onmessage?.({ data: JSON.stringify({ type: 'response.done', response: { status: 'completed' } }) });
+          return;
+        }
+        if (FakeSocket.mode === 'controls') {
+          this.onmessage?.({ data: JSON.stringify({ type: 'response.text.delta', delta: '杯\u0000子', output_index: 0, content_index: 0 }) });
+          this.onmessage?.({ data: JSON.stringify({ type: 'response.done', response: { status: 'completed' } }) });
+          return;
+        }
+        if (FakeSocket.mode === 'parts') {
+          for (let index = 0; index < 65; index += 1) {
+            this.onmessage?.({ data: JSON.stringify({ type: 'response.text.delta', delta: '雨', output_index: 0, content_index: index }) });
+          }
+          this.onmessage?.({ data: JSON.stringify({ type: 'response.done', response: { status: 'completed' } }) });
+          return;
+        }
         if (FakeSocket.tool) {
           this.onmessage?.({ data: JSON.stringify({ type: 'response.output_item.added', item: { type: 'function_call' } }) });
           this.onmessage?.({ data: JSON.stringify({ type: 'response.done', response: { status: 'completed', output: [{ type: 'function_call' }] } }) });
@@ -189,4 +207,19 @@ test('a tool call during a look is not treated as the picture', async () => {
   await assert.rejects(pending, /工具调用/);
   assert.equal(FakeSocket.sockets.length, 1);
   FakeSocket.tool = false;
+});
+
+test('an oversized or split look is not kept or retried', async () => {
+  for (const [mode, pattern] of [['huge', /16000/], ['parts', /64 段/], ['controls', /控制字符/]]) {
+    FakeSocket.failCommit = false;
+    FakeSocket.repeat = false;
+    FakeSocket.tool = false;
+    FakeSocket.mode = mode;
+    FakeSocket.sockets = [];
+    const pending = analyzeFrame({ ...common, question: '屏幕上有什么' });
+    open(FakeSocket.latest);
+    await assert.rejects(pending, pattern);
+    assert.equal(FakeSocket.sockets.length, 1);
+  }
+  FakeSocket.mode = '';
 });

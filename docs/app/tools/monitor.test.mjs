@@ -368,6 +368,17 @@ test('continuous screen reports and body alerts are accepted before the result e
   const toolCall = readSearchResponse({ output_text: '别执行', output: [{ type: 'function_call' }, { type: 'message', content: '别执行' }] });
   assert.equal(toolCall.status, 'not_performed');
   assert.match(toolCall.text, /工具调用/);
+  const exact = readSearchResponse({ output_text: '雨'.repeat(16000), output: [{ type: 'web_search_call', status: 'completed' }] });
+  assert.equal(exact.status, 'performed');
+  assert.equal(exact.text.length, 16000);
+  const huge = readSearchResponse({ output_text: '雨'.repeat(16001), output: [{ type: 'web_search_call', status: 'completed' }] });
+  assert.equal(huge.status, 'not_performed');
+  assert.match(huge.text, /16000/);
+  const pieces = (count) => Array.from({ length: count }, () => ({ type: 'text', text: '雨' }));
+  assert.equal(readSearchResponse({ output_text: '雨', output: [{ type: 'message', content: pieces(64) }, { type: 'web_search_call', status: 'completed' }] }).status, 'performed');
+  const split = readSearchResponse({ output_text: '雨', output: [{ type: 'message', content: pieces(65) }, { type: 'web_search_call', status: 'completed' }] });
+  assert.equal(split.status, 'not_performed');
+  assert.match(split.text, /64/);
   assert.equal(SEARCH_TIMEOUT_MS, 25000);
   assert.equal(searchTimeoutOutcome(true, true), null);
   const timedOut = searchTimeoutOutcome(false, true);
