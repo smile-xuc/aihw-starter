@@ -4,7 +4,7 @@
 import { toBase64 } from './client.js';
 import { questionLanguage } from './conversation-language.js';
 import { ANSWER_CHARS, boundedAnswer, silencePcm } from './on-demand.js';
-import { connectRealtime, decodeBase64, pcmBase64, sessionConfig } from './realtime-omni.js';
+import { connectRealtime, decodeBase64, pcmBase64, quotaPlan, sessionConfig } from './realtime-omni.js';
 
 export const SEARCH_TOOL = {
   type: 'function',
@@ -1028,7 +1028,7 @@ export function monitorAfterRound({ rounds, failures, error }) {
     return { action: 'keep', rounds: next, failures: 0 };
   }
   const message = String(error.message || '主动提醒失败');
-  if (error.name === 'AbortError' || message === '主动提醒已停止' || /Key|鉴权|地域|业务空间|不安全|拒绝/.test(message)) {
+  if (error.name === 'AbortError' || message === '主动提醒已停止' || /Key|鉴权|地域|业务空间|不安全|拒绝|额度/.test(message)) {
     return { action: 'stop', rounds: done, failures: missed, note: message };
   }
   const next = missed + 1;
@@ -1065,6 +1065,11 @@ export function openMonitor(options) {
       video: options.video !== false,
     }),
     onEvent(event) {
+      if (event.type === 'socket.close') {
+        const quota = quotaPlan({ reason: event.reason, message: event.reason });
+        settle(quota.action === 'stop' ? new Error(quota.note) : new Error('后台连接断了'));
+        return;
+      }
       if (event.type === 'error') settle(new Error(event.message || '主动提醒失败'));
       if (event.type === 'response.text.delta' || event.type === 'response.audio_transcript.delta') text += event.delta || '';
       if (event.type === 'response.audio.delta' && event.delta) {
