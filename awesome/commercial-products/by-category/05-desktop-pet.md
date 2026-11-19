@@ -182,9 +182,37 @@
 
 ---
 
+### Loona Deskmate（KEYi Tech / 可以科技，品牌 Loona）
+
+- **上市状态**：在售（官网产品页 JSON-LD Offer 的 availability 为 InStock，文案 "Dispatch within 3 business days"，查证 2026-11-18）。CES 博客正文写 2026-01-06 发布；该博文 JSON-LD datePublished 为 2026-01-07T04:20:42Z；页面可见日期与 dateModified 为 2026-04-21
+- **官网/渠道**：<https://keyirobot.com/products/deskmate> 英文产品页；<https://www.loonaai.cn/products/deskmate/> 中文站（有「立即购买」，无标价）；<https://keyirobot.com/blogs/news/loona-deskmate-launches-at-ces-2026-an-emotion-aware-embodied-ai-workmate> CES 发布博客
+- **形态**：桌面 3 自由度云台工位伴侣（偏航 / 俯仰 / 翻滚；规格表作 3-DoF (Yaw / Pitch / Roll)，无刷伺服）。尺寸 113×106×113 mm，重 880 g。SKU LOONA-DESKMATE-001。配色 Obsidian / Studio White / Mist Silver。须搭配 iPhone 12+（桌面文案另写 with MagSafe）。功率并列两组官方表述：产品页主视觉与规格表写 165W GaN（规格表 Total System Power 为 165W GaN，USB-C Max Output 为 140W Per Port）；JSON-LD 为单口最大 140W、多口 180W（3×USB-C + 1×USB-A）。无线充并列：产品页写 Qi2 15W；JSON-LD 为 "15W Magnetic Wireless Charging (MagSafe Compatible)"
+- **定价**：
+  - 首发价：待核实（查证 2026-11-18）
+  - 现价：$254.00 USD · 官网产品页（JSON-LD Offer price=254.0；三色均为 $254.00，划线 $299.00）· [Deskmate 产品页](https://keyirobot.com/products/deskmate) · 查证 2026-11-18。页顶有 "Black Friday starts early — unlock extra savings"，$254.00 为当日页上标价。划线 $299.00 未标明 MSRP。中文站有「立即购买」，页面无标价
+  - MSRP：待核实（查证 2026-11-18）
+  - 订阅：产品页写 "Loona Deskmate works from day one — no subscription required." See plans 可见 Free $0 / Month（200 credits，50 refresh daily）、Plus $9.9 / Month（1,000 credits）、Pro $24.9 / Month（3,000 credits，100 refresh daily）· [Deskmate 产品页](https://keyirobot.com/products/deskmate) · 查证 2026-11-18
+- **目标市场**：需要 iPhone 12+ 的个人工位 / 桌面办公伴侣
+- **AI 能力**：
+  - AI 功能：整理日历 / 邮箱、起草跟进、标会议冲突、会前会后准备。实现方式：中文站原文「你的表情与注意力状态完全在你的 iPhone 本地处理，从不上传；只有你明确下达的任务指令才会发送到云端。」英文产品页同义："Your facial expressions and attention patterns are processed entirely on your iPhone — never uploaded. Only your explicit task commands go to the cloud." 规格表本地处理为 Perception / Voice / Screen Sync（中文站：感知 / 语音 / 屏幕同步），数据策略为 Local-First / No Behavioral Data Sold（中文站：本地优先，不出售行为数据）。模型名官方未公开（[英文产品页](https://keyirobot.com/products/deskmate) · [中文站](https://www.loonaai.cn/products/deskmate/)，查证 2026-11-18）
+  - 动作生成：规格表写 "AI Real-Time, Not Preset Animation"（[英文产品页](https://keyirobot.com/products/deskmate)，查证 2026-11-18）
+  - 屏幕为 Pull-Mode：产品页原文 "DeskMate never silently watches your screen. It sees only what you explicitly point out."（中文站：「Deskmate 从不会默默盯着你的屏幕。它只看你明确指出的内容。」）。CES 博客另写 screen-and-clipboard awareness，与产品页 Pull-Mode 不同（[CES 发布博客](https://keyirobot.com/blogs/news/loona-deskmate-launches-at-ces-2026-an-emotion-aware-embodied-ai-workmate)，查证 2026-11-18）
+  - 工具经 MCP，可独立开关：产品页举例 Gmail、Calendar、Slack；同页还列出 Outlook、Teams、Notion、Google Drive（[英文产品页](https://keyirobot.com/products/deskmate)，查证 2026-11-18）
+  - 拿走 iPhone 即物理睡眠：产品页原文 "Take off your phone, and DeskMate sleeps — instantly and physically. No listening, no watching, no recording."（[英文产品页](https://keyirobot.com/products/deskmate)，查证 2026-11-18）
+  - 无唤醒词的多模态感知写在 CES 博客及其 FAQ，产品页未见同等表述（[CES 发布博客](https://keyirobot.com/blogs/news/loona-deskmate-launches-at-ces-2026-an-emotion-aware-embodied-ai-workmate)，查证 2026-11-18）
+- **大模型方案**：官方未公开模型名（非千问默认绑定）。已公开的是：表情与注意力在 iPhone 本地处理；明确下达的任务指令才发送到云端
+- **公开数据**：未见官方公开销量
+- **关键差异化**：① 与同厂 Loona Petbot Premium 分形态：桌面云台工位伴侣，不是室内轮式 petbot；② 表情与注意力在 iPhone 本地处理，任务指令才上云；③ 硬件标明从第一天起可不订阅使用，另有可选积分套餐
+- **商业模式**：硬件销售；产品页写无订阅也可使用，另有 Free / Plus / Pro 月度积分套餐（价格见上）
+- **另见**：同厂室内轮式 petbot 见 03 · [Loona Petbot Premium](./03-toys-companion.md)；[公开案例](../../../solutions/by-category/05-desktop-pet/04-cases.md)
+
+> 来源：[Deskmate 英文产品页](https://keyirobot.com/products/deskmate) · [Deskmate 中文站](https://www.loonaai.cn/products/deskmate/) · [CES 发布博客](https://keyirobot.com/blogs/news/loona-deskmate-launches-at-ces-2026-an-emotion-aware-embodied-ai-workmate)（均查证 2026-11-18）
+
+---
+
 ## 待补充清单
 
-- [ ] 国内工位桌宠 / 潮玩品牌公开 SKU
+- [x] 国内工位桌宠 / 潮玩品牌公开 SKU（Loona Deskmate）
 - [ ] 带屏 IP 毛绒量产案例
 
 ## 贡献指引

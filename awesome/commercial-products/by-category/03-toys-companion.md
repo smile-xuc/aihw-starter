@@ -183,7 +183,7 @@
 - **公开数据**：未见公开销量。产品页写 Space Edition 为 "3,000 numbered explorers"、"No restock"
 - **关键差异化**：① 轮式室内导航，并写低电量自行返回充电坞；② Google Blockly 与 App 游戏；③ 人脸识别记住偏好，互动中积累个性化记忆
 - **商业模式**：硬件销售。核心体验按购买指南目前不强制月订阅。政策可能调整，以官网为准
-- **另见**：[公开案例](../../../solutions/by-category/03-toys-companion/04-cases.md)
+- **另见**：[公开案例](../../../solutions/by-category/03-toys-companion/04-cases.md)；同厂桌面工位伴侣见 05 · [Loona Deskmate](./05-desktop-pet.md)
 
 > 来源：[Loona Petbot 产品页](https://keyirobot.com/products/petbot) · [KEYi buying guide](https://keyirobot.com/blogs/buying-guide/loona-robot-price-guide-cost-bundles-and-where-to-buy)（均查证 2026-10-01）
 
