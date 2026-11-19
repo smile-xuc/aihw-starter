@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { MUTE_HEARTBEAT_MS, OMNI_38_VOICES, callRecoveryPlan, chooseVoice, connectRealtime, decodeBase64, pcmBase64, readVoice, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, silenceFrame, splitPcm, translationSession, writeVoice } from '../js/live/realtime-omni.js';
+import { MUTE_HEARTBEAT_MS, OMNI_38_VOICES, callRecoveryPlan, chooseVoice, connectRealtime, decodeBase64, pcmBase64, readVoice, realtimeSocketUrl, redactSecret, responseWaitPlan, SEMANTIC_TURN, sessionConfig, silenceFrame, splitPcm, translationSession, writeVoice } from '../js/live/realtime-omni.js';
 
 const stack = {
   fields: [
@@ -85,6 +85,15 @@ test('ready handshake sends session.update and later errors stay redacted', asyn
   assert.equal(callRecoveryPlan({ code: 'COMMON_ERROR', message: serving, attempts: 2 }).action, 'stop');
   assert.equal(callRecoveryPlan({ code: 'InvalidApiKey', message: serving, attempts: 0 }).action, 'fail');
   assert.equal(callRecoveryPlan({ code: 'COMMON_ERROR', message: '其他错误', attempts: 0 }).action, 'fail');
+  assert.equal(callRecoveryPlan({ code: 'response_created_timeout', message: '', attempts: 0 }).action, 'reconnect');
+  assert.equal(callRecoveryPlan({ code: 'response_done_timeout', message: '', attempts: 2 }).action, 'stop');
+  assert.equal(responseWaitPlan({ phase: 'created', authority: 'direct', elapsedMs: 14999 }).action, 'wait');
+  assert.equal(responseWaitPlan({ phase: 'created', authority: 'direct', elapsedMs: 15000 }).code, 'response_created_timeout');
+  assert.equal(responseWaitPlan({ phase: 'done', authority: 'direct', elapsedMs: 120000 }).action, 'wait');
+  assert.equal(responseWaitPlan({ phase: 'done', authority: 'tool', elapsedMs: 119999 }).action, 'wait');
+  assert.equal(responseWaitPlan({ phase: 'done', authority: 'tool', elapsedMs: 120000 }).code, 'response_done_timeout');
+  assert.equal(responseWaitPlan({ phase: 'cancel', authority: 'direct', elapsedMs: 1999 }).action, 'wait');
+  assert.equal(responseWaitPlan({ phase: 'cancel', authority: 'direct', elapsedMs: 2000 }).code, 'response_cancel_timeout');
   socket.onmessage({ data: JSON.stringify({ type: 'error', error: { code: 'COMMON_ERROR', message: serving } }) });
   assert.equal(seen.filter((event) => event.type === 'error').at(-1).code, 'COMMON_ERROR');
   handle.send('response.create');
