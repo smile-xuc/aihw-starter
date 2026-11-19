@@ -71,6 +71,7 @@ test('timer speech sends one silent second and the sentence', async () => {
   assert.deepEqual((await pending).audio.length, 1);
   const session = FakeSocket.latest.sent.find((item) => item.type === 'session.update').session;
   assert.equal(session.video, undefined);
+  assert.equal(session.instructions, '你只朗读给出的那句话，不要改写，不要加称呼或解释。');
   assert.equal(session.tools, undefined);
   const created = FakeSocket.latest.sent.find((item) => item.type === 'response.create');
   assert.equal(created.response.instructions, '该喝水了');
@@ -315,6 +316,11 @@ test('continuous screen reports and body alerts are accepted before the result e
   assert.equal(lateSpeechText('明天有雨', 'performed'), '查到了。明天有雨');
   assert.equal(lateSpeechText('明天有雨', 'unknown'), '明天有雨');
   assert.equal(lateSpeechText('没有查到结果。', 'not_performed'), '没查成。没有查到结果。');
+  assert.equal(lateSpeechText('rain tomorrow', 'performed', 'en'), 'Found this. rain tomorrow');
+  assert.equal(lateSpeechText('no result', 'not_performed', 'en'), "Couldn't look it up. no result");
+  assert.equal(lateSpeechText('a cup', 'unknown', 'en'), 'a cup');
+  assert.match(perceptionRules({ kind: 'monitor', modalities: ['audio'], language: 'en' }), /一句英文/);
+  assert.match(perceptionRules({ kind: 'monitor', modalities: ['audio'] }), /一句中文/);
   assert.equal(lateSpeechText('查过网上', 'unknown').includes('查到了'), false);
   assert.throws(() => lateSpeechText('  '), /后台结果是空的/);
   const reminder = { audio: [new Uint8Array([1, 2])], mine: 1, id: '' };
