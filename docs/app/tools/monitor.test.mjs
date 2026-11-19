@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateResultPrompt, lateSpeechText, listProactive, forgetLateResult, rememberLateResult, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateResultPrompt, lateSpeechText, listProactive, forgetLateResult, rememberLateResult, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -304,6 +304,16 @@ test('continuous screen reports and body alerts are accepted before the result e
   assert.equal(lateSpeechText('没有查到结果。', 'not_performed'), '没查成。没有查到结果。');
   assert.equal(lateSpeechText('查过网上', 'unknown').includes('查到了'), false);
   assert.throws(() => lateSpeechText('  '), /后台结果是空的/);
+  const reminder = { audio: [new Uint8Array([1, 2])], mine: 1, id: '' };
+  const later = { audio: [new Uint8Array([3, 4])], mine: 1, id: 's2' };
+  const replay = bargeAlerts([later], reminder);
+  assert.equal(replay[0].id, '');
+  assert.equal(replay[0].audio, reminder.audio);
+  assert.equal(replay[1].id, 's2');
+  assert.equal(bargeAlerts([later], { audio: [new Uint8Array([1, 2])], mine: 1, id: 's1' }).map((item) => item.id).join(','), 's2');
+  assert.equal(bargeAlerts([later], null).length, 1);
+  assert.equal(bargeAlerts([later], { audio: [], id: '' }).length, 1);
+  assert.equal([later].length, 1);
   assert.match(lateResultInstructions('屏幕上是备忘录'), /不要调用工具/);
   assert.match(lateResultInstructions('明天有雨', 'performed'), /刚联网查到/);
   assert.match(lateResultInstructions('明天有雨', 'unknown'), /不要说已经查过网上/);
