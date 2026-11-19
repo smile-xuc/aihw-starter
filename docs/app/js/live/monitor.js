@@ -74,14 +74,16 @@ export const NARRATE_RULES = `你在连续解说这一小段新的声音和画�
 如果任务里写了用户原话，句子长短和语气以那句原话为准。
 不要编造，不要重复没有变化的内容。`;
 
-export function narrateTask(focus) {
+export function narrateTask(focus, language = 'zh-CN') {
   const text = String(focus || '').replace(/\s+/g, ' ').trim().slice(0, 200);
+  if (language === 'en') return text ? `Focus: ${text}` : 'Narrate what just changed.';
   return text ? `解说重点：${text}` : '解说刚发生的变化。';
 }
 
-export function narrationBrief(source) {
+export function narrationBrief(source, language = 'zh-CN') {
   const text = String(source || '').replace(/\s+/g, ' ').trim().slice(0, 200);
   if (!text) return '';
+  if (language === 'en') return `Match the detail of the user's own words: ${text}`;
   return `按用户原话的详略来讲：${text}`;
 }
 
@@ -123,8 +125,9 @@ export const NARRATE_AUDIO_RULES = `你在连续解说这两秒的新声音。
 export function narrationIsContinuous(focus) {
   const text = String(focus || '').replace(/\s+/g, ' ').trim();
   if (!text) return false;
-  if (/变化/.test(text) && !/持续|一直|不断|不停/.test(text)) return false;
-  return /持续|一直|不断|不停|实时报告|屏幕里|屏幕内容|画面内容|手机屏幕/.test(text);
+  const strong = /持续|一直|不断|不停|keep reporting|continuously|from now on|keep watching/iu.test(text);
+  if ((/变化/u.test(text) || /\bchang(?:e|es|ed|ing)\b/iu.test(text)) && !strong) return false;
+  return /持续|一直|不断|不停|实时报告|屏幕里|屏幕内容|画面内容|手机屏幕|keep reporting|continuously|from now on|keep watching|phone screen|screen content|on (?:my |the )?screen/iu.test(text);
 }
 
 const MODALITY_ALIASES = new Map([
@@ -149,8 +152,8 @@ export function perceptionModalities(value) {
 
 export function inferModalities(text) {
   const raw = String(text || '');
-  const vision = /屏幕|画面|摄像头|视频|图像|看见|看到|看着|红字|视觉/.test(raw);
-  const audio = /咳嗽|声音|麦克风|音频|语音|听见|听到|听着|身体/.test(raw);
+  const vision = /屏幕|画面|摄像头|视频|图像|看见|看到|看着|红字|视觉|screen|camera|picture|video|visual/iu.test(raw);
+  const audio = /咳嗽|声音|麦克风|音频|语音|听见|听到|听着|身体|\bcough\b|\bmicrophone\b|\bmic\b|\bsound\b|\bvoice\b|\bbody\b/iu.test(raw);
   if (vision && !audio) return ['vision'];
   if (audio && !vision) return ['audio'];
   return ['vision', 'audio'];
@@ -165,7 +168,7 @@ export function modalityNote(modalities) {
 }
 
 export function sourceHint(source, text) {
-  if (source === 'screen' || !/屏幕/.test(String(text || ''))) return '';
+  if (source === 'screen' || !/屏幕|screen/iu.test(String(text || ''))) return '';
   return '当前这一路是摄像头。要看手机屏幕，请点「屏幕」共享。';
 }
 
@@ -410,29 +413,48 @@ export const MONITOR_AUDIO_RULES = `你是主动提醒监视器，只判断这�
 export function perceptionRules({ kind, continuous, modalities, language } = {}) {
   const vision = modalities?.includes('vision');
   const audio = modalities?.includes('audio');
-  let rules;
+  const english = language === 'en';
   if (kind === 'narration' && continuous) {
-    if (vision && !audio) rules = CONTINUOUS_VISION_RULES;
-    else if (audio && !vision) rules = CONTINUOUS_AUDIO_RULES;
-    else rules = CONTINUOUS_RULES;
-  } else if (kind === 'narration') {
-    if (vision && !audio) rules = NARRATE_VISION_RULES;
-    else if (audio && !vision) rules = NARRATE_AUDIO_RULES;
-    else rules = NARRATE_RULES;
-  } else if (vision && !audio) rules = MONITOR_VISION_RULES;
-  else if (audio && !vision) rules = MONITOR_AUDIO_RULES;
-  else rules = MONITOR_RULES;
-  return language === 'en' ? rules.split('中文').join('英文') : rules;
+    if (vision && !audio) return english
+      ? 'You are continuously reporting this short picture.\nEvery round, say what is currently visible in one or two English sentences.\nIf the task includes the user\'s original words, match that length and tone.\nDo not output remain_silent.\nIf nothing changed, make it shorter, and do not repeat the previous round word for word.\nDo not invent anything, and do not identify people. This round has no sound.'
+      : CONTINUOUS_VISION_RULES;
+    if (audio && !vision) return english
+      ? 'You are continuously reporting these two seconds of sound.\nEvery round, say what you can currently hear in one or two English sentences.\nIf the task includes the user\'s original words, match that length and tone.\nDo not output remain_silent.\nIf nothing changed, make it shorter, and do not repeat the previous round word for word.\nDo not invent anything, and do not identify people. This round has no picture.'
+      : CONTINUOUS_AUDIO_RULES;
+    return english
+      ? 'You are continuously reporting this short picture and these two seconds of sound.\nEvery round, say what is currently visible in one or two English sentences.\nIf the task includes the user\'s original words, match that length and tone.\nDo not output remain_silent.\nIf nothing changed, make it shorter, and do not repeat the previous round word for word.\nDo not invent anything, and do not identify people.'
+      : CONTINUOUS_RULES;
+  }
+  if (kind === 'narration') {
+    if (vision && !audio) return english
+      ? 'You are narrating this short new picture.\nMention only a new change worth noting.\nIf nothing clearly changed, output only remain_silent.\nIf the task includes the user\'s original words, match that length and tone.\nDo not invent anything, and do not repeat content that has not changed. This round has no sound.'
+      : NARRATE_VISION_RULES;
+    if (audio && !vision) return english
+      ? 'You are narrating these two seconds of new sound.\nMention only a new change worth noting.\nIf nothing clearly changed, output only remain_silent.\nIf the task includes the user\'s original words, match that length and tone.\nDo not invent anything, and do not repeat content that has not changed. This round has no picture.'
+      : NARRATE_AUDIO_RULES;
+    return english
+      ? 'You are narrating this short new clip of sound and picture.\nMention only a new change worth noting.\nIf nothing clearly changed, output only remain_silent.\nIf the task includes the user\'s original words, match that length and tone.\nDo not invent anything, and do not repeat content that has not changed.'
+      : NARRATE_RULES;
+  }
+  if (vision && !audio) return english
+    ? 'You are a proactive monitor for this short new picture.\nIf the condition has not happened, output only remain_silent.\nIf it has happened, say what you saw in one English sentence. Do not invent anything, and do not mention anything outside the condition. This round has no sound.'
+    : MONITOR_VISION_RULES;
+  if (audio && !vision) return english
+    ? 'You are a proactive monitor for these two seconds of new sound.\nIf the condition has not happened, output only remain_silent.\nIf it has happened, say what you heard in one English sentence. Do not invent anything, and do not mention anything outside the condition. This round has no picture.'
+    : MONITOR_AUDIO_RULES;
+  return english
+    ? 'You are a proactive monitor for this short new clip of sound and picture.\nIf the condition has not happened, output only remain_silent.\nIf it has happened, say what you heard or saw in one English sentence. Do not invent anything, and do not mention anything outside the condition.'
+    : MONITOR_RULES;
 }
 
-export function narrationPlan(focus, modalitiesRaw) {
+export function narrationPlan(focus, modalitiesRaw, language = 'zh-CN') {
   const continuous = narrationIsContinuous(focus);
   const modalities = modalitiesRaw === undefined ? inferModalities(focus) : perceptionModalities(modalitiesRaw);
   return {
     continuous,
     modalities,
-    task: narrateTask(focus),
-    rules: perceptionRules({ kind: 'narration', continuous, modalities }),
+    task: narrateTask(focus, language),
+    rules: perceptionRules({ kind: 'narration', continuous, modalities, language }),
     gapMs: continuous ? CONTINUOUS_GAP_MS : 0,
   };
 }
@@ -518,10 +540,10 @@ export async function speakReminder(options) {
   }
 }
 
-export function monitorTask(condition) {
+export function monitorTask(condition, language = 'zh-CN') {
   const text = String(condition || '').replace(/\s+/g, ' ').trim().slice(0, 200);
   if (!text) throw new Error('提醒条件是空的');
-  return `只判断这个条件：${text}`;
+  return language === 'en' ? `Judge only this condition: ${text}` : `只判断这个条件：${text}`;
 }
 
 export function reminderText(condition, explicit) {
@@ -535,10 +557,13 @@ export function reminderText(condition, explicit) {
   return piece.slice(0, 120);
 }
 
-export function monitorFocus(condition, response) {
-  const base = monitorTask(condition);
+export function monitorFocus(condition, response, language = 'zh-CN') {
+  const base = monitorTask(condition, language);
   const reminder = reminderText(condition, response);
-  return reminder ? `${base}\n条件发生时只说这句提醒：${reminder}` : base;
+  if (!reminder) return base;
+  return language === 'en'
+    ? `${base}\nWhen it happens, say only this reminder: ${reminder}`
+    : `${base}\n条件发生时只说这句提醒：${reminder}`;
 }
 
 export function reminderNote(response) {
@@ -548,12 +573,12 @@ export function reminderNote(response) {
 
 export function monitorPlan(args) {
   const raw = args && typeof args === 'object' ? args : {};
-  const condition = monitorTask(raw.condition).replace(/^只判断这个条件：/, '');
+  const condition = monitorTask(raw.condition).replace(/^(?:只判断这个条件：|Judge only this condition: )/, '');
   let repeat;
   if (raw.repeat === true || raw.repeat === false) repeat = raw.repeat;
   else {
-    const once = /一次|一下/.test(condition);
-    const ongoing = /一直|持续|从现在开始|继续盯|继续关注/.test(condition);
+    const once = /一次|一下|\bonce\b/iu.test(condition);
+    const ongoing = /一直|持续|从现在开始|继续盯|继续关注|from now on|keep watching|keep listening|continuously/iu.test(condition);
     repeat = once && !ongoing ? false : true;
   }
   const modalities = raw.modalities === undefined ? inferModalities(condition) : perceptionModalities(raw.modalities);
