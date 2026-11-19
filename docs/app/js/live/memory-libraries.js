@@ -736,6 +736,9 @@ export const STM_URGENT_BOOST = 1.5;
 export const STM_URGENT_DAYS = 3;
 export const STM_PROMPT_ITEMS = 20;
 export const STM_PROMPT_CHARS = 1200;
+export const LTM_PROMPT_ITEMS = 6;
+export const LTM_PROMPT_CHARS = 800;
+export const LTM_TRIM_ORDER = ['relationships', 'interests', 'preferences', 'appearance', 'routines', 'long_term_goals'];
 const LTM_LABELS = {
   name: '姓名',
   occupation_or_role: '长期角色',
@@ -859,12 +862,34 @@ export function ltmCount(ltm) {
   return (clean.name ? 1 : 0) + LTM_FIELDS.filter((field) => field !== 'name').reduce((sum, field) => sum + clean[field].length, 0);
 }
 
-export function renderProfile(ltm) {
+export function fitProfile(ltm, maxChars = LTM_PROMPT_CHARS) {
   const clean = cleanLtm(ltm);
-  return LTM_FIELDS.flatMap((field) => {
-    if (field === 'name') return clean.name ? [`- 姓名：${clean.name}`] : [];
-    return clean[field].length ? [`- ${LTM_LABELS[field]}：${clean[field].join('、')}`] : [];
+  const entries = new Map(LTM_FIELDS.map((field) => [
+    field,
+    field === 'name' ? (clean.name ? [clean.name] : []) : clean[field].slice(-LTM_PROMPT_ITEMS),
+  ]));
+  const textOf = () => LTM_FIELDS.flatMap((field) => {
+    const list = entries.get(field) || [];
+    if (!list.length) return [];
+    const label = field === 'name' ? '姓名' : LTM_LABELS[field];
+    return [`- ${label}：${field === 'name' ? list[0] : list.join('、')}`];
   }).join('\n');
+  const limit = Number.isFinite(maxChars) && maxChars > 0 ? maxChars : LTM_PROMPT_CHARS;
+  let text = textOf();
+  const trimmed = [];
+  for (const field of LTM_TRIM_ORDER) {
+    if ([...text].length <= limit) break;
+    if ((entries.get(field) || []).length) {
+      entries.set(field, []);
+      trimmed.push(field);
+      text = textOf();
+    }
+  }
+  return { text, trimmed };
+}
+
+export function renderProfile(ltm, maxChars = LTM_PROMPT_CHARS) {
+  return fitProfile(ltm, maxChars).text;
 }
 
 export function scoreStm(item, today, now = new Date()) {

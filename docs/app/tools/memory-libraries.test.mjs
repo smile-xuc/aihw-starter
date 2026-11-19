@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, MAX_BIO, RETRIEVE_TOOL,
   activeLibrary, applyBio, applyMemoryPatch, bioReceipt, bioResult, cleanObservation, clearLibrary, cleanStm, createLibrary, datedEntries, emptyDialogue, emptyLtm, finishDialogue, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, mergeVectorHits, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn,
-  renameLibrary, renderProfile, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, sessionFacts, shouldConsolidateLibrary, librarySwitchNote, spaceEnvHits, presentRetrieval, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore,
+  renameLibrary, renderProfile, fitProfile, LTM_PROMPT_ITEMS, LTM_PROMPT_CHARS, LTM_TRIM_ORDER, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, sessionFacts, shouldConsolidateLibrary, librarySwitchNote, spaceEnvHits, presentRetrieval, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore,
 } from '../js/live/memory-libraries.js';
 
 function storage(initial = {}) {
@@ -351,4 +351,26 @@ test('stale upcoming items leave the prompt and urgent ones stay', () => {
   assert.equal(shown.some((item) => item.content === '明天要交稿'), true);
   assert.match(renderRecent(rows, today, noon), /记于 2026-11-15 12:00/);
   assert.match(renderRecent(rows, today, noon), /即将发生/);
+});
+
+test('a long profile keeps six facts per field and drops relationships before the name', () => {
+  assert.equal(LTM_PROMPT_ITEMS, 6);
+  assert.equal(LTM_PROMPT_CHARS, 800);
+  assert.deepEqual(LTM_TRIM_ORDER, ['relationships', 'interests', 'preferences', 'appearance', 'routines', 'long_term_goals']);
+  const short = emptyLtm();
+  short.name = '海铂';
+  short.interests = ['一', '二', '三', '四', '五', '六', '七', '八'];
+  const shown = renderProfile(short);
+  assert.match(shown, /兴趣：三、四、五、六、七、八/);
+  assert.equal(shown.includes('一'), false);
+  const long = emptyLtm();
+  long.name = '海铂';
+  long.occupation_or_role = ['工程师'];
+  for (const field of LTM_TRIM_ORDER) long[field] = Array.from({ length: 8 }, (_, index) => `${field}${index}${'字'.repeat(40)}`);
+  const fitted = fitProfile(long);
+  assert.equal(fitted.trimmed[0], 'relationships');
+  assert.match(fitted.text, /姓名：海铂/);
+  assert.match(fitted.text, /长期角色：工程师/);
+  assert.equal(fitted.text.includes('relationships7'), false);
+  assert.equal([...fitted.text].length <= 800, true);
 });
