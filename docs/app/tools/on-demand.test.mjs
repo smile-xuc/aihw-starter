@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { JPEG_LONG_EDGE, JPEG_QUALITY_MIN, JPEG_QUALITY_START, LOOK_TOOL, VISUAL_ATTEMPTS, VISUAL_INSTRUCTIONS_EN, VISUAL_QUERY_MAX, VISUAL_RETRY_INSTRUCTIONS, VISUAL_RETRY_INSTRUCTIONS_EN, VISUAL_TIMEOUT_MS, analyzeFrame, canRetryVisual, captureSwitchPlan, nextJpegFit, pictureOpen, silencePcm, visualQueryPlan, visualQuestion, visualRetryPlan } from '../js/live/on-demand.js';
+import { JPEG_LONG_EDGE, JPEG_QUALITY_MIN, JPEG_QUALITY_START, LOOK_TOOL, VISUAL_ATTEMPTS, VISUAL_INSTRUCTIONS_EN, VISUAL_QUERY_MAX, VISUAL_RETRY_INSTRUCTIONS, VISUAL_RETRY_INSTRUCTIONS_EN, VISUAL_TIMEOUT_MS, analyzeFrame, canRetryVisual, captureSwitchPlan, lookClosePlan, nextJpegFit, pictureOpen, silencePcm, visualQueryPlan, visualQuestion, visualRetryPlan } from '../js/live/on-demand.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -16,6 +16,7 @@ class FakeSocket {
     this.sent.push(message);
     if (message.type === 'input_audio_buffer.commit') {
       queueMicrotask(() => {
+        if (FakeSocket.mode === 'hold') return;
         if (FakeSocket.failCommit) this.onmessage?.({ data: JSON.stringify({ type: 'error', error: { message: '看画面超时' } }) });
         else this.onmessage?.({ data: JSON.stringify({ type: 'input_audio_buffer.committed' }) });
       });
@@ -93,7 +94,13 @@ test('on-demand question and silence stay bounded', () => {
   assert.equal(visualRetryPlan({ message: '看画面超时', attempt: 2 }).action, 'stop');
   assert.equal(visualRetryPlan({ code: 'COMMON_ERROR', message: 'model repeat output happened', type: 'server_error', status: 500, attempt: 1 }).action, 'retry');
   assert.equal(visualRetryPlan({ code: 'insufficient_quota', message: '额度不够', attempt: 1 }).action, 'stop');
+  assert.equal(visualRetryPlan({ message: '额度不够时这一通马上结束，不会再换一条连接。', attempt: 1 }).action, 'stop');
+  assert.equal(canRetryVisual(new Error('额度不够，这次不再看第二次。')), false);
   assert.equal(visualRetryPlan({ name: 'AbortError', message: '已停下', attempt: 1 }).action, 'stop');
+  assert.equal(lookClosePlan({ code: 1006, reason: '' }).action, 'retry');
+  assert.equal(lookClosePlan({ code: 1000, reason: '' }).action, 'stop');
+  assert.equal(lookClosePlan({ code: 1006, reason: 'Allocated quota exceeded, please increase your quota limit.' }).action, 'stop');
+  assert.match(lookClosePlan({ code: 1006, reason: 'Allocated quota exceeded, please increase your quota limit.' }).note, /额度不够/);
 });
 
 test('on-demand sends one still twice and asks after commit', async () => {
@@ -218,6 +225,49 @@ test('an oversized or split look is not kept or retried', async () => {
     FakeSocket.sockets = [];
     const pending = analyzeFrame({ ...common, question: '屏幕上有什么' });
     open(FakeSocket.latest);
+    await assert.rejects(pending, pattern);
+    assert.equal(FakeSocket.sockets.length, 1);
+  }
+  FakeSocket.mode = '';
+});
+
+test('a dropped look socket retries the same frame without waiting out the timeout', async () => {
+  FakeSocket.failCommit = false;
+  FakeSocket.repeat = false;
+  FakeSocket.tool = false;
+  FakeSocket.mode = 'hold';
+  FakeSocket.sockets = [];
+  const pending = analyzeFrame({ ...common, question: '有什么' });
+  const first = FakeSocket.latest;
+  open(first);
+  await new Promise((resolve) => { setTimeout(resolve, 0); });
+  first.onclose?.({ code: 1006, reason: '' });
+  FakeSocket.mode = '';
+  await new Promise((resolve) => { setTimeout(resolve, 0); });
+  assert.equal(FakeSocket.sockets.length, 2);
+  const second = FakeSocket.latest;
+  open(second);
+  assert.equal(await pending, '桌上有杯子');
+  const firstImage = first.sent.find((item) => item.type === 'input_image_buffer.append').image;
+  const secondImage = second.sent.find((item) => item.type === 'input_image_buffer.append').image;
+  assert.equal(secondImage, firstImage);
+});
+
+test('a quota or normal look close does not look a second time', async () => {
+  for (const [close, pattern] of [
+    [{ code: 1006, reason: 'Allocated quota exceeded, please increase your quota limit.' }, /额度不够/],
+    [{ code: 1000, reason: '' }, /这次没看清/],
+  ]) {
+    FakeSocket.failCommit = false;
+    FakeSocket.repeat = false;
+    FakeSocket.tool = false;
+    FakeSocket.mode = 'hold';
+    FakeSocket.sockets = [];
+    const pending = analyzeFrame({ ...common, question: '有什么', timeoutMs: 400 });
+    const first = FakeSocket.latest;
+    open(first);
+    await new Promise((resolve) => { setTimeout(resolve, 0); });
+    first.onclose?.(close);
     await assert.rejects(pending, pattern);
     assert.equal(FakeSocket.sockets.length, 1);
   }

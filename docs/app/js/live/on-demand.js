@@ -3,7 +3,7 @@
 
 import { toBase64 } from './client.js';
 import { ENGLISH_TOOL_TRIGGERS, questionLanguage } from './conversation-language.js';
-import { connectRealtime, pcmBase64, sessionConfig } from './realtime-omni.js';
+import { connectRealtime, pcmBase64, quotaPlan, sessionConfig } from './realtime-omni.js';
 
 export const JPEG_LONG_EDGE = 640;
 export const JPEG_MIN_EDGE = 160;
@@ -112,8 +112,9 @@ export function visualQuestion(query, heard) {
 
 export function canRetryVisual(error) {
   if (error?.name === 'AbortError') return false;
+  if (quotaPlan({ code: error?.code, message: error?.message }).action === 'stop') return false;
   const message = String(error?.message || '');
-  if (/Key|鉴权|地域|业务空间|不安全|拒绝/.test(message)) return false;
+  if (/Key|鉴权|地域|业务空间|不安全|拒绝|额度/.test(message)) return false;
   return /超时|连接|网络|临时/.test(message);
 }
 
@@ -127,9 +128,20 @@ export function visualRepeatError(error) {
 
 export function visualRetryPlan({ code, message, name, type, status, attempt } = {}) {
   const used = Number.isInteger(attempt) && attempt > 0 ? attempt : 1;
-  if (name === 'AbortError' || used >= VISUAL_ATTEMPTS) return { action: 'stop' };
-  if (visualRepeatError({ code, message, type, status }) || canRetryVisual({ name, message })) return { action: 'retry' };
+  if (name === 'AbortError' || used >= VISUAL_ATTEMPTS || quotaPlan({ code, message }).action === 'stop') return { action: 'stop' };
+  if (visualRepeatError({ code, message, type, status }) || canRetryVisual({ code, name, message })) return { action: 'retry' };
   return { action: 'stop' };
+}
+
+const LOOK_RETRY_CLOSE = new Set([1001, 1006, 1011, 1012, 1013]);
+
+// 看图连接异常断开时，这一次马上作废，外层用同一张画面再看一次。
+// 额度不够，或连接是正常结束的，不再看第二次。
+export function lookClosePlan({ code, reason } = {}) {
+  const quota = quotaPlan({ code, reason, message: reason });
+  if (quota.action === 'stop') return { action: 'stop', note: '额度不够，这次不再看第二次。请到百炼控制台看额度。', code: 'insufficient_quota' };
+  if (LOOK_RETRY_CLOSE.has(code)) return { action: 'retry', note: '看画面的连接断了', code: 'socket_closed' };
+  return { action: 'stop', note: '看画面这一轮中断了，这次没看清' };
 }
 
 function presentLookError(error) {
@@ -196,6 +208,13 @@ async function lookOnce({ connect, url, secret, jpeg, question, voice, inputRate
       video: true,
     }),
     onEvent(event) {
+      if (event.type === 'socket.close') {
+        const plan = lookClosePlan({ code: event.code, reason: event.reason });
+        const error = new Error(plan.note);
+        if (plan.code) error.code = plan.code;
+        finish(error);
+        return;
+      }
       if (event.type === 'error') {
         const error = new Error(event.message || '看画面失败');
         if (event.code) error.code = event.code;
