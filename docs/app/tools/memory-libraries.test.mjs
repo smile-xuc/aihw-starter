@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, MAX_BIO, RETRIEVE_TOOL,
   activeLibrary, applyBio, applyMemoryPatch, bioReceipt, bioResult, cleanObservation, clearLibrary, cleanStm, createLibrary, datedEntries, emptyDialogue, emptyLtm, finishDialogue, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, mergeVectorHits, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn,
-  renameLibrary, renderProfile, fitProfile, LTM_PROMPT_ITEMS, LTM_PROMPT_CHARS, LTM_TRIM_ORDER, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, sessionFacts, shouldConsolidateLibrary, librarySwitchNote, spaceEnvHits, presentRetrieval, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore,
+  renameLibrary, renderProfile, fitProfile, LTM_PROMPT_ITEMS, LTM_PROMPT_CHARS, LTM_TRIM_ORDER, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, sessionFacts, shouldConsolidateLibrary, librarySwitchNote, spaceEnvHits, presentRetrieval, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, nextObserveDelay, OBSERVE_EVERY_MS, OBSERVE_RETRY_MS, OBSERVE_TIMEOUT_MS,
 } from '../js/live/memory-libraries.js';
 
 function storage(initial = {}) {
@@ -373,4 +373,12 @@ test('a long profile keeps six facts per field and drops relationships before th
   assert.match(fitted.text, /长期角色：工程师/);
   assert.equal(fitted.text.includes('relationships7'), false);
   assert.equal([...fitted.text].length <= 800, true);
+});
+
+test('visual memory retries quickly without a frame and waits a minute after one', () => {
+  assert.equal(OBSERVE_RETRY_MS, 2000);
+  assert.equal(OBSERVE_TIMEOUT_MS, 60000);
+  assert.equal(nextObserveDelay({ sawFrame: false }), 2000);
+  assert.equal(nextObserveDelay({ sawFrame: true }), OBSERVE_EVERY_MS);
+  assert.equal(nextObserveDelay(), 2000);
 });

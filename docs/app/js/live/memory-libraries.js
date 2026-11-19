@@ -19,6 +19,12 @@ export const MAX_ENV = 20;
 export const ENV_MIN_GAP_SEC = 600;
 export const MAX_ENV_CHARS = 400;
 export const OBSERVE_EVERY_MS = 60000;
+export const OBSERVE_RETRY_MS = 2000;
+export const OBSERVE_TIMEOUT_MS = 60000;
+
+export function nextObserveDelay({ sawFrame } = {}) {
+  return sawFrame ? OBSERVE_EVERY_MS : Math.min(OBSERVE_RETRY_MS, OBSERVE_EVERY_MS);
+}
 
 // 观察提示词与 Qwen-Live-Harness memory/prompts.ts 的 OBSERVER_PROMPT 一致。
 export const OBSERVER_PROMPT = `你是一个记忆系统的视觉观察器。每次收到用户摄像头的一帧画面，输出一句中文陈述，记录当下看到的东西，供以后回忆使用。
