@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, MAX_BIO, RETRIEVE_TOOL,
   activeLibrary, applyBio, applyMemoryPatch, bioReceipt, bioResult, cleanObservation, clearLibrary, cleanStm, createLibrary, datedEntries, emptyDialogue, emptyLtm, finishDialogue, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, mergeVectorHits, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn,
-  renameLibrary, renderProfile, fitProfile, LTM_PROMPT_ITEMS, LTM_PROMPT_CHARS, LTM_TRIM_ORDER, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, sessionFacts, shouldConsolidateLibrary, librarySwitchNote, spaceEnvHits, presentRetrieval, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, nextObserveDelay, OBSERVE_EVERY_MS, OBSERVE_RETRY_MS, OBSERVE_TIMEOUT_MS, UPDATER_TIMEOUT_MS, updaterTimeoutPlan,
+  renameLibrary, renderProfile, fitProfile, LTM_PROMPT_ITEMS, LTM_PROMPT_CHARS, LTM_PROMPT_ORDER, LTM_TRIM_ORDER, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, sessionFacts, shouldConsolidateLibrary, librarySwitchNote, spaceEnvHits, presentRetrieval, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, nextObserveDelay, OBSERVE_EVERY_MS, OBSERVE_RETRY_MS, OBSERVE_TIMEOUT_MS, UPDATER_TIMEOUT_MS, updaterTimeoutPlan,
 } from '../js/live/memory-libraries.js';
 
 function storage(initial = {}) {
@@ -373,6 +373,27 @@ test('a long profile keeps six facts per field and drops relationships before th
   assert.match(fitted.text, /长期角色：工程师/);
   assert.equal(fitted.text.includes('relationships7'), false);
   assert.equal([...fitted.text].length <= 800, true);
+});
+
+test('the call profile follows name, role, goals, routines, appearance, preferences, interests, relationships', () => {
+  const profile = emptyLtm();
+  profile.name = '海铂';
+  profile.occupation_or_role = ['工程师'];
+  profile.long_term_goals = ['写完'];
+  profile.routines = ['早起'];
+  profile.appearance = ['短发'];
+  profile.preferences = ['茶'];
+  profile.interests = ['相机'];
+  profile.relationships = ['同事'];
+  const text = renderProfile(profile);
+  const labels = ['姓名', '长期角色', '长期目标', '习惯', '外形', '偏好', '兴趣', '关系'];
+  let at = -1;
+  for (const label of labels) {
+    const next = text.indexOf(label);
+    assert.ok(next > at, label);
+    at = next;
+  }
+  assert.deepEqual(LTM_PROMPT_ORDER, ['name', 'occupation_or_role', 'long_term_goals', 'routines', 'appearance', 'preferences', 'interests', 'relationships']);
 });
 
 test('visual memory retries quickly without a frame and waits a minute after one', () => {

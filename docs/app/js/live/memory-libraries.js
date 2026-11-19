@@ -736,6 +736,7 @@ export function presentRetrieval(keywordText, vectorHits, dated, timeRange, sour
 }
 
 export const LTM_FIELDS = ['name', 'occupation_or_role', 'preferences', 'routines', 'interests', 'long_term_goals', 'relationships', 'appearance'];
+export const LTM_PROMPT_ORDER = ['name', 'occupation_or_role', 'long_term_goals', 'routines', 'appearance', 'preferences', 'interests', 'relationships'];
 export const MAX_LTM_ITEMS = 8;
 export const MAX_LTM_CHARS = 80;
 export const MAX_STM = 40;
@@ -881,7 +882,7 @@ export function fitProfile(ltm, maxChars = LTM_PROMPT_CHARS) {
     field,
     field === 'name' ? (clean.name ? [clean.name] : []) : clean[field].slice(-LTM_PROMPT_ITEMS),
   ]));
-  const textOf = () => LTM_FIELDS.flatMap((field) => {
+  const textOf = () => LTM_PROMPT_ORDER.flatMap((field) => {
     const list = entries.get(field) || [];
     if (!list.length) return [];
     const label = field === 'name' ? '姓名' : LTM_LABELS[field];
