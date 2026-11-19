@@ -133,12 +133,15 @@ export function callRecoveryPlan({ code, message, attempts }) {
   if (quotaPlan({ code, message }).action === 'stop') return { action: 'fail' };
   const serving = code === 'COMMON_ERROR' && MODEL_SERVING_ERROR.test(String(message || '').trim());
   const waiting = RESPONSE_WAIT_CODES.has(code);
+  const dropped = code === 'socket_closed';
   const used = Number.isInteger(attempts) && attempts > 0 ? attempts : 0;
-  if (!serving && !waiting) return { action: 'fail' };
+  if (!serving && !waiting && !dropped) return { action: 'fail' };
   if (used >= CALL_RECOVERY_LIMIT) return { action: 'stop', note: '这一通换了两次连接仍没接上。请再开一次通话。' };
-  const note = waiting
-    ? '这一轮没有按时完成，正在换一条连接。计时接着算。刚才这一轮的声音不会带过去。持续报告、监视和记下的查询还在。'
-    : '这一轮模型没有答上，正在换一条连接。计时接着算。刚才这一轮的声音不会带过去。持续报告、监视和记下的查询还在。';
+  const note = dropped
+    ? '主连接断了，正在换一条连接。计时接着算。刚才这一轮的声音不会带过去。持续报告、监视和到点提醒还在。'
+    : waiting
+      ? '这一轮没有按时完成，正在换一条连接。计时接着算。刚才这一轮的声音不会带过去。持续报告、监视和记下的查询还在。'
+      : '这一轮模型没有答上，正在换一条连接。计时接着算。刚才这一轮的声音不会带过去。持续报告、监视和记下的查询还在。';
   return { action: 'reconnect', note };
 }
 
