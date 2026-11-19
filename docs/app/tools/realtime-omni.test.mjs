@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { MUTE_HEARTBEAT_MS, OMNI_38_VOICES, chooseVoice, connectRealtime, decodeBase64, pcmBase64, readVoice, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, silenceFrame, splitPcm, translationSession, writeVoice } from '../js/live/realtime-omni.js';
+import { MUTE_HEARTBEAT_MS, OMNI_38_VOICES, callRecoveryPlan, chooseVoice, connectRealtime, decodeBase64, pcmBase64, readVoice, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, silenceFrame, splitPcm, translationSession, writeVoice } from '../js/live/realtime-omni.js';
 
 const stack = {
   fields: [
@@ -78,6 +78,15 @@ test('ready handshake sends session.update and later errors stay redacted', asyn
   const failure = seen.find((event) => event.type === 'error');
   assert.equal(failure.message.includes(key), false);
   assert.match(failure.message, /bad \[已隐藏\]/);
+  assert.equal(failure.code, '');
+  const serving = '<50002> InternalError.Algo.ModelServingError: model failed';
+  assert.equal(callRecoveryPlan({ code: 'COMMON_ERROR', message: serving, attempts: 0 }).action, 'reconnect');
+  assert.equal(callRecoveryPlan({ code: 'COMMON_ERROR', message: serving, attempts: 1 }).action, 'reconnect');
+  assert.equal(callRecoveryPlan({ code: 'COMMON_ERROR', message: serving, attempts: 2 }).action, 'stop');
+  assert.equal(callRecoveryPlan({ code: 'InvalidApiKey', message: serving, attempts: 0 }).action, 'fail');
+  assert.equal(callRecoveryPlan({ code: 'COMMON_ERROR', message: '其他错误', attempts: 0 }).action, 'fail');
+  socket.onmessage({ data: JSON.stringify({ type: 'error', error: { code: 'COMMON_ERROR', message: serving } }) });
+  assert.equal(seen.filter((event) => event.type === 'error').at(-1).code, 'COMMON_ERROR');
   handle.send('response.create');
   assert.equal(socket.sent.at(-1).type, 'response.create');
   handle.close();
