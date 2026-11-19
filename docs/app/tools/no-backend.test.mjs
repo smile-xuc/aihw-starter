@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { BACKEND_TOOLS, HANDOFF_TOOL, NO_BACKEND_NOTE, isBackendTool, noBackendReceipt, noBackendTitle } from '../js/live/no-backend.js';
+import { BACKEND_TOOLS, HANDOFF_TOOL, NO_BACKEND_NOTE, NO_BACKEND_NOTE_EN, isBackendTool, noBackendReceipt, noBackendTitle } from '../js/live/no-backend.js';
 import { backgroundRows, openBackground, patchBackground } from '../js/live/monitor.js';
 
 test('coding delegation returns no_backend and does not describe a started job', () => {
@@ -17,6 +17,8 @@ test('coding delegation returns no_backend and does not describe a started job',
   assert.equal(receipt.status, 'error');
   assert.equal(receipt.code, 'no_backend');
   assert.equal(receipt.note, NO_BACKEND_NOTE);
+  assert.equal(JSON.parse(noBackendReceipt('en')).note, NO_BACKEND_NOTE_EN);
+  assert.match(HANDOFF_TOOL.function.description, /hand this to the coding assistant/);
   assert.equal(receipt.job, undefined);
   assert.equal(receipt.session, undefined);
   assert.equal(noBackendTitle('handoff', { task: '  把按钮改成蓝色  ' }), '把按钮改成蓝色');

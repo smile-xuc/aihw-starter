@@ -2,7 +2,7 @@
 // Omni Realtime，按上游协议送两段 1 秒静音和同一张 JPEG，再提交这一次视觉问题。
 
 import { toBase64 } from './client.js';
-import { questionLanguage } from './conversation-language.js';
+import { ENGLISH_TOOL_TRIGGERS, questionLanguage } from './conversation-language.js';
 import { connectRealtime, pcmBase64, sessionConfig } from './realtime-omni.js';
 
 export const JPEG_LONG_EDGE = 640;
@@ -76,6 +76,7 @@ export const DEMAND_INSTRUCTIONS = `你是看说体验里的语音助手。你�
 用户说持续报告屏幕或画面内容，或解说变化时，调用 create_live_narration，把要报告的内容写进 narration_focus。报告屏幕、画面时 modalities 只写 ["vision"]；只听声音时只写 ["audio"]。回执里没有画面，这一轮不要描述画面。这一轮听到的原话会交给后台，句子长短和语气按原话来。narration_focus 只写要看或要听的内容。
 持续报告和身体提醒可以同时进行。同一句话里两项都要时，把 create_live_narration 和 create_proactive_monitor 都调用，不要只做一个。两项监视也可以同时留着，后说的一项不要取消前一项，除非用户明确要求停下。这个页面同时最多两项监视，满了就告诉用户先停掉一项。
 用户要求改代码、跑命令、操作网页，或交给编码助手时，调用 handoff，task 写用户原话。回执是 no_backend。这一轮只说明这个页面没有编码后台，不要说已经开始或已经做完。
+${ENGLISH_TOOL_TRIGGERS}
 前台要一直能接话。后台结果没到时，不要停下来等，也不要编造结果。
 用户明确要求停下某一项监视、解说或到点提醒时，调用 cancel_proactive_task。停下说话、换话题或纠正回答都不算取消。没有调用成功就不要说已经停下。
 用户明确要求修改某一项正在进行的监视、解说或到点提醒时，调用 update_proactive_task。不能把一种任务改成另一种。没有调用成功就不要说已经改了。
