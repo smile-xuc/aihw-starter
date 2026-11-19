@@ -246,15 +246,38 @@ export function takeLate(queue, ready) {
   return { queue: items.slice(1), item: items[0] };
 }
 
+export const LATE_FACT_CHARS = 16000;
+export const LATE_NOTE_CHARS = 180;
+
+function lateMemoryLimit(status) {
+  return status === 'narration' || status === 'monitor' ? LATE_NOTE_CHARS : LATE_FACT_CHARS;
+}
+
+function fitLateFacts(rows) {
+  const next = rows.map((entry) => ({ ...entry }));
+  const factual = () => next.filter((entry) => entry.status !== 'narration' && entry.status !== 'monitor');
+  const total = () => factual().reduce((sum, entry) => sum + entry.text.length, 0);
+  const older = factual();
+  for (let index = 0; index < older.length - 1 && total() > LATE_FACT_CHARS; index += 1) {
+    older[index].text = older[index].text.slice(0, LATE_NOTE_CHARS);
+  }
+  const last = factual().at(-1);
+  if (last && total() > LATE_FACT_CHARS) {
+    const room = LATE_FACT_CHARS - (total() - last.text.length);
+    last.text = last.text.slice(0, Math.max(0, room));
+  }
+  return next.filter((entry) => entry.text);
+}
+
 export function rememberLateResult(results, item) {
-  const text = String(item?.text || '').replace(/\s+/g, ' ').trim().slice(0, 180);
-  if (!text) return Array.isArray(results) ? results.slice() : [];
   const status = ['performed', 'not_performed', 'unknown', 'narration', 'monitor'].includes(item?.status) ? item.status : '';
+  const text = String(item?.text || '').replace(/\s+/g, ' ').trim().slice(0, lateMemoryLimit(status));
+  if (!text) return fitLateFacts(Array.isArray(results) ? results.map((entry) => ({ ...entry })) : []);
   const id = String(item?.id || '');
   const delivery = ['pending', 'unspoken', 'spoken'].includes(item?.delivery) ? item.delivery : 'pending';
   const row = { id, text, status, delivery };
   const kept = (Array.isArray(results) ? results : []).filter((entry) => entry && entry.id !== id);
-  return [...kept, row].slice(-5);
+  return fitLateFacts([...kept, row].slice(-5));
 }
 
 export function markLateResult(results, id, delivery) {
@@ -346,7 +369,7 @@ export function readSearchResponse(body) {
   let status = 'unknown';
   if (performed) status = 'performed';
   else if (failedCall) status = 'not_performed';
-  return { text: String(text || '').replace(/\s+/g, ' ').trim().slice(0, 400), status };
+  return { text: String(text || '').replace(/\s+/g, ' ').trim().slice(0, LATE_FACT_CHARS), status };
 }
 
 export const MONITOR_RULES = `你是主动提醒监视器，只判断这一小段新的声音和画面。

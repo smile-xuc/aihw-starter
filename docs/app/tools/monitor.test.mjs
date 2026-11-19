@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, monitorCooldownPlan, MONITOR_COOLDOWN_MS, clearAudioAfterCooldown, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateResultPrompt, lateSpeechText, listProactive, forgetLateResult, markLateResult, rememberLateResult, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, searchTimeoutOutcome, SEARCH_TIMEOUT_MS, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, monitorAfterRound, MONITOR_RECYCLE_ROUNDS, MONITOR_FAILURE_LIMIT, monitorSpeechPlan, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, searchQueryPlan, SEARCH_QUERY_MAX, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, monitorCooldownPlan, MONITOR_COOLDOWN_MS, clearAudioAfterCooldown, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateResultPrompt, lateSpeechText, listProactive, forgetLateResult, markLateResult, rememberLateResult, LATE_FACT_CHARS, LATE_NOTE_CHARS, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, searchTimeoutOutcome, SEARCH_TIMEOUT_MS, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, monitorAfterRound, MONITOR_RECYCLE_ROUNDS, MONITOR_FAILURE_LIMIT, monitorSpeechPlan, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, searchQueryPlan, SEARCH_QUERY_MAX, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -319,6 +319,16 @@ test('continuous screen reports and body alerts are accepted before the result e
   assert.match(lateResultPrompt(markLateResult(missed, 's1', 'spoken')), /已播：明天有雨/);
   assert.equal(markLateResult(missed, 's1', 'unspoken'), missed);
   assert.match(lateResultPrompt(rememberLateResult([], { id: 's2', text: '也许有雨', status: 'unknown' })), /不能确认是否联网/);
+  const detailed = rememberLateResult([], { id: 'long', text: '雨'.repeat(500), status: 'performed' });
+  assert.equal(detailed[0].text.length, 500);
+  assert.equal(rememberLateResult([], { id: 'note', text: '字'.repeat(300), status: 'narration' })[0].text.length, LATE_NOTE_CHARS);
+  assert.equal(rememberLateResult([], { id: 'huge', text: '乙'.repeat(20000), status: 'performed' })[0].text.length, LATE_FACT_CHARS);
+  const older = rememberLateResult([], { id: 'a', text: '甲'.repeat(LATE_FACT_CHARS), status: 'performed' });
+  const newer = rememberLateResult(older, { id: 'b', text: '乙'.repeat(LATE_FACT_CHARS), status: 'performed' });
+  assert.equal(newer[0].text.length, LATE_NOTE_CHARS);
+  assert.equal(newer[1].text.length, LATE_FACT_CHARS - LATE_NOTE_CHARS);
+  assert.equal(lateSpeechText('雨'.repeat(500), 'performed').length <= 200, true);
+  assert.equal(readSearchResponse({ output_text: '雨'.repeat(500) }).text.length, 500);
   assert.equal(lateSpeechText('屏幕上是备忘录'), '屏幕上是备忘录');
   assert.equal(lateSpeechText('明天有雨', 'performed'), '查到了。明天有雨');
   assert.equal(lateSpeechText('明天有雨', 'unknown'), '明天有雨');
