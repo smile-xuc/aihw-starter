@@ -861,6 +861,28 @@ export function updateProactive(tasks, args) {
   return { id: task.id, patch, receipt: `已改${kindLabel(task.kind)}：${bits.join('，')}。下一轮按新的来。` };
 }
 
+export const MONITOR_RECYCLE_ROUNDS = 60;
+export const MONITOR_FAILURE_LIMIT = 3;
+
+// 官方实时会话的画面历史大约 50 轮、声音历史大约 100 轮。听久了就换一条连接，
+// 否则持续报告会在这一通里被历史上限打断。连续三次临时失败才停下。
+export function monitorAfterRound({ rounds, failures, error }) {
+  const done = Number.isInteger(rounds) && rounds >= 0 ? rounds : 0;
+  const missed = Number.isInteger(failures) && failures >= 0 ? failures : 0;
+  if (!error) {
+    const next = done + 1;
+    if (next >= MONITOR_RECYCLE_ROUNDS) return { action: 'rebuild', rounds: 0, failures: 0 };
+    return { action: 'keep', rounds: next, failures: 0 };
+  }
+  const message = String(error.message || '主动提醒失败');
+  if (error.name === 'AbortError' || message === '主动提醒已停止' || /Key|鉴权|地域|业务空间|不安全|拒绝/.test(message)) {
+    return { action: 'stop', rounds: done, failures: missed, note: message };
+  }
+  const next = missed + 1;
+  if (next >= MONITOR_FAILURE_LIMIT) return { action: 'stop', rounds: done, failures: next, note: message };
+  return { action: 'rebuild', rounds: 0, failures: next, note: message };
+}
+
 export function openMonitor(options) {
   const connect = options.connect || connectRealtime;
   let focus = options.task || monitorTask(options.condition);

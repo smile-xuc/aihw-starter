@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateResultPrompt, lateSpeechText, listProactive, forgetLateResult, markLateResult, rememberLateResult, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateResultPrompt, lateSpeechText, listProactive, forgetLateResult, markLateResult, rememberLateResult, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, monitorAfterRound, MONITOR_RECYCLE_ROUNDS, MONITOR_FAILURE_LIMIT, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -450,6 +450,26 @@ test('screen reports look without the microphone, and a cough watch listens with
   assert.match(updateProactive([{ id: 't', kind: 'timer', title: '喝水' }], { target_title: '喝水', modalities: ['audio'] }).receipt, /到点提醒不能改/);
   assert.match(listProactive([{ id: 'm', kind: 'monitor', title: '咳嗽', repeat: false, modalities: ['audio'] }]), /只听声音/);
   assert.match(listProactive([{ id: 'n', kind: 'narration', title: '屏幕', modalities: ['vision'] }]), /只看画面/);
+});
+
+test('a long watch rebuilds and a missing round does not end it', () => {
+  assert.equal(MONITOR_RECYCLE_ROUNDS, 60);
+  assert.equal(MONITOR_FAILURE_LIMIT, 3);
+  const early = monitorAfterRound({ rounds: 1, failures: 2, error: null });
+  assert.equal(early.action, 'keep');
+  assert.equal(early.failures, 0);
+  const recycle = monitorAfterRound({ rounds: 59, failures: 2, error: null });
+  assert.equal(recycle.action, 'rebuild');
+  assert.equal(recycle.rounds, 0);
+  const first = monitorAfterRound({ rounds: 10, failures: 0, error: new Error('实时连接超时') });
+  assert.equal(first.action, 'rebuild');
+  assert.equal(first.failures, 1);
+  assert.equal(first.rounds, 0);
+  const third = monitorAfterRound({ rounds: 0, failures: 2, error: new Error('实时连接超时') });
+  assert.equal(third.action, 'stop');
+  assert.match(third.note, /超时/);
+  assert.equal(monitorAfterRound({ rounds: 4, failures: 0, error: new Error('请核对 Key、地域') }).action, 'stop');
+  assert.equal(monitorAfterRound({ rounds: 4, failures: 0, error: new DOMException('已停下', 'AbortError') }).action, 'stop');
 });
 
 test('an aborted reminder is not spoken', async () => {
