@@ -5,7 +5,7 @@ import { SAMPLE_RATE, SESSION_CALL_SECONDS } from '../live/pcm.js';
 import { BIO_TOOL, EMBED_MODEL, OBSERVE_EVERY_MS, RETRIEVE_TOOL, UPDATER_PROMPT, activeLibrary, applyBio, applyMemoryPatch, bioReceipt, cleanObservation, clearLibrary, createLibrary, datedEntries, dialogueEntries, dialogueLines, envCorpus, finishDialogue, formatUpdaterInput, isEmptyPatch, localDate, memoryLabel as libraryStatus, mergeVectorHits, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn, renameLibrary, renderProfile, renderRecent, replaceActive, retrieveMemory, sessionFacts, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, normalizeVector } from '../live/memory-libraries.js';
 import { CANCEL_TOOL, LIST_TOOL, MONITOR_TOOL, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, fastAck, fastStatus, isSilentMonitor, forgetLateResult, lateResultPrompt, lateSpeechText, listProactive, markLateResult, rememberLateResult, modalityNote, monitorFocus, monitorPlan, duplicateNote, monitorRoom, narrationBrief, narrationPlan, readSearchResponse, reminderNote, reminderText, searchInFlight, searchResponsesBody, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, dropLate, stopLookup, takeLate, takeMonitorAudio, taskPrompt, timerRequest, toolArguments, updateProactive } from '../live/monitor.js';
 import { BACKEND_TOOLS, isBackendTool, noBackendReceipt, noBackendTitle } from '../live/no-backend.js';
-import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, visualQuestion } from '../live/on-demand.js';
+import { DEMAND_INSTRUCTIONS, LOOK_TOOL, analyzeFrame, captureSwitchPlan, visualQuestion } from '../live/on-demand.js';
 import { openToolRound, responseFunctionCalls } from '../live/product-session.js';
 import { MUTE_HEARTBEAT_MS, OMNI_38_VOICES, chooseVoice, connectRealtime, decodeBase64, pcmBase64, readVoice, realtimeSocketUrl, redactSecret, SEMANTIC_TURN, sessionConfig, silenceFrame, splitPcm, writeVoice } from '../live/realtime-omni.js';
 import { browserSupport } from '../live/index.js';
@@ -144,7 +144,7 @@ export function renderSession(view, reg) {
     <section class="intro" data-live-session>
       <p class="eyebrow">百炼 Key · 实时看说</p>
       <h1>前台接着聊，后台慢慢做。</h1>
-      <p>打开摄像头，或点「屏幕」共享手机画面。接通后直接说话。说「从现在开始持续报告我手机屏幕里的内容」，前台先答应，后台过一会儿再讲屏幕上有什么，这一项只看画面。说「从现在开始关注我的身体」，会一直听，同一次里不重复说，这一项只听声音。说「咳嗽了提醒我一次」，说过就停。这两项可以同时开。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。问到事实时，只有确认这次联网了，才会说查过网上。这一通最长 30 分钟，到点会结束通话，持续报告和监视也停下。正在查或正在看的一项可以停下，停下后结果不再说出来。已经发出的请求仍会计费。查询和看图的结果由单独的播报说出，不再占用主对话。查到或看到的结果会留给这一通对话，之后追问可以直接用。持续报告和咳嗽提醒说过的话也会留下。播报静音时，还没说的查询和看图也不再补播。你一开口，正在读的查询或看图会停住，不再补播。持续报告和咳嗽提醒会等你说完再讲。还没读完的结果留在这一通。你问到这件事会直接说。麦克风和摄像头可以换成这台设备上的其他输入，通话中更换会接着这一通。费用记在你的百炼账号上。</p>
+      <p>打开摄像头，或点「屏幕」共享手机画面。接通后直接说话。说「从现在开始持续报告我手机屏幕里的内容」，前台先答应，后台过一会儿再讲屏幕上有什么，这一项只看画面。说「从现在开始关注我的身体」，会一直听，同一次里不重复说，这一项只听声音。说「咳嗽了提醒我一次」，说过就停。这两项可以同时开。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。问到事实时，只有确认这次联网了，才会说查过网上。这一通最长 30 分钟，到点会结束通话，持续报告和监视也停下。正在查或正在看的一项可以停下，停下后结果不再说出来。已经发出的请求仍会计费。查询和看图的结果由单独的播报说出，不再占用主对话。查到或看到的结果会留给这一通对话，之后追问可以直接用。持续报告和咳嗽提醒说过的话也会留下。播报静音时，还没说的查询和看图也不再补播。你一开口，正在读的查询或看图会停住，不再补播。持续报告和咳嗽提醒会等你说完再讲。还没读完的结果留在这一通。你问到这件事会直接说。麦克风和摄像头可以换成这台设备上的其他输入，通话中更换会接着这一通。通话中也可以改实时画面或按需看一眼。这一通还没送过画面时，改成实时画面会新开一条连接，计时接着算。费用记在你的百炼账号上。</p>
     </section>
     ${saved?.values?.DASHSCOPE_API_KEY ? html`<p class="inline-ok">已读取本机百炼 Key。发送前请再看一眼画面。</p>` : html`<div class="mode-banner"><div><strong>还没有百炼 Key</strong><p>看说和下面的网页真跑都要用你自己的 Key。保存后回到这里，不会自动调用模型。</p><a href="${SETUP}">去填写 Key</a></div></div>`}
     <section class="panel session-stage">
@@ -161,7 +161,7 @@ export function renderSession(view, reg) {
       <label class="field">麦克风<select data-mic><option value="">系统默认</option></select></label>
       <label class="field">摄像头<select data-camera><option value="">系统默认</option></select></label>
       <p class="small" data-meter></p>
-      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，这一通最长 30 分钟，到点会结束通话，持续报告和监视也停下。正在查或正在看的一项可以停下，停下后结果不再说出来。已经发出的请求仍会计费。查询和看图的结果由单独的播报说出，不再占用主对话。查到或看到的结果会留给这一通对话，之后追问可以直接用。持续报告和咳嗽提醒说过的话也会留下。播报静音时，还没说的查询和看图也不再补播。你一开口，正在读的查询或看图会停住，不再补播。持续报告和咳嗽提醒会等你说完再讲。还没读完的结果留在这一通。你问到这件事会直接说。麦克风和摄像头可以换成这台设备上的其他输入，通话中更换会接着这一通。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说各走一条后台连接，可以同时进行。后说的一项不会把另一项停掉。说「咳嗽了提醒我一次」，提醒过就停。说「从现在开始关注」，会一直听，同一次里不重复说。报告屏幕时只看画面，不把麦克风送进这一项。咳嗽和身体提醒只听声音，不送画面。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。问到事实时，只有确认这次联网了，才会说查过网上。咳嗽没发生就不出声。只解说变化时，没有明显变化也不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。通话中可以麦克风静音或播报静音。麦克风静音后声音不再送进通话和监视，大约每 30 秒送一秒静音来保持连接。播报静音会立刻停掉正在说的话，还没播的提醒不再补播。音色默认 Tina，可换成 qwen3.8 支持的预设。这一通已经接通时，主对话仍用接通时的音色；监视、到点提醒和下一次通话用新的。复刻音色仍在 Mac 上。可以说「把条件改成只看红字」，正在进行的这一项会按新的来，不用先取消。改提醒时间会从现在重新计。可以说「持续报告我手机屏幕里的内容」，或「关注我的身体，咳嗽了就提醒」。前台先接住，后台再看再查，结果稍后才说。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
+      <p class="small" data-realtime-note>实时通话会把 Key 放进发往百炼官方域名的 WebSocket 连接参数。浏览器不能设置 Authorization 头，换临时 Key 的接口也没有跨域。qwen3.8 实时模型通常还要填写业务空间 ID。页面地址、历史和导出不会写入 Key。接通后麦克风保持打开，这一通最长 30 分钟，到点会结束通话，持续报告和监视也停下。正在查或正在看的一项可以停下，停下后结果不再说出来。已经发出的请求仍会计费。查询和看图的结果由单独的播报说出，不再占用主对话。查到或看到的结果会留给这一通对话，之后追问可以直接用。持续报告和咳嗽提醒说过的话也会留下。播报静音时，还没说的查询和看图也不再补播。你一开口，正在读的查询或看图会停住，不再补播。持续报告和咳嗽提醒会等你说完再讲。还没读完的结果留在这一通。你问到这件事会直接说。麦克风和摄像头可以换成这台设备上的其他输入，通话中更换会接着这一通。通话中也可以改实时画面或按需看一眼。这一通还没送过画面时，改成实时画面会新开一条连接，计时接着算。实时画面大约每秒送一帧。问到事实时会另查一次公开信息。主动提醒和连续解说各走一条后台连接，可以同时进行。后说的一项不会把另一项停掉。说「咳嗽了提醒我一次」，提醒过就停。说「从现在开始关注」，会一直听，同一次里不重复说。报告屏幕时只看画面，不把麦克风送进这一项。咳嗽和身体提醒只听声音，不送画面。说「把这个交给编码助手」，前台马上说明这个页面没有编码后台，不会假装已经开始。说「咳嗽了就提醒我喝水」，提醒的是喝水，不是只说听到了咳嗽。说「有人叫我名字就说我在」，已经在听的咳嗽提醒会继续。这个页面同时最多两项监视。说「持续报告屏幕，每次只说一句很短的话」，后台按这句原话的详略来讲。同一轮里已经在查的问题，或已经开始的提醒，不会再开一条。同一句话里要持续报告屏幕、又要咳嗽提醒时，两项都会开始。问到事实时，只有确认这次联网了，才会说查过网上。咳嗽没发生就不出声。只解说变化时，没有明显变化也不出声。到点提醒会另读一句。说出来的提醒会排好队，等当前这句话播完再依次播出。可以说「不用盯了」，或点停止监视、停止解说，只停这一项，不用结束通话。通话中可以麦克风静音或播报静音。麦克风静音后声音不再送进通话和监视，大约每 30 秒送一秒静音来保持连接。播报静音会立刻停掉正在说的话，还没播的提醒不再补播。音色默认 Tina，可换成 qwen3.8 支持的预设。这一通已经接通时，主对话仍用接通时的音色；监视、到点提醒和下一次通话用新的。复刻音色仍在 Mac 上。可以说「把条件改成只看红字」，正在进行的这一项会按新的来，不用先取消。改提醒时间会从现在重新计。可以说「持续报告我手机屏幕里的内容」，或「关注我的身体，咳嗽了就提醒」。前台先接住，后台再看再查，结果稍后才说。这些都另计费。按需看一眼只在问到画面时另开一次看图。最近对话的文字留在这台浏览器。结束通话后用 qwen3.7-plus 更新长期资料和近期事项，给不出可用更新时才收成一段摘要，另计费，不含 Key、画面和录音。可以新建、切换和重命名记忆库，通话中不能换。长期事实记在当前这一套；问更早的对话时用 text-embedding-v4 做向量检索，并和关键词结果合在一起，另计费；向量失败才只留关键词。提到昨天或上周时按时间把对应对话排在前面，最多留 40 句，窗口外的结果仍会保留。对话会按最多 4 句、约 1000 字或停顿 60 秒收成片段，这台浏览器最多留 80 段，这些片段会计算向量，问更早的对话时和关键词、时间一起用，另计费，向量只留在这台浏览器。近期事项超过 90 天，或即将发生的日期过了 2 天，就不再放进通话。快到的事会优先写进提示，并带上记下的时间。这台浏览器最多留 40 条。长期事实最多 128 条、每条 200 字，按编号修改或删除；满了不再新增，也不会把更早的挤掉。结束通话时，这一通新记下的事实最多取 64 条交给整理；这一通没有新事实时才用对话摘录。通话中记下的事实和刚查到的内容会立刻写进这一通，不必等挂断。打开视觉记忆后，接通时先记一帧，之后大约每 60 秒再用看图模型记一帧，另计费。屏幕会标明这是屏幕内容。</p>
       <label class="field">音色<select data-voice></select></label>
       <label class="field">记忆库<select data-library></select></label>
       <div class="btn-row">
@@ -183,7 +183,7 @@ export function renderSession(view, reg) {
       </div>
       <div class="background-lane" data-background>
         <h2>后台</h2>
-        <p class="small">前台先接住这句话。持续报告和咳嗽提醒可以同时开，两项监视也可以同时留着，结果稍后才说。查询和看图由单独的播报说出。正在查或正在看时，可以点「停止这项」。你一开口，正在读的查询或看图会停住。持续报告和咳嗽提醒会等你说完再讲。还没读完的结果留在这一通。你问到这件事会直接说。麦克风和摄像头可以换成这台设备上的其他输入，通话中更换会接着这一通。</p>
+        <p class="small">前台先接住这句话。持续报告和咳嗽提醒可以同时开，两项监视也可以同时留着，结果稍后才说。查询和看图由单独的播报说出。正在查或正在看时，可以点「停止这项」。你一开口，正在读的查询或看图会停住。持续报告和咳嗽提醒会等你说完再讲。还没读完的结果留在这一通。你问到这件事会直接说。麦克风和摄像头可以换成这台设备上的其他输入，通话中更换会接着这一通。通话中也可以改实时画面或按需看一眼。这一通还没送过画面时，改成实时画面会新开一条连接，计时接着算。</p>
         <ol data-background-list></ol>
       </div>
       <audio data-player controls hidden></audio>
@@ -263,6 +263,9 @@ export function renderSession(view, reg) {
   let memoryAtStart = '[]';
   let folding = false;
   let captureMode = 'live';
+  let callVideo = false;
+  let socketEpoch = 0;
+  let switchingCapture = false;
   let liveValues = null;
   let lastHeard = '';
   let turnHeard = '';
@@ -455,7 +458,7 @@ export function renderSession(view, reg) {
     liveButton.setAttribute('aria-pressed', on ? 'true' : 'false');
     const talkButton = page.querySelector('[data-talk]');
     if (talkButton) talkButton.disabled = on;
-    for (const button of page.querySelectorAll('[data-capture]')) button.disabled = on;
+    for (const button of page.querySelectorAll('[data-capture]')) button.disabled = false;
     inputMuted = false;
     outputMuted = false;
     clearMuteHeartbeat();
@@ -1807,6 +1810,108 @@ export function renderSession(view, reg) {
     void refreshDevices();
   }
 
+  function markCapture(mode) {
+    for (const button of page.querySelectorAll('[data-capture]')) button.setAttribute('aria-pressed', String(button.dataset.capture === mode));
+  }
+  function callToolList() {
+    return captureMode === 'demand' ? [LOOK_TOOL, ...SESSION_TOOLS] : SESSION_TOOLS;
+  }
+  function openCallHandle(mine, epoch, tools) {
+    const stack = reg.stacks.get('bailian');
+    const demand = captureMode === 'demand';
+    return connectRealtime({
+      url: realtimeSocketUrl(stack, liveValues, liveSpec.REALTIME_MODEL),
+      secret,
+      session: sessionConfig({
+        instructions: livePrompt(tools),
+        voice: currentVoice(),
+        inputRate: liveSpec.IN_RATE,
+        outputRate: liveSpec.OUT_RATE,
+        asrModel: liveSpec.ASR_MODEL,
+        turnDetection: SEMANTIC_TURN,
+        search: tools ? false : !demand,
+        video: !demand,
+        tools: tools ? callToolList() : null,
+      }),
+      onEvent: (event) => {
+        if (epoch !== socketEpoch || mine !== callGeneration) return;
+        onRealtime(event, mine);
+      },
+    });
+  }
+  async function attachCall(mine, tools) {
+    const epoch = ++socketEpoch;
+    let handle = openCallHandle(mine, epoch, tools);
+    callUsesTools = tools;
+    sentInstructions = livePrompt(tools);
+    call = handle;
+    try {
+      await handle.ready;
+    } catch (error) {
+      const blocked = tools && /tool|function|工具/.test(error.message || '');
+      if (!blocked || mine !== callGeneration || !active) throw error;
+      handle.close();
+      if (call === handle) call = null;
+      say('当前账号不能使用工具，改为只对话。');
+      return attachCall(mine, false);
+    }
+    if (mine !== callGeneration || !active) {
+      handle.close();
+      if (call === handle) call = null;
+      throw new DOMException('已停止', 'AbortError');
+    }
+    callReady = true;
+    callVideo = captureMode !== 'demand';
+    return handle;
+  }
+  function pushCaptureUpdate() {
+    const next = livePrompt(callUsesTools);
+    const session = { instructions: next };
+    if (callUsesTools) session.tools = callToolList();
+    call.send('session.update', { session });
+    sentInstructions = next;
+  }
+  async function switchCapture(next) {
+    if (!call || !callReady || switchingCapture) return;
+    const plan = captureSwitchPlan({ mode: captureMode, next, videoOn: callVideo, tools: callUsesTools });
+    if (!plan.changed) return;
+    const mine = callGeneration;
+    const previous = captureMode;
+    switchingCapture = true;
+    for (const button of page.querySelectorAll('[data-capture]')) button.disabled = true;
+    captureMode = plan.mode;
+    markCapture(plan.mode);
+    try {
+      if (plan.reconnect) {
+        callReady = false;
+        socketEpoch += 1;
+        const old = call;
+        old?.close();
+        if (call === old) call = null;
+        say('正在改成实时画面，计时接着这一通…');
+        await attachCall(mine, callUsesTools);
+      } else pushCaptureUpdate();
+      if (active && mine === callGeneration) say(plan.note);
+    } catch (error) {
+      if (!active || mine !== callGeneration || error?.name === 'AbortError') return;
+      captureMode = previous;
+      markCapture(previous);
+      if (plan.reconnect) {
+        try {
+          await attachCall(mine, callUsesTools);
+          say(`没改成实时画面：${error.message}。仍是按需看一眼。`);
+        } catch (restoreError) {
+          if (active && mine === callGeneration && restoreError?.name !== 'AbortError') endCall(`看图方式没改成，连接也断了：${restoreError.message}`);
+        }
+      } else say(`没改成：${error.message}`);
+    } finally {
+      switchingCapture = false;
+      if (active && call && callReady) {
+        for (const button of page.querySelectorAll('[data-capture]')) button.disabled = false;
+      }
+    }
+  }
+
   async function startCall() {
     if (call || busy || recorder) return;
     const stored = loadCredentials('bailian');
@@ -1824,59 +1929,23 @@ export function renderSession(view, reg) {
       if (mine !== callGeneration || !active) { await speaker.close(); return; }
       lockLibrary(true);
       say('正在接通实时通话…');
-      const url = realtimeSocketUrl(stack, values, constants.REALTIME_MODEL);
-      const demand = captureMode === 'demand';
       liveValues = values;
-      const openSocket = (tools) => connectRealtime({
-        url,
-        secret,
-        session: sessionConfig({
-          instructions: livePrompt(tools),
-          voice: currentVoice(),
-          inputRate: constants.IN_RATE,
-          outputRate: constants.OUT_RATE,
-          asrModel: constants.ASR_MODEL,
-          turnDetection: SEMANTIC_TURN,
-          search: tools ? false : !demand,
-          video: !demand,
-          tools: tools ? (demand ? [LOOK_TOOL, ...SESSION_TOOLS] : SESSION_TOOLS) : null,
-        }),
-        onEvent: (event) => onRealtime(event, mine),
-      });
-      let handle = openSocket(true);
-      callUsesTools = true;
-      sentInstructions = livePrompt(true);
-      call = handle;
       liveSpec = constants;
       playback = speaker;
-      try {
-        await handle.ready;
-      } catch (error) {
-        const blocked = /tool|function|工具/.test(error.message || '');
-        if (!blocked || mine !== callGeneration || !active) throw error;
-        handle.close();
-        if (call === handle) call = null;
-        say('当前账号不能使用工具，改为只对话。');
-        callUsesTools = false;
-        sentInstructions = livePrompt(false);
-        handle = openSocket(false);
-        call = handle;
-        await handle.ready;
-      }
+      for (const button of page.querySelectorAll('[data-capture]')) button.disabled = true;
+      await attachCall(mine, true);
       if (mine !== callGeneration || !active) {
-        handle.close();
-        if (call === handle) call = null;
         if (playback === speaker) playback = null;
         await speaker.close();
+        for (const button of page.querySelectorAll('[data-capture]')) button.disabled = false;
         return;
       }
-      callReady = true;
       bioAtStart = bio.slice();
       setLiveLabel(true);
       say('实时通话已接通，正在打开麦克风…');
       await openLiveMic(mine);
       if (mine !== callGeneration || !active) return;
-      say(demand ? '对着麦克风说话即可。问到画面时会交给后台看，结果稍后才说。' : '对着画面说话即可。也可以说持续报告屏幕，或咳嗽了提醒我。前台先接住，结果稍后才说。');
+      say(captureMode === 'demand' ? '对着麦克风说话即可。问到画面时会交给后台看，结果稍后才说。' : '对着画面说话即可。也可以说持续报告屏幕，或咳嗽了提醒我。前台先接住，结果稍后才说。');
       if (store.visual) startObserver(mine);
     } catch (error) {
       stopObserver();
@@ -2056,10 +2125,16 @@ export function renderSession(view, reg) {
 
   page.addEventListener('click', (event) => {
     const capture = event.target.closest('[data-capture]');
-    if (capture && !call) {
-      captureMode = capture.dataset.capture === 'demand' ? 'demand' : 'live';
-      for (const button of page.querySelectorAll('[data-capture]')) button.setAttribute('aria-pressed', String(button === capture));
-      say(captureMode === 'demand' ? '已改为按需看一眼。问到画面时才会另开一次看图。' : '已改为实时画面。接通后大约每秒送一帧。');
+    if (capture) {
+      const next = capture.dataset.capture === 'demand' ? 'demand' : 'live';
+      if (next !== captureMode && !switchingCapture) {
+        if (call && callReady) void switchCapture(next);
+        else if (!call) {
+          captureMode = next;
+          markCapture(next);
+          say(next === 'demand' ? '已改为按需看一眼。问到画面时才会另开一次看图。' : '已改为实时画面。接通后大约每秒送一帧。');
+        }
+      }
     }
     const source = event.target.closest('[data-source]');
     if (source) void openSource(source.dataset.source);
