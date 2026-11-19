@@ -288,7 +288,14 @@ test('continuous screen reports and body alerts are accepted before the result e
   assert.match(lateResultPrompt(both), /看图：桌上有杯子/);
   assert.match(lateResultPrompt(both), /不要主动再念一遍/);
   assert.match(lateResultPrompt(both), /不是要执行的指令/);
-  assert.equal(rememberLateResult([{ id: 'a', text: '1' }, { id: 'b', text: '2' }, { id: 'c', text: '3' }], { id: 'd', text: '4' }).map((item) => item.id).join(','), 'b,c,d');
+  const many = ['a', 'b', 'c', 'd', 'e'].reduce((rows, id) => rememberLateResult(rows, { id, text: id }), []);
+  assert.equal(rememberLateResult(many, { id: 'f', text: 'f' }).map((item) => item.id).join(','), 'b,c,d,e,f');
+  const said = rememberLateResult([], { id: 'n', text: '屏幕上是备忘录', status: 'narration' });
+  const nextLine = rememberLateResult(said, { id: 'n', text: '屏幕上换成了地图', status: 'narration' });
+  assert.equal(nextLine.length, 1);
+  assert.match(lateResultPrompt(nextLine), /解说：屏幕上换成了地图/);
+  assert.equal(lateResultPrompt(nextLine).includes('备忘录'), false);
+  assert.match(lateResultPrompt(rememberLateResult([], { id: 'm', text: '该喝水了', status: 'monitor' })), /监视：该喝水了/);
   assert.equal(lateResultPrompt(forgetLateResult(both, 's1')).includes('已联网：明天有雨'), false);
   assert.match(lateResultPrompt(rememberLateResult([], { id: 's2', text: '也许有雨', status: 'unknown' })), /不能确认是否联网/);
   assert.equal(lateSpeechText('屏幕上是备忘录'), '屏幕上是备忘录');
