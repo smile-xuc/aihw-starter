@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, monitorCooldownPlan, MONITOR_COOLDOWN_MS, clearAudioAfterCooldown, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateResultPrompt, lateSpeechText, listProactive, forgetLateResult, markLateResult, rememberLateResult, LATE_FACT_CHARS, LATE_NOTE_CHARS, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, searchTimeoutOutcome, SEARCH_TIMEOUT_MS, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, monitorAfterRound, MONITOR_RECYCLE_ROUNDS, MONITOR_FAILURE_LIMIT, monitorSpeechPlan, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, searchQueryPlan, SEARCH_QUERY_MAX, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, monitorCooldownPlan, MONITOR_COOLDOWN_MS, clearAudioAfterCooldown, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateResultPrompt, lateSpeechText, listProactive, forgetLateResult, markLateResult, rememberLateResult, LATE_FACT_CHARS, LATE_NOTE_CHARS, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, searchTimeoutOutcome, SEARCH_TIMEOUT_MS, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, monitorAfterRound, MONITOR_RECYCLE_ROUNDS, MONITOR_FAILURE_LIMIT, monitorSpeechPlan, openMonitor, speakClosePlan, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, searchQueryPlan, SEARCH_QUERY_MAX, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -590,6 +590,28 @@ test('a dropped watch socket ends the open round so the watch can reconnect', as
   const blocked = quotaWatch.round(frames, null, { vision: true, audio: false });
   DropSocket.latest.onclose({ code: 1007, reason: 'Allocated quota exceeded, please increase your quota limit.' });
   await assert.rejects(blocked, (error) => /额度不够/.test(error.message));
+});
+
+test('a dropped readout socket ends the reading immediately', async () => {
+  class DropSocket {
+    constructor() { this.readyState = 1; this.sent = []; DropSocket.latest = this; }
+    send(data) { this.sent.push(JSON.parse(data)); }
+    close() { this.readyState = 3; }
+  }
+  assert.equal(speakClosePlan({ code: 1006, reason: '' }).note, '朗读连接断了');
+  assert.match(speakClosePlan({ code: 1006, reason: 'Allocated quota exceeded, please increase your quota limit.' }).note, /额度不够/);
+  const pending = speakReminder({ ...common, text: '该喝水了', WebSocketImpl: DropSocket, timeoutMs: 400 });
+  DropSocket.latest.onmessage({ data: JSON.stringify({ type: 'session.created' }) });
+  DropSocket.latest.onmessage({ data: JSON.stringify({ type: 'session.updated' }) });
+  await new Promise((resolve) => { setTimeout(resolve, 0); });
+  DropSocket.latest.onclose({ code: 1006, reason: '' });
+  await assert.rejects(pending, (error) => error.message === '朗读连接断了');
+  const quota = speakReminder({ ...common, text: '该喝水了', WebSocketImpl: DropSocket, timeoutMs: 400 });
+  DropSocket.latest.onmessage({ data: JSON.stringify({ type: 'session.created' }) });
+  DropSocket.latest.onmessage({ data: JSON.stringify({ type: 'session.updated' }) });
+  await new Promise((resolve) => { setTimeout(resolve, 0); });
+  DropSocket.latest.onclose({ code: 1006, reason: 'Allocated quota exceeded, please increase your quota limit.' });
+  await assert.rejects(quota, /额度不够/);
 });
 
 test('an aborted reminder is not spoken', async () => {

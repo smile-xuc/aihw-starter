@@ -489,6 +489,12 @@ export function timerRequest(raw) {
   return { seconds, text };
 }
 
+export function speakClosePlan({ code, reason } = {}) {
+  const quota = quotaPlan({ code, reason, message: reason });
+  if (quota.action === 'stop') return { action: 'stop', note: '额度不够，这次没有读出来。请到百炼控制台看额度。', code: 'insufficient_quota' };
+  return { action: 'stop', note: '朗读连接断了' };
+}
+
 export async function speakReminder(options) {
   const connect = options.connect || connectRealtime;
   const limit = Number(options.limit || 120);
@@ -529,6 +535,13 @@ export async function speakReminder(options) {
         video: false,
       }),
       onEvent(event) {
+        if (event.type === 'socket.close') {
+          const plan = speakClosePlan({ code: event.code, reason: event.reason });
+          const error = new Error(plan.note);
+          if (plan.code) error.code = plan.code;
+          finish(error);
+          return;
+        }
         if (event.type === 'error') finish(new Error(event.message || '朗读失败'));
         if (event.type === 'response.audio.delta' && event.delta) {
           try { audio.push(decodeBase64(event.delta)); } catch { /* 这一小段声音无效就只留文字 */ }
