@@ -96,6 +96,17 @@ export function decodeBase64(data) {
   return bytes;
 }
 
+export const CALL_RECOVERY_LIMIT = 2;
+const MODEL_SERVING_ERROR = /^<50002>\s+InternalError\.Algo\.ModelServingError:/;
+
+export function callRecoveryPlan({ code, message, attempts }) {
+  const known = code === 'COMMON_ERROR' && MODEL_SERVING_ERROR.test(String(message || '').trim());
+  const used = Number.isInteger(attempts) && attempts > 0 ? attempts : 0;
+  if (!known) return { action: 'fail' };
+  if (used >= CALL_RECOVERY_LIMIT) return { action: 'stop', note: '实时模型连续两次没有答上。请再开一次通话。' };
+  return { action: 'reconnect', note: '这一轮模型没有答上，正在换一条连接。计时接着算。刚才这一轮的声音不会带过去。持续报告、监视和记下的查询还在。' };
+}
+
 export function splitPcm(bytes, size) {
   if (!(bytes instanceof Uint8Array) || !Number.isInteger(size) || size < 2 || size % 2) throw new Error('音频分片无效');
   const chunks = [];
@@ -131,8 +142,9 @@ export function connectRealtime({ url, secret, session, signal, WebSocketImpl = 
     try { event = JSON.parse(data); } catch { fail(new Error('实时事件不是 JSON')); return; }
     if (event?.type === 'error') {
       const message = redactSecret(event.error?.message || event.message || '实时会话返回错误', secret);
+      const code = String(event.error?.code || event.code || '');
       if (!readySettled) fail(new Error(message));
-      else emit({ type: 'error', message });
+      else emit({ type: 'error', code, message });
       return;
     }
     if (event?.type === 'session.created') socket.send(JSON.stringify({ type: 'session.update', session }));
