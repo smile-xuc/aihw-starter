@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { MUTE_HEARTBEAT_MS, OMNI_38_VOICES, callRecoveryPlan, chooseVoice, connectRealtime, decodeBase64, pcmBase64, readVoice, realtimeSocketUrl, redactSecret, responseWaitPlan, SEMANTIC_TURN, sessionConfig, silenceFrame, splitPcm, translationSession, writeVoice } from '../js/live/realtime-omni.js';
+import { MUTE_HEARTBEAT_MS, OMNI_38_VOICES, QUOTA_STOP_NOTE, callRecoveryPlan, chooseVoice, connectRealtime, decodeBase64, pcmBase64, quotaPlan, readVoice, realtimeSocketUrl, redactSecret, responseWaitPlan, SEMANTIC_TURN, sessionConfig, silenceFrame, splitPcm, translationSession, writeVoice } from '../js/live/realtime-omni.js';
 
 const stack = {
   fields: [
@@ -87,6 +87,12 @@ test('ready handshake sends session.update and later errors stay redacted', asyn
   assert.equal(callRecoveryPlan({ code: 'COMMON_ERROR', message: '其他错误', attempts: 0 }).action, 'fail');
   assert.equal(callRecoveryPlan({ code: 'response_created_timeout', message: '', attempts: 0 }).action, 'reconnect');
   assert.equal(callRecoveryPlan({ code: 'response_done_timeout', message: '', attempts: 2 }).action, 'stop');
+  assert.equal(quotaPlan({ code: 'insufficient_quota', message: 'Allocated quota exceeded, please increase your quota limit.' }).note, QUOTA_STOP_NOTE);
+  assert.equal(quotaPlan({ code: 'quota_exceeded' }).action, 'stop');
+  assert.equal(quotaPlan({ reason: 'Allocated quota exceeded, please increase your quota limit.' }).action, 'stop');
+  assert.equal(quotaPlan({ code: 'rate_limit_exceeded', message: 'Too many requests, retry later.' }).action, 'continue');
+  assert.equal(quotaPlan({ code: 1006, reason: '' }).action, 'continue');
+  assert.equal(callRecoveryPlan({ code: 'insufficient_quota', message: 'Allocated quota exceeded', attempts: 0 }).action, 'fail');
   assert.equal(responseWaitPlan({ phase: 'created', authority: 'direct', elapsedMs: 14999 }).action, 'wait');
   assert.equal(responseWaitPlan({ phase: 'created', authority: 'direct', elapsedMs: 15000 }).code, 'response_created_timeout');
   assert.equal(responseWaitPlan({ phase: 'done', authority: 'direct', elapsedMs: 120000 }).action, 'wait');
@@ -98,7 +104,18 @@ test('ready handshake sends session.update and later errors stay redacted', asyn
   assert.equal(seen.filter((event) => event.type === 'error').at(-1).code, 'COMMON_ERROR');
   handle.send('response.create');
   assert.equal(socket.sent.at(-1).type, 'response.create');
+  socket.onclose({ code: 1007, reason: 'Allocated quota exceeded, please increase your quota limit.' });
+  const closed = seen.find((event) => event.type === 'socket.close');
+  assert.equal(closed.code, 1007);
+  assert.match(closed.reason, /quota exceeded/i);
   handle.close();
+});
+
+test('quota closes the handshake before the call is ready', async () => {
+  const href = realtimeSocketUrl(stack, { DASHSCOPE_API_KEY: key, DASHSCOPE_API_REGION: 'cn-beijing' }, 'qwen3.8-omni-flash-realtime');
+  const handle = connectRealtime({ url: href, secret: key, session: { instructions: 'hi' }, WebSocketImpl: FakeSocket, onEvent: () => {} });
+  FakeSocket.latest.onclose({ code: 1007, reason: `Allocated quota exceeded ${key}` });
+  await assert.rejects(handle.ready, (error) => error.code === 'insufficient_quota' && error.message === QUOTA_STOP_NOTE && !error.message.includes(key));
 });
 
 test('mic mute keeps the socket alive with one silent second', () => {

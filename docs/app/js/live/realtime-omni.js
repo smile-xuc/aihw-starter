@@ -112,7 +112,25 @@ export function responseWaitPlan({ phase, authority, elapsedMs }) {
   return { action: 'wait' };
 }
 
+const QUOTA_ERROR = /insufficient[ _.-]?quota|quota[ _.-]?exceeded/i;
+export const QUOTA_STOP_NOTE = '额度不够时这一通马上结束，不会再换一条连接。请到百炼控制台看额度。持续报告和监视也停下。';
+
+export function quotaPlan({ code, message, reason } = {}) {
+  const text = `${code || ''} ${message || ''} ${reason || ''}`;
+  if (!QUOTA_ERROR.test(text)) return { action: 'continue' };
+  return { action: 'stop', note: QUOTA_STOP_NOTE };
+}
+
+function quotaFailure(code, message) {
+  const plan = quotaPlan({ code, message });
+  if (plan.action !== 'stop') return null;
+  const error = new Error(plan.note);
+  error.code = 'insufficient_quota';
+  return error;
+}
+
 export function callRecoveryPlan({ code, message, attempts }) {
+  if (quotaPlan({ code, message }).action === 'stop') return { action: 'fail' };
   const serving = code === 'COMMON_ERROR' && MODEL_SERVING_ERROR.test(String(message || '').trim());
   const waiting = RESPONSE_WAIT_CODES.has(code);
   const used = Number.isInteger(attempts) && attempts > 0 ? attempts : 0;
@@ -147,6 +165,7 @@ export function connectRealtime({ url, secret, session, signal, WebSocketImpl = 
     signal?.removeEventListener('abort', abort);
     const message = redactSecret(error?.message || '实时连接失败', secret);
     const wrapped = error?.name === 'AbortError' ? error : new Error(message);
+    if (error?.code) wrapped.code = error.code;
     readyReject(wrapped);
     try { socket.close(); } catch { /* 连接可能还没建立 */ }
   };
@@ -160,7 +179,7 @@ export function connectRealtime({ url, secret, session, signal, WebSocketImpl = 
     if (event?.type === 'error') {
       const message = redactSecret(event.error?.message || event.message || '实时会话返回错误', secret);
       const code = String(event.error?.code || event.code || '');
-      if (!readySettled) fail(new Error(message));
+      if (!readySettled) fail(quotaFailure(code, message) || new Error(message));
       else emit({ type: 'error', code, message });
       return;
     }
@@ -173,9 +192,11 @@ export function connectRealtime({ url, secret, session, signal, WebSocketImpl = 
     emit(event);
   };
   socket.onerror = () => fail(new Error('实时连接失败。请核对 Key、地域、业务空间是否一致，以及是否开通了实时模型。'));
-  socket.onclose = () => {
-    if (!readySettled) fail(new Error('实时连接在就绪前断开'));
-    else if (!closed) emit({ type: 'socket.close' });
+  socket.onclose = (event) => {
+    const code = Number(event?.code);
+    const reason = redactSecret(event?.reason || '', secret);
+    if (!readySettled) fail(quotaFailure('', reason) || new Error('实时连接在就绪前断开'));
+    else if (!closed) emit({ type: 'socket.close', code: Number.isInteger(code) ? code : 0, reason });
   };
   signal?.addEventListener('abort', abort, { once: true });
   if (signal?.aborted) abort();
