@@ -1,12 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { JPEG_LONG_EDGE, JPEG_QUALITY_MIN, JPEG_QUALITY_START, LOOK_TOOL, VISUAL_ATTEMPTS, VISUAL_RETRY_INSTRUCTIONS, VISUAL_TIMEOUT_MS, analyzeFrame, canRetryVisual, captureSwitchPlan, nextJpegFit, pictureOpen, silencePcm, visualQuestion, visualRetryPlan } from '../js/live/on-demand.js';
+import { JPEG_LONG_EDGE, JPEG_QUALITY_MIN, JPEG_QUALITY_START, LOOK_TOOL, VISUAL_ATTEMPTS, VISUAL_QUERY_MAX, VISUAL_RETRY_INSTRUCTIONS, VISUAL_TIMEOUT_MS, analyzeFrame, canRetryVisual, captureSwitchPlan, nextJpegFit, pictureOpen, silencePcm, visualQueryPlan, visualQuestion, visualRetryPlan } from '../js/live/on-demand.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
   static latest = null;
   static failCommit = false;
   static repeat = false;
+  static tool = false;
   static sockets = [];
   constructor(url) { this.url = url; this.readyState = 1; this.sent = []; FakeSocket.latest = this; FakeSocket.sockets.push(this); }
   send(data) {
@@ -20,6 +21,11 @@ class FakeSocket {
     }
     if (message.type === 'response.create') {
       queueMicrotask(() => {
+        if (FakeSocket.tool) {
+          this.onmessage?.({ data: JSON.stringify({ type: 'response.output_item.added', item: { type: 'function_call' } }) });
+          this.onmessage?.({ data: JSON.stringify({ type: 'response.done', response: { status: 'completed', output: [{ type: 'function_call' }] } }) });
+          return;
+        }
         if (FakeSocket.repeat) {
           this.onmessage?.({ data: JSON.stringify({ type: 'response.done', response: { status: 'failed', output: [], error: { code: 'COMMON_ERROR', message: 'model repeat output happened', type: 'server_error', status: 500 } } }) });
           return;
@@ -51,6 +57,13 @@ const common = {
 test('on-demand question and silence stay bounded', () => {
   assert.equal(visualQuestion('', ''), '概述这张画面里看得到的内容。');
   assert.equal(visualQuestion('  杯子呢 ', '别的'), '杯子呢');
+  assert.equal(visualQuestion('字'.repeat(500), '').length, 500);
+  assert.equal(VISUAL_QUERY_MAX, 4096);
+  assert.equal(visualQueryPlan({ query: '  杯子呢 ' }, '别的').question, '杯子呢');
+  assert.equal(visualQueryPlan({}, '刚才那句').question, '刚才那句');
+  assert.equal(visualQueryPlan({ query: '' }, '刚才那句').action, 'reject');
+  assert.equal(visualQueryPlan({ query: '字', extra: 1 }, '').action, 'reject');
+  assert.equal(visualQueryPlan({ query: '字'.repeat(4097) }, '').action, 'reject');
   assert.equal(silencePcm(16000, 1).byteLength, 32000);
   assert.equal(LOOK_TOOL.function.name, 'analyze_view');
   assert.equal(canRetryVisual(new Error('看画面超时')), true);
@@ -164,4 +177,16 @@ test('two repeated screen readings stop without a third look', async () => {
   open(FakeSocket.latest);
   await assert.rejects(pending, /看了两次/);
   assert.equal(FakeSocket.sockets.length, 2);
+});
+
+test('a tool call during a look is not treated as the picture', async () => {
+  FakeSocket.failCommit = false;
+  FakeSocket.repeat = false;
+  FakeSocket.tool = true;
+  FakeSocket.sockets = [];
+  const pending = analyzeFrame({ ...common, question: '屏幕上有什么' });
+  open(FakeSocket.latest);
+  await assert.rejects(pending, /工具调用/);
+  assert.equal(FakeSocket.sockets.length, 1);
+  FakeSocket.tool = false;
 });

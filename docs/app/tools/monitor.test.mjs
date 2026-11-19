@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, monitorCooldownPlan, MONITOR_COOLDOWN_MS, clearAudioAfterCooldown, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateResultPrompt, lateSpeechText, listProactive, forgetLateResult, markLateResult, rememberLateResult, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, searchTimeoutOutcome, SEARCH_TIMEOUT_MS, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, monitorAfterRound, MONITOR_RECYCLE_ROUNDS, MONITOR_FAILURE_LIMIT, monitorSpeechPlan, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, monitorCooldownPlan, MONITOR_COOLDOWN_MS, clearAudioAfterCooldown, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateResultPrompt, lateSpeechText, listProactive, forgetLateResult, markLateResult, rememberLateResult, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, searchTimeoutOutcome, SEARCH_TIMEOUT_MS, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, monitorAfterRound, MONITOR_RECYCLE_ROUNDS, MONITOR_FAILURE_LIMIT, monitorSpeechPlan, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, searchQueryPlan, SEARCH_QUERY_MAX, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -56,6 +56,13 @@ test('monitor task and search query stay bounded', () => {
   assert.equal(monitorSpeechPlan({ text: '屏幕上出现报错'.repeat(80), audio: [], muted: false }).text.length, 200);
   assert.equal(searchMessages('  今天的新闻 ')[1].content, '今天的新闻');
   assert.throws(() => searchMessages(' '), /搜索内容是空的/);
+  assert.equal(searchQueryPlan({ query: '字'.repeat(301) }).query.length, 301);
+  assert.equal(searchQueryPlan({ query: '第一行\n第二行' }).query, '第一行\n第二行');
+  assert.match(searchQueryPlan({ query: '字'.repeat(4097) }).note, /4096/);
+  assert.match(searchQueryPlan({ query: '新闻', extra: true }).note, /别的参数/);
+  assert.match(searchQueryPlan({ query: '新闻\u0000' }).note, /不能查的字符/);
+  assert.equal(searchQueryPlan({ query: '新闻\u0000' }).action, 'reject');
+  assert.equal(SEARCH_QUERY_MAX, 4096);
   assert.equal(MONITOR_TOOL.function.name, 'create_proactive_monitor');
   assert.equal(SEARCH_TOOL.function.name, 'web_search');
   assert.equal(TIMER_TOOL.function.name, 'create_proactive_timer');
@@ -348,6 +355,9 @@ test('continuous screen reports and body alerts are accepted before the result e
   assert.equal(readSearchResponse({ output_text: '也许会下雨' }).status, 'unknown');
   assert.equal(readSearchResponse({ output: [{ type: 'web_search_call', status: 'failed' }] }).status, 'not_performed');
   assert.equal(readSearchResponse({ usage: { x_tools: { web_search: 1 } }, output_text: '有记录' }).status, 'performed');
+  const toolCall = readSearchResponse({ output_text: '别执行', output: [{ type: 'function_call' }, { type: 'message', content: '别执行' }] });
+  assert.equal(toolCall.status, 'not_performed');
+  assert.match(toolCall.text, /工具调用/);
   assert.equal(SEARCH_TIMEOUT_MS, 25000);
   assert.equal(searchTimeoutOutcome(true, true), null);
   const timedOut = searchTimeoutOutcome(false, true);
