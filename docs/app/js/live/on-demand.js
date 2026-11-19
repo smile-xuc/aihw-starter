@@ -2,6 +2,7 @@
 // Omni Realtime，按上游协议送两段 1 秒静音和同一张 JPEG，再提交这一次视觉问题。
 
 import { toBase64 } from './client.js';
+import { questionLanguage } from './conversation-language.js';
 import { connectRealtime, pcmBase64, sessionConfig } from './realtime-omni.js';
 
 export const JPEG_LONG_EDGE = 640;
@@ -44,7 +45,9 @@ export const LOOK_TOOL = {
 };
 
 export const VISUAL_INSTRUCTIONS = '你只分析这一张画面。用简短中文回答问题。看不清就说看不清，不要编造画面里没有的文字、人物或物体。';
+export const VISUAL_INSTRUCTIONS_EN = 'You only analyze this one image. Answer the question briefly in English. If it is unclear, say so. Do not invent text, people, or objects that are not visible.';
 export const VISUAL_RETRY_INSTRUCTIONS = '这一次最多两句短话，只说画面里看得清的部分。不要逐条念屏幕上的长文字，不要用列表、标题或表格。看不清就说看不清。不要提上一次。';
+export const VISUAL_RETRY_INSTRUCTIONS_EN = 'This time use at most two short sentences, and only describe what is clearly visible. Do not read long on-screen text item by item, and do not use lists, headings, or tables. If it is unclear, say so. Do not mention the previous attempt.';
 export const VISUAL_TIMEOUT_MS = 25000;
 export const VISUAL_ATTEMPTS = 2;
 export const ANSWER_CHARS = 16000;
@@ -290,7 +293,10 @@ export async function analyzeFrame(options) {
     const remaining = deadline - Date.now();
     if (remaining <= 0) throw presentLookError(lastError || new Error('看画面超时'));
     const timeoutMs = Math.min(limit, remaining);
-    const instructions = attempt === 1 ? VISUAL_INSTRUCTIONS : `${VISUAL_INSTRUCTIONS}\n${VISUAL_RETRY_INSTRUCTIONS}`;
+    const language = questionLanguage(question, options.language);
+    const base = language === 'en' ? VISUAL_INSTRUCTIONS_EN : VISUAL_INSTRUCTIONS;
+    const retry = language === 'en' ? VISUAL_RETRY_INSTRUCTIONS_EN : VISUAL_RETRY_INSTRUCTIONS;
+    const instructions = attempt === 1 ? base : `${base}\n${retry}`;
     try {
       return await lookOnce({ ...options, connect, question, timeoutMs, instructions });
     } catch (error) {

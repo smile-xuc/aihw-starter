@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { JPEG_LONG_EDGE, JPEG_QUALITY_MIN, JPEG_QUALITY_START, LOOK_TOOL, VISUAL_ATTEMPTS, VISUAL_QUERY_MAX, VISUAL_RETRY_INSTRUCTIONS, VISUAL_TIMEOUT_MS, analyzeFrame, canRetryVisual, captureSwitchPlan, nextJpegFit, pictureOpen, silencePcm, visualQueryPlan, visualQuestion, visualRetryPlan } from '../js/live/on-demand.js';
+import { JPEG_LONG_EDGE, JPEG_QUALITY_MIN, JPEG_QUALITY_START, LOOK_TOOL, VISUAL_ATTEMPTS, VISUAL_INSTRUCTIONS_EN, VISUAL_QUERY_MAX, VISUAL_RETRY_INSTRUCTIONS, VISUAL_RETRY_INSTRUCTIONS_EN, VISUAL_TIMEOUT_MS, analyzeFrame, canRetryVisual, captureSwitchPlan, nextJpegFit, pictureOpen, silencePcm, visualQueryPlan, visualQuestion, visualRetryPlan } from '../js/live/on-demand.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -222,4 +222,37 @@ test('an oversized or split look is not kept or retried', async () => {
     assert.equal(FakeSocket.sockets.length, 1);
   }
   FakeSocket.mode = '';
+});
+
+test('an English question is looked at in English', async () => {
+  FakeSocket.failCommit = false;
+  FakeSocket.repeat = false;
+  FakeSocket.tool = false;
+  FakeSocket.mode = '';
+  FakeSocket.sockets = [];
+  const pending = analyzeFrame({ ...common, question: 'what is on the screen', language: 'zh-CN' });
+  open(FakeSocket.latest);
+  assert.equal(await pending, '桌上有杯子');
+  const session = FakeSocket.latest.sent.find((item) => item.type === 'session.update').session;
+  assert.equal(session.instructions, VISUAL_INSTRUCTIONS_EN);
+  assert.equal(session.instructions.includes('简短中文'), false);
+});
+
+test('a Chinese question stays in Chinese during an English call', async () => {
+  FakeSocket.failCommit = true;
+  FakeSocket.repeat = false;
+  FakeSocket.tool = false;
+  FakeSocket.mode = '';
+  FakeSocket.sockets = [];
+  const pending = analyzeFrame({ ...common, question: '屏幕上有什么', language: 'en' });
+  open(FakeSocket.latest);
+  await new Promise((resolve) => { setTimeout(resolve, 0); });
+  FakeSocket.failCommit = false;
+  const socket = FakeSocket.latest;
+  open(socket);
+  assert.equal(await pending, '桌上有杯子');
+  const instructions = socket.sent.find((item) => item.type === 'session.update').session.instructions;
+  assert.match(instructions, /简短中文/);
+  assert.match(instructions, new RegExp(VISUAL_RETRY_INSTRUCTIONS));
+  assert.equal(instructions.includes(VISUAL_RETRY_INSTRUCTIONS_EN), false);
 });
