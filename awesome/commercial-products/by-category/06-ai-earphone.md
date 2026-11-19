@@ -275,12 +275,34 @@
 
 ---
 
+### Samsung Galaxy Buds4（Samsung，美区白色 SKU SM-R540NZWAXAR）
+
+- **上市状态**：在售（美区白色 SKU 购买页 JSON-LD Offer `availability=InStock`，查证 2026-11-19）
+- **官网/渠道**：<https://www.samsung.com/us/audio-sound/galaxy-buds4/> 产品页；<https://www.samsung.com/us/audio-sound/galaxy-buds4/buy/galaxy-buds4-white-sku-sm-r540nzwaxar/> 美区白色 SKU 购买页
+- **形态**：入耳式 TWS。美区白色 SKU `SM-R540NZWAXAR`。翻译须搭配兼容的 Galaxy 手机：语音由耳塞拾取，在 Galaxy 设备上解释后再从耳塞播回（见 AI 功能）
+- **定价**：
+  - 首发价：待核实（页面未写上市价 / 首发价）
+  - 现价：$179.99 USD · 美国 · [白色 SKU 购买页](https://www.samsung.com/us/audio-sound/galaxy-buds4/buy/galaxy-buds4-white-sku-sm-r540nzwaxar/) · 查证 2026-11-19。该页 JSON-LD Offer，`sku=SM-R540NZWAXAR`，`name=Galaxy Buds4`，`color=White`，`price=179.99`，`priceCurrency=USD`，`availability=InStock`，`priceValidUntil=2026-12-19`
+  - MSRP：待核实
+- **目标市场**：需搭配兼容 Galaxy 设备使用 Live Translate / Interpreter 的 TWS 用户（美国店白色 SKU）
+- **AI 能力**：
+  - AI 功能：通话中的 Live Translate，以及面对面 Interpreter。官方名称是 Galaxy AI Live Translate / Interpreter，模型名未公开。实现方式：语音经 Galaxy Buds 拾取后，送到 Galaxy 设备上解释，再从耳塞播回。原文："During phone calls, Live Translate picks up spoken language through your Galaxy Buds and delivers it to your Galaxy device to be interpreted. Then it plays the language back through your Galaxy Buds so you can speak and hear in your language of choice." 搭配 Galaxy S26 Series 的 Samsung Phone 应用时，Buds4 与 Live Translate 支持 22 种语言；面对面翻译可以显示在手机屏幕上。Interpreter 原文："Galaxy AI provides real-time interpretation — hear it through Galaxy Buds4 Series and read it on your Galaxy smartphone." 脚注：Interpreter 需带 Galaxy AI、运行 One UI 6.1.1 或更高版本的智能手机；Buds4 Series 在与兼容 Galaxy 设备配对时支持 Interpreter 和 Live Translate；可用性可能因机型而异。官方只写在 Galaxy 设备上解释（interpreted on the Galaxy device），是否还上云未说明。[产品页](https://www.samsung.com/us/audio-sound/galaxy-buds4/) · [白色 SKU 购买页](https://www.samsung.com/us/audio-sound/galaxy-buds4/buy/galaxy-buds4-white-sku-sm-r540nzwaxar/)（查证 2026-11-19）
+- **大模型方案**：官方名称 Galaxy AI；未公开具体基座模型（非千问默认绑定）。翻译依赖兼容的 Galaxy 设备，不是完全在耳塞内完成
+- **公开数据**：未见官方公开销量
+- **关键差异化**：① 品牌 TWS 把 Live Translate / Interpreter 接到 Galaxy 手机，而不是专用翻译耳机；② 官方写解释发生在 Galaxy 设备上；③ 本卡现价只钉美区白 SKU $179.99 InStock
+- **商业模式**：硬件销售
+- **另见**：[公开案例](../../../solutions/by-category/06-ai-earphone/04-cases.md)
+
+> 来源：[Galaxy Buds4 产品页](https://www.samsung.com/us/audio-sound/galaxy-buds4/) · [美区白色 SKU 购买页（SM-R540NZWAXAR）](https://www.samsung.com/us/audio-sound/galaxy-buds4/buy/galaxy-buds4-white-sku-sm-r540nzwaxar/)（均查证 2026-11-19）
+
+---
+
 ## 待补充清单
 
 ### 品牌 TWS + 系统翻译
 
 - [ ] **Apple AirPods** 实时翻译 / 系统助手能力（随 iOS 版本核对）
-- [ ] **华为 FreeBuds / 三星 Galaxy Buds** 翻译功能档位
+- [x] **华为 FreeBuds / 三星 Galaxy Buds** 翻译功能档位（已补 Galaxy Buds4（美国店白 SKU $179.99 InStock），华为 FreeBuds 仍缺）
 - [x] **Google Pixel Buds Pro 2**
 
 ### 出海与白牌

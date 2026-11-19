@@ -185,13 +185,36 @@
 
 ---
 
+### Lorex Classic 4K+ PoE AI Bullet Camera（Lorex，SKU E920SB）
+
+- **上市状态**：在售（官网产品页 JSON-LD Offer `availability=https://schema.org/InStock`，查证 2026-11-19）
+- **官网/渠道**：<https://www.lorex.com/products/e920sb-4k-plus-12mp-bullet-ip-camera>
+- **形态**：12MP 枪机，官方称 “4K+”（原文 "50% more pixels than 4K"），PoE。官方写全金属外壳、IP67（原文 "durable all-metal IP67-rated weatherproof design"）。包装内含 4K+ IP Bullet Camera、Mounting Kit、Quick Start Guide。同页还有双向对讲（Two-Way Talk）与 Smart Security Lighting。SKU `E920SB`，GTIN `695529065083`
+- **定价**：
+  - 首发价：待核实（产品页未写上市价 / 首发价）
+  - 现价：$219.99 USD · 美国 · [产品页](https://www.lorex.com/products/e920sb-4k-plus-12mp-bullet-ip-camera) · 查证 2026-11-19。JSON-LD Product/Offer，`sku=E920SB`，`gtin=695529065083`，`price=219.99`，`priceCurrency=USD`，`availability=InStock`。同站 Shopify 产品 JSON 变体 id `45811622379670`：`price=21999`（分），`compare_at_price=null`，`available=true`，`barcode=695529065083`
+  - MSRP：待核实（`compare_at_price` 为空）
+  - 订阅：订阅条款未针对本 SKU 单独核实
+- **目标市场**：偏专业家用 PoE 枪机（美国官网在售）
+- **AI 能力**：
+  - AI 功能：两套官方能力分开记。① 机内边缘侦测（In-Camera Edge AI）：人物与车辆移动侦测在设备上处理。原文："Keep your security local and private with In-Camera Edge AI, which processes motion detection (person and vehicle) directly on the device—not the cloud—so your data stays exactly where it belongs: with you." 同页另写："Smart Detection analytics distinguish between people and vehicles"。② AI ISP 只做成像：Quad Pixel 与 AI ISP 用于增强 Color Night Vision。原文："Powered by Quad Pixel Technology and AI ISP (Artificial Intelligence Image Signal Processing), this camera enhances Color Night Vision…"。模型名官方未公开。[产品页](https://www.lorex.com/products/e920sb-4k-plus-12mp-bullet-ip-camera)（查证 2026-11-19）
+- **大模型方案**：官方未公开模型名（非千问默认绑定）。已公开的是机内人物/车辆侦测，以及用于彩色夜视增强的 AI ISP
+- **公开数据**：未见官方公开销量
+- **关键差异化**：① 人物/车辆侦测按官方说法在机内处理、不经过云；② 12MP「4K+」PoE 全金属 IP67 枪机；③ AI ISP 只增强成像，与侦测能力分开
+- **商业模式**：硬件销售。订阅条款未针对本 SKU 单独核实
+- **另见**：[公开案例](../../../solutions/by-category/01-ipc/04-cases.md)
+
+> 来源：[Lorex E920SB 产品页](https://www.lorex.com/products/e920sb-4k-plus-12mp-bullet-ip-camera)（查证 2026-11-19）
+
+---
+
 ## 待补充清单
 
 - [ ] TP-LINK / 小米 / 360 / 乐橙 国内 SKU 卡片
 - [x] Wyze Duo Cam Doorbell / Cam Unlimited Pro
 - [x] Arlo Secure
 - [x] Reolink Home Hub 2
-- [ ] Lorex 偏专业家用
+- [x] Lorex 偏专业家用（已补 E920SB，其它 Lorex SKU 仍可再补）
 
 ## 贡献指引
 

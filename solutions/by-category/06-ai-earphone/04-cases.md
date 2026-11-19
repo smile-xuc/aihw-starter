@@ -83,8 +83,8 @@
 
 ### 案例：品牌 TWS 系统级翻译（华为 / 三星 / Apple）
 
-- **公开信息源**：各品牌系统更新说明 / 产品页（随版本变化，引用时核对当期文档）（**待补链接**）
-- **亮点**：待核实
+- **公开信息源**：三星 [Galaxy Buds4 产品页](https://www.samsung.com/us/audio-sound/galaxy-buds4/) · [美区白色 SKU 购买页](https://www.samsung.com/us/audio-sound/galaxy-buds4/buy/galaxy-buds4-white-sku-sm-r540nzwaxar/)（查证 2026-11-19）。现价 $179.99 USD，InStock，取白色 SKU 购买页 JSON-LD（`sku=SM-R540NZWAXAR`，`price=179.99`，`priceCurrency=USD`，`availability=InStock`，`priceValidUntil=2026-12-19`）。华为 FreeBuds 与 Apple AirPods 待补链接
+- **亮点**：Galaxy Buds4 的 Live Translate / Interpreter：语音经 Galaxy Buds 拾取后，在 Galaxy 设备上解释，再从耳塞播回；须兼容 Galaxy 机型。Interpreter 需带 Galaxy AI、运行 One UI 6.1.1 或更高版本的智能手机；Buds4 Series 与兼容 Galaxy 设备配对时支持 Interpreter 和 Live Translate；可用性可能因机型而异。模型名未公开。官方只写在 Galaxy 设备上解释，是否上云未说明。华为 FreeBuds 与 Apple AirPods 待补
 - **可借鉴点**：AI 是声学旗舰的附件能力；云端成本通常被生态账号吸收，不适合白牌直接复制「无限用」承诺
 
 ### 案例：Timekettle W4 Plus（时空壶）— 买断版与订阅版
