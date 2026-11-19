@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, MAX_BIO, RETRIEVE_TOOL,
   activeLibrary, applyBio, applyMemoryPatch, bioReceipt, bioResult, cleanObservation, clearLibrary, cleanStm, createLibrary, datedEntries, emptyDialogue, emptyLtm, finishDialogue, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, mergeVectorHits, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn,
-  renameLibrary, renderProfile, fitProfile, LTM_PROMPT_ITEMS, LTM_PROMPT_CHARS, LTM_PROMPT_ORDER, LTM_TRIM_ORDER, MAX_LTM_ITEMS, MAX_LTM_CHARS, MAX_NAME_CHARS, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, sessionFacts, shouldConsolidateLibrary, librarySwitchNote, spaceEnvHits, presentRetrieval, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, nextObserveDelay, OBSERVE_EVERY_MS, OBSERVE_RETRY_MS, OBSERVE_TIMEOUT_MS, OBSERVER_TEMPERATURE, OBSERVER_MAX_TOKENS, memorySampling, UPDATER_TIMEOUT_MS, UPDATER_TEMPERATURE, UPDATER_MAX_TOKENS, updaterFinishPlan, updaterTimeoutPlan,
+  renameLibrary, renderProfile, fitProfile, LTM_PROMPT_ITEMS, LTM_PROMPT_CHARS, LTM_PROMPT_ORDER, LTM_TRIM_ORDER, MAX_LTM_ITEMS, MAX_LTM_CHARS, MAX_NAME_CHARS, MAX_STM_CHARS, STM_PROMPT_ITEMS, STM_PROMPT_CHARS, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, sessionFacts, shouldConsolidateLibrary, librarySwitchNote, spaceEnvHits, presentRetrieval, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore, nextObserveDelay, OBSERVE_EVERY_MS, OBSERVE_RETRY_MS, OBSERVE_TIMEOUT_MS, OBSERVER_TEMPERATURE, OBSERVER_MAX_TOKENS, memorySampling, UPDATER_TIMEOUT_MS, UPDATER_TEMPERATURE, UPDATER_MAX_TOKENS, updaterFinishPlan, updaterTimeoutPlan,
 } from '../js/live/memory-libraries.js';
 
 function storage(initial = {}) {
@@ -351,6 +351,17 @@ test('stale upcoming items leave the prompt and urgent ones stay', () => {
   assert.equal(shown.some((item) => item.content === '明天要交稿'), true);
   assert.match(renderRecent(rows, today, noon), /记于 2026-11-15 12:00/);
   assert.match(renderRecent(rows, today, noon), /即将发生/);
+  assert.equal(MAX_STM_CHARS, STM_PROMPT_CHARS);
+  assert.equal(STM_PROMPT_ITEMS, 20);
+  const saved = applyMemoryPatch({ stm: [], stmSeq: 0 }, {
+    stm_patch: { add: [{ content: '事'.repeat(400), status: 'ongoing' }] },
+  }, today, noon);
+  assert.equal([...saved.stm[0].content].length, 400);
+  assert.match(renderRecent(saved.stm, today, noon), new RegExp('事'.repeat(400)));
+  const cut = applyMemoryPatch({ stm: [], stmSeq: 0 }, {
+    stm_patch: { add: [{ content: '事'.repeat(1300), status: 'upcoming', event_date: '2026-11-16' }] },
+  }, today, noon);
+  assert.equal([...cut.stm[0].content].length, MAX_STM_CHARS);
 });
 
 test('a long profile keeps six facts per field and drops relationships before the name', () => {
