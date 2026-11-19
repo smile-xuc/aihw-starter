@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateResultPrompt, lateSpeechText, listProactive, forgetLateResult, markLateResult, rememberLateResult, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, searchTimeoutOutcome, SEARCH_TIMEOUT_MS, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, monitorAfterRound, MONITOR_RECYCLE_ROUNDS, MONITOR_FAILURE_LIMIT, monitorSpeechPlan, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, monitorCooldownPlan, MONITOR_COOLDOWN_MS, clearAudioAfterCooldown, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateResultPrompt, lateSpeechText, listProactive, forgetLateResult, markLateResult, rememberLateResult, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, searchTimeoutOutcome, SEARCH_TIMEOUT_MS, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, monitorAfterRound, MONITOR_RECYCLE_ROUNDS, MONITOR_FAILURE_LIMIT, monitorSpeechPlan, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -425,6 +425,16 @@ test('a one-time cough alert stops after it speaks, and an ongoing watch waits o
   const narrateQuiet = cadenceStep({ kind: 'narration', silent: true, once: false, armed: true });
   assert.equal(narrateQuiet.speak, false);
   assert.match(narrateQuiet.note, /没有要补充的/);
+  assert.equal(MONITOR_COOLDOWN_MS, 3000);
+  const waiting = monitorCooldownPlan({ now: 1_000, spokenAt: 1_000, repeat: true });
+  assert.equal(waiting.action, 'wait');
+  assert.equal(waiting.waitMs, 3000);
+  assert.equal(monitorCooldownPlan({ now: 2_500, spokenAt: 1_000, repeat: true }).waitMs, 1500);
+  assert.equal(monitorCooldownPlan({ now: 4_000, spokenAt: 1_000, repeat: true }).action, 'ready');
+  assert.equal(monitorCooldownPlan({ now: 1_000, spokenAt: 1_000, repeat: false }).action, 'ready');
+  assert.equal(clearAudioAfterCooldown([{ id: 'a', modalities: ['audio'] }], 'a'), true);
+  assert.equal(clearAudioAfterCooldown([{ id: 'a', modalities: ['audio'] }, { id: 'b', modalities: ['audio'] }], 'a'), false);
+  assert.equal(clearAudioAfterCooldown([{ id: 'a', modalities: ['audio'] }, { id: 'b', modalities: ['vision'] }], 'a'), true);
 });
 
 test('screen reports look without the microphone, and a cough watch listens without frames', async () => {

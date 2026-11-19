@@ -538,6 +538,19 @@ export function cadenceStep({ kind, silent, once, armed }) {
   return { armed: Boolean(armed), speak: true, stop: false, note: '' };
 }
 
+export const MONITOR_COOLDOWN_MS = 3000;
+
+export function monitorCooldownPlan({ now = 0, spokenAt, repeat } = {}) {
+  if (repeat !== true || !Number.isFinite(spokenAt)) return { action: 'ready', waitMs: 0 };
+  const elapsed = now - spokenAt;
+  if (!Number.isFinite(elapsed) || elapsed >= MONITOR_COOLDOWN_MS) return { action: 'ready', waitMs: 0 };
+  return { action: 'wait', waitMs: MONITOR_COOLDOWN_MS - Math.max(0, elapsed) };
+}
+
+export function clearAudioAfterCooldown(tasks, id) {
+  return !(Array.isArray(tasks) ? tasks : []).some((item) => item && item.id !== id && Array.isArray(item.modalities) && item.modalities.includes('audio'));
+}
+
 export function isSilentMonitor(text) {
   const clean = String(text || '').replace(/\s+/g, ' ').trim();
   return !clean || /\bremain_silent\b/i.test(clean);
