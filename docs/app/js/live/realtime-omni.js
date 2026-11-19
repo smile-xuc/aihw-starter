@@ -97,14 +97,31 @@ export function decodeBase64(data) {
 }
 
 export const CALL_RECOVERY_LIMIT = 2;
+export const RESPONSE_CREATED_TIMEOUT_MS = 15000;
+export const RESPONSE_DONE_TIMEOUT_MS = 120000;
+export const CANCEL_GRACE_MS = 2000;
 const MODEL_SERVING_ERROR = /^<50002>\s+InternalError\.Algo\.ModelServingError:/;
+const RESPONSE_WAIT_CODES = new Set(['response_created_timeout', 'response_done_timeout', 'response_cancel_timeout']);
+
+export function responseWaitPlan({ phase, authority, elapsedMs }) {
+  const elapsed = Number(elapsedMs);
+  if (!Number.isFinite(elapsed) || elapsed < 0) return { action: 'wait' };
+  if (phase === 'created' && elapsed >= RESPONSE_CREATED_TIMEOUT_MS) return { action: 'recover', code: 'response_created_timeout' };
+  if (phase === 'done' && authority !== 'direct' && elapsed >= RESPONSE_DONE_TIMEOUT_MS) return { action: 'recover', code: 'response_done_timeout' };
+  if (phase === 'cancel' && elapsed >= CANCEL_GRACE_MS) return { action: 'recover', code: 'response_cancel_timeout' };
+  return { action: 'wait' };
+}
 
 export function callRecoveryPlan({ code, message, attempts }) {
-  const known = code === 'COMMON_ERROR' && MODEL_SERVING_ERROR.test(String(message || '').trim());
+  const serving = code === 'COMMON_ERROR' && MODEL_SERVING_ERROR.test(String(message || '').trim());
+  const waiting = RESPONSE_WAIT_CODES.has(code);
   const used = Number.isInteger(attempts) && attempts > 0 ? attempts : 0;
-  if (!known) return { action: 'fail' };
-  if (used >= CALL_RECOVERY_LIMIT) return { action: 'stop', note: '实时模型连续两次没有答上。请再开一次通话。' };
-  return { action: 'reconnect', note: '这一轮模型没有答上，正在换一条连接。计时接着算。刚才这一轮的声音不会带过去。持续报告、监视和记下的查询还在。' };
+  if (!serving && !waiting) return { action: 'fail' };
+  if (used >= CALL_RECOVERY_LIMIT) return { action: 'stop', note: '这一通换了两次连接仍没接上。请再开一次通话。' };
+  const note = waiting
+    ? '这一轮没有按时完成，正在换一条连接。计时接着算。刚才这一轮的声音不会带过去。持续报告、监视和记下的查询还在。'
+    : '这一轮模型没有答上，正在换一条连接。计时接着算。刚才这一轮的声音不会带过去。持续报告、监视和记下的查询还在。';
+  return { action: 'reconnect', note };
 }
 
 export function splitPcm(bytes, size) {
