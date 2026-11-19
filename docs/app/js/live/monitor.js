@@ -296,6 +296,14 @@ export function lateResultInstructions(text, status) {
   return `下面是后台慢任务刚送到的结果。用一两句口语直接告诉用户。不要调用工具，不要说还在等。结果：${body}`;
 }
 
+export const SEARCH_TIMEOUT_MS = 25000;
+
+export function searchTimeoutOutcome(userStopped, timedOut) {
+  if (userStopped) return null;
+  if (timedOut) return { text: '查询超时。已经发出的请求仍会计费。', status: 'not_performed' };
+  return undefined;
+}
+
 export function searchResponsesBody(model, query) {
   const messages = searchMessages(query);
   if (!/^[A-Za-z0-9._-]+$/.test(String(model || ''))) throw new Error('搜索模型不可用');

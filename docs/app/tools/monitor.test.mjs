@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateResultPrompt, lateSpeechText, listProactive, forgetLateResult, markLateResult, rememberLateResult, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, monitorAfterRound, MONITOR_RECYCLE_ROUNDS, MONITOR_FAILURE_LIMIT, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateResultPrompt, lateSpeechText, listProactive, forgetLateResult, markLateResult, rememberLateResult, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, searchTimeoutOutcome, SEARCH_TIMEOUT_MS, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, monitorAfterRound, MONITOR_RECYCLE_ROUNDS, MONITOR_FAILURE_LIMIT, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -334,6 +334,13 @@ test('continuous screen reports and body alerts are accepted before the result e
   assert.equal(readSearchResponse({ output_text: '也许会下雨' }).status, 'unknown');
   assert.equal(readSearchResponse({ output: [{ type: 'web_search_call', status: 'failed' }] }).status, 'not_performed');
   assert.equal(readSearchResponse({ usage: { x_tools: { web_search: 1 } }, output_text: '有记录' }).status, 'performed');
+  assert.equal(SEARCH_TIMEOUT_MS, 25000);
+  assert.equal(searchTimeoutOutcome(true, true), null);
+  const timedOut = searchTimeoutOutcome(false, true);
+  assert.equal(timedOut.status, 'not_performed');
+  assert.match(timedOut.text, /查询超时/);
+  assert.match(timedOut.text, /仍会计费/);
+  assert.equal(searchTimeoutOutcome(false, false), undefined);
   assert.match(MONITOR_TOOL.function.description, /咳嗽/);
   assert.match(NARRATE_TOOL.function.description, /持续报告/);
   assert.match(SEARCH_TOOL.function.description, /回执里没有答案/);
