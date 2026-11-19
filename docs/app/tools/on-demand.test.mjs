@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { LOOK_TOOL, analyzeFrame, canRetryVisual, captureSwitchPlan, silencePcm, visualQuestion } from '../js/live/on-demand.js';
+import { JPEG_LONG_EDGE, JPEG_QUALITY_MIN, JPEG_QUALITY_START, LOOK_TOOL, analyzeFrame, canRetryVisual, captureSwitchPlan, nextJpegFit, pictureOpen, silencePcm, visualQuestion } from '../js/live/on-demand.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -91,6 +91,23 @@ test('capture mode stays on this call unless video was never opened', () => {
   assert.equal(plain.tools, 'omit');
   assert.match(plain.note, /没有工具/);
   assert.equal(captureSwitchPlan({ mode: 'live', next: 'live', videoOn: true, tools: true }).changed, false);
+});
+
+test('an oversized frame shrinks before the round is skipped', () => {
+  assert.equal(pictureOpen({ videoWidth: 1280, videoHeight: 720 }), true);
+  assert.equal(pictureOpen({ videoWidth: 0, videoHeight: 720 }), false);
+  const fitted = nextJpegFit({ edge: JPEG_LONG_EDGE, quality: JPEG_QUALITY_START, bytes: 1000, maxBytes: 194560, maxEdge: 1920 });
+  assert.equal(fitted.done, true);
+  const softer = nextJpegFit({ edge: JPEG_LONG_EDGE, quality: JPEG_QUALITY_START, bytes: 300000, maxBytes: 194560, maxEdge: 1920 });
+  assert.equal(softer.done, false);
+  assert.equal(softer.edge, JPEG_LONG_EDGE);
+  assert.ok(softer.quality < JPEG_QUALITY_START);
+  const smaller = nextJpegFit({ edge: JPEG_LONG_EDGE, quality: JPEG_QUALITY_MIN, bytes: 300000, maxBytes: 194560, maxEdge: 1920 });
+  assert.equal(smaller.edge, 480);
+  assert.equal(smaller.quality, JPEG_QUALITY_START);
+  const stopped = nextJpegFit({ edge: 160, quality: JPEG_QUALITY_MIN, bytes: 300000, maxBytes: 194560, maxEdge: 1920 });
+  assert.equal(stopped.done, false);
+  assert.equal(stopped.edge, undefined);
 });
 
 test('on-demand retries a timed-out look once', async () => {

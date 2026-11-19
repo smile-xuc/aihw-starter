@@ -4,6 +4,33 @@
 import { toBase64 } from './client.js';
 import { connectRealtime, pcmBase64, sessionConfig } from './realtime-omni.js';
 
+export const JPEG_LONG_EDGE = 640;
+export const JPEG_MIN_EDGE = 160;
+export const JPEG_QUALITY_START = 0.72;
+export const JPEG_QUALITY_MIN = 0.35;
+export const JPEG_QUALITY_STEP = 0.12;
+
+export function pictureOpen(video) {
+  return Boolean(video && Number(video.videoWidth) > 0 && Number(video.videoHeight) > 0);
+}
+
+export function nextJpegFit({ edge, quality, bytes, maxBytes, maxEdge }) {
+  const size = Number(bytes);
+  const limit = Number(maxBytes);
+  const longEdge = Math.floor(Number(edge));
+  const level = Number(quality);
+  const cap = Math.floor(Number(maxEdge));
+  if (!Number.isFinite(size) || size < 1 || !Number.isFinite(limit) || limit < 1 || longEdge < 1 || !Number.isFinite(level)) return { done: false };
+  if (size <= limit) return { done: true };
+  const nextQuality = Math.round((level - JPEG_QUALITY_STEP) * 100) / 100;
+  if (nextQuality >= JPEG_QUALITY_MIN) return { done: false, edge: longEdge, quality: nextQuality };
+  const nextEdge = Math.floor(longEdge * 0.75);
+  if (nextEdge >= JPEG_MIN_EDGE && nextEdge < longEdge && (!Number.isFinite(cap) || cap < 1 || nextEdge <= cap)) {
+    return { done: false, edge: nextEdge, quality: JPEG_QUALITY_START };
+  }
+  return { done: false };
+}
+
 export const LOOK_TOOL = {
   type: 'function',
   function: {
