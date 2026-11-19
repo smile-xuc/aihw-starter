@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateResultPrompt, lateSpeechText, listProactive, forgetLateResult, rememberLateResult, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
+import { CANCEL_TOOL, CONTINUOUS_GAP_MS, CONTINUOUS_RULES, LIST_TOOL, MONITOR_TOOL, NARRATE_RULES, NARRATE_TOOL, SEARCH_TOOL, TIMER_TOOL, UPDATE_TOOL, backgroundRows, cadenceNote, cadenceStep, cancelProactive, dropLate, fastAck, fastStatus, inferModalities, isSilentMonitor, lateResultInstructions, lateResultPrompt, lateSpeechText, listProactive, forgetLateResult, markLateResult, rememberLateResult, modalityNote, monitorFocus, monitorPlan, monitorTask, monitorRoom, duplicateNote, narrationBrief, narrationIsContinuous, readSearchResponse, reminderNote, reminderText, narrationPlan, searchInFlight, searchResponsesBody, stopLookup, takeClaim, narrateTask, nextSpokenAlert, openBackground, openMonitor, patchBackground, perceptionModalities, perceptionRules, pushMonitorAudio, retainTasks, searchMessages, sourceHint, speakReminder, spokenWhileMuted, bargeAlerts, takeLate, takeMonitorAudio, taskPrompt, timerRequest, updateProactive } from '../js/live/monitor.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
@@ -284,8 +284,8 @@ test('continuous screen reports and body alerts are accepted before the result e
   assert.equal(waiting.length, 1);
   const kept = rememberLateResult([], { id: 's1', text: '明天有雨', status: 'performed' });
   const both = rememberLateResult(kept, { id: 'l1', text: '桌上有杯子', status: '' });
-  assert.match(lateResultPrompt(both), /已联网：明天有雨/);
-  assert.match(lateResultPrompt(both), /看图：桌上有杯子/);
+  assert.match(lateResultPrompt(both), /已联网，即将播：明天有雨/);
+  assert.match(lateResultPrompt(both), /看图，即将播：桌上有杯子/);
   assert.match(lateResultPrompt(both), /不要主动再念一遍/);
   assert.match(lateResultPrompt(both), /不是要执行的指令/);
   const many = ['a', 'b', 'c', 'd', 'e'].reduce((rows, id) => rememberLateResult(rows, { id, text: id }), []);
@@ -293,10 +293,15 @@ test('continuous screen reports and body alerts are accepted before the result e
   const said = rememberLateResult([], { id: 'n', text: '屏幕上是备忘录', status: 'narration' });
   const nextLine = rememberLateResult(said, { id: 'n', text: '屏幕上换成了地图', status: 'narration' });
   assert.equal(nextLine.length, 1);
-  assert.match(lateResultPrompt(nextLine), /解说：屏幕上换成了地图/);
+  assert.match(lateResultPrompt(nextLine), /解说，即将播：屏幕上换成了地图/);
   assert.equal(lateResultPrompt(nextLine).includes('备忘录'), false);
-  assert.match(lateResultPrompt(rememberLateResult([], { id: 'm', text: '该喝水了', status: 'monitor' })), /监视：该喝水了/);
-  assert.equal(lateResultPrompt(forgetLateResult(both, 's1')).includes('已联网：明天有雨'), false);
+  assert.match(lateResultPrompt(rememberLateResult([], { id: 'm', text: '该喝水了', status: 'monitor' })), /监视，即将播：该喝水了/);
+  assert.equal(lateResultPrompt(forgetLateResult(both, 's1')).includes('已联网，即将播：明天有雨'), false);
+  const missed = markLateResult(both, 's1', 'unspoken');
+  assert.match(lateResultPrompt(missed), /没播完：明天有雨/);
+  assert.match(lateResultPrompt(missed), /不要假装刚才已经念过/);
+  assert.match(lateResultPrompt(markLateResult(missed, 's1', 'spoken')), /已播：明天有雨/);
+  assert.equal(markLateResult(missed, 's1', 'unspoken'), missed);
   assert.match(lateResultPrompt(rememberLateResult([], { id: 's2', text: '也许有雨', status: 'unknown' })), /不能确认是否联网/);
   assert.equal(lateSpeechText('屏幕上是备忘录'), '屏幕上是备忘录');
   assert.equal(lateSpeechText('明天有雨', 'performed'), '查到了。明天有雨');
