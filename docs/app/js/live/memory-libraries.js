@@ -345,6 +345,16 @@ export function switchLibrary(store, id) {
   return { ...store, activeId: id };
 }
 
+export function shouldConsolidateLibrary(duringCall) {
+  return !duringCall;
+}
+
+export function librarySwitchNote(name, duringCall) {
+  const title = String(name || '').replace(/\s+/g, ' ').trim().slice(0, 40) || '未命名';
+  if (duringCall) return `已换到「${title}」。这一通接下来用这套。长期资料在挂断时整理。`;
+  return `当前记忆库是「${title}」。`;
+}
+
 export function renameLibrary(store, id, name) {
   const title = cleanName(name);
   if (!title) throw new Error('请填写记忆库名称');
