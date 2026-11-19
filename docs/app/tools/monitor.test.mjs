@@ -55,6 +55,10 @@ test('monitor task and search query stay bounded', () => {
   assert.equal(monitorSpeechPlan({ text: 'remain_silent', audio: [clip], muted: false }).action, 'skip');
   assert.equal(monitorSpeechPlan({ text: '屏幕上出现报错'.repeat(80), audio: [], muted: false }).text.length, 200);
   assert.equal(searchMessages('  今天的新闻 ')[1].content, '今天的新闻');
+  assert.match(searchMessages('  今天的新闻 ')[0].content, /简短中文/);
+  assert.match(searchMessages('what is the weather today', 'zh-CN')[0].content, /Answer briefly in English/);
+  assert.match(searchMessages('cup', 'en')[0].content, /Answer briefly in English/);
+  assert.match(searchMessages('今天天气', 'en')[0].content, /简短中文/);
   assert.throws(() => searchMessages(' '), /搜索内容是空的/);
   assert.equal(searchQueryPlan({ query: '字'.repeat(301) }).query.length, 301);
   assert.equal(searchQueryPlan({ query: '第一行\n第二行' }).query, '第一行\n第二行');

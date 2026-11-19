@@ -35,6 +35,11 @@ export function resolveConversationLanguage(state, fallback = 'zh-CN') {
   return state?.current || fallback;
 }
 
+export function questionLanguage(text, fallback = 'zh-CN') {
+  const observed = observeConversationLanguage({}, text);
+  return observed.current || (fallback === 'en' ? 'en' : 'zh-CN');
+}
+
 export function replyLanguageLine(language) {
   if (language !== 'en') return '';
   return '\n这一通改用英文回答。查询、看图和提醒的播报也用英文。不要改回中文，除非用户明确要求。';

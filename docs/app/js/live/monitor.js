@@ -2,6 +2,7 @@
 // 只有第一轮在 response.create 里带上条件。条件没发生时模型应只回答 remain_silent。
 
 import { toBase64 } from './client.js';
+import { questionLanguage } from './conversation-language.js';
 import { ANSWER_CHARS, boundedAnswer, silencePcm } from './on-demand.js';
 import { connectRealtime, decodeBase64, pcmBase64, sessionConfig } from './realtime-omni.js';
 
@@ -328,8 +329,8 @@ export function searchTimeoutOutcome(userStopped, timedOut) {
   return undefined;
 }
 
-export function searchResponsesBody(model, query) {
-  const messages = searchMessages(query);
+export function searchResponsesBody(model, query, language) {
+  const messages = searchMessages(query, language);
   if (!/^[A-Za-z0-9._-]+$/.test(String(model || ''))) throw new Error('搜索模型不可用');
   return {
     model,
@@ -629,11 +630,14 @@ export function bargeAlerts(waiting, current) {
   return [{ audio: current.audio, mine: current.mine, id: '' }, ...queue];
 }
 
-export function searchMessages(query) {
+export function searchMessages(query, language = 'zh-CN') {
   const plan = searchQueryPlan({ query: typeof query === 'string' ? query : '' });
   if (plan.action !== 'search') throw new Error(plan.note);
+  const english = questionLanguage(plan.query, language) === 'en';
   return [
-    { role: 'system', content: '只根据检索到的内容用简短中文回答。没有检索就说没查到，不要编造链接。' },
+    { role: 'system', content: english
+      ? 'Answer briefly in English using only what the search found. If nothing was retrieved, say you could not find it. Do not invent links.'
+      : '只根据检索到的内容用简短中文回答。没有检索就说没查到，不要编造链接。' },
     { role: 'user', content: plan.query },
   ];
 }

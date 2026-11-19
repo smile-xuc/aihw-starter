@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { observeConversationLanguage, applyReplyLanguage, replyLanguageLine, resolveConversationLanguage } from '../js/live/conversation-language.js';
+import { observeConversationLanguage, applyReplyLanguage, replyLanguageLine, resolveConversationLanguage, questionLanguage } from '../js/live/conversation-language.js';
 
 test('conversation language follows a real request and ignores short replies', () => {
   assert.equal(resolveConversationLanguage({}), 'zh-CN');
@@ -24,6 +24,10 @@ test('conversation language follows a real request and ignores short replies', (
   assert.equal(state.current, undefined);
   state = observeConversationLanguage({}, '用英文翻译这段话');
   assert.equal(state.preference, undefined);
+  assert.equal(questionLanguage('what is on the screen'), 'en');
+  assert.equal(questionLanguage('屏幕上有什么', 'en'), 'zh-CN');
+  assert.equal(questionLanguage('cup', 'en'), 'en');
+  assert.equal(questionLanguage('杯', 'zh-CN'), 'zh-CN');
 });
 
 test('an English reply removes the Chinese answer instruction', () => {
