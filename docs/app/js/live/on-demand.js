@@ -52,6 +52,23 @@ export function canRetryVisual(error) {
   return /超时|连接|网络|临时/.test(message);
 }
 
+// 视频表征在首段音频之后不能改。已经开过画面的通话只停帧或续帧，并换工具。
+// 这一通还没开过画面时，改成实时画面必须新开连接。
+export function captureSwitchPlan({ mode, next, videoOn, tools }) {
+  const current = mode === 'demand' ? 'demand' : 'live';
+  const target = next === 'demand' ? 'demand' : 'live';
+  if (target === current) return { changed: false, mode: current, reconnect: false, tools: 'omit', note: '' };
+  const reconnect = target === 'live' && !videoOn;
+  let note;
+  if (reconnect) note = '已改为实时画面。这一通计时接着算，会新开一条连接。刚才听到的声音不会带过去。记下的查询和提醒还在。';
+  else if (target === 'demand' && videoOn) note = tools
+    ? '已改为按需看一眼。不再持续送画面。刚才送进这一通的画面还会留一会儿。问到画面时另看一次。'
+    : '已改为按需看一眼。不再持续送画面。这一通没有工具，问到画面时看不了。';
+  else if (target === 'live') note = '已改为实时画面。大约每秒送一帧。';
+  else note = '已改为按需看一眼。问到画面时才会另开一次看图。';
+  return { changed: true, mode: target, reconnect, tools: tools ? target : 'omit', note };
+}
+
 async function lookOnce({ connect, url, secret, jpeg, question, voice, inputRate, outputRate, asrModel, timeoutMs, WebSocketImpl, signal }) {
   if (!(jpeg instanceof Uint8Array) || jpeg.byteLength < 3) throw new Error('没有可看的画面');
   const image = toBase64(jpeg);
