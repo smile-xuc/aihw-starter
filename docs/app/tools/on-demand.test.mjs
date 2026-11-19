@@ -1,12 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { JPEG_LONG_EDGE, JPEG_QUALITY_MIN, JPEG_QUALITY_START, LOOK_TOOL, analyzeFrame, canRetryVisual, captureSwitchPlan, nextJpegFit, pictureOpen, silencePcm, visualQuestion } from '../js/live/on-demand.js';
+import { JPEG_LONG_EDGE, JPEG_QUALITY_MIN, JPEG_QUALITY_START, LOOK_TOOL, VISUAL_ATTEMPTS, VISUAL_RETRY_INSTRUCTIONS, VISUAL_TIMEOUT_MS, analyzeFrame, canRetryVisual, captureSwitchPlan, nextJpegFit, pictureOpen, silencePcm, visualQuestion, visualRetryPlan } from '../js/live/on-demand.js';
 import { decodeBase64 } from '../js/live/realtime-omni.js';
 
 class FakeSocket {
   static latest = null;
   static failCommit = false;
-  constructor(url) { this.url = url; this.readyState = 1; this.sent = []; FakeSocket.latest = this; }
+  static repeat = false;
+  static sockets = [];
+  constructor(url) { this.url = url; this.readyState = 1; this.sent = []; FakeSocket.latest = this; FakeSocket.sockets.push(this); }
   send(data) {
     const message = JSON.parse(data);
     this.sent.push(message);
@@ -18,6 +20,10 @@ class FakeSocket {
     }
     if (message.type === 'response.create') {
       queueMicrotask(() => {
+        if (FakeSocket.repeat) {
+          this.onmessage?.({ data: JSON.stringify({ type: 'response.done', response: { status: 'failed', output: [], error: { code: 'COMMON_ERROR', message: 'model repeat output happened', type: 'server_error', status: 500 } } }) });
+          return;
+        }
         this.onmessage?.({ data: JSON.stringify({ type: 'response.text.delta', delta: '桌上有杯子' }) });
         this.onmessage?.({ data: JSON.stringify({ type: 'response.done', response: { status: 'completed' } }) });
       });
@@ -50,6 +56,13 @@ test('on-demand question and silence stay bounded', () => {
   assert.equal(canRetryVisual(new Error('看画面超时')), true);
   assert.equal(canRetryVisual(new Error('请核对 Key、地域')), false);
   assert.equal(canRetryVisual(new DOMException('已停下', 'AbortError')), false);
+  assert.equal(VISUAL_TIMEOUT_MS, 25000);
+  assert.equal(VISUAL_ATTEMPTS, 2);
+  assert.equal(visualRetryPlan({ message: '看画面超时', attempt: 1 }).action, 'retry');
+  assert.equal(visualRetryPlan({ message: '看画面超时', attempt: 2 }).action, 'stop');
+  assert.equal(visualRetryPlan({ code: 'COMMON_ERROR', message: 'model repeat output happened', type: 'server_error', status: 500, attempt: 1 }).action, 'retry');
+  assert.equal(visualRetryPlan({ code: 'insufficient_quota', message: '额度不够', attempt: 1 }).action, 'stop');
+  assert.equal(visualRetryPlan({ name: 'AbortError', message: '已停下', attempt: 1 }).action, 'stop');
 });
 
 test('on-demand sends one still twice and asks after commit', async () => {
@@ -112,6 +125,8 @@ test('an oversized frame shrinks before the round is skipped', () => {
 
 test('on-demand retries a timed-out look once', async () => {
   FakeSocket.failCommit = true;
+  FakeSocket.repeat = false;
+  FakeSocket.sockets = [];
   const pending = analyzeFrame({ ...common, question: '再看' });
   open(FakeSocket.latest);
   await new Promise((resolve) => { setTimeout(resolve, 0); });
@@ -119,5 +134,34 @@ test('on-demand retries a timed-out look once', async () => {
   const socket = FakeSocket.latest;
   open(socket);
   assert.equal(await pending, '桌上有杯子');
-  assert.notEqual(socket, null);
+  const session = socket.sent.find((item) => item.type === 'session.update').session;
+  assert.match(session.instructions, /两句短话/);
+  assert.equal(FakeSocket.sockets.length, 2);
+});
+
+test('a repeated screen reading is looked at once more on the same frame', async () => {
+  FakeSocket.failCommit = false;
+  FakeSocket.repeat = true;
+  FakeSocket.sockets = [];
+  const pending = analyzeFrame({ ...common, question: '屏幕上有什么' });
+  open(FakeSocket.latest);
+  await new Promise((resolve) => { setTimeout(resolve, 0); });
+  FakeSocket.repeat = false;
+  const socket = FakeSocket.latest;
+  open(socket);
+  assert.equal(await pending, '桌上有杯子');
+  assert.match(socket.sent.find((item) => item.type === 'session.update').session.instructions, new RegExp(VISUAL_RETRY_INSTRUCTIONS));
+  assert.equal(FakeSocket.sockets.length, 2);
+});
+
+test('two repeated screen readings stop without a third look', async () => {
+  FakeSocket.failCommit = false;
+  FakeSocket.repeat = true;
+  FakeSocket.sockets = [];
+  const pending = analyzeFrame({ ...common, question: '屏幕上有什么' });
+  open(FakeSocket.latest);
+  await new Promise((resolve) => { setTimeout(resolve, 0); });
+  open(FakeSocket.latest);
+  await assert.rejects(pending, /看了两次/);
+  assert.equal(FakeSocket.sockets.length, 2);
 });
