@@ -16,6 +16,7 @@ export const EMBED_MODEL = 'text-embedding-v4';
 export const MIN_SIMILARITY = 0.4;
 export const RETRIEVE_LIMIT = 5;
 export const MAX_ENV = 20;
+export const ENV_MIN_GAP_SEC = 600;
 export const MAX_ENV_CHARS = 400;
 export const OBSERVE_EVERY_MS = 60000;
 
@@ -194,7 +195,7 @@ export const RETRIEVE_TOOL = {
   type: 'function',
   function: {
     name: 'omniretrieve',
-    description: '在当前记忆库里查找更早的对话、长期事实或视觉观察。会用向量相似度和关键词一起找。当前提示里已经有的内容不要再查。问以前看到的环境时 source 用 env。用户提到昨天、上周这类时间时再填 time_range，时间不要写进 query。时间只调整排序，不会丢掉窗口外的结果。先调用，再回答。',
+    description: '在当前记忆库里查找更早的对话、长期事实或视觉观察。会用向量相似度和关键词一起找。当前提示里已经有的内容不要再查。问以前看到的环境时 source 用 env。视觉观察相距不到 10 分钟的只留排序更靠前的一条。用户提到昨天、上周这类时间时再填 time_range，时间不要写进 query。时间只调整排序，不会丢掉窗口外的结果。先调用，再回答。',
     parameters: {
       type: 'object',
       properties: {
@@ -677,7 +678,7 @@ export function timeWeight(at, window) {
   return 1;
 }
 
-export function rankWithTime(keywordText, vectorHits, dated, timeRange, now = new Date()) {
+export function rankWithTime(keywordText, vectorHits, dated, timeRange, now = new Date(), limit = RETRIEVE_LIMIT) {
   const untouched = keywordText === '没有找到相关记忆。' || keywordText === '这套记忆库还没有视觉观察。';
   const keyword = untouched ? [] : String(keywordText || '').split('\n').map((line) => line.trim()).filter(Boolean);
   const vector = (Array.isArray(vectorHits) ? vectorHits : []).map((item) => String(item?.text || '').trim()).filter(Boolean);
@@ -690,9 +691,35 @@ export function rankWithTime(keywordText, vectorHits, dated, timeRange, now = ne
   const ranked = [...scores.entries()]
     .map(([text, score]) => [text, score * timeWeight(when.get(text) || 0, window)])
     .sort((a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0])))
-    .slice(0, RETRIEVE_LIMIT);
+    .slice(0, limit);
   if (!ranked.length) return keywordText === '这套记忆库还没有视觉观察。' ? keywordText : '没有找到相关记忆。';
   return ranked.map(([text]) => text).join('\n');
+}
+
+export function spaceEnvHits(lines, dated, gapSec = ENV_MIN_GAP_SEC, limit = RETRIEVE_LIMIT) {
+  const when = new Map((Array.isArray(dated) ? dated : []).map((item) => [item.text, Number(item.at) || 0]));
+  const chosen = [];
+  const stamps = [];
+  const cap = Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : RETRIEVE_LIMIT;
+  const gap = Number(gapSec);
+  for (const raw of Array.isArray(lines) ? lines : String(lines || '').split('\n')) {
+    const text = String(raw || '').trim();
+    if (!text || chosen.includes(text)) continue;
+    const at = when.get(text) || 0;
+    if (gap > 0 && at > 0 && stamps.some((other) => Math.abs(at - other) < gap)) continue;
+    chosen.push(text);
+    if (at > 0) stamps.push(at);
+    if (chosen.length >= cap) break;
+  }
+  return chosen;
+}
+
+export function presentRetrieval(keywordText, vectorHits, dated, timeRange, source, now = new Date()) {
+  const env = source === 'env';
+  const ranked = rankWithTime(keywordText, vectorHits, dated, timeRange, now, env ? MAX_ENV : RETRIEVE_LIMIT);
+  if (!env || ranked === '没有找到相关记忆。' || ranked === '这套记忆库还没有视觉观察。') return ranked;
+  const spaced = spaceEnvHits(ranked.split('\n'), dated, ENV_MIN_GAP_SEC, RETRIEVE_LIMIT);
+  return spaced.length ? spaced.join('\n') : '没有找到相关记忆。';
 }
 
 export const LTM_FIELDS = ['name', 'occupation_or_role', 'preferences', 'routines', 'interests', 'long_term_goals', 'relationships', 'appearance'];
@@ -1115,11 +1142,11 @@ function queryWords(request) {
   return words;
 }
 
-function keywordLines(corpus, words) {
+function keywordLines(corpus, words, limit = RETRIEVE_LIMIT) {
   const found = corpus.map((text) => ({ text, hits: words.filter((word) => text.includes(word)).length }))
     .filter((item) => item.hits > 0)
     .sort((a, b) => b.hits - a.hits || a.text.localeCompare(b.text))
-    .slice(0, RETRIEVE_LIMIT);
+    .slice(0, limit);
   if (!found.length) return '没有找到相关记忆。';
   return found.map((item) => item.text).join('\n');
 }
@@ -1130,7 +1157,7 @@ export function retrieveMemory(library, request) {
   const words = queryWords(request);
   if (source === 'env' && !envCorpus(library).length) return '这套记忆库还没有视觉观察。';
   const dialogue = source === 'env' ? envCorpus(library) : dialogueLines(library);
-  if (source === 'env') return keywordLines(dialogue, words);
+  if (source === 'env') return keywordLines(dialogue, words, MAX_ENV);
   const lines = dialogue.slice();
   for (const item of dialogueEntries(library)) {
     if (!lines.includes(item.text)) lines.push(item.text);
