@@ -537,6 +537,14 @@ export function isSilentMonitor(text) {
   return !clean || /\bremain_silent\b/i.test(clean);
 }
 
+export function monitorSpeechPlan({ text, audio, muted }) {
+  const sentence = String(text || '').replace(/\s+/g, ' ').trim();
+  const chunks = (Array.isArray(audio) ? audio : []).filter((chunk) => chunk && chunk.byteLength >= 2);
+  if (chunks.length && !isSilentMonitor(sentence)) return { action: 'play', audio: chunks };
+  if (muted || isSilentMonitor(sentence)) return { action: 'skip' };
+  return { action: 'read', text: sentence.slice(0, 200) };
+}
+
 export function spokenWhileMuted(queue, muted) {
   const waiting = (Array.isArray(queue) ? queue : []).filter((item) => item && Array.isArray(item.audio) && item.audio.length);
   return muted ? [] : waiting;
