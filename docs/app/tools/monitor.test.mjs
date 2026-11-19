@@ -356,6 +356,17 @@ test('continuous screen reports and body alerts are accepted before the result e
   assert.equal(narrateTask('screen', 'en'), 'Focus: screen');
   assert.match(narrationBrief('keep it to one short sentence', 'en'), /Match the detail of the user's own words: keep it to one short sentence/);
   assert.match(monitorFocus('cough', 'drink water', 'en'), /When it happens, say only this reminder: drink water/);
+  assert.match(fastAck('narration', 'en'), /Handed to background reporting/);
+  assert.equal(fastAck('narration', 'en').includes('已交给'), false);
+  assert.match(fastAck('monitor', 'en'), /does not mean the condition has happened/);
+  assert.match(fastStatus('narration', 'phone screen', 'en'), /keep reporting "phone screen"/);
+  assert.match(modalityNote(['vision'], 'en'), /only looks/);
+  assert.match(modalityNote(['audio'], 'en'), /only listens/);
+  assert.match(cadenceNote(false, 'en'), /once, then stops/);
+  assert.match(cadenceNote(true, 'en'), /same occurrence/);
+  assert.match(sourceHint('camera', 'phone screen', 'en'), /Screen sharing/);
+  assert.match(duplicateNote('monitor', 'en'), /already listening/);
+  assert.match(reminderNote('drink water', 'en'), /When it happens, it will say "drink water"/);
   assert.equal(monitorPlan({ condition: 'let me know once if I cough' }).repeat, false);
   assert.deepEqual(monitorPlan({ condition: 'let me know once if I cough' }).modalities, ['audio']);
   assert.equal(monitorPlan({ condition: 'from now on watch my body' }).repeat, true);

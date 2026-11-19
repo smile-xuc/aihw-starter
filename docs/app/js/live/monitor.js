@@ -39,7 +39,7 @@ export const MONITOR_TOOL = {
   type: 'function',
   function: {
     name: 'create_proactive_monitor',
-    description: '把以后才发生的提醒交给后台。用户说关注身体、咳嗽了提醒、出现报错再提醒，或听到某种声音再提醒时调用。condition 只写听到或看到什么。用户说咳嗽了就提醒我喝水时，condition 写听到咳嗽，trigger_response 写该喝水了。repeat 为 false 表示只提醒一次，说过就停；只有用户说一直盯着、从现在开始关注或持续监督时才设为 true。true 时同一次发生不重复开口，等这次过去再提醒。报告屏幕、画面时 modalities 只写 vision；咳嗽、身体或声音只写 audio；又要看又要听才两项都写。回执不表示条件已经发生。已经在听的另一项监视不要取消。这个页面同时最多两项监视，满了就说明先停掉一项。调用后只用一句话告诉用户会在发生时提醒，不要把提醒原文说成已经发生。',
+    description: '把以后才发生的提醒交给后台。用户说关注身体、咳嗽了提醒、出现报错再提醒，或听到某种声音再提醒时调用。英文里说 watch my body 或 let me know if I cough 时同样调用，modalities 只写 ["audio"]。condition 只写听到或看到什么。用户说咳嗽了就提醒我喝水时，condition 写听到咳嗽，trigger_response 写该喝水了。repeat 为 false 表示只提醒一次，说过就停；说 once 时也是 false。只有用户说一直盯着、从现在开始关注、持续监督、from now on、keep watching 或 keep listening 时才设为 true。true 时同一次发生不重复开口，等这次过去再提醒。报告屏幕、画面时 modalities 只写 vision；咳嗽、身体或声音只写 audio；又要看又要听才两项都写。回执不表示条件已经发生。已经在听的另一项监视不要取消。这个页面同时最多两项监视，满了就说明先停掉一项。调用后只用一句话告诉用户会在发生时提醒，不要把提醒原文说成已经发生。',
     parameters: {
       type: 'object',
       properties: {
@@ -57,7 +57,7 @@ export const NARRATE_TOOL = {
   type: 'function',
   function: {
     name: 'create_live_narration',
-    description: '把持续报告或变化解说交给后台。用户说持续报告手机屏幕、画面内容，或只解说变化时调用，narration_focus 写上要报告的内容。报告屏幕、画面时 modalities 只写 vision；只听声音时只写 audio；又要看又要听才两项都写。回执里没有画面。调用后只用一句话告诉用户已经开始，不要在这一轮描述画面。',
+    description: '把持续报告或变化解说交给后台。用户说持续报告手机屏幕、画面内容，或只解说变化时调用，narration_focus 写上要报告的内容。英文里说 keep reporting my phone screen 或 report what is on my screen 时同样调用，narration_focus 写用户原话，modalities 只写 ["vision"]。报告屏幕、画面时 modalities 只写 vision；只听声音时只写 audio；又要看又要听才两项都写。回执里没有画面。调用后只用一句话告诉用户已经开始，不要在这一轮描述画面。',
     parameters: {
       type: 'object',
       properties: {
@@ -159,21 +159,31 @@ export function inferModalities(text) {
   return ['vision', 'audio'];
 }
 
-export function modalityNote(modalities) {
+export function modalityNote(modalities, language = 'zh-CN') {
   const vision = modalities?.includes('vision');
   const audio = modalities?.includes('audio');
-  if (vision && !audio) return '这一项只看画面，不听声音。';
-  if (audio && !vision) return '这一项只听声音，不看画面。';
+  const english = language === 'en';
+  if (vision && !audio) return english ? 'This one only looks, and does not listen.' : '这一项只看画面，不听声音。';
+  if (audio && !vision) return english ? 'This one only listens, and does not look.' : '这一项只听声音，不看画面。';
   return '';
 }
 
-export function sourceHint(source, text) {
+export function sourceHint(source, text, language = 'zh-CN') {
   if (source === 'screen' || !/屏幕|screen/iu.test(String(text || ''))) return '';
-  return '当前这一路是摄像头。要看手机屏幕，请点「屏幕」共享。';
+  return language === 'en'
+    ? 'This feed is the camera. To see the phone screen, tap Screen sharing.'
+    : '当前这一路是摄像头。要看手机屏幕，请点「屏幕」共享。';
 }
 
-export function fastAck(kind) {
-  const text = {
+export function fastAck(kind, language = 'zh-CN') {
+  const english = language === 'en';
+  const text = english ? {
+    search: 'Handed to background search. The receipt has no answer. Tell the user in one English sentence that you are looking it up. Do not answer the question in this turn. The result comes later.',
+    look: 'Handed to background vision. The receipt has no picture. Tell the user in one English sentence that you are looking. Do not describe the picture in this turn. The result comes later.',
+    narration: 'Handed to background reporting. The receipt has no picture. Tell the user in one English sentence that you will keep listening and the screen report comes shortly. Do not describe the picture now.',
+    narrationChange: 'Handed to background change narration. If nothing clearly changed, the background stays silent. Tell the user in one English sentence that it has started. Do not describe the picture now.',
+    monitor: 'Handed to background watching. The receipt does not mean the condition has happened. Tell the user in one English sentence that you will remind them when it happens. Do not say you already heard or saw it.',
+  }[kind] : {
     search: '已交给后台查询。回执里没有答案。只用一句话告诉用户你去查了，这一轮不要回答问题本身。结果稍后另说。',
     look: '已交给后台看这一帧。回执里没有画面内容。只用一句话告诉用户你在看，这一轮不要描述画面。结果稍后另说。',
     narration: '已交给后台持续报告。回执里没有画面内容。只用一句话告诉用户：你先接着听，画面内容过一会儿再说。不要现在描述画面。',
@@ -184,13 +194,14 @@ export function fastAck(kind) {
   return text;
 }
 
-export function fastStatus(kind, title) {
+export function fastStatus(kind, title, language = 'zh-CN') {
   const clean = String(title || '').replace(/\s+/g, ' ').trim().slice(0, 80);
-  if (kind === 'search') return `后台已受理：查询「${clean || '公开信息'}」`;
-  if (kind === 'look') return '后台已受理：看这一帧';
-  if (kind === 'narration') return `后台已受理：持续报告「${clean || '当前画面'}」`;
-  if (kind === 'narrationChange') return '后台已受理：解说变化';
-  if (kind === 'monitor') return `后台已受理：监视「${clean || '稍后提醒'}」`;
+  const english = language === 'en';
+  if (kind === 'search') return english ? `Background accepted: look up "${clean || 'public information'}"` : `后台已受理：查询「${clean || '公开信息'}」`;
+  if (kind === 'look') return english ? 'Background accepted: look at this frame' : '后台已受理：看这一帧';
+  if (kind === 'narration') return english ? `Background accepted: keep reporting "${clean || 'the current picture'}"` : `后台已受理：持续报告「${clean || '当前画面'}」`;
+  if (kind === 'narrationChange') return english ? 'Background accepted: narrate changes' : '后台已受理：解说变化';
+  if (kind === 'monitor') return english ? `Background accepted: watch "${clean || 'a later reminder'}"` : `后台已受理：监视「${clean || '稍后提醒'}」`;
   throw new Error('后台回执类型无效');
 }
 
@@ -566,9 +577,10 @@ export function monitorFocus(condition, response, language = 'zh-CN') {
     : `${base}\n条件发生时只说这句提醒：${reminder}`;
 }
 
-export function reminderNote(response) {
+export function reminderNote(response, language = 'zh-CN') {
   const reminder = reminderText('', response);
-  return reminder ? `发生时会说「${reminder}」。` : '';
+  if (!reminder) return '';
+  return language === 'en' ? `When it happens, it will say "${reminder}".` : `发生时会说「${reminder}」。`;
 }
 
 export function monitorPlan(args) {
@@ -586,7 +598,12 @@ export function monitorPlan(args) {
   return { condition, repeat, modalities, response };
 }
 
-export function cadenceNote(repeat) {
+export function cadenceNote(repeat, language = 'zh-CN') {
+  if (language === 'en') {
+    return repeat
+      ? 'It keeps listening. It will not repeat the same occurrence, and it waits until this one passes.'
+      : 'This reminds you once, then stops.';
+  }
   return repeat
     ? '会一直听，同一次里不重复说，等这次过去才能再提醒。'
     : '这次只提醒一次，说过就停。';
@@ -697,11 +714,20 @@ export function searchInFlight(jobs, query) {
   return (Array.isArray(jobs) ? jobs : []).some((item) => item && item.lane === 'search' && (item.state === 'accepted' || item.state === 'running') && String(item.title || '').replace(/\s+/g, ' ').trim().toLocaleLowerCase().slice(0, 80) === needle);
 }
 
-export function duplicateNote(kind) {
-  if (kind === 'search') return '这句已经在查。回执里没有答案。不要再查一次，也不要现在回答。';
-  if (kind === 'timer') return '这句提醒已经设上了。不要再设一次。';
-  if (kind === 'narration') return '这项解说已经开始。不要再开一条。';
-  return '这项监视已经在听。不要再开一条。';
+export function duplicateNote(kind, language = 'zh-CN') {
+  const english = language === 'en';
+  if (kind === 'search') return english
+    ? 'This is already being looked up. The receipt has no answer. Do not search again, and do not answer now.'
+    : '这句已经在查。回执里没有答案。不要再查一次，也不要现在回答。';
+  if (kind === 'timer') return english
+    ? 'This reminder is already set. Do not set it again.'
+    : '这句提醒已经设上了。不要再设一次。';
+  if (kind === 'narration') return english
+    ? 'This narration has already started. Do not start another one.'
+    : '这项解说已经开始。不要再开一条。';
+  return english
+    ? 'This watch is already listening. Do not start another one.'
+    : '这项监视已经在听。不要再开一条。';
 }
 
 export function pushMonitorAudio(state, chunk, sampleRate = 16000) {

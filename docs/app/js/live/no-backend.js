@@ -2,6 +2,7 @@
 // 不创建会话，不执行任务，也不要假装结果稍后会到。
 
 export const NO_BACKEND_NOTE = '这个页面没有编码后台。不会创建会话，不会执行任务，也不会改权限。编码委托仍在 Mac 上的 Qwen-Live-Harness。';
+export const NO_BACKEND_NOTE_EN = 'This page has no coding backend. It will not create a session, run a task, or change a permission. Coding delegation stays on Qwen-Live-Harness on a Mac.';
 
 const UNAVAILABLE = `这个页面没有编码后台。调用后立即返回 no_backend，不会创建会话，不会执行任务，也不会改权限。只用一句话告诉用户这里做不了，不要说已经开始或已经做完。${NO_BACKEND_NOTE}`;
 
@@ -18,7 +19,7 @@ function tool(name, description, properties = {}, required = []) {
 
 export const HANDOFF_TOOL = tool(
   'handoff',
-  `用户要求改代码、跑命令、操作网页，或明确交给编码助手、Codex、Claude Code、Qwen Code、Gemini 时调用。task 写用户原话。${UNAVAILABLE}`,
+  `用户要求改代码、跑命令、操作网页，或明确交给编码助手、Codex、Claude Code、Qwen Code、Gemini 时调用。英文里说 hand this to the coding assistant 时同样调用。task 写用户原话。${UNAVAILABLE}`,
   {
     task: { type: 'string', description: '用户要交给编码助手的原话。' },
     session: { type: 'string', description: '会话编号。这个页面不会使用。' },
@@ -67,8 +68,8 @@ export function isBackendTool(name) {
   return BACKEND_NAMES.has(name);
 }
 
-export function noBackendReceipt() {
-  return JSON.stringify({ status: 'error', code: 'no_backend', note: NO_BACKEND_NOTE });
+export function noBackendReceipt(language = 'zh-CN') {
+  return JSON.stringify({ status: 'error', code: 'no_backend', note: language === 'en' ? NO_BACKEND_NOTE_EN : NO_BACKEND_NOTE });
 }
 
 export function noBackendTitle(name, args) {

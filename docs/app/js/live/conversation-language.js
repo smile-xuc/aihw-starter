@@ -40,6 +40,8 @@ export function questionLanguage(text, fallback = 'zh-CN') {
   return observed.current || (fallback === 'en' ? 'en' : 'zh-CN');
 }
 
+export const ENGLISH_TOOL_TRIGGERS = '这些英文说法走同一套工具，参数里保留用户原话。keep reporting my phone screen、report what is on my screen，调用 create_live_narration，modalities 只写 ["vision"]。watch my body、let me know if I cough，调用 create_proactive_monitor，condition 写要听的情况，modalities 只写 ["audio"]。说 once 时 repeat 为 false；说 from now on、keep watching 或 keep listening 时 repeat 为 true。同一句里又要报告屏幕又要咳嗽提醒时，两个工具都调用。hand this to the coding assistant 调用 handoff，这一轮只说明这个页面没有编码后台。';
+
 export function replyLanguageLine(language) {
   if (language !== 'en') return '';
   return '\n这一通改用英文回答。查询、看图和提醒的播报也用英文。不要改回中文，除非用户明确要求。';

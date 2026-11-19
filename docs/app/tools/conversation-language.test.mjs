@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { observeConversationLanguage, applyReplyLanguage, replyLanguageLine, resolveConversationLanguage, questionLanguage } from '../js/live/conversation-language.js';
+import { ENGLISH_TOOL_TRIGGERS, observeConversationLanguage, applyReplyLanguage, replyLanguageLine, resolveConversationLanguage, questionLanguage } from '../js/live/conversation-language.js';
+import { DEMAND_INSTRUCTIONS } from '../js/live/on-demand.js';
+import { readFileSync } from 'node:fs';
 
 test('conversation language follows a real request and ignores short replies', () => {
   assert.equal(resolveConversationLanguage({}), 'zh-CN');
@@ -43,4 +45,10 @@ test('an English reply removes the Chinese answer instruction', () => {
   assert.equal(demandEnglish.includes('用口语化中文回答'), false);
   assert.match(demandEnglish, /Answer in spoken English, in two or three sentences\./);
   assert.match(demandEnglish, /不识别画面中人的身份/);
+  assert.match(ENGLISH_TOOL_TRIGGERS, /keep reporting my phone screen/);
+  assert.match(ENGLISH_TOOL_TRIGGERS, /let me know if I cough/);
+  assert.match(ENGLISH_TOOL_TRIGGERS, /hand this to the coding assistant/);
+  assert.equal(DEMAND_INSTRUCTIONS.includes(ENGLISH_TOOL_TRIGGERS), true);
+  const session = readFileSync(new URL('../js/pages/session.js', import.meta.url), 'utf8');
+  assert.equal(session.includes('${ENGLISH_TOOL_TRIGGERS}'), true);
 });
