@@ -93,6 +93,11 @@ test('ready handshake sends session.update and later errors stay redacted', asyn
   assert.equal(quotaPlan({ code: 'rate_limit_exceeded', message: 'Too many requests, retry later.' }).action, 'continue');
   assert.equal(quotaPlan({ code: 1006, reason: '' }).action, 'continue');
   assert.equal(callRecoveryPlan({ code: 'insufficient_quota', message: 'Allocated quota exceeded', attempts: 0 }).action, 'fail');
+  assert.equal(callRecoveryPlan({ code: 'socket_closed', message: '', attempts: 0 }).action, 'reconnect');
+  assert.match(callRecoveryPlan({ code: 'socket_closed', message: '', attempts: 0 }).note, /持续报告、监视和到点提醒还在/);
+  assert.equal(callRecoveryPlan({ code: 'socket_closed', message: '', attempts: 1 }).action, 'reconnect');
+  assert.equal(callRecoveryPlan({ code: 'socket_closed', message: '', attempts: 2 }).action, 'stop');
+  assert.equal(callRecoveryPlan({ code: 'socket_closed', message: 'Allocated quota exceeded', attempts: 0 }).action, 'fail');
   assert.equal(responseWaitPlan({ phase: 'created', authority: 'direct', elapsedMs: 14999 }).action, 'wait');
   assert.equal(responseWaitPlan({ phase: 'created', authority: 'direct', elapsedMs: 15000 }).code, 'response_created_timeout');
   assert.equal(responseWaitPlan({ phase: 'done', authority: 'direct', elapsedMs: 120000 }).action, 'wait');
