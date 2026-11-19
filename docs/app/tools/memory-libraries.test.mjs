@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   BIO_TOOL, DEFAULT_LIBRARY_ID, EMBED_MODEL, LEGACY_MEMORY_KEY, LEGACY_SUMMARY_KEY, LIBRARIES_KEY, MAX_BIO, RETRIEVE_TOOL,
   activeLibrary, applyBio, applyMemoryPatch, bioReceipt, bioResult, cleanObservation, clearLibrary, cleanStm, createLibrary, datedEntries, emptyDialogue, emptyLtm, finishDialogue, formatUpdaterInput, hybridRetrieval, isEmptyPatch, ltmCount, memoryLabel, mergeVectorHits, normalizeDate, normalizeVector, observerPrompt, parsePatch, rankWithTime, readStore, recordExchange, recordObservation, redactOperations, rememberTurn,
-  renameLibrary, renderProfile, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, sessionFacts, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore,
+  renameLibrary, renderProfile, renderRecent, replaceActive, resolveTimeRange, retrieveMemory, selectRecent, sessionFacts, shouldConsolidateLibrary, librarySwitchNote, switchLibrary, vectorMatches, vectorsForTexts, vectorsFromEmbedding, writeStore,
 } from '../js/live/memory-libraries.js';
 
 function storage(initial = {}) {
@@ -43,6 +43,11 @@ test('libraries can be created, switched, renamed and cleared without touching t
   assert.throws(() => createLibrary(store, '办公'), /同名/);
   assert.throws(() => createLibrary(store, '   '), /名称/);
   assert.throws(() => switchLibrary(store, 'missing'), /没有这个记忆库/);
+  assert.equal(shouldConsolidateLibrary(true), false);
+  assert.equal(shouldConsolidateLibrary(false), true);
+  assert.match(librarySwitchNote('家', true), /这一通接下来用这套/);
+  assert.match(librarySwitchNote('家', true), /挂断时整理/);
+  assert.equal(librarySwitchNote('家', false), '当前记忆库是「家」。');
   let full = store;
   for (let i = 0; i < 6; i += 1) full = createLibrary(full, `库${i}`, `lib${i}`);
   assert.throws(() => createLibrary(full, '再来一个', 'extra'), /最多 8/);
