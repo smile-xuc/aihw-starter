@@ -47,6 +47,23 @@ export const VISUAL_INSTRUCTIONS = '你只分析这一张画面。用简短中�
 export const VISUAL_RETRY_INSTRUCTIONS = '这一次最多两句短话，只说画面里看得清的部分。不要逐条念屏幕上的长文字，不要用列表、标题或表格。看不清就说看不清。不要提上一次。';
 export const VISUAL_TIMEOUT_MS = 25000;
 export const VISUAL_ATTEMPTS = 2;
+export const ANSWER_CHARS = 16000;
+export const ANSWER_PARTS = 64;
+const FORBIDDEN_LOOK_CONTROLS = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u;
+
+export function boundedAnswer(parts) {
+  if (!Array.isArray(parts)) return null;
+  let size = 0;
+  const kept = [];
+  for (const part of parts) {
+    if (typeof part !== 'string') return null;
+    const next = size + part.length + (kept.length ? 1 : 0);
+    if (next > ANSWER_CHARS || kept.length >= ANSWER_PARTS) return null;
+    size = next;
+    kept.push(part);
+  }
+  return kept.join('\n');
+}
 
 export const DEMAND_INSTRUCTIONS = `你是看说体验里的语音助手。你不能持续看到画面。
 用户问到当前摄像头或屏幕里有什么时，调用 analyze_view。回执里没有画面，这一轮只说你在看，不要描述画面，结果稍后另说。
@@ -139,7 +156,9 @@ async function lookOnce({ connect, url, secret, jpeg, question, voice, inputRate
   if (!(jpeg instanceof Uint8Array) || jpeg.byteLength < 3) throw new Error('没有可看的画面');
   const image = toBase64(jpeg);
   const silence = pcmBase64(silencePcm(inputRate, 1));
-  let text = '';
+  const textParts = new Map();
+  const completedParts = new Set();
+  let transcript = '';
   let settled = false;
   let resolve;
   let reject;
@@ -178,7 +197,31 @@ async function lookOnce({ connect, url, secret, jpeg, question, voice, inputRate
         if (event.code) error.code = event.code;
         finish(error);
       }
-      if (event.type === 'response.text.delta' || event.type === 'response.audio_transcript.delta') text += event.delta || '';
+      const lookPieces = () => [...textParts.values(), ...(transcript ? [transcript] : [])];
+      const tooLong = () => finish(new Error('看画面的结果超过 16000 字，或拆成超过 64 段，这次没看清'));
+      const takePart = (complete) => {
+        const value = complete ? event.text : event.delta;
+        if (typeof value !== 'string') {
+          finish(new Error('看画面的结果不能用，这次没看清'));
+          return;
+        }
+        const index = (item) => (Number.isSafeInteger(item) && item >= 0 ? item : 0);
+        const partId = `${index(event.output_index)}:${index(event.content_index)}`;
+        if (completedParts.has(partId) && !complete) return;
+        textParts.set(partId, complete ? value : `${textParts.get(partId) || ''}${value}`);
+        if (boundedAnswer(lookPieces()) === null) tooLong();
+        else if (complete) completedParts.add(partId);
+      };
+      if (event.type === 'response.text.delta' || event.type === 'response.output_text.delta') takePart(false);
+      if (event.type === 'response.text.done' || event.type === 'response.output_text.done') takePart(true);
+      if (event.type === 'response.audio_transcript.delta') {
+        if (typeof event.delta !== 'string') {
+          finish(new Error('看画面的结果不能用，这次没看清'));
+          return;
+        }
+        transcript += event.delta;
+        if (boundedAnswer(lookPieces()) === null) tooLong();
+      }
       if (event.type === 'input_audio_buffer.committed') {
         try { handle.send('response.create', { response: { instructions: question } }); }
         catch (error) { finish(error); }
@@ -210,7 +253,16 @@ async function lookOnce({ connect, url, secret, jpeg, question, voice, inputRate
           finish(new Error(response.error?.message || '看画面失败'));
           return;
         }
-        finish(null, text.replace(/\s+/g, ' ').trim());
+        const raw = boundedAnswer(lookPieces());
+        if (raw === null) {
+          tooLong();
+          return;
+        }
+        if (FORBIDDEN_LOOK_CONTROLS.test(raw)) {
+          finish(new Error('看画面的结果里有控制字符，这次没看清'));
+          return;
+        }
+        finish(null, raw.replace(/\s+/g, ' ').trim());
       }
     },
   });

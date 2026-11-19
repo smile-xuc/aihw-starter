@@ -2,7 +2,7 @@
 // 只有第一轮在 response.create 里带上条件。条件没发生时模型应只回答 remain_silent。
 
 import { toBase64 } from './client.js';
-import { silencePcm } from './on-demand.js';
+import { ANSWER_CHARS, boundedAnswer, silencePcm } from './on-demand.js';
 import { connectRealtime, decodeBase64, pcmBase64, sessionConfig } from './realtime-omni.js';
 
 export const SEARCH_TOOL = {
@@ -344,6 +344,23 @@ function searchCount(value) {
   return Number.isFinite(count) && count > 0 ? count : 0;
 }
 
+function searchParts(output) {
+  const parts = [];
+  for (const item of output) {
+    if (!item || item.type !== 'message') continue;
+    if (typeof item.content === 'string') parts.push(item.content);
+    else if (Array.isArray(item.content)) {
+      for (const part of item.content) {
+        if (!part || typeof part !== 'object') continue;
+        if (part.type !== 'text' && part.type !== 'output_text') continue;
+        if (typeof part.text !== 'string') return null;
+        parts.push(part.text);
+      }
+    }
+  }
+  return parts;
+}
+
 export function readSearchResponse(body) {
   const output = Array.isArray(body?.output) ? body.output : [];
   let text = '';
@@ -364,12 +381,17 @@ export function readSearchResponse(body) {
       else if (Array.isArray(item.content)) text = item.content.map((part) => (typeof part?.text === 'string' ? part.text : '')).join('');
     }
   }
+  const parts = searchParts(output);
+  if (!parts) return { text: '查询结果不能用，这次不算查到。', status: 'not_performed' };
+  if (boundedAnswer(parts) === null || (typeof body?.output_text === 'string' && body.output_text.length > ANSWER_CHARS) || text.length > ANSWER_CHARS) {
+    return { text: '查询结果超过 16000 字，或拆成超过 64 段，这次不算查到。', status: 'not_performed' };
+  }
   if (typeof body?.output_text === 'string' && body.output_text.trim()) text = body.output_text;
   if (searchCount(body?.tool_usage?.web_search?.num_requests) || searchCount(body?.usage?.x_tools?.web_search)) performed = true;
   let status = 'unknown';
   if (performed) status = 'performed';
   else if (failedCall) status = 'not_performed';
-  return { text: String(text || '').replace(/\s+/g, ' ').trim().slice(0, LATE_FACT_CHARS), status };
+  return { text: String(text || '').replace(/\s+/g, ' ').trim(), status };
 }
 
 export const MONITOR_RULES = `你是主动提醒监视器，只判断这一小段新的声音和画面。
