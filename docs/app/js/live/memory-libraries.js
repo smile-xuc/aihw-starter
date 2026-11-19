@@ -26,6 +26,13 @@ export function nextObserveDelay({ sawFrame } = {}) {
   return sawFrame ? OBSERVE_EVERY_MS : Math.min(OBSERVE_RETRY_MS, OBSERVE_EVERY_MS);
 }
 
+export const UPDATER_TIMEOUT_MS = 120000;
+
+export function updaterTimeoutPlan({ timedOut } = {}) {
+  if (!timedOut) return { action: 'continue' };
+  return { action: 'timeout', note: '整理超过 2 分钟，这次没有写入。已经发出的请求仍会计费，不会再收成一段摘要。' };
+}
+
 // 观察提示词与 Qwen-Live-Harness memory/prompts.ts 的 OBSERVER_PROMPT 一致。
 export const OBSERVER_PROMPT = `你是一个记忆系统的视觉观察器。每次收到用户摄像头的一帧画面，输出一句中文陈述，记录当下看到的东西，供以后回忆使用。
 
