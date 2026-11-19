@@ -1,6 +1,34 @@
 import { SAMPLE_RATE, MAX_SECONDS, captureLimitBytes } from './pcm.js';
 
-export async function microphone({ onPCM, onDuration, onLimit, onError, signal, maxSeconds = MAX_SECONDS }) {
+export function audioCaptureConstraints(deviceId = '') {
+  const audio = { channelCount: 1, echoCancellation: true, noiseSuppression: true };
+  const id = String(deviceId || '').trim();
+  if (id) audio.deviceId = { exact: id };
+  return { audio, video: false };
+}
+
+export function cameraCaptureConstraints(deviceId = '') {
+  const id = String(deviceId || '').trim();
+  return { video: id ? { deviceId: { exact: id } } : { facingMode: 'environment' }, audio: false };
+}
+
+export function inputDevices(devices) {
+  const rows = Array.isArray(devices) ? devices : [];
+  const listed = (kind, fallback) => {
+    const items = [];
+    for (const device of rows) {
+      if (!device || device.kind !== kind) continue;
+      const id = String(device.deviceId || '').trim();
+      if (!id) continue;
+      const label = String(device.label || '').replace(/\s+/g, ' ').trim();
+      items.push({ id, label: (label || `${fallback} ${items.length + 1}`).slice(0, 80) });
+    }
+    return items;
+  };
+  return { microphones: listed('audioinput', '麦克风'), cameras: listed('videoinput', '摄像头') };
+}
+
+export async function microphone({ onPCM, onDuration, onLimit, onError, signal, maxSeconds = MAX_SECONDS, deviceId = '' }) {
   const limit = captureLimitBytes(maxSeconds);
   if (!navigator.mediaDevices?.getUserMedia || !globalThis.AudioWorkletNode || !isSecureContext) throw Error('此浏览器不支持安全的麦克风录音；请使用 HTTPS 页面和支持 AudioWorklet 的浏览器');
   let stream, context, node, input, muted, ended = false, paused = true, count = 0, queue = [], bytes = 0;
@@ -16,7 +44,7 @@ export async function microphone({ onPCM, onDuration, onLimit, onError, signal, 
   try {
     if (signal?.aborted) throw new DOMException('已停止', 'AbortError');
     signal?.addEventListener('abort', abort, { once: true });
-    stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true }, video: false });
+    stream = await navigator.mediaDevices.getUserMedia(audioCaptureConstraints(deviceId));
     if (signal?.aborted) throw new DOMException('已停止', 'AbortError');
     stream.getAudioTracks().forEach(t => { t.enabled = false; t.addEventListener('ended', () => { if (!ended) onError(Error('麦克风已断开；已确认转写会保留')); }); });
     context = new AudioContext(); await context.resume();

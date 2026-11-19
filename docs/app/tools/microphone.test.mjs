@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {microphone} from '../js/live/microphone.js';
+import {audioCaptureConstraints, cameraCaptureConstraints, inputDevices, microphone} from '../js/live/microphone.js';
 import {MAX_SECONDS, SAMPLE_RATE, SESSION_CALL_SECONDS, captureLimitBytes} from '../js/live/pcm.js';
 
 function media(t,getUserMedia,AudioContext) {
@@ -11,6 +11,20 @@ function media(t,getUserMedia,AudioContext) {
   }
 }
 const options=signal=>({signal,onPCM(){assert.fail('canceled microphone emitted PCM');},onDuration(){},onLimit(){},onError(){}});
+test('chosen microphone and camera are exact devices', () => {
+  assert.deepEqual(audioCaptureConstraints(''), { audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true }, video: false });
+  assert.deepEqual(audioCaptureConstraints(' mic-1 ').audio.deviceId, { exact: 'mic-1' });
+  assert.deepEqual(cameraCaptureConstraints(''), { video: { facingMode: 'environment' }, audio: false });
+  assert.deepEqual(cameraCaptureConstraints('cam-1').video, { deviceId: { exact: 'cam-1' } });
+  const found = inputDevices([
+    { kind: 'audioinput', deviceId: 'm', label: 'AirPods' },
+    { kind: 'videoinput', deviceId: ' ', label: 'blank' },
+    { kind: 'videoinput', deviceId: 'c', label: '' },
+    { kind: 'audiooutput', deviceId: 's', label: 'Speaker' },
+  ]);
+  assert.deepEqual(found.microphones, [{ id: 'm', label: 'AirPods' }]);
+  assert.deepEqual(found.cameras, [{ id: 'c', label: '摄像头 1' }]);
+});
 test('session calls last thirty minutes and other captures stay at three', () => {
   assert.equal(MAX_SECONDS, 180);
   assert.equal(SESSION_CALL_SECONDS, 1800);
