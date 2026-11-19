@@ -44,6 +44,9 @@ export const LOOK_TOOL = {
 };
 
 export const VISUAL_INSTRUCTIONS = '你只分析这一张画面。用简短中文回答问题。看不清就说看不清，不要编造画面里没有的文字、人物或物体。';
+export const VISUAL_RETRY_INSTRUCTIONS = '这一次最多两句短话，只说画面里看得清的部分。不要逐条念屏幕上的长文字，不要用列表、标题或表格。看不清就说看不清。不要提上一次。';
+export const VISUAL_TIMEOUT_MS = 25000;
+export const VISUAL_ATTEMPTS = 2;
 
 export const DEMAND_INSTRUCTIONS = `你是看说体验里的语音助手。你不能持续看到画面。
 用户问到当前摄像头或屏幕里有什么时，调用 analyze_view。回执里没有画面，这一轮只说你在看，不要描述画面，结果稍后另说。
@@ -79,6 +82,28 @@ export function canRetryVisual(error) {
   return /超时|连接|网络|临时/.test(message);
 }
 
+export function visualRepeatError(error) {
+  if (!error || typeof error !== 'object') return false;
+  if (error.code !== 'COMMON_ERROR' || error.message !== 'model repeat output happened') return false;
+  if (error.type !== undefined && error.type !== 'server_error') return false;
+  const status = error.status;
+  return status === undefined || (typeof status === 'number' && status >= 500 && status <= 599);
+}
+
+export function visualRetryPlan({ code, message, name, type, status, attempt } = {}) {
+  const used = Number.isInteger(attempt) && attempt > 0 ? attempt : 1;
+  if (name === 'AbortError' || used >= VISUAL_ATTEMPTS) return { action: 'stop' };
+  if (visualRepeatError({ code, message, type, status }) || canRetryVisual({ name, message })) return { action: 'retry' };
+  return { action: 'stop' };
+}
+
+function presentLookError(error) {
+  if (!visualRepeatError(error)) return error;
+  const wrapped = new Error('这一帧看了两次，内容还是重复，这次没看清');
+  wrapped.code = error.code;
+  return wrapped;
+}
+
 // 视频表征在首段音频之后不能改。已经开过画面的通话只停帧或续帧，并换工具。
 // 这一通还没开过画面时，改成实时画面必须新开连接。
 export function captureSwitchPlan({ mode, next, videoOn, tools }) {
@@ -96,7 +121,7 @@ export function captureSwitchPlan({ mode, next, videoOn, tools }) {
   return { changed: true, mode: target, reconnect, tools: tools ? target : 'omit', note };
 }
 
-async function lookOnce({ connect, url, secret, jpeg, question, voice, inputRate, outputRate, asrModel, timeoutMs, WebSocketImpl, signal }) {
+async function lookOnce({ connect, url, secret, jpeg, question, voice, inputRate, outputRate, asrModel, timeoutMs, WebSocketImpl, signal, instructions = VISUAL_INSTRUCTIONS }) {
   if (!(jpeg instanceof Uint8Array) || jpeg.byteLength < 3) throw new Error('没有可看的画面');
   const image = toBase64(jpeg);
   const silence = pcmBase64(silencePcm(inputRate, 1));
@@ -125,7 +150,7 @@ async function lookOnce({ connect, url, secret, jpeg, question, voice, inputRate
     signal,
     WebSocketImpl,
     session: sessionConfig({
-      instructions: VISUAL_INSTRUCTIONS,
+      instructions,
       voice,
       inputRate,
       outputRate,
@@ -134,13 +159,33 @@ async function lookOnce({ connect, url, secret, jpeg, question, voice, inputRate
       video: true,
     }),
     onEvent(event) {
-      if (event.type === 'error') finish(new Error(event.message || '看画面失败'));
+      if (event.type === 'error') {
+        const error = new Error(event.message || '看画面失败');
+        if (event.code) error.code = event.code;
+        finish(error);
+      }
       if (event.type === 'response.text.delta' || event.type === 'response.audio_transcript.delta') text += event.delta || '';
       if (event.type === 'input_audio_buffer.committed') {
         try { handle.send('response.create', { response: { instructions: question } }); }
         catch (error) { finish(error); }
       }
-      if (event.type === 'response.done') finish(null, text.replace(/\s+/g, ' ').trim());
+      if (event.type === 'response.done') {
+        const response = event.response;
+        const repeated = visualRepeatError(response?.error) || visualRepeatError(response?.status_details?.error);
+        if (response?.status === 'failed' && repeated) {
+          const error = new Error('model repeat output happened');
+          error.code = 'COMMON_ERROR';
+          error.type = 'server_error';
+          error.status = 500;
+          finish(error);
+          return;
+        }
+        if (response?.status && response.status !== 'completed') {
+          finish(new Error(response.error?.message || '看画面失败'));
+          return;
+        }
+        finish(null, text.replace(/\s+/g, ' ').trim());
+      }
     },
   });
     await handle.ready;
@@ -160,11 +205,21 @@ async function lookOnce({ connect, url, secret, jpeg, question, voice, inputRate
 export async function analyzeFrame(options) {
   const connect = options.connect || connectRealtime;
   const question = visualQuestion(options.question, options.heard);
-  const attempt = { ...options, connect, question, timeoutMs: options.timeoutMs || 25000 };
-  try {
-    return await lookOnce(attempt);
-  } catch (error) {
-    if (!canRetryVisual(error)) throw error;
-    return lookOnce(attempt);
+  const limit = options.timeoutMs || VISUAL_TIMEOUT_MS;
+  const deadline = Date.now() + limit * VISUAL_ATTEMPTS;
+  let lastError;
+  for (let attempt = 1; attempt <= VISUAL_ATTEMPTS; attempt += 1) {
+    const remaining = deadline - Date.now();
+    if (remaining <= 0) throw presentLookError(lastError || new Error('看画面超时'));
+    const timeoutMs = Math.min(limit, remaining);
+    const instructions = attempt === 1 ? VISUAL_INSTRUCTIONS : `${VISUAL_INSTRUCTIONS}\n${VISUAL_RETRY_INSTRUCTIONS}`;
+    try {
+      return await lookOnce({ ...options, connect, question, timeoutMs, instructions });
+    } catch (error) {
+      lastError = error;
+      const plan = visualRetryPlan({ code: error.code, message: error.message, name: error.name, type: error.type, status: error.status, attempt });
+      if (plan.action !== 'retry') throw presentLookError(error);
+    }
   }
+  throw presentLookError(lastError);
 }
