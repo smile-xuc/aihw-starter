@@ -21,12 +21,27 @@ export const MAX_ENV_CHARS = 400;
 export const OBSERVE_EVERY_MS = 60000;
 export const OBSERVE_RETRY_MS = 2000;
 export const OBSERVE_TIMEOUT_MS = 60000;
+export const OBSERVER_TEMPERATURE = 0;
+export const OBSERVER_MAX_TOKENS = 400;
 
 export function nextObserveDelay({ sawFrame } = {}) {
   return sawFrame ? OBSERVE_EVERY_MS : Math.min(OBSERVE_RETRY_MS, OBSERVE_EVERY_MS);
 }
 
 export const UPDATER_TIMEOUT_MS = 120000;
+export const UPDATER_TEMPERATURE = 0;
+export const UPDATER_MAX_TOKENS = 2048;
+
+export function memorySampling(kind) {
+  if (kind === 'observer') return { temperature: OBSERVER_TEMPERATURE, max_tokens: OBSERVER_MAX_TOKENS };
+  if (kind === 'updater') return { temperature: UPDATER_TEMPERATURE, max_tokens: UPDATER_MAX_TOKENS };
+  return {};
+}
+
+export function updaterFinishPlan(reason) {
+  if (reason === 'length' || reason === 'max_tokens') return { action: 'summary' };
+  return { action: 'use' };
+}
 
 export function updaterTimeoutPlan({ timedOut } = {}) {
   if (!timedOut) return { action: 'continue' };
