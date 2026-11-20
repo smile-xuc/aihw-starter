@@ -59,6 +59,17 @@
 - **可借鉴点**：相对 Ray-Ban Meta、Oakley Meta HSTN 的拍照音频路线，以及国内带屏眼镜，公开信息呈现的是无相机、屏显会议 Agent、订阅 credits 这一组合。可与同为无相机显示的 Even Realities 对照：Even G2 官网商店标价自 599 美元起（[evenrealities.com/store](https://www.evenrealities.com/store)，查证 2026-09-29），Halliday 则把会议时长做成 credits。与已收录的 HSTN 场景分开，一个是运动拍摄，一个是会议室里的显示助手
 - **另见**：[Halliday 商业产品卡][glasses]
 
+### 案例：INMO GO3（影目 / INMO）— 美区眼镜-only SKU GO3001
+
+- **公开信息源**：[INMO GO3 眼镜-only 变体页](https://www.inmo.com/products/inmo-go3?variant=50515935461510) · [店面 JSON](https://www.inmo.com/products/inmo-go3.js)（查证 2026-11-20）
+- **形态**：双目绿色 Micro LED + 衍射光波导，FOV 30°，约 58 g。型号 IMG301，SKU GO3001。经 INMO app（iOS / Android）工作
+- **亮点**：
+  - 本条只收眼镜-only SKU GO3001（variant id 50515935461510）。JSON-LD / Shopify 现价 **$699.00 USD**，InStock，`compare_at_price` 同为 $699（查证 2026-11-20）。产品页原文 “Prices shown are MSRP in USD. Final promotional pricing is reflected at checkout.”
+  - 页顶 “Black Friday Is Live! Up to $318 Off.” 产品模块可见 Final $499 / Regular $699.00，码 GO200，这是结账促销
+  - 官方产品描述 / JSON-LD 写 127 种语言实时翻译、由 ChatGPT 与 Gemini 驱动的 AI 助手、免提导航、自动会议转写、内置提词器。FAQ 原文 “Translation, AI assistant and teleprompter work through the app.” 产品页 “127 online languages, 9 offline on both Android and iOS.” 离线 9 种无需网络：English、Simplified Chinese、Japanese、Spanish、Korean、French、German、Russian、Thai。拍照翻译 “requires an internet connection.”
+- **可借鉴点**：单绿光波导显示眼镜。美区现价钉在眼镜-only 的 $699.00 USD；GO200 的 $499 是结账促销。翻译、助手和提词器按 FAQ 经 INMO app 工作
+- **另见**：[INMO GO3 商业产品卡](../../../awesome/commercial-products/by-category/02-ai-glasses.md#inmo-go3影目--inmo型号-img301sku-go3001)
+
 ## 三、拍照眼镜（无显示）
 
 ### 案例：Ray-Ban Meta（Meta × EssilorLuxottica）
@@ -132,7 +143,7 @@
 ## 六、待补充清单（欢迎 PR）
 
 - [ ] 小度 AI 眼镜（百度）的公开技术路线
-- [ ] 星纪魅族、影目 INMO、李未可等品牌的最新产品线
+- [x] 星纪魅族、影目 INMO、李未可等品牌的最新产品线（已补 GO3：美国店 SKU GO3001，JSON-LD $699 InStock；页面另有 BF 码 GO200 结算促销 $499；星纪魅族、李未可仍缺）
 - [ ] 海外：Solos AirGo、补 Even 案例条目
 - [ ] 行业款（巡检/物流拣选）的公开落地案例
 

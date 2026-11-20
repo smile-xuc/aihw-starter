@@ -266,6 +266,29 @@
 
 ---
 
+### INMO GO3（影目 / INMO，型号 IMG301，SKU GO3001）
+
+- **上市状态**：在售（官网产品页 JSON-LD / Shopify 眼镜-only 变体 InStock，查证 2026-11-20）。Shopify `published_at` 为 2026-09-24T02:59:16-07:00。FAQ：美国发货 2–5 个工作日。规格表型号是 IMG301
+- **官网/渠道**：<https://www.inmo.com/products/inmo-go3?variant=50515935461510>（眼镜-only 变体，variant id 50515935461510）；店面 JSON <https://www.inmo.com/products/inmo-go3.js>。无 query 的 <https://www.inmo.com/products/inmo-go3> 为同一产品页
+- **形态**：双目绿色 Micro LED + 衍射光波导。规格表原文 “Binocular Green Micro LED Screen + Diffractive Optical Waveguide”，FOV 30°，约 58 g（页面 “Lightweight Design - 58 g”）。经 INMO app 工作（iOS / Android）
+- **定价**：
+  - 首发价：待核实
+  - 现价：**$699.00 USD** · 美国 · [眼镜-only 变体页](https://www.inmo.com/products/inmo-go3?variant=50515935461510) · [店面 JSON](https://www.inmo.com/products/inmo-go3.js) · 查证 2026-11-20。JSON-LD / Shopify 眼镜-only SKU `GO3001`（variant id 50515935461510）为 InStock，`compare_at_price` 同为 $699。本卡现价只记这一档
+  - MSRP：官方称所示价格为 MSRP。产品页原文 “Prices shown are MSRP in USD. Final promotional pricing is reflected at checkout.” 眼镜-only 所示价为 $699.00 USD · 查证 2026-11-20
+  - 结账促销：页顶 “Black Friday Is Live! Up to $318 Off.” 产品模块可见 Sale / Final **$499** / Regular $699.00，码 **GO200**
+- **目标市场**：美国官网。FAQ 写美国发货 2–5 个工作日
+- **AI 能力**：
+  - AI 功能：实时翻译、AI 助手、免提导航、自动会议转写、内置提词器。官方产品描述 / JSON-LD 原文：“The GO3 is a full AI platform built into a pair of glasses. Real-time translation in 127 languages, an AI assistant powered by ChatGPT and Gemini, hands-free navigation, automatic meeting transcription, a built-in teleprompter, and more.” ChatGPT 与 Gemini 出自这段官方产品描述，子型号未公开。实现方式：FAQ 原文 “GO3 pairs with the INMO app, available for iOS and Android. Translation, AI assistant and teleprompter work through the app.” 语种：产品页 “127 online languages, 9 offline on both Android and iOS.” 离线 9 种官方写无需网络：English、Simplified Chinese、Japanese、Spanish、Korean、French、German、Russian、Thai。拍照翻译原文 “requires an internet connection.”（[眼镜-only 变体页](https://www.inmo.com/products/inmo-go3?variant=50515935461510) · [店面 JSON](https://www.inmo.com/products/inmo-go3.js)，查证 2026-11-20）
+- **大模型方案**：官方产品描述称 AI 助手由 ChatGPT 和 Gemini 驱动；子型号未公开（非千问默认绑定）。翻译 / 助手 / 提词器按 FAQ 经 INMO app 工作；推理位置官方未用「云端 / 端侧」表述
+- **公开数据**：未见官方公开销量。Shopify `published_at` 2026-09-24
+- **关键差异化**：① 双目绿色 Micro LED 光波导显示眼镜（型号 IMG301），对照同文件拍照眼镜与分体 XR；② 官方写实时翻译、会议转写、提词器与 ChatGPT / Gemini 助手，且经 INMO app 工作；③ 本卡现价只钉眼镜-only GO3001 的 $699.00 USD InStock。GO200 的 $499 记在结账促销
+- **商业模式**：硬件销售。页面另有结账码 GO200，与现价 $699.00 USD 分开记
+- **另见**：[INMO GO3 案例](../../../solutions/by-category/02-ai-glasses/04-cases.md#案例inmo-go3影目--inmo-美区眼镜-only-sku-go3001)
+
+> 来源：[INMO GO3 眼镜-only 变体页](https://www.inmo.com/products/inmo-go3?variant=50515935461510) · [店面 JSON](https://www.inmo.com/products/inmo-go3.js)（均查证 2026-11-20）
+
+---
+
 ## 待补充清单
 
 ### 海外标杆

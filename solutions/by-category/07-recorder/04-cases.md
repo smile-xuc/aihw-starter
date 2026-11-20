@@ -140,6 +140,17 @@
 - **Apple Voice Memos**：iOS 18 起系统备忘录支持转写（公开报道 / Apple 系统能力）；**结构化会议纪要与跨平台订阅仍非其主战场**，常被 Notta 等作为导入源
 - **可借鉴点**：待核实
 
+### 案例：Flowtica Scribe（Flowtica）— 智能笔（笔录 + 录音）
+
+- **公开信息源**：[Flowtica Scribe 产品页](https://www.flowtica.ai/products/flowtica-scribe) · [店面 JSON](https://www.flowtica.ai/products/flowtica-scribe.js)（查证 2026-11-20）
+- **形态**：铝机身中性笔 + 录音，34.5 g，0.5 mm 中性笔芯，MEMS 麦克风。规格表颜色 Silver Grey / Satin Gunmetal，变体名 Silver Gray。充电盒与 Folio Traveler’s Notebook 属于 Complete Set / Field Kit
+- **亮点**：
+  - 三档均 InStock（查证 2026-11-20）：仅笔 **$159**（SKU `FS1S/B101G1` Satin Gunmetal / `FS1S/B101G2` Silver Gray）；Complete Set **$209**（笔 + 充电盒，官方 “Up to 100h recording”，SKU `FSC1S/A201G1` / `FSC1S/A201G2`）；Field Kit **$259**（Complete Set + Folio Traveler’s Notebook，SKU `FSC1S/A201G1FNB2` / `FSC1S/A201G2FNB2`）。Complete Set 与 Field Kit 均含 3 个月 Premium。页面默认常落在 Field Kit
+  - 页顶现文 “BFCM Sale Ends in”，倒计时截止 `2026-11-30T23:59:00-08:00`。FLOW30（Field Kit，Save 30%）与 FLOW22（仅笔、Complete Set，Save 22%）是促销码，页写 “Cannot be combined with other offers.”，与三档标价分开
+  - 标准转写官方写 on-device（经手机，需一次性下载，不限时长）。进阶档每台每月 300 分钟（说话人识别、摘要、待办、visual notes），推理位置官方未写。功能区 92 种语言；FAQ 说话人识别 “across 39 languages.” 页脚 “Ask ChatGPT” / “Ask Claude” 是外链询问按钮。模型名未公开
+- **可借鉴点**：笔录 + 录音的中性笔形态，和同页卡片机、可穿戴分开。标准转写按官方不限时长；进阶分钟与硬件三档分开记
+- **另见**：[Flowtica Scribe 商业产品卡](../../../awesome/commercial-products/by-category/07-recorder.md#flowtica-scribeflowtica)
+
 ---
 
 ## 四、开源 / 自建快速验证
@@ -158,7 +169,7 @@
 ## 五、待补充清单（欢迎 PR）
 
 - [ ] 国内出海卡片机公开 SKU（须附官网或商店链接）
-- [ ] 智能笔（笔录 + 录音）量产案例
+- [x] 智能笔（笔录 + 录音）量产案例（已补 Flowtica Scribe，三档 $159 / $209 / $259 InStock，查证 2026-11-20）
 - [ ] 律师 / 医生垂直定制机（仅公开可查）
 - [ ] B 端会议盒子项目交付公开案例
 
