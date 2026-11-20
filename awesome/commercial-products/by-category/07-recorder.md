@@ -409,6 +409,31 @@
 
 > 来源：[Qore Vox 商品页](https://www.pebblecart.com/products/qore-vox) · [店面 JSON](https://www.pebblecart.com/products/qore-vox.js) · [专题页](https://www.pebblecart.com/pages/qore-vox) · [qv-tweaks.js](https://www.pebblecart.com/cdn/shop/t/224/assets/qv-tweaks.js) · [Mint（2026-11-02）](https://www.livemint.com/technology/pebble-qore-vox-brings-ai-meeting-notes-to-your-wrist-check-price-features-and-battery-life-11793617392293.html)（均查证 2026-11-11）
 
+### Flowtica Scribe（Flowtica）
+
+- **上市状态**：在售（官网产品页 JSON-LD Offer `availability=https://schema.org/InStock`；店面 JSON 六个变体均为 `available: true`，查证 2026-11-20）。Shopify `published_at` 为 2025-10-15T02:50:35-07:00。FAQ 原文 "Every Scribe ships within a week."
+- **官网/渠道**：<https://www.flowtica.ai/products/flowtica-scribe>（产品页）；店面 JSON <https://www.flowtica.ai/products/flowtica-scribe.js>。JSON-LD `legalName` 为 “Flowtica AI Pte. Ltd.”
+- **形态**：铝机身中性笔 + 录音。官方写 “A premium aluminum body at 34.5 grams”，笔芯为 “0.5 mm Gel”，麦克风为 studio-grade MEMS（规格表与 FAQ）。规格表颜色写 “Silver Grey / Satin Gunmetal”，变体名写 “Silver Gray”，两套拼写并列。充电盒与 Folio Traveler’s Notebook 不属于仅笔套装：Complete Set 官方写 “Adds the Charging Case. Up to 100h recording.”；Field Kit 为 Complete Set + Folio Traveler’s Notebook
+- **定价**：
+  - 首发价：待核实
+  - 现价（三档均 InStock，查证 2026-11-20；各档 `compare_at_price` 为 null）· 美国 · [产品页](https://www.flowtica.ai/products/flowtica-scribe) · [店面 JSON](https://www.flowtica.ai/products/flowtica-scribe.js)：
+    - **Scribe（仅笔）$159 USD**：SKU `FS1S/B101G1`（Satin Gunmetal，variant id 47102765269248）、`FS1S/B101G2`（Silver Gray，variant id 47102765302016）
+    - **Complete Set $209 USD**（笔 + 充电盒，官方 “Up to 100h recording”）：SKU `FSC1S/A201G1`、`FSC1S/A201G2`。硬件说明写 “Plus 3 months of Premium, free.” FAQ “What's in the box?” 写 Complete Set 含 “3 months of Premium”
+    - **Field Kit $259 USD**（Complete Set + Folio Traveler’s Notebook）：SKU `FSC1S/A201G1FNB2`、`FSC1S/A201G2FNB2`。硬件说明同样写 “Plus 3 months of Premium, free.” 店面 JSON 第一个变体是 Field Kit，页面默认常落在这一档
+  - MSRP：待核实
+  - 促销码：页顶现文 “BFCM Sale Ends in”，倒计时 `data-ends-at` 为 `2026-11-30T23:59:00-08:00`。FLOW30 对应 Field Kit（页写 Save 30%，`data-original-price` 25900），FLOW22 对应仅笔与 Complete Set（页写 Save 22%，`data-original-price` 15900 / 20900）。页写 “Cannot be combined with other offers.”；`data-starts-at` / `data-ends-at` 均为 `0`。主题模板 Sold out 徽章（`price__badge-sold-out`）与 CompareAtPrice `$0.00` 是占位
+  - 订阅：进阶分钟用完后可升级。FAQ 原文 “Premium is $119.99/year for 1,200 minutes a month; Unlimited is $239.99/year for unlimited minutes.”
+- **目标市场**：美国官网标价与发货（FAQ “Every Scribe ships within a week.”）。本次核的是美国店
+- **AI 能力**：
+  - AI 功能：标准转写是 on-device。官方原文 “Lifetime standard AI transcription via on-device model (requires one-time download).” FAQ：“Every Scribe records without limits, and standard AI transcription runs on-device through your phone, free and with no time limit.” 进阶档每台每月 300 分钟（官方 “Every Scribe includes 300 AI minutes per month” / “300 AI minutes of advanced transcription with speaker identification, summaries, to-dos, and visual notes”）。进阶推理位置官方未写。功能区写 92 种语言（图片 alt “transcribes 92 languages”）；FAQ 说话人识别那句是 “across 39 languages.” 数据口径原文 “encrypted in transit and at rest, stored in the United States, and never sold.” FlowTran FAQ 原文 “transfers the audio over a local wireless connection (not the cloud)” 说的是音频回传到 App 的路径。页脚 “Ask ChatGPT” / “Ask Claude” 是外链询问按钮。模型名未公开（[产品页](https://www.flowtica.ai/products/flowtica-scribe) · [店面 JSON](https://www.flowtica.ai/products/flowtica-scribe.js)，查证 2026-11-20）
+- **大模型方案**：官网未公开具体基座模型（非千问默认绑定）。标准转写按官方写 on-device（需一次性下载，经手机运行）；进阶推理位置官方未写
+- **公开数据**：未见官方公开销量。Shopify `published_at` 2025-10-15
+- **关键差异化**：① 铝机身中性笔形态（笔录 + 录音），对照同文件卡片机 / 可穿戴；② 标准转写官方写 on-device、不限时长；进阶纪要 / 说话人识别按月分钟，位置未公开；③ 三档硬件标价 $159 / $209 / $259 USD。FLOW30 / FLOW22 与页顶 “BFCM Sale Ends in” 倒计时分开记
+- **商业模式**：硬件销售。Complete Set 与 Field Kit 均含 3 个月 Premium。之后可升级 Premium（$119.99 USD/年，1,200 分钟/月）或 Unlimited（$239.99 USD/年）
+- **另见**：[Flowtica Scribe 案例](../../../solutions/by-category/07-recorder/04-cases.md#案例flowtica-scribeflowtica-智能笔笔录--录音)
+
+> 来源：[Flowtica Scribe 产品页](https://www.flowtica.ai/products/flowtica-scribe) · [店面 JSON](https://www.flowtica.ai/products/flowtica-scribe.js)（均查证 2026-11-20）
+
 ## 待补充清单
 
 ### 海外 / 可穿戴
