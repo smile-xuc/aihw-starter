@@ -38,6 +38,7 @@
 | **CSDN AMD CTONE** | CSDN / AMD / 创通新科 | 桌面本地 AI 开发者一体机（F9A 底座 + LingOS） | 本地开源模型服务（名单未公开） | 本地部署 / 模型网关 / 智能体工作台 | **价格未公开**（查证随商业卡 2026-11-07；不可移用 F9A / ACEMAGIC 报价） | 已发布·售价及开售待核实 |
 | **Sandbar Stream** | Sandbar | 语音戒指 | 未公开 | 按住说话 | 预购价 **$249 USD** · [官方商店](https://shop.sandbar.com/) · 查证 2026-09-30 | 预售（官方商店，查证 2026-09-30） |
 | **Pebble Index 01** | Core Devices / Pebble | 语音备忘戒指 | 博客写端侧大模型，未写模型名 | 一键录音，手机上选动作 | 预购价 **$75 USD** · [产品页](https://repebble.com/index) · 查证 2026-09-30 | 预售（官网；新订单 1–2 个月发货，查证 2026-10-01） |
+| **M5Stack AI Pyramid-Pro 8GB（AX8850）** | M5Stack | 金字塔桌面开发型计算盒 | AXCL 支持部署 CLIP、Whisper、Llama 3.2、Qwen 3、InternVL3；不是预装清单 | 本地视觉／多模态／LLM；语音助手、Frigate、Immich 为部署示例 | 官方标价 **$399 USD**（缺货，不称可购）· [商品数据](https://shop.m5stack.com/products/ai-pyramid-computing-box-pro-8gb-version-ax8850.js) · 查证 2026-11-26 | 缺货（`available:false`，查证 2026-11-26） |
 
 ### 形态路线图
 
@@ -116,6 +117,16 @@
 - **公开数据**：产品页写预购价 $75 USD，并写 "After pre-orders, price will go up to $99"。规格表写 "Starts shipping March 2026"。产品页写 "New orders ship in 1-2 months"。已开始发货。官方博客写首批订单 2026-07 底发货 · [量产博客](https://repebble.com/blog/index-01-is-in-mass-production)（查证 2026-10-01）
 - **可借鉴点**：动作选择放在手机端侧。本仓 [`demo/intent-router/`](./demo/intent-router/) 是离线分流示例
 - **另见**：[Pebble Index 01 商业产品卡][hw]
+
+### 案例：M5Stack AI Pyramid-Pro 8GB（AX8850）（M5Stack）— 缺货的桌面推理开发盒
+
+- **公开信息源**：[商品页](https://shop.m5stack.com/products/ai-pyramid-computing-box-pro-8gb-version-ax8850) · [商品数据](https://shop.m5stack.com/products/ai-pyramid-computing-box-pro-8gb-version-ax8850.js) · [官方文档](https://docs.m5stack.com/en/ai_hardware/AI_Pyramid-Pro)（查证 2026-11-26）
+- **形态**：金字塔桌面开发型计算盒。SKU `AI-003-PRO`。8GB LPDDR4x、32GB eMMC。包装清单为 1 × AI Pyramid‑Pro
+- **技术路线**：AX8850 NPU／AXCL 在本地做视觉、多模态和 LLM 推理。文档列出的 CLIP、Whisper、Llama 3.2、Qwen 3、InternVL3 是支持部署清单，不是预装模型，尺寸与量化未公开。默认内存为系统 4GB 加加速资源 4GB。厂商 24 TOPS @ INT8 不是实测大模型速度
+- **亮点**：语音助手、Frigate、Immich 是部署示例，不是出厂全装好。HDMI 一进一出，双千兆网口。至少 9V/3A PD，5V 无法启动，不写随附电源
+- **公开数据**：商品 JSON price 39900、`compare_at_price` null、`available` false。官方标价 $399 USD，缺货，不称可购。首发价与 MSRP 待核实。未见公开销量
+- **可借鉴点**：开发盒要分开写官方标价和可购状态；支持部署不等于预装；系统内存和加速内存分开记
+- **另见**：[M5Stack AI Pyramid-Pro 8GB 商业产品卡][hw]
 
 ### 案例：Muse Gadgets 与 Muse Home Link（Meta）— 平台开放外设
 

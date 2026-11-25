@@ -382,6 +382,29 @@
 
 > 来源：[MaixStation 产品页](https://sipeed.com/maixstation/) · [MaixStation 意向金条款](https://sipeed.com/maixstation/terms.html) · [爱芯元智 AX8860P 产品页](https://www.axera-tech.com/zh-hans/product/3295.html) · [爱芯元智 AX8860 发布新闻](https://axera-tech.com/zh-hans/news/3291.html)（均查证 2026-10-29）
 
+---
+
+### M5Stack AI Pyramid-Pro 8GB（AX8850）（M5Stack）
+
+- **上市状态**：缺货（官方商品 JSON `available:false`，查证 2026-11-26）。商品页写 Out Of Stock；页面 HTML 仍有 Add to cart 字样，卡片取商品 JSON，不称可购。这是目录新增，不表示今日首发
+- **官网/渠道**：<https://shop.m5stack.com/products/ai-pyramid-computing-box-pro-8gb-version-ax8850> 商品页；商品数据 <https://shop.m5stack.com/products/ai-pyramid-computing-box-pro-8gb-version-ax8850.js>；文档 <https://docs.m5stack.com/en/ai_hardware/AI_Pyramid-Pro>
+- **形态**：金字塔桌面开发型计算盒。文档称 "pyramid‑shaped" AI PC，面向本地推理。SKU 以商品 JSON 为准：`AI-003-PRO`。页面不一致：文档页写 `SKU:AI-003-Pro`，商品页与商品 JSON 写 `AI-003-PRO`，卡片取商品 JSON。8GB LPDDR4x、32GB eMMC
+- **定价**：
+  - 首发价：待核实（查证 2026-11-26）
+  - 现价：官方标价 $399 USD（price 39900，即 $399.00 USD）· [商品数据](https://shop.m5stack.com/products/ai-pyramid-computing-box-pro-8gb-version-ax8850.js) · 查证 2026-11-26。变体 SKU `AI-003-PRO`，`compare_at_price` 为 null，`available` 为 false。这是官方标价，不是可购报价、成交价或可立即下单承诺。商品页写 Regular price $399.00，同时写 Out Of Stock
+  - MSRP：待核实（查证 2026-11-26）。`compare_at_price` 为 null；不把商品页 Regular price 写成 MSRP
+- **目标市场**：需要本地视觉、多模态和大语言模型推理的开发与边缘部署；文档把它写成 AI PC 与边缘智能终端
+- **AI 能力**：
+  - AI 功能：通过 AX8850 NPU／AXCL 在本地做视觉识别、多模态和大语言模型推理。文档原文 "visual recognition, multimodal interaction, and on‑device large language model inference"，并写 "Native AXCL Support: One‑click deployment for CNN, Transformer, CLIP, Whisper, Llama 3.2, Qwen 3, InternVL3 and other models"。这是支持部署清单，不是预装模型清单；具体尺寸、量化版本未公开。官方语音助手、Frigate、Immich 出现在 Application Examples，是部署示例，不等于出厂全装好。另有 HDMI 一进一出与双千兆网口（[官方文档](https://docs.m5stack.com/en/ai_hardware/AI_Pyramid-Pro)，查证 2026-11-26）
+  - 端侧推理：本地，模型由用户部署到机上运行。芯片：Axera AX8850，八核 Cortex-A55 @ 1.7 GHz。算力：厂商称 "24 TOPS @ INT8"，不是实测大模型速度。内存：8GB 64-bit LPDDR4x；文档默认分配为 "8GB variant (4GB + 4GB): 4GB allocated to system memory; 4GB reserved for hardware acceleration tasks including NPU compute and video encode/decode"。不能说模型独占全部 8GB。文档写可按教程调整分配。存储：32GB eMMC 5.1。供电：文档写 "This device requires a PD adapter with a minimum output of DC 9V@3A (27W). The unit will not power on with a DC 5V supply." 包装清单原文 "1 × AI Pyramid‑Pro"，未列适配器，不写随附电源（[官方文档](https://docs.m5stack.com/en/ai_hardware/AI_Pyramid-Pro)，查证 2026-11-26）
+- **大模型方案**：支持部署 CLIP、Whisper、Llama 3.2、Qwen 3、InternVL3 等，由用户经 AXCL 部署，不是出厂预装名单，也没有默认模型（非千问默认绑定）。具体尺寸与量化版本未公开
+- **公开数据**：未见公开销量。商品 JSON 未给出可购库存数量；`available` 为 false
+- **关键差异化**：① 开发型推理盒，官方标价与可购状态分开，当前缺货；② 支持部署清单与预装模型分开，默认内存是系统 4GB 加加速 4GB；③ 厂商 24 TOPS INT8 与实测大模型速度分开，包装不含电源
+- **商业模式**：硬件销售。当前缺货，官方标价 $399 USD 不是可购报价。首发价与 MSRP 待核实
+- **另见**：[公开案例](../../../solutions/by-category/04-agent-hardware/04-cases.md)
+
+> 来源：[AI Pyramid-Pro 商品页](https://shop.m5stack.com/products/ai-pyramid-computing-box-pro-8gb-version-ax8850) · [商品数据](https://shop.m5stack.com/products/ai-pyramid-computing-box-pro-8gb-version-ax8850.js) · [AI Pyramid-Pro 官方文档](https://docs.m5stack.com/en/ai_hardware/AI_Pyramid-Pro)（均查证 2026-11-26）
+
 ## 待补充清单
 
 - [ ] DFRobot AI 智能体盒子正式定价后补卡
