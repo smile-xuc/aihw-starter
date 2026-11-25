@@ -300,6 +300,29 @@
 
 ---
 
+### EBO Air 2 Plus FamilyBot（Enabot）
+
+- **上市状态**：在售（[商品数据](https://store.enabot.com/products/ebo-air-2-plus-familybot.js) 三个 US Plug 变体 available 均为 true，查证 2026-11-26）。页面不一致：商品页另有 Out of stock / Out of stocks 文案，卡片取商品数据的 available
+- **官网/渠道**：<https://store.enabot.com/products/ebo-air-2-plus-familybot> 产品页；<https://store.enabot.com/pages/ebo-air-2-plus-family-companion-robot> 助手介绍
+- **形态**：轮式家用陪伴 / 巡检机器人。规格与 FAQ 写 3K（2880×1620）摄像头。不是机械臂，也不是人形通用劳动机器人
+- **定价**：
+  - 首发价：待核实（查证 2026-11-26）
+  - 现价：$319.00 USD · 美国（US Plug）· [商品数据](https://store.enabot.com/products/ebo-air-2-plus-familybot.js) · 查证 2026-11-26。三个变体 price 均为 31900、compare_at_price 均为 39900、available 均为 true。SKU：New PlusWhite-US Plug（Lunar White）、PlusGrey-US（Orbit Grey）、PlusPurple-US（Nebula Purple）。这是促销现价，不是已核实的日常原价
+  - MSRP：待核实（查证 2026-11-26）。同一商品数据的划线价为 $399.00 USD（compare_at_price 39900），页面未把它标成 MSRP
+- **目标市场**：家庭陪伴、宠物看护与室内移动巡检
+- **AI 能力**：
+  - AI 功能：官方 FAQ 写支持 ChatGPT 及其他 AI 模型，用于聊天互动；可识别人物和宠物，并在人移动时跟随。助手介绍写短按顶部按钮启动 AI 助手。实现方式：ChatGPT 是聊天服务名，具体型号、其他模型名和推理位置未公开。产品页写经 MCP 连接兼容 AI Agent，使获授权的 Agent 可访问图像并控制移动、导航和摄像头；这不是内置助手的默认全权限。原文 "The EBO Air 2 Plus supports ChatGPT and additional AI models, allowing it to chat and interact with you." "The EBO Air 2 Plus can recognize people and pets, and it can follow you as you move around." "Connects with compatible AI Agent via MCP, enabling authorized AI agents to access images and control movement, navigation, camera." "*Short-press the top button to start"（[产品页 FAQ](https://store.enabot.com/products/ebo-air-2-plus-familybot) · [助手介绍](https://store.enabot.com/pages/ebo-air-2-plus-family-companion-robot)，查证 2026-11-24）
+  - 可预约移动巡检、双向视频、自动回充见产品页；官方未把这些写成大模型功能（[产品页](https://store.enabot.com/products/ebo-air-2-plus-familybot)，查证 2026-11-24）
+- **大模型方案**：官网 FAQ 写 ChatGPT 及其他 AI 模型，未写具体型号与推理位置（非千问默认绑定）。MCP 只表示可接入获授权的兼容外部 Agent
+- **公开数据**：未见公开销量。页面不一致：SEO 标题写 "2K AI Pet Camera Robot"，规格表写 "3K (2880 x 1620)"，FAQ 写 3K resolution camera，卡片取规格及 FAQ（[产品页](https://store.enabot.com/products/ebo-air-2-plus-familybot)，查证 2026-11-24）
+- **关键差异化**：① 家用轮式巡检，与协作臂、人形分形态；② AI 聊天、人物与宠物识别、跟随移动中的人单列，巡检 / 双向视频 / 回充不写成大模型功能；③ MCP 只面向获授权的兼容外部 Agent
+- **商业模式**：硬件销售。首发价与 MSRP 待核实
+- **另见**：[公开案例](../../../solutions/by-category/09-embodied/04-cases.md)
+
+> 来源：[EBO Air 2 Plus 产品页](https://store.enabot.com/products/ebo-air-2-plus-familybot)（查证 2026-11-24） · [商品数据](https://store.enabot.com/products/ebo-air-2-plus-familybot.js)（查证 2026-11-26） · [助手介绍](https://store.enabot.com/pages/ebo-air-2-plus-family-companion-robot)（查证 2026-11-24）
+
+---
+
 ## 待补充清单
 
 - [x] 工业四足产品（云深处绝影 X30）

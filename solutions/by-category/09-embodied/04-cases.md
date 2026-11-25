@@ -39,6 +39,7 @@
 | **绝影 X30** | 云深处（DEEP Robotics） | 工业四足 | 未公开 | IP67；-20℃至 55℃；空载续航约 4 h、负载约 2.5 h | 单价待核实（[产品页](https://www.deeprobotics.cn/products/detail/6.html)，查证 2026-10-25） |
 | **远征 A2** | 智元（AgiBot） | 交互服务人形 | 英文页写 large language models + RAG | 全双工对话、企业知识库 | A2 青春版开售价 ¥168,000 CNY（2025-08-18）· [界面新闻](https://m.jiemian.com/article/13195641.html)。旗舰版待核实。现价待核实 |
 | **JAKA Lumi** | 节卡机器人 | 轮式具身训练平台（不是协作臂） | 模型名未公开 | 新闻写本地化模型推理 / 无网络执行（[2025-05-15 新闻](https://www.jaka.com/zh/newsDetail/599)；产品页仅见「语音交互」） | 首发价 ¥79,800 CNY（该新闻）；现价与在售状态待核实（查证 2026-11-18） |
+| **EBO Air 2 Plus FamilyBot** | Enabot | 轮式家用陪伴 / 巡检（不是协作臂或人形） | FAQ 写 ChatGPT 及其他 AI 模型；具体型号与推理位置未公开 | AI 聊天；识别人与宠物，并跟随移动中的人；另有移动巡检 / 双向视频 / 自动回充 | 三个 US Plug 促销现价 $319.00 USD（划线 $399.00 USD，MSRP 待核实）（[商品数据](https://store.enabot.com/products/ebo-air-2-plus-familybot.js)，查证 2026-11-26） |
 
 ### 形态路线图
 
@@ -124,6 +125,16 @@
 - **公开数据**：首发价 ¥79,800 CNY（新闻原文「首发售价7.98万元」，2025-05-15）· [节卡新闻](https://www.jaka.com/zh/newsDetail/599)。现价待核实（产品页无标价）。MSRP 待核实。订阅待核实。在售状态待核实。未见官方公开销量
 - **可借鉴点**：轮式训练平台与协作臂分形态记录；本地化推理以 2025-05-15 新闻为准，产品页无标价
 - **另见**：[JAKA Lumi 商业产品卡][emb]
+
+### 案例：EBO Air 2 Plus FamilyBot（Enabot）— 轮式家用陪伴与巡检
+
+- **公开信息源**：[产品页](https://store.enabot.com/products/ebo-air-2-plus-familybot)（查证 2026-11-24） · [商品数据](https://store.enabot.com/products/ebo-air-2-plus-familybot.js)（查证 2026-11-26） · [助手介绍](https://store.enabot.com/pages/ebo-air-2-plus-family-companion-robot)（查证 2026-11-24）
+- **形态**：轮式家用陪伴 / 巡检机器人。规格与 FAQ 写 3K（2880×1620）；SEO 标题残留 "2K AI Pet Camera Robot"，卡片取规格及 FAQ。不是机械臂或人形通用劳动机器人
+- **技术路线**：FAQ 写 ChatGPT 及其他 AI 模型用于聊天，可识别人与宠物，并跟随移动中的人。ChatGPT 为服务名，具体型号、其他模型名和推理位置未公开。MCP 仅为兼容且获授权外部 Agent 的接入，可访问图像并控制移动、导航和摄像头。短按顶部按钮启动 AI 助手
+- **亮点**：家用移动巡检、双向视频和自动回充与 AI 聊天分开记录
+- **公开数据**：三个 US Plug SKU（New PlusWhite-US Plug、PlusGrey-US、PlusPurple-US）在商品数据中 available 均为 true，促销现价 $319.00 USD，划线 $399.00 USD。首发价与 MSRP 待核实。未见官方公开销量
+- **可借鉴点**：促销现价与划线价分开写；MCP 接入不等于内置助手默认全权限
+- **另见**：[EBO Air 2 Plus FamilyBot 商业产品卡][emb]
 
 ---
 

@@ -74,21 +74,22 @@
 ### Eilik（Energize Lab）
 
 - **上市状态**：在售（官方商店有现价，查证 2026-09-30）
-- **官网/渠道**：<https://store.energizelab.com/products/eilik>
+- **官网/渠道**：<https://store.energizelab.com/products/eilik>；AI Station <https://store.energizelab.com/products/ai-station>
 - **形态**：桌面情感机器人，触摸 + 表情 + 多机互动
 - **定价**：
   - 首发价：待核实
   - 现价：$139.99 USD · [官方商店](https://store.energizelab.com/products/eilik) · 查证 2026-09-30
   - MSRP：$149.99 USD（官方常规价）· [官方商店](https://store.energizelab.com/products/eilik) · 查证 2026-10-06
+  - 促销价：$99.00 USD（配件 AI Station，本体另购）· 美国 · [AI Station 商品数据](https://store.energizelab.com/products/ai-station.js) · 查证 2026-11-26。SKU Accessory-AI Station，price 9900，compare_at_price 14900，available true；划线 $149.00 USD。配件首发价与 MSRP 待核实，划线价未标明 MSRP。Eilik 本体另购，此价不是含本体的整套价
 - **目标市场**：入门桌宠 / 礼品
 - **AI 能力**：
-  - AI 功能：本体靠触摸感应做出表情和动作回应，被抚摸、拿起或一起玩时给出不同动画，多台 Eilik 放在一起会互相玩耍；官方商店写 "Touch Eilik and discover playful reactions"。AI 对话需另购配件 AI Station，官方商店写 "Expand your Eilik experience with AI Station for natural AI conversations"。实现方式：未公开；AI Station 的对话模型和运行位置未公开（[官方商店](https://store.energizelab.com/products/eilik)，查证 2026-10-14）
-- **大模型方案**：待核实
+  - AI 功能：本体靠触摸感应做出表情和动作回应，被抚摸、拿起或一起玩时给出不同动画，多台 Eilik 放在一起会互相玩耍；官方商店写 "Touch Eilik and discover playful reactions"。AI 对话需另购配件 AI Station，官方商店写 "Expand your Eilik experience with AI Station for natural AI conversations"（[Eilik 官方商店](https://store.energizelab.com/products/eilik)，查证 2026-10-14）。AI Station 公开上下文对话记忆、熟悉人脸 / 家人和日常物品识别、手势游戏、AI 故事及角色扮演；模型名未公开。官方称核心 AI 对话与游戏可离线，联网解锁额外功能及更新；具体模型和完整推理链路未公开。需 ≥18W PD 充电器（USB-C 9V 2A / 12V 1.5A）；放上底座进入 AI Station 专属 AI 模式，取下恢复原系统；附磁吸相机盖，盖上仍可语音对话。原文 "Core AI conversations and games work offline. Setting up the network unlocks additional features and updates." "Yes. An ≥18W PD charger ensures stable and smooth operation." "USB-C, 9V 2A; 12V 1.5A" "Once Eilik is placed on Eilik AI Station, it automatically enters AI mode and displays exclusive AI Station gameplay only." "Simply remove Eilik from Eilik AI Station to restore the original system." "Simply cover the camera whenever you want extra privacy while continuing to enjoy voice conversations and many features.（Designed exclusively for Eilik. AI Station only. Eilik sold separately.）"（[AI Station 产品及 FAQ](https://store.energizelab.com/products/ai-station)，查证 2026-11-24）
+- **大模型方案**：AI Station 模型名未公开（非千问默认绑定）。官方称核心 AI 对话与游戏可离线，联网解锁额外功能及更新；完整推理链路未公开（[AI Station FAQ](https://store.energizelab.com/products/ai-station)，查证 2026-11-24）
 - **公开数据**：待核实
 - **关键差异化**：① 验证「桌宠 ≠ 必须先上大模型」；② 低价触摸反馈；③ 多机互动玩法
-- **商业模式**：硬件销售
+- **商业模式**：硬件销售；AI Station 为另购配件，不含 Eilik 本体
 
-> 来源：[Energize Lab 官方商店](https://store.energizelab.com/products/eilik)（查证 2026-09-30）
+> 来源：[Energize Lab 官方商店](https://store.energizelab.com/products/eilik)（查证 2026-09-30） · [AI Station 产品及 FAQ](https://store.energizelab.com/products/ai-station)（查证 2026-11-24） · [AI Station 商品数据](https://store.energizelab.com/products/ai-station.js)（查证 2026-11-26）
 
 ---
 
