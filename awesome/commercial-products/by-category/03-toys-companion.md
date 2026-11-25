@@ -117,26 +117,27 @@
 
 ### Miko Mini（Miko）
 
-- **上市状态**：在售（官网，查证 2026-09-30）
+- **上市状态**：在售（Miko Mini Purple、Blue 的商品 JSON `available` 均为 true，查证 2026-11-26）
 - **官网/渠道**：<https://miko.ai/products/miko-mini>；Miko 3 <https://miko.ai/products/miko-3>；Miko Max <https://miko.ai/products/miko-max>；FAQ <https://miko.ai/pages/miko-3-faqs>
 - **形态**：带屏的小型桌面儿童陪伴机器人。FAQ 称 Miko Mini 为 "GPT-powered conversational learning robot"
 - **定价**：
-  - 首发价：待核实
-  - 现价：Miko Mini $149.00 USD · 美国 · [产品页](https://miko.ai/products/miko-mini) · 查证 2026-09-30。Miko 3 $299.00 USD（官网售价）· [产品页](https://miko.ai/products/miko-3) · 查证 2026-10-03
-  - MSRP：Miko Mini $199.00 USD（官方常规价）· [产品页](https://miko.ai/products/miko-mini) · 查证 2026-10-03；Miko 3 待核实
-  - 划线价：Miko Mini $199.00 USD（同页划线价）；Miko 3 同现价
-  - 订阅：Miko Max 现价 $89.00 USD/年（划线价 $99.00 USD），月付 $14.99 USD · [Miko Max](https://miko.ai/products/miko-max) · 查证 2026-09-30
+  - 首发价：待核实（查证 2026-11-26）
+  - 现价：Miko Mini 单机 Purple、Blue 均为 $149.00 USD · 美国 · [商品数据](https://miko.ai/products/miko-mini.js) · 查证 2026-11-26。SKU：`MIKO Mini || Purple`、`MIKO Mini || Blue`；price 均为 14900，`available` 均为 true。这是单机标价，不是黑五套装价。Miko 3 $299.00 USD（官网售价）· [产品页](https://miko.ai/products/miko-3) · 查证 2026-10-03
+  - MSRP：待核实（查证 2026-11-26）。单机商品 JSON 的 `compare_at_price` 为 19900（$199.00 USD），页面未把它标成 MSRP；Miko 3 待核实
+  - 划线价：Miko Mini 单机 $199.00 USD（`compare_at_price` 19900，不是 MSRP）；Miko 3 同现价
+  - 促销价：黑五套装 $99.00 USD（划线 $244.00 USD）· [产品页](https://miko.ai/products/miko-mini) · 查证 2026-11-26。组成为 Miko Mini＋3 个月 Miko Max＋Discovery Cards。原文 "Miko Mini + 3 months of Miko Max + Discovery Cards"，页面另写 "$199 Robot + $45 Miko Max = $244"。这不是单机降价，套装划线价不作单机 MSRP。活动 FAQ 原文 "The Miko Mini Black Friday price runs from Nov 17 to Nov 27, or while stock lasts."（该句无年份）。页面倒计时为 00 days、00 hrs、00 min、00 sec，不据此判断活动已结束
+  - 订阅：Miko Max 商品 JSON 均可售 · [商品数据](https://miko.ai/products/miko-max.js) · 查证 2026-11-26。`max-monthly`（变体名 One Time - 1 Month Purchase）price 1400，即 $14.00 USD，`compare_at_price` 1499，即划线 $14.99 USD；`max-annual`（变体名 One Time - Annual Purchase）price 8900，即 $89.00 USD，`compare_at_price` 9900，即划线 $99.00 USD；两者 `available` 均为 true。年付页折合 "$7.41 /month" 不是月包价。页面不一致：Max 商品页 FAQ 写 "The Miko Max plans are available on a monthly and annual basis at $14.99 USD per month and $99 USD for a year."，与当前促销价 $14.00／$89.00 不一致。同一 FAQ 写 "The Max subscription auto-renews unless you opt to cancel it."。变体名含 One Time，不据此写成无自动续订的一次性包。不把 $14.00／$89.00 推断为续费价，续费价未知
 - **目标市场**：儿童对话式学习。Google Cloud 案例写受众为 4 至 12 岁
 - **AI 能力**：
   - AI 功能：说「Hey Miko」唤醒后可随意提问、做知识类对话；Story Maker 让孩子编写并讲述自己的故事；通过平和的对话帮孩子识别情绪、练习正念；能识别并回应用户的声音和面孔；对话按 5–10 岁儿童做年龄适配与内容审核。实现方式：FAQ 称 Miko Mini 为 GPT 驱动的对话式学习机器人，未写型号；机身有摄像头和麦克风（可一键关闭）及 ToF 测距传感器，需连 Wi-Fi；记忆与多语言能力随 Miko Max 订阅解锁（[Miko Mini 产品页](https://miko.ai/products/miko-mini) · [FAQ](https://miko.ai/pages/miko-3-faqs)，查证 2026-10-03）
   - FAQ 写 GPT-powered 对话式学习。Google Cloud 案例章节 "Building smarter, safer bots with Gemini" 引用负责人原话，称 Gemini 是实现安全、可靠、符合文化情境的儿童交互的关键；结果栏写加快发布周期，并写识别与减少幻觉
 - **大模型方案**：FAQ 写 GPT-powered，未写具体型号。官网未公开具体基座模型（非千问默认绑定）。Google Cloud 案例把 Gemini 写在安全相关章节，不是对话主模型的型号说明
 - **公开数据**：未见公开销量
-- **关键差异化**：① 硬件标价与 Miko Max 年费分开；② FAQ 与 Google Cloud 案例写的是两层：对话方案、安全层；③ 带屏表情互动
-- **商业模式**：硬件销售 + Miko Max 内容订阅
+- **关键差异化**：① 单机标价、黑五套装与 Miko Max 订阅分开，划线价不写作 MSRP；② FAQ 与 Google Cloud 案例写的是两层：对话方案、安全层；③ 带屏表情互动
+- **商业模式**：硬件销售 + Miko Max 内容订阅。Mini 商品页 FAQ 写 Holiday Bundle 含 3 个月 Max，并写所有 Miko 机器人含免费内容；Max 商品页 FAQ 写没有 Max 也可使用（查证 2026-11-26）
 - **另见**：[公开案例](../../../solutions/by-category/03-toys-companion/04-cases.md)
 
-> 来源：[Miko Mini](https://miko.ai/products/miko-mini) · [Miko 3](https://miko.ai/products/miko-3) · [Miko Max](https://miko.ai/products/miko-max) · [FAQ](https://miko.ai/pages/miko-3-faqs) · [Google Cloud 客户案例](https://cloud.google.com/customers/miko-ai)（均查证 2026-09-30）
+> 来源：[Miko Mini](https://miko.ai/products/miko-mini)（查证 2026-11-26） · [Miko Mini 商品数据](https://miko.ai/products/miko-mini.js)（查证 2026-11-26） · [Miko 3](https://miko.ai/products/miko-3)（查证 2026-10-03） · [Miko Max](https://miko.ai/products/miko-max)（查证 2026-11-26） · [Miko Max 商品数据](https://miko.ai/products/miko-max.js)（查证 2026-11-26） · [FAQ](https://miko.ai/pages/miko-3-faqs)（查证 2026-11-26） · [Google Cloud 客户案例](https://cloud.google.com/customers/miko-ai)（查证 2026-09-30）
 
 ---
 
