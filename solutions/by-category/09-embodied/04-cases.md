@@ -128,7 +128,7 @@
 
 ### 案例：EBO Air 2 Plus FamilyBot（Enabot）— 轮式家用陪伴与巡检
 
-- **公开信息源**：[产品页](https://store.enabot.com/products/ebo-air-2-plus-familybot) · [商品数据](https://store.enabot.com/products/ebo-air-2-plus-familybot.js) · [助手介绍](https://store.enabot.com/pages/ebo-air-2-plus-family-companion-robot)（查证 2026-11-26）
+- **公开信息源**：[产品页](https://store.enabot.com/products/ebo-air-2-plus-familybot)（查证 2026-11-24） · [商品数据](https://store.enabot.com/products/ebo-air-2-plus-familybot.js)（查证 2026-11-26） · [助手介绍](https://store.enabot.com/pages/ebo-air-2-plus-family-companion-robot)（查证 2026-11-24）
 - **形态**：轮式家用陪伴 / 巡检机器人。规格与 FAQ 写 3K（2880×1620）；SEO 标题残留 "2K AI Pet Camera Robot"，卡片取规格及 FAQ。不是机械臂或人形通用劳动机器人
 - **技术路线**：FAQ 写 ChatGPT 及其他 AI 模型用于聊天，可识别人与宠物，并跟随移动中的人。ChatGPT 为服务名，具体型号、其他模型名和推理位置未公开。MCP 仅为兼容且获授权外部 Agent 的接入，可访问图像并控制移动、导航和摄像头。短按顶部按钮启动 AI 助手
 - **亮点**：家用移动巡检、双向视频和自动回充与 AI 聊天分开记录
